@@ -1,0 +1,2 @@
+#define NKMOD_API __declspec(dllexport)
+#define NKMOD_API __declspec(dllimport)
