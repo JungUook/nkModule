@@ -12,6 +12,10 @@ NKWindow::NKWindow()
 	m_worldTransform.y = 50.f;
 	m_worldTransform.w = 300.f;
 	m_worldTransform.h = 600.f;
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 NKWindow::~NKWindow()

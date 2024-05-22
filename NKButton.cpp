@@ -15,6 +15,10 @@ NKButton::NKButton()
 	memset(m_content, 0, sizeof(m_content));
 	memset(m_functionName, 0, sizeof(m_functionName));
 	memset(m_argsName, 0, sizeof(m_argsName));
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 NKButton::~NKButton()

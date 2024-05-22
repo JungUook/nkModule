@@ -67,6 +67,8 @@ public:
 	NKBase();
 	~NKBase();
 
+	virtual std::string getClassName() const;
+
 	//기본함수
 public:
 	virtual void Initialize(NuklearUI* pManager);
@@ -90,6 +92,7 @@ public:
 	virtual void Setfont(nk_font* font);
 	virtual void SetParent(NKBase* nkBase);
 	virtual NKBase* GetParent();
+	virtual std::list<NKBase*>* GetChildList();
 	virtual void AddChild(NKBase* nkBase);
 	virtual void LAddChild(luabridge::LuaRef ref);
 	virtual void RemoveChild(NKBase* nkBase);
@@ -118,6 +121,12 @@ public:
 	virtual void SetPrimaryID(unsigned int id);
 	virtual void SetPrimaryName(const char* name);
 	virtual void SetNuklearIndex(int index);
+
+	// ui 편집용 함수
+public:
+	virtual nk_tree_type GetTreeType() { return m_nkType; }
+	virtual nk_collapse_states GetCollapseState() { return m_nkState; }
+
 protected:
 	NuklearUI* m_manager;
 	const char* m_cName;
@@ -140,6 +149,9 @@ protected:
 
 	NKBase* m_pParent;
 	std::list<NKBase*> m_pChildList;
+
+	nk_tree_type m_nkType;
+	nk_collapse_states m_nkState;
 
 #pragma region Style Setup	
 public:

@@ -25,11 +25,27 @@ NKBase::NKBase()
 	m_primaryID = 0;
 	m_nkIndex = 0;
 	memset(m_primaryName, 0, sizeof(m_primaryName));
-	m_cName = typeid(*this).name();
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 NKBase::~NKBase()
 {
+}
+
+std::string NKBase::getClassName() const
+{
+	std::string className = typeid(*this).name();
+	std::string prefix = "class ";
+
+	// Remove the prefix if it exists
+	if (className.find(prefix) == 0) {
+		className = className.substr(prefix.length());
+	}
+
+	return className;
 }
 
 void NKBase::Initialize(NuklearUI* pManager)
@@ -132,11 +148,45 @@ NKBase* NKBase::GetParent()
 	return m_pParent;
 }
 
+std::list<NKBase*>* NKBase::GetChildList()
+{
+	return &m_pChildList;
+}
+
 
 void NKBase::AddChild(NKBase* nkBase)
 {
 	CHECK_PTR(nkBase);
 	nkBase->Initialize(this);
+
+
+	char primaryName[256] = { 0, };
+	strcpy_s(primaryName, nkBase->GetPrimaryName());
+	int idx = 1;
+	while (true)
+	{
+		bool bFound = false;
+		auto it = m_pChildList.begin();
+		for (; it != m_pChildList.end(); ++it)
+		{
+			if (strcmp(primaryName, (*it)->GetPrimaryName()) == 0) {
+				bFound = true;
+				break;
+			}
+			else {
+				bFound = false;
+			}
+		}
+
+		if (!bFound) {
+			nkBase->SetPrimaryName(primaryName);
+			break;
+		}
+		else {
+			sprintf_s(primaryName, "%s%d", nkBase->GetPrimaryName(), idx++);
+		}
+	}
+
 	m_manager->Add(nkBase);
 	m_pChildList.push_back(nkBase);
 }

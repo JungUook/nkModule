@@ -412,25 +412,44 @@ void NuklearUI::DebugLayout()
 		row_layout[1] = debugRectWidth - groupLeft;
 
 		nk_layout_row(m_ctx, NK_STATIC, debugRectHeight, 2, row_layout);
-		DebugLayoutLeft();
-		DebugLayoutRight();
+		DebugLayoutLeft(row_layout[0]);
+		DebugLayoutRight(row_layout[1]);
 	}
 	nk_end(m_ctx);
 }
 
-void NuklearUI::DebugLayoutLeft()
+void NuklearUI::DebugLayoutLeft(int width)
 {
 	if (nk_group_begin(m_ctx, "Node", 0)) {
 		int i = 0;
-		static nk_bool selected[16];
-		nk_layout_row_static(m_ctx, 18, 100, 1);
-		for (i = 0; i < 16; ++i)
-			nk_selectable_label(m_ctx, (selected[i]) ? "Selected" : "Unselected", NK_TEXT_CENTERED, &selected[i]);
+		nk_layout_row_static(m_ctx, 18, width, 1);
+
+		for (i = 0; i < m_vecObject.size(); ++i)
+		{
+			DebugLayoutLeftNodes(m_vecObject.at(i), NK_TREE_TAB, NK_MINIMIZED);
+		}
+
+		//for (i = 0; i < 16; ++i)
+			//nk_selectable_label(m_ctx, (selected[i]) ? "Selected" : "Unselected", NK_TEXT_LEFT, &selected[i]);
 		nk_group_end(m_ctx);
 	}
 }
 
-void NuklearUI::DebugLayoutRight()
+void NuklearUI::DebugLayoutLeftNodes(NKBase* pBase, nk_tree_type nkType, nk_collapse_states nkState)
+{
+	if (nk_tree_push(m_ctx, nkType, pBase->GetPrimaryName(), nkState)) {
+		
+		std::list<NKBase*>* plist = pBase->GetChildList();
+		auto it = plist->begin();
+		for (; it != plist->end(); ++it)
+		{
+			DebugLayoutLeftNodes(*it, (*it)->GetTreeType(), (*it)->GetCollapseState());
+		}
+		nk_tree_pop(m_ctx);
+	}
+}
+
+void NuklearUI::DebugLayoutRight(int width)
 {
 	if (nk_group_begin(m_ctx, "ObjectInfo", 0)) {
 		if (nk_tree_push(m_ctx, NK_TREE_TAB, "Transform", NK_MINIMIZED)) {
@@ -798,6 +817,22 @@ void NuklearUI::Add(NKBase* type)
 		m_primaryIDCheck = 0;
 	}
 	base->SetNuklearIndex(m_vecModule.size());
+
+
+	char primaryName[256] = { 0, };
+	strcpy_s(primaryName, base->GetPrimaryName());
+	int idx = 1;
+	while (true)
+	{
+		auto it = m_mapModuleName.find(primaryName);
+		if (it != m_mapModuleName.end()) {
+			sprintf_s(primaryName, "%s%d", base->GetPrimaryName(), idx++);
+		}
+		else {
+			base->SetPrimaryName(primaryName);
+			break;
+		}
+	}
 
 	if (base->GetType() == eWINDOW)
 	{

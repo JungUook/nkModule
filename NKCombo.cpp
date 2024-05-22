@@ -2,8 +2,7 @@
 #include "NKCombo.h"
 #include "NKComboItem.h"
 
-NKCombo::NKCombo()
-	: m_currentLabel(0)
+NKCombo::NKCombo() 
 {
 	m_type = eCOMBO;
 	m_labelSize.x = 150.f;
@@ -15,8 +14,13 @@ NKCombo::NKCombo()
 	m_worldTransform.y = 50.f;
 	m_worldTransform.w = 150.f;
 	m_worldTransform.h = 60.f;
+	m_currentLabel = 0;
 
 	memset(m_content, 0, sizeof(m_content));
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 NKCombo::~NKCombo()

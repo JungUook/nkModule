@@ -2,14 +2,18 @@
 #include "NKGroup.h"
 
 NKGroup::NKGroup()
-	: m_layoutFormat(NK_DYNAMIC)
-	, m_width(0)
-	, m_height(0)
-	, m_cols(0)
-	, m_ratio(nullptr)
 {
-	m_type = eGROUP;
-	m_flags = 0;
+	m_layoutFormat	= NK_DYNAMIC;
+	m_width			= 0;
+	m_height		= 0;	
+	m_cols			= 0;
+	m_ratio			= nullptr;
+	m_type			= eGROUP;
+	m_flags			= 0;
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 NKGroup::~NKGroup()

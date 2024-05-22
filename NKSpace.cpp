@@ -2,11 +2,15 @@
 #include "NKSpace.h"
 
 NKSpace::NKSpace()
-	: m_layoutFormat(NK_STATIC)
-	, m_height(60)
-	, m_widgetCount(0)
 {
-	m_type = eSPACE;
+	m_layoutFormat	= NK_STATIC;
+	m_height		= 60;
+	m_widgetCount	= 0;
+	m_type			= eSPACE;
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 NKSpace::~NKSpace()

@@ -49,8 +49,9 @@ public:
 	void NKInputEnd();
 	void Update();
 	void DebugLayout();
-	void DebugLayoutLeft();
-	void DebugLayoutRight();
+	void DebugLayoutLeft(int width);
+	void DebugLayoutLeftNodes(NKBase* pBase, nk_tree_type nkType, nk_collapse_states nkState);
+	void DebugLayoutRight(int width);
 #ifdef _DX9
 	void Render(IDirect3DDevice9* device);
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam, D3DPRESENT_PARAMETERS* present);
