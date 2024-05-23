@@ -1,0 +1,20 @@
+#pragma once
+#ifndef NKColorPicker_h__
+#define NKColorPicker_h__
+#include "NKBase.h"
+
+class NKColorPicker : public NKBase
+{
+public:
+    NKColorPicker();
+    ~NKColorPicker();
+
+public:
+    void Layout(nk_context* ctx) override;
+    void SetColor(struct nk_colorf color);
+    struct nk_colorf GetColor() const;
+
+public:
+    struct nk_colorf m_color;
+};
+#endif //NKColorPicker_h__

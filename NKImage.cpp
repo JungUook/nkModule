@@ -12,10 +12,6 @@ NKImage::NKImage()
 	m_worldTransform.y = 50.f;
 	m_worldTransform.w = 100.f;
 	m_worldTransform.h = 100.f;
-
-	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
 }
 
 NKImage::~NKImage()

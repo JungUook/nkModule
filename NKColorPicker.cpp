@@ -1,0 +1,25 @@
+#include "pch.h"
+#include "NKColorPicker.h"
+
+NKColorPicker::NKColorPicker()
+{
+    m_type = eCOLOR_PICKER;
+    m_color = nk_hsva_colorf(255, 255, 255, 255);
+}
+
+NKColorPicker::~NKColorPicker() {}
+
+void NKColorPicker::Layout(nk_context* ctx)
+{
+    nk_color_pick(ctx, &m_color, NK_RGBA);
+}
+
+void NKColorPicker::SetColor(struct nk_colorf color)
+{
+    m_color = color;
+}
+
+struct nk_colorf NKColorPicker::GetColor() const
+{
+    return m_color;
+}

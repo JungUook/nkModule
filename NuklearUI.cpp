@@ -32,6 +32,7 @@ NuklearUI::NuklearUI()
 	m_bEditActive = false;
 	m_original_height = 0;
 	m_primaryIDCheck = 0;
+	m_selectedNode = nullptr;
 
 	m_lua = nullptr;
 }
@@ -420,15 +421,11 @@ void NuklearUI::DebugLayout()
 
 void NuklearUI::DebugLayoutLeft(int width)
 {
-	if (nk_group_begin(m_ctx, "Node", 0)) {
-		int i = 0;
-		nk_layout_row_static(m_ctx, 18, width, 1);
-
-		for (i = 0; i < m_vecObject.size(); ++i)
+	if (nk_group_begin(m_ctx, "Node", NK_WINDOW_TITLE)) {
+		for (int i = 0; i < m_vecObject.size(); ++i)
 		{
 			DebugLayoutLeftNodes(m_vecObject.at(i), NK_TREE_TAB, NK_MINIMIZED);
 		}
-
 		//for (i = 0; i < 16; ++i)
 			//nk_selectable_label(m_ctx, (selected[i]) ? "Selected" : "Unselected", NK_TEXT_LEFT, &selected[i]);
 		nk_group_end(m_ctx);
@@ -437,104 +434,117 @@ void NuklearUI::DebugLayoutLeft(int width)
 
 void NuklearUI::DebugLayoutLeftNodes(NKBase* pBase, nk_tree_type nkType, nk_collapse_states nkState)
 {
-	if (nk_tree_push(m_ctx, nkType, pBase->GetPrimaryName(), nkState)) {
-		
-		std::list<NKBase*>* plist = pBase->GetChildList();
-		auto it = plist->begin();
-		for (; it != plist->end(); ++it)
+	if (nk_tree_push_id(m_ctx, nkType, pBase->GetPrimaryName(), nkState, reinterpret_cast<intptr_t>(pBase)))
+	{
+		if (nk_button_label(m_ctx, "Select"))
 		{
-			DebugLayoutLeftNodes(*it, (*it)->GetTreeType(), (*it)->GetCollapseState());
+			SelectNode(pBase);
 		}
+
+		auto childList = pBase->GetChildList();
+		for (auto child = childList->begin(); child != childList->end(); ++child)
+		{
+			if (*child)
+			{
+				DebugLayoutLeftNodes(*child, NK_TREE_NODE, NK_MINIMIZED);
+			}
+		}
+
 		nk_tree_pop(m_ctx);
 	}
 }
 
 void NuklearUI::DebugLayoutRight(int width)
 {
-	if (nk_group_begin(m_ctx, "ObjectInfo", 0)) {
-		if (nk_tree_push(m_ctx, NK_TREE_TAB, "Transform", NK_MINIMIZED)) {
+	if (nk_group_begin(m_ctx, "ObjectInfo", NK_WINDOW_TITLE)) {
 
-			static int PosX=0;
-			static int PosY=0;
-			nk_layout_row_dynamic(m_ctx, 22, 2);
-			nk_property_int(m_ctx, "#X:", 0, &PosX, 1920, 1, 1);
-			nk_property_int(m_ctx, "#Y:", 0, &PosY, 1920, 1, 1);
+		if (m_selectedNode)	{
+			if (nk_tree_push(m_ctx, NK_TREE_TAB, "Transform", NK_MINIMIZED)) {
 
+				struct nk_rect* transform = m_selectedNode->EditTransform();
+				nk_layout_row_dynamic(m_ctx, 22, 2);
+				nk_property_float(m_ctx, "#X:", .0f, &transform->x, 1920.f, 1.f, 1.f);
+				nk_property_float(m_ctx, "#Y:", .0f, &transform->y, 1920.f, 1.f, 1.f);
 
-			static int Width = 0;
-			static int Height = 0;
-			nk_layout_row_dynamic(m_ctx, 22, 2);
-			nk_property_int(m_ctx, "#W:", 0, &Width, 1920, 1, 1);
-			nk_property_int(m_ctx, "#H:", 0, &Height, 1920, 1, 1);
-			nk_tree_pop(m_ctx);
-		}
-		if (nk_tree_push(m_ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "Image", NK_MINIMIZED)) {
-				nk_layout_row_static(m_ctx, 256, 256, 1);
+				nk_layout_row_dynamic(m_ctx, 22, 2);
+				nk_property_float(m_ctx, "#W:", .0f, &transform->w, 1920.f, 1.f, 1.f);
+				nk_property_float(m_ctx, "#H:", .0f, &transform->h, 1920.f, 1.f, 1.f);
 
-				g_img = nk_image_id(0);
-				struct nk_image* tImg = nullptr;
-				tImg = &m_mapImage[0];
-				if (tImg)
-				{
-					g_img = *tImg;
-					nk_image(m_ctx, g_img);
+				nk_tree_pop(m_ctx);
+			}
+			if (nk_tree_push(m_ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "Image", NK_MINIMIZED)) {
+					nk_layout_row_static(m_ctx, 256, 256, 1);
+
+					g_img = nk_image_id(0);
+					struct nk_image* tImg = nullptr;
+					tImg = &m_mapImage[0];
+					if (tImg)
+					{
+						g_img = *tImg;
+						nk_image(m_ctx, g_img);
+					}
+					nk_tree_pop(m_ctx);
 				}
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "text", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "contextual_button", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "menu_button", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "option", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "checkbox", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "selectable", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "slider", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "progress", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "property", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "edit", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "chart", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollh", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollv", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "tab", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "combo", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_NODE, "window", NK_MINIMIZED)) {
-				nk_tree_pop(m_ctx);
-			}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "text", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "contextual_button", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "menu_button", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "option", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "checkbox", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "selectable", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "slider", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "progress", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "property", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "edit", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "chart", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollh", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollv", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "tab", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "combo", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
+				if (nk_tree_push(m_ctx, NK_TREE_NODE, "window", NK_MINIMIZED)) {
+					nk_tree_pop(m_ctx);
+				}
 
-			nk_tree_pop(m_ctx);
+				nk_tree_pop(m_ctx);
+			}
 		}
 		nk_group_end(m_ctx);
 	}
+}
+
+void NuklearUI::SelectNode(NKBase* pBase)
+{
+	m_selectedNode = pBase;
 }
 
 #ifdef _DX9
@@ -1119,6 +1129,71 @@ void NuklearUI::DebugLoadLuaFile(const char* filePath)
 	}
 }
 
+//원래 함수
+//void NuklearUI::RegisterBase()
+//{
+//	luabridge::getGlobalNamespace(m_lua)
+//		.beginClass<NuklearUI>("NuklearUI")
+//		.addFunction("Add", &NuklearUI::Add)
+//		.endClass();
+//
+//	luabridge::push(m_lua, this);
+//	lua_setglobal(m_lua, "system");
+//
+//	luabridge::getGlobalNamespace(m_lua)
+//		.beginClass<NKBase>("NKBase")
+//		.addFunction("SetActive", &NKBase::SetActive)
+//		.addFunction("AddChild", &NKBase::LAddChild)
+//		.addFunction("RemoveChild", &NKBase::LRemoveChild)
+//		.addFunction("SetPivot", &NKBase::SetPivot)
+//		.addFunction("SetPosition", &NKBase::SetPosition)
+//		.addFunction("SetSize", &NKBase::SetSize)
+//		.addFunction("SetBackground", &NKBase::SetBackground)
+//		.addFunction("SetPrimaryName", &NKBase::SetPrimaryName)
+//		.endClass()
+//		.deriveClass<NKWindow, NKBase>("NKWindow")
+//		.endClass()
+//		.deriveClass<NKSpace, NKBase>("NKSpace")
+//		.endClass()
+//		.deriveClass<NKGroup, NKBase>("NKGroup")
+//		.endClass()
+//		.deriveClass<NKPopup, NKBase>("NKPopup")
+//		.endClass()
+//		.deriveClass<NKCombo, NKBase>("NKCombo")
+//		.addFunction("SetComboName", &NKCombo::SetComboName)
+//		.addFunction("SetLabelSize", &NKCombo::SetLabelSize)
+//		.endClass()
+//		.deriveClass<NKComboItem, NKBase>("NKComboItem")
+//		.addFunction("SetComboName", &NKComboItem::SetComboName)
+//		.addFunction("RegistFunction", &NKComboItem::RegistFunction)
+//		.endClass()
+//		.deriveClass<NKButton, NKBase>("NKButton")
+//		.addFunction("SetComboName", &NKButton::SetButtonName)
+//		.addFunction("RegistFunction", &NKButton::RegistFunction)
+//		.endClass()
+//		.deriveClass<NKEdit, NKBase>("NKEdit")
+//		.addFunction("Clear", &NKEdit::Clear)
+//		.addFunction("RegistFunction", &NKEdit::RegistFunction)
+//		.endClass()
+//		.deriveClass<NKImage, NKBase>("NKImage")
+//		.endClass()
+//		.deriveClass<NKLabel, NKBase>("NKLabel")
+//		.endClass()
+//		.beginClass<ObjMaker>("ObjMaker")
+//		.addStaticFunction("createWindow", &ObjMaker::create<NKWindow>)
+//		.addStaticFunction("createSpace", &ObjMaker::create<NKSpace>)
+//		.addStaticFunction("createGroup", &ObjMaker::create<NKGroup>)
+//		.addStaticFunction("createPopup", &ObjMaker::create<NKPopup>)
+//		.addStaticFunction("createCombo", &ObjMaker::create<NKCombo>)
+//		.addStaticFunction("createComboItem", &ObjMaker::create<NKComboItem>)
+//		.addStaticFunction("createButton", &ObjMaker::create<NKButton>)
+//		.addStaticFunction("createEdit", &ObjMaker::create<NKEdit>)
+//		.addStaticFunction("createImage", &ObjMaker::create<NKImage>)
+//		.addStaticFunction("createLabel", &ObjMaker::create<NKLabel>)
+//		.endClass();
+//}
+
+//GPT4o 결과물
 void NuklearUI::RegisterBase()
 {
 	luabridge::getGlobalNamespace(m_lua)
@@ -1157,7 +1232,7 @@ void NuklearUI::RegisterBase()
 		.addFunction("RegistFunction", &NKComboItem::RegistFunction)
 		.endClass()
 		.deriveClass<NKButton, NKBase>("NKButton")
-		.addFunction("SetComboName", &NKButton::SetButtonName)
+		.addFunction("SetButtonName", &NKButton::SetButtonName)
 		.addFunction("RegistFunction", &NKButton::RegistFunction)
 		.endClass()
 		.deriveClass<NKEdit, NKBase>("NKEdit")
@@ -1167,6 +1242,49 @@ void NuklearUI::RegisterBase()
 		.deriveClass<NKImage, NKBase>("NKImage")
 		.endClass()
 		.deriveClass<NKLabel, NKBase>("NKLabel")
+		.endClass()
+		.deriveClass<NKCheckbox, NKBase>("NKCheckbox")
+		.addFunction("SetLabel", &NKCheckbox::SetLabel)
+		.addFunction("SetChecked", &NKCheckbox::SetChecked)
+		.addFunction("IsChecked", &NKCheckbox::IsChecked)
+		.endClass()
+		.deriveClass<NKSlider, NKBase>("NKSlider")
+		.addFunction("SetRange", &NKSlider::SetRange)
+		.addFunction("SetValue", &NKSlider::SetValue)
+		.addFunction("GetValue", &NKSlider::GetValue)
+		.endClass()
+		.deriveClass<NKProgress, NKBase>("NKProgress")
+		.addFunction("SetProgress", &NKProgress::SetProgress)
+		.addFunction("GetProgress", &NKProgress::GetProgress)
+		.endClass()
+		.deriveClass<NKSelectable, NKBase>("NKSelectable")
+		.addFunction("SetLabel", &NKSelectable::SetLabel)
+		.addFunction("SetSelected", &NKSelectable::SetSelected)
+		.addFunction("IsSelected", &NKSelectable::IsSelected)
+		.endClass()
+		.deriveClass<NKTree, NKBase>("NKTree")
+		.addFunction("SetLabel", &NKTree::SetLabel)
+		.addFunction("SetState", &NKTree::SetState)
+		.addFunction("GetState", &NKTree::GetState)
+		.endClass()
+		.deriveClass<NKChart, NKBase>("NKChart")
+		.addFunction("AddValue", &NKChart::AddValue)
+		.addFunction("Clear", &NKChart::Clear)
+		.endClass()
+		.deriveClass<NKColorPicker, NKBase>("NKColorPicker")
+		.addFunction("SetColor", &NKColorPicker::SetColor)
+		.addFunction("GetColor", &NKColorPicker::GetColor)
+		.endClass()
+		.deriveClass<NKTooltip, NKBase>("NKTooltip")
+		.addFunction("SetTooltip", &NKTooltip::SetTooltip)
+		.endClass()
+		.deriveClass<NKMenu, NKBase>("NKMenu")
+		.addFunction("SetLabel", &NKMenu::SetLabel)
+		.addFunction("AddMenuItem", &NKMenu::AddMenuItem)
+		.endClass()
+		.deriveClass<NKScrollbar, NKBase>("NKScrollbar")
+		.addFunction("SetScroll", &NKScrollbar::SetScroll)
+		.addFunction("GetScroll", &NKScrollbar::GetScroll)
 		.endClass()
 		.beginClass<ObjMaker>("ObjMaker")
 		.addStaticFunction("createWindow", &ObjMaker::create<NKWindow>)
@@ -1179,5 +1297,15 @@ void NuklearUI::RegisterBase()
 		.addStaticFunction("createEdit", &ObjMaker::create<NKEdit>)
 		.addStaticFunction("createImage", &ObjMaker::create<NKImage>)
 		.addStaticFunction("createLabel", &ObjMaker::create<NKLabel>)
+		.addStaticFunction("createCheckbox", &ObjMaker::create<NKCheckbox>)
+		.addStaticFunction("createSlider", &ObjMaker::create<NKSlider>)
+		.addStaticFunction("createProgress", &ObjMaker::create<NKProgress>)
+		.addStaticFunction("createSelectable", &ObjMaker::create<NKSelectable>)
+		.addStaticFunction("createTree", &ObjMaker::create<NKTree>)
+		.addStaticFunction("createChart", &ObjMaker::create<NKChart>)
+		.addStaticFunction("createColorPicker", &ObjMaker::create<NKColorPicker>)
+		.addStaticFunction("createTooltip", &ObjMaker::create<NKTooltip>)
+		.addStaticFunction("createMenu", &ObjMaker::create<NKMenu>)
+		.addStaticFunction("createScrollbar", &ObjMaker::create<NKScrollbar>)
 		.endClass();
 }

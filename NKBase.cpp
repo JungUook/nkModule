@@ -25,10 +25,6 @@ NKBase::NKBase()
 	m_primaryID = 0;
 	m_nkIndex = 0;
 	memset(m_primaryName, 0, sizeof(m_primaryName));
-
-	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
 }
 
 NKBase::~NKBase()
@@ -55,6 +51,10 @@ void NKBase::Initialize(NuklearUI* pManager)
 	m_ctx = m_manager->GetContext();
 	m_style = m_ctx->style;
 	m_font = m_manager->GetFont();
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 void NKBase::Initialize(NKBase* pParent)
@@ -65,6 +65,10 @@ void NKBase::Initialize(NKBase* pParent)
 	m_ctx = m_pParent->m_ctx;
 	m_font = m_pParent->m_font;
 	m_style = m_pParent->m_style;
+
+	std::string className = getClassName().c_str();
+	m_cName = className.c_str();
+	strcpy_s(m_primaryName, m_cName);
 }
 
 void NKBase::Update(nk_context* ctx)
@@ -324,4 +328,19 @@ void NKBase::SetPrimaryName(const char* name)
 void NKBase::SetNuklearIndex(int index)
 {
 	m_nkIndex = index;
+}
+
+struct nk_vec2* NKBase::EditPivot()
+{
+	return &m_pivot;
+}
+
+struct nk_rect* NKBase::EditTransform()
+{
+	return &m_worldTransform;
+}
+
+nk_bool* NKBase::EditSelected()
+{
+	return &m_selected;
 }

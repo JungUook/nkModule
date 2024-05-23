@@ -13,10 +13,6 @@ NKLabel::NKLabel()
 	m_worldTransform.y = 50.f;
 	m_worldTransform.w = 150.f;
 	m_worldTransform.h = 60.f;
-
-	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
 }
 
 NKLabel::~NKLabel()

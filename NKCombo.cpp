@@ -17,10 +17,6 @@ NKCombo::NKCombo()
 	m_currentLabel = 0;
 
 	memset(m_content, 0, sizeof(m_content));
-
-	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
 }
 
 NKCombo::~NKCombo()

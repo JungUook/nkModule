@@ -47,17 +47,28 @@
     }
 #endif // _DEBUG
 enum eTypeUI {
-	eBASE = -1,
-	eWINDOW = 0,
-	eSPACE = 1,
-	eGROUP = 2,
-	ePOPUP = 3,
-	eCOMBO = 4,
-	eBUTTON = 5,
-	eEDIT = 6,
-	eIMAGE = 7,
-	eLABEL = 8,
-	eCOMBO_ITEM = 9,
+	eBASE = -1
+
+	, eWINDOW = 0
+	, eSPACE
+	, eGROUP
+	, ePOPUP
+	, eCOMBO
+	, eBUTTON
+	, eEDIT
+	, eIMAGE
+	, eLABEL
+	, eCOMBO_ITEM
+	, eCHECKBOX
+	, eSLIDER
+	, ePROGRESS
+	, eSELECTABLE
+	, eTREE
+	, eCHART
+	, eCOLOR_PICKER
+	, eTOOLTIP
+	, eMENU
+	, eSCROLLBAR
 };
 
 class NuklearUI;
@@ -127,6 +138,10 @@ public:
 	virtual nk_tree_type GetTreeType() { return m_nkType; }
 	virtual nk_collapse_states GetCollapseState() { return m_nkState; }
 
+	virtual struct nk_vec2* EditPivot();
+	virtual struct nk_rect* EditTransform();
+	virtual nk_bool* EditSelected();
+
 protected:
 	NuklearUI* m_manager;
 	const char* m_cName;
@@ -152,6 +167,7 @@ protected:
 
 	nk_tree_type m_nkType;
 	nk_collapse_states m_nkState;
+	nk_bool m_selected;
 
 #pragma region Style Setup	
 public:

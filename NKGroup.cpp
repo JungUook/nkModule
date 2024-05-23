@@ -10,10 +10,6 @@ NKGroup::NKGroup()
 	m_ratio			= nullptr;
 	m_type			= eGROUP;
 	m_flags			= 0;
-
-	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
 }
 
 NKGroup::~NKGroup()

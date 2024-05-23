@@ -81,6 +81,36 @@
     <ClInclude Include="sprLoader.h">
       <Filter>소스 파일\etc</Filter>
     </ClInclude>
+    <ClInclude Include="NKCheckbox.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKSlider.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKProgress.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKSelectable.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKTree.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKChart.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKColorPicker.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKTooltip.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKMenu.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKScrollbar.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -130,6 +160,36 @@
     </ClCompile>
     <ClCompile Include="sprLoader.cpp">
       <Filter>소스 파일\etc</Filter>
+    </ClCompile>
+    <ClCompile Include="NKCheckbox.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKSlider.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKProgress.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKSelectable.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKTree.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKChart.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKColorPicker.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKTooltip.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKMenu.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKScrollbar.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@
 NKWindow::NKWindow()
 {
 	m_type = eWINDOW;
-	m_flags = NK_WINDOW_TITLE | NK_WINDOW_MOVABLE;
+	m_flags = NK_WINDOW_TITLE;
 
 	m_pivot.x = 0.f;
 	m_pivot.y = 0.f;
