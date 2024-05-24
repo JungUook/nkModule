@@ -163,6 +163,7 @@ private:
     IDirectDrawSurface7* m_pSurface;
     cltTSpr* m_pSpr;
     void Init(IDirectDraw7* pDD);
+    void ExtractColorsFromRGB565(unsigned short rgb16Color, unsigned char& red, unsigned char& green, unsigned char& blue);
 };
 
 class sprLoader

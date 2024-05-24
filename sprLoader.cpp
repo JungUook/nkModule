@@ -16,15 +16,7 @@ void sprData::Init(IDirectDraw7* pDD)
     int _colSize = m_pSpr->GetXSize();
     int _rowSize = m_pSpr->GetYSize();
 
-
-
     DDSURFACEDESC2 ddsd;
-    //ZeroMemory(&ddsd, sizeof(ddsd));
-    //ddsd.dwSize = sizeof(ddsd);
-    //ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-    //ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
-    //ddsd.dwWidth = drawHres;
-    //ddsd.dwHeight = drawVres;
 	   
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
@@ -48,7 +40,8 @@ void sprData::Init(IDirectDraw7* pDD)
     hr = pSurface->Lock(nullptr, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, nullptr);
     assert(SUCCEEDED(hr));
 
-    int pitch = ddsd.lPitch / 4;
+    int pitch = ddsd.lPitch / 4; // 32비트 컬러에서는 한 픽셀이 4바이트
+
     DWORD* pBuffer = (DWORD*)ddsd.lpSurface;
 
 	for (int _row = 0; _row < _rowEnd; ++_row)
@@ -62,14 +55,14 @@ void sprData::Init(IDirectDraw7* pDD)
 				int j = 0;
 				while (j < _colSize)
 				{
-					unsigned short rgb16Color = m_pSpr->pal[*pSrc];
+					unsigned short rgb16Color = m_pSpr->pal[*pSrc];                    
+                    unsigned char red, green, blue, alpha;
+                    unsigned short red5, green6, blue5;
+                    DWORD color;
 
-					unsigned char blue = static_cast<unsigned char>((rgb16Color >> 11) & 0x1F) << 3;
-					unsigned char green = static_cast<unsigned char>((rgb16Color >> 5) & 0x3F) << 2;
-					unsigned char red = static_cast<unsigned char>((rgb16Color) & 0x1F) << 3;
-					unsigned char alpha = (*pSrc == COLOR_TRANS) ? 0 : 255; // Set alpha to 0 for transparent pixels
-
-					DWORD color = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                    ExtractColorsFromRGB565(rgb16Color, red, green, blue);
+                    alpha = (rgb16Color == COLOR_TRANS) ? 0 : 255; // Set alpha to 0 for transparent pixels
+                    color = (alpha << 24) | (blue << 16) | (green << 8) | red; // RGBA8888 포맷
 
 					if (*pSrc == COLOR_TRANS)
 					{
@@ -97,6 +90,17 @@ void sprData::Init(IDirectDraw7* pDD)
     assert(SUCCEEDED(hr));
 
     m_pSurface = pSurface;
+}
+
+void sprData::ExtractColorsFromRGB565(unsigned short rgb16Color, unsigned char& red, unsigned char& green, unsigned char& blue)
+{
+    unsigned char blue5 = (rgb16Color >> 11) & 0x1F; // 상위 5비트 (Blue)
+    unsigned char green6 = (rgb16Color >> 5) & 0x3F; // 중간 6비트 (Green)
+    unsigned char red5 = rgb16Color & 0x1F; // 하위 5비트 (Red)
+
+    blue = (blue5 << 3) | (blue5 >> 2);
+    green = (green6 << 2) | (green6 >> 4);
+    red = (red5 << 3) | (red5 >> 2);
 }
 
 

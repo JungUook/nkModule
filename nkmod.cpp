@@ -217,12 +217,12 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
 void LoadSprFile(const char* filename)
 {
     sprData* pData = g_sprLoader->LoadSprite(filename);
-    g_nuklear->LoadSpriteData(pData->GetSurface()
-        , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres()
-        , pData->GetSpr()->GetXSize(), pData->GetSpr()->GetYSize()
-        , pData->GetSpr()->GetXCount(), pData->GetSpr()->GetYCount());
     //g_nuklear->LoadSpriteData(pData->GetSurface()
-    //    , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres());
+    //    , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres()
+    //    , pData->GetSpr()->GetXSize(), pData->GetSpr()->GetYSize()
+    //    , pData->GetSpr()->GetXCount(), pData->GetSpr()->GetYCount());
+    g_nuklear->LoadSpriteData(pData->GetSurface()
+        , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres());
 }
 #endif
 void LoadLuaFile(const char* filePath)
@@ -236,11 +236,12 @@ void Release()
     if (g_nuklear != nullptr)
         delete g_nuklear;
     g_nuklear = nullptr;
-
+#ifdef _DX7
     g_sprLoader->Release();
     if (g_sprLoader != nullptr)
         delete g_sprLoader;
     g_sprLoader = nullptr;
+#endif
 }
 
 void NKInputBegin()

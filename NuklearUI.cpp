@@ -473,19 +473,6 @@ void NuklearUI::DebugLayoutRight(int width)
 				nk_tree_pop(m_ctx);
 			}
 			if (nk_tree_push(m_ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "Image", NK_MINIMIZED)) {
-					nk_layout_row_static(m_ctx, 256, 256, 1);
-
-					g_img = nk_image_id(0);
-					struct nk_image* tImg = nullptr;
-					tImg = &m_mapImage[0];
-					if (tImg)
-					{
-						g_img = *tImg;
-						nk_image(m_ctx, g_img);
-					}
-					nk_tree_pop(m_ctx);
-				}
 				if (nk_tree_push(m_ctx, NK_TREE_NODE, "text", NK_MINIMIZED)) {
 					nk_tree_pop(m_ctx);
 				}
@@ -736,9 +723,9 @@ bool NuklearUI::LoadSpriteData(IDirectDrawSurface7* sprite, int width, int heigh
 	int index = 0;
 	if (sliceSizeX && sliceSizeY && countX && countY)
 	{
-		for (int x = 0; x < countX; ++x)
+		for (int y = 0; y < countY; ++y)
 		{
-			for (int y = 0; y < countY; ++y)
+			for (int x = 0; x < countX; ++x)
 			{
 				uint16_t region[4];
 				region[0] = sliceSizeX * x;
@@ -1218,6 +1205,7 @@ void NuklearUI::RegisterBase()
 		.deriveClass<NKWindow, NKBase>("NKWindow")
 		.endClass()
 		.deriveClass<NKSpace, NKBase>("NKSpace")
+		.addFunction("SetLayout", &NKSpace::SetLayout)
 		.endClass()
 		.deriveClass<NKGroup, NKBase>("NKGroup")
 		.endClass()
@@ -1240,6 +1228,7 @@ void NuklearUI::RegisterBase()
 		.addFunction("RegistFunction", &NKEdit::RegistFunction)
 		.endClass()
 		.deriveClass<NKImage, NKBase>("NKImage")
+		.addFunction("SetImage", &NKImage::SetImage)
 		.endClass()
 		.deriveClass<NKLabel, NKBase>("NKLabel")
 		.endClass()

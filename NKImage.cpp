@@ -22,3 +22,8 @@ void NKImage::Layout(nk_context* ctx)
 {
 	nk_image(ctx, m_image);
 }
+
+void NKImage::SetImage(int SID)
+{
+	m_image = *m_manager->SearchImage(SID);
+}

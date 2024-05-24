@@ -11,6 +11,7 @@ public:
 public:
 	void Layout(nk_context* ctx) override;
 
+	void SetImage(int SID);
 public:
 	struct nk_image m_image;
 };
