@@ -14,7 +14,6 @@ public:
 	void SetLayout(int type);
 public:
 	nk_layout_format m_layoutFormat;
-	int m_height;
 	int m_widgetCount;
 };
 

@@ -4,7 +4,6 @@
 NKSpace::NKSpace()
 {
 	m_layoutFormat	= NK_STATIC;
-	m_height		= 60;
 	m_widgetCount	= 0;
 	m_type			= eSPACE;
 
@@ -23,7 +22,7 @@ void NKSpace::Layout(nk_context* ctx)
 
 	if (m_layoutFormat == NK_STATIC)
 	{
-		nk_layout_space_begin(ctx, m_layoutFormat, m_height, m_widgetCount);
+		nk_layout_space_begin(ctx, m_layoutFormat, m_worldTransform.h, m_widgetCount);
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
 			nk_layout_space_push(ctx, (*it)->GetTransform());
@@ -33,7 +32,7 @@ void NKSpace::Layout(nk_context* ctx)
 	}
 	else
 	{
-		nk_layout_row_dynamic(ctx, m_height, m_widgetCount);
+		nk_layout_row_dynamic(ctx, m_worldTransform.h, m_widgetCount);
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
 			nk_layout_space_push(ctx, (*it)->GetTransform());

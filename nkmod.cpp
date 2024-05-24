@@ -217,12 +217,10 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
 void LoadSprFile(const char* filename)
 {
     sprData* pData = g_sprLoader->LoadSprite(filename);
-    //g_nuklear->LoadSpriteData(pData->GetSurface()
-    //    , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres()
-    //    , pData->GetSpr()->GetXSize(), pData->GetSpr()->GetYSize()
-    //    , pData->GetSpr()->GetXCount(), pData->GetSpr()->GetYCount());
     g_nuklear->LoadSpriteData(pData->GetSurface()
-        , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres());
+        , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres()
+        , pData->GetSpr()->GetXSize(), pData->GetSpr()->GetYSize()
+        , pData->GetSpr()->GetXCount(), pData->GetSpr()->GetYCount());
 }
 #endif
 void LoadLuaFile(const char* filePath)

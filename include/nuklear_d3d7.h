@@ -345,9 +345,6 @@ nk_d3d7_render(enum nk_anti_aliasing AA) {
 
     nk_d3d7_create_state();
 
-    //hr = d3d7.device->SetTexture(0, d3d7.font_texture);
-    //if (FAILED(hr)) return;
-
     struct nk_buffer vbuf, ebuf;
     const struct nk_draw_command* cmd;
     const nk_draw_index* offset = NULL;

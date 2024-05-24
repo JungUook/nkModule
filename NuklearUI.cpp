@@ -730,8 +730,8 @@ bool NuklearUI::LoadSpriteData(IDirectDrawSurface7* sprite, int width, int heigh
 				uint16_t region[4];
 				region[0] = sliceSizeX * x;
 				region[1] = sliceSizeY * y;
-				region[2] = sliceSizeX * (x + 1);
-				region[3] = sliceSizeY * (y + 1);
+				region[2] = sliceSizeX;
+				region[3] = sliceSizeY;
 				AddImage(index++, sprite, width, height, region);
 			}
 		}
