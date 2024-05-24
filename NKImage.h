@@ -13,7 +13,7 @@ public:
 
 	void SetImage(int SID);
 public:
-	struct nk_image m_image;
+	struct nk_image* m_image;
 };
 
 

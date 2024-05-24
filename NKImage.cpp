@@ -4,7 +4,7 @@
 NKImage::NKImage()
 {
 	m_type = eIMAGE;
-	memset(&m_image, 0, sizeof(m_image));
+	m_image = nullptr;
 
 	m_pivot.x = 0.f;
 	m_pivot.y = 0.f;
@@ -20,10 +20,11 @@ NKImage::~NKImage()
 
 void NKImage::Layout(nk_context* ctx)
 {
-	nk_image(ctx, m_image);
+	if(m_image)
+		nk_image(ctx, *m_image);
 }
 
 void NKImage::SetImage(int SID)
 {
-	m_image = *m_manager->SearchImage(SID);
+	m_image = m_manager->SearchImage(SID);
 }

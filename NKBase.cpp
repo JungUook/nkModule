@@ -211,19 +211,14 @@ void NKBase::SetPivot(float x, float y)
 		y = 1.f;
 	}
 
-	m_position.x = m_worldTransform.x - (beforePivot.x * m_worldTransform.w);
-	m_position.y = m_worldTransform.y - (beforePivot.y * m_worldTransform.h);
-
 	m_pivot.x = x;
 	m_pivot.y = y;
 }
 
 void NKBase::SetPosition(float x, float y)
 {
-	m_position.x = x;
-	m_position.y = y;
-	m_worldTransform.x = m_position.x + (m_pivot.x * m_worldTransform.w);
-	m_worldTransform.y = m_position.y + (m_pivot.y * m_worldTransform.h);
+	m_worldTransform.x = m_pivot.x * m_worldTransform.w + x;
+	m_worldTransform.y = m_pivot.y * m_worldTransform.h + y;
 }
 
 void NKBase::SetSize(float width, float heigth)
@@ -335,7 +330,6 @@ void NKBase::LayoutEditor()
 		nk_layout_row_dynamic(m_ctx, 22, 2);
 		nk_property_float(m_ctx, "#X:", .0f, &m_pivot.x, 1.f, 0.01f, 0.01f);
 		nk_property_float(m_ctx, "#Y:", .0f, &m_pivot.y, 1.f, 0.01f, 0.01f);
-		SetPivot(m_pivot.x, m_pivot.y);
 
 		nk_label(m_ctx, "Position", NK_TEXT_LEFT);
 		nk_layout_row_dynamic(m_ctx, 22, 2);
