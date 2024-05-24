@@ -165,6 +165,7 @@ protected:
 
 	eTypeUI m_type;
 	struct nk_vec2 m_pivot;
+	struct nk_vec2 m_position;
 	struct nk_rect m_worldTransform;
 
 	bool m_bActive;

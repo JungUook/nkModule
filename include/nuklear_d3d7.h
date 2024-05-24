@@ -486,8 +486,8 @@ nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     pt.y = HIWORD(lparam);
     ClientToScreen(hwnd, &pt);
 
-    //pt.x -= rect.left;
-    //pt.y -= rect.top;
+    pt.x -= rect.left;
+    pt.y -= rect.top;
 
     switch (msg)
     {

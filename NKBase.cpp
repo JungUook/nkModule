@@ -16,6 +16,8 @@ NKBase::NKBase()
 	m_worldTransform.y = 0.f;
 	m_worldTransform.w = 0.f;
 	m_worldTransform.h = 0.f;
+	m_position.x = 0.f;
+	m_position.y = 0.f;
 	m_type = eBASE;
 	m_flags = 0;
 	m_bActive = true;
@@ -193,6 +195,8 @@ void NKBase::LRemoveChild(luabridge::LuaRef ref)
 
 void NKBase::SetPivot(float x, float y)
 {
+	struct nk_vec2 beforePivot = m_pivot;
+
 	if (x < 0.f) {
 		x = 0.f;
 	}
@@ -207,14 +211,19 @@ void NKBase::SetPivot(float x, float y)
 		y = 1.f;
 	}
 
+	m_position.x = m_worldTransform.x - (beforePivot.x * m_worldTransform.w);
+	m_position.y = m_worldTransform.y - (beforePivot.y * m_worldTransform.h);
+
 	m_pivot.x = x;
 	m_pivot.y = y;
 }
 
 void NKBase::SetPosition(float x, float y)
 {
-	m_worldTransform.x = x + (m_pivot.x * m_worldTransform.w);
-	m_worldTransform.y = y + (m_pivot.y * m_worldTransform.h);
+	m_position.x = x;
+	m_position.y = y;
+	m_worldTransform.x = m_position.x + (m_pivot.x * m_worldTransform.w);
+	m_worldTransform.y = m_position.y + (m_pivot.y * m_worldTransform.h);
 }
 
 void NKBase::SetSize(float width, float heigth)
@@ -240,10 +249,9 @@ struct nk_vec2 NKBase::GetPivot()
 
 struct nk_vec2 NKBase::GetPosition()
 {
-	struct nk_vec2 position;
-	position.x = m_worldTransform.x + (m_pivot.x * m_worldTransform.w);
-	position.y = m_worldTransform.y + (m_pivot.y * m_worldTransform.h);
-	return position;
+	m_position.x = m_worldTransform.x + (m_pivot.x * m_worldTransform.w);
+	m_position.y = m_worldTransform.y + (m_pivot.y * m_worldTransform.h);
+	return m_position;
 }
 
 struct nk_rect NKBase::GetTransform()
@@ -327,16 +335,20 @@ void NKBase::LayoutEditor()
 		nk_layout_row_dynamic(m_ctx, 22, 2);
 		nk_property_float(m_ctx, "#X:", .0f, &m_pivot.x, 1.f, 0.01f, 0.01f);
 		nk_property_float(m_ctx, "#Y:", .0f, &m_pivot.y, 1.f, 0.01f, 0.01f);
+		SetPivot(m_pivot.x, m_pivot.y);
 
 		nk_label(m_ctx, "Position", NK_TEXT_LEFT);
 		nk_layout_row_dynamic(m_ctx, 22, 2);
-		nk_property_float(m_ctx, "#X:", .0f, &m_worldTransform.x, 1920.f, 1.f, 1.f);
-		nk_property_float(m_ctx, "#Y:", .0f, &m_worldTransform.y, 1920.f, 1.f, 1.f);
+		nk_property_float(m_ctx, "#X:", -1920.f, &m_position.x, 1920.f, 1.f, 1.f);
+		nk_property_float(m_ctx, "#Y:", -1920.f, &m_position.y, 1920.f, 1.f, 1.f);
+		SetPosition(m_position.x, m_position.y);
 
 		nk_label(m_ctx, "Rect", NK_TEXT_LEFT);
 		nk_layout_row_dynamic(m_ctx, 22, 2);
 		nk_property_float(m_ctx, "#W:", .0f, &m_worldTransform.w, 1920.f, 1.f, 1.f);
 		nk_property_float(m_ctx, "#H:", .0f, &m_worldTransform.h, 1920.f, 1.f, 1.f);
+
+
 
 		nk_tree_pop(m_ctx);
 	}
