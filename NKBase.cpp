@@ -25,6 +25,7 @@ NKBase::NKBase()
 	m_primaryID = 0;
 	m_nkIndex = 0;
 	memset(m_primaryName, 0, sizeof(m_primaryName));
+	memset(m_editName, 0, sizeof(m_editName));
 }
 
 NKBase::~NKBase()
@@ -49,12 +50,13 @@ void NKBase::Initialize(NuklearUI* pManager)
 	CHECK_PTR(pManager);
 	m_manager = pManager;
 	m_ctx = m_manager->GetContext();
-	m_style = m_ctx->style;
 	m_font = m_manager->GetFont();
+	m_style = m_ctx->style;
 
 	std::string className = getClassName().c_str();
 	m_cName = className.c_str();
 	strcpy_s(m_primaryName, m_cName);
+	strcpy_s(m_baseName, m_cName);
 }
 
 void NKBase::Initialize(NKBase* pParent)
@@ -69,6 +71,7 @@ void NKBase::Initialize(NKBase* pParent)
 	std::string className = getClassName().c_str();
 	m_cName = className.c_str();
 	strcpy_s(m_primaryName, m_cName);
+	strcpy_s(m_baseName, m_cName);
 }
 
 void NKBase::Update(nk_context* ctx)
@@ -162,35 +165,6 @@ void NKBase::AddChild(NKBase* nkBase)
 {
 	CHECK_PTR(nkBase);
 	nkBase->Initialize(this);
-
-
-	char primaryName[256] = { 0, };
-	strcpy_s(primaryName, nkBase->GetPrimaryName());
-	int idx = 1;
-	while (true)
-	{
-		bool bFound = false;
-		auto it = m_pChildList.begin();
-		for (; it != m_pChildList.end(); ++it)
-		{
-			if (strcmp(primaryName, (*it)->GetPrimaryName()) == 0) {
-				bFound = true;
-				break;
-			}
-			else {
-				bFound = false;
-			}
-		}
-
-		if (!bFound) {
-			nkBase->SetPrimaryName(primaryName);
-			break;
-		}
-		else {
-			sprintf_s(primaryName, "%s%d", nkBase->GetPrimaryName(), idx++);
-		}
-	}
-
 	m_manager->Add(nkBase);
 	m_pChildList.push_back(nkBase);
 }
@@ -330,6 +304,60 @@ void NKBase::SetNuklearIndex(int index)
 	m_nkIndex = index;
 }
 
+void NKBase::LayoutEditor()
+{
+	if (nk_tree_push(m_ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
+
+		float ratio[2];
+		ratio[0] = 0.3f;
+		ratio[1] = 0.7f;
+		nk_layout_row(m_ctx, NK_DYNAMIC, 44, 2, ratio);
+		nk_label(m_ctx, "Name", NK_TEXT_LEFT);
+		nk_flags result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_editName, &m_editName_len, 64, nk_filter_default);
+
+		if (result & NK_EDIT_COMMITED)
+		{
+			EditBaseName(m_editName);
+		}
+		nk_tree_pop(m_ctx);		
+	}
+	if (nk_tree_push(m_ctx, NK_TREE_TAB, "Transform", NK_MINIMIZED)) {
+
+		nk_label(m_ctx, "Pivot", NK_TEXT_LEFT);
+		nk_layout_row_dynamic(m_ctx, 22, 2);
+		nk_property_float(m_ctx, "#X:", .0f, &m_pivot.x, 1.f, 0.01f, 0.01f);
+		nk_property_float(m_ctx, "#Y:", .0f, &m_pivot.y, 1.f, 0.01f, 0.01f);
+
+		nk_label(m_ctx, "Position", NK_TEXT_LEFT);
+		nk_layout_row_dynamic(m_ctx, 22, 2);
+		nk_property_float(m_ctx, "#X:", .0f, &m_worldTransform.x, 1920.f, 1.f, 1.f);
+		nk_property_float(m_ctx, "#Y:", .0f, &m_worldTransform.y, 1920.f, 1.f, 1.f);
+
+		nk_label(m_ctx, "Rect", NK_TEXT_LEFT);
+		nk_layout_row_dynamic(m_ctx, 22, 2);
+		nk_property_float(m_ctx, "#W:", .0f, &m_worldTransform.w, 1920.f, 1.f, 1.f);
+		nk_property_float(m_ctx, "#H:", .0f, &m_worldTransform.h, 1920.f, 1.f, 1.f);
+
+		nk_tree_pop(m_ctx);
+	}
+
+	EditInfo();
+}
+
+void NKBase::EditInfo()
+{
+}
+
+nk_tree_type NKBase::GetTreeType()
+{
+	return m_nkType;
+}
+
+nk_collapse_states NKBase::GetCollapseState()
+{
+	return m_nkState;
+}
+
 struct nk_vec2* NKBase::EditPivot()
 {
 	return &m_pivot;
@@ -343,4 +371,15 @@ struct nk_rect* NKBase::EditTransform()
 nk_bool* NKBase::EditSelected()
 {
 	return &m_selected;
+}
+
+void NKBase::EditBaseName(const char* name)
+{
+	memset(m_baseName, 0, sizeof(m_baseName));
+	strcpy_s(m_baseName, name);
+}
+
+const char* NKBase::GetBaseName()
+{
+	return m_baseName;
 }

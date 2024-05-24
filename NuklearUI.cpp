@@ -434,7 +434,7 @@ void NuklearUI::DebugLayoutLeft(int width)
 
 void NuklearUI::DebugLayoutLeftNodes(NKBase* pBase, nk_tree_type nkType, nk_collapse_states nkState)
 {
-	if (nk_tree_push_id(m_ctx, nkType, pBase->GetPrimaryName(), nkState, reinterpret_cast<intptr_t>(pBase)))
+	if (nk_tree_push_id(m_ctx, nkType, pBase->GetBaseName(), nkState, reinterpret_cast<intptr_t>(pBase)))
 	{
 		if (nk_button_label(m_ctx, "Select"))
 		{
@@ -456,74 +456,64 @@ void NuklearUI::DebugLayoutLeftNodes(NKBase* pBase, nk_tree_type nkType, nk_coll
 
 void NuklearUI::DebugLayoutRight(int width)
 {
-	if (nk_group_begin(m_ctx, "ObjectInfo", NK_WINDOW_TITLE)) {
+	const char* ObjectInfo = m_selectedNode ? m_selectedNode->GetBaseName() : "ObjectInfo";
+	if (nk_group_begin(m_ctx, ObjectInfo, NK_WINDOW_TITLE)) {
 
 		if (m_selectedNode)	{
-			if (nk_tree_push(m_ctx, NK_TREE_TAB, "Transform", NK_MINIMIZED)) {
+			m_selectedNode->LayoutEditor();
+			
+			//if (nk_tree_push(m_ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "text", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "contextual_button", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "menu_button", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "option", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "checkbox", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "selectable", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "slider", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "progress", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "property", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "edit", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "chart", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollh", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollv", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "tab", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "combo", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
+			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "window", NK_MINIMIZED)) {
+			//		nk_tree_pop(m_ctx);
+			//	}
 
-				struct nk_rect* transform = m_selectedNode->EditTransform();
-				nk_layout_row_dynamic(m_ctx, 22, 2);
-				nk_property_float(m_ctx, "#X:", .0f, &transform->x, 1920.f, 1.f, 1.f);
-				nk_property_float(m_ctx, "#Y:", .0f, &transform->y, 1920.f, 1.f, 1.f);
-
-				nk_layout_row_dynamic(m_ctx, 22, 2);
-				nk_property_float(m_ctx, "#W:", .0f, &transform->w, 1920.f, 1.f, 1.f);
-				nk_property_float(m_ctx, "#H:", .0f, &transform->h, 1920.f, 1.f, 1.f);
-
-				nk_tree_pop(m_ctx);
-			}
-			if (nk_tree_push(m_ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "text", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "contextual_button", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "menu_button", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "option", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "checkbox", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "selectable", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "slider", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "progress", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "property", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "edit", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "chart", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollh", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollv", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "tab", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "combo", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-				if (nk_tree_push(m_ctx, NK_TREE_NODE, "window", NK_MINIMIZED)) {
-					nk_tree_pop(m_ctx);
-				}
-
-				nk_tree_pop(m_ctx);
-			}
+			//	nk_tree_pop(m_ctx);
+			//}
 		}
 		nk_group_end(m_ctx);
 	}
@@ -791,10 +781,8 @@ bool NuklearUI::ReadImageFile(const char* filename, IDirectDrawSurface7** pTextu
 	return true;
 }
 #endif
-void NuklearUI::Add(NKBase* type)
+void NuklearUI::SetPrimary(NKBase* pBase)
 {
-	NKBase* base = type;
-	base->Initialize(this);
 	while (true)
 	{
 		std::map<unsigned int, NKBase*>::iterator it = m_mapModuleID.find(++m_primaryIDCheck);
@@ -808,33 +796,29 @@ void NuklearUI::Add(NKBase* type)
 		}
 	}
 
-	base->SetPrimaryID(m_primaryIDCheck++);
+	pBase->SetPrimaryID(m_primaryIDCheck++);
 	if (m_primaryIDCheck == 4294967295)
 	{
 		m_primaryIDCheck = 0;
 	}
-	base->SetNuklearIndex(m_vecModule.size());
-
+	pBase->SetNuklearIndex(m_vecModule.size());
 
 	char primaryName[256] = { 0, };
-	strcpy_s(primaryName, base->GetPrimaryName());
-	int idx = 1;
-	while (true)
-	{
-		auto it = m_mapModuleName.find(primaryName);
-		if (it != m_mapModuleName.end()) {
-			sprintf_s(primaryName, "%s%d", base->GetPrimaryName(), idx++);
-		}
-		else {
-			base->SetPrimaryName(primaryName);
-			break;
-		}
-	}
-
+	sprintf_s(primaryName, "%s%ld", pBase->GetPrimaryName(), m_primaryIDCheck);
+	pBase->SetPrimaryName(primaryName);
+}
+void NuklearUI::Add(NKBase* type)
+{
+	NKBase* base = type;
+	
 	if (base->GetType() == eWINDOW)
 	{
+		base->Initialize(this);
 		m_vecObject.push_back(base);
 	}
+
+	SetPrimary(base);
+
 	m_vecModule.push_back(base);
 	m_mapModuleID.insert(std::make_pair(base->GetPrimaryID(), base));
 	m_mapModuleName.insert(std::make_pair(base->GetPrimaryName(), base));
@@ -1206,6 +1190,7 @@ void NuklearUI::RegisterBase()
 		.endClass()
 		.deriveClass<NKSpace, NKBase>("NKSpace")
 		.addFunction("SetLayout", &NKSpace::SetLayout)
+		.addFunction("SetCols", &NKSpace::SetCols)
 		.endClass()
 		.deriveClass<NKGroup, NKBase>("NKGroup")
 		.endClass()

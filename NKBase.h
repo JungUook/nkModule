@@ -135,12 +135,16 @@ public:
 
 	// ui 편집용 함수
 public:
-	virtual nk_tree_type GetTreeType() { return m_nkType; }
-	virtual nk_collapse_states GetCollapseState() { return m_nkState; }
+	virtual void LayoutEditor();
+	virtual void EditInfo();
+	virtual nk_tree_type GetTreeType(); 
+	virtual nk_collapse_states GetCollapseState();
 
 	virtual struct nk_vec2* EditPivot();
 	virtual struct nk_rect* EditTransform();
 	virtual nk_bool* EditSelected();
+	virtual void EditBaseName(const char* name);
+	virtual const char* GetBaseName();
 
 protected:
 	NuklearUI* m_manager;
@@ -148,6 +152,11 @@ protected:
 
 	unsigned int m_primaryID;
 	char m_primaryName[64];
+
+	char m_baseName[64];
+	char m_editName[64];
+	int m_editName_len;
+
 	int m_nkIndex;
 	nk_flags m_flags;
 

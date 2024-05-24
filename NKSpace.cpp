@@ -6,10 +6,7 @@ NKSpace::NKSpace()
 	m_layoutFormat	= NK_STATIC;
 	m_widgetCount	= 0;
 	m_type			= eSPACE;
-
-	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
+	m_dynamicCount	= 1;
 }
 
 NKSpace::~NKSpace()
@@ -32,7 +29,7 @@ void NKSpace::Layout(nk_context* ctx)
 	}
 	else
 	{
-		nk_layout_row_dynamic(ctx, m_worldTransform.h, m_widgetCount);
+		nk_layout_row_dynamic(ctx, m_worldTransform.h, m_dynamicCount);
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
 			nk_layout_space_push(ctx, (*it)->GetTransform());
@@ -44,4 +41,9 @@ void NKSpace::Layout(nk_context* ctx)
 void NKSpace::SetLayout(int type)
 {
 	m_layoutFormat = (nk_layout_format)type;
+}
+
+void NKSpace::SetCols(int cols)
+{
+	m_dynamicCount = cols;
 }

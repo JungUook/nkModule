@@ -21,7 +21,7 @@ NKPopup::~NKPopup()
 
 void NKPopup::Layout(nk_context* ctx)
 {
-	if (nk_popup_begin(ctx, m_popupType, m_primaryName, m_flags, GetTransform()))
+	if (nk_popup_begin(ctx, m_popupType, m_baseName, m_flags, GetTransform()))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{

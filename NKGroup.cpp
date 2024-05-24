@@ -18,7 +18,7 @@ NKGroup::~NKGroup()
 
 void NKGroup::Layout(nk_context* ctx)
 {
-	if (nk_group_begin(ctx, m_primaryName, m_flags))
+	if (nk_group_begin(ctx, m_baseName, m_flags))
 	{
 		if (m_layoutFormat == NK_DYNAMIC)
 		{

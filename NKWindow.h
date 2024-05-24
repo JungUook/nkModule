@@ -10,6 +10,7 @@ public:
 
 public:
 	void Layout(nk_context* ctx) override;
+	void EditInfo() override;
 };
 
 #endif //NKWindow_h__

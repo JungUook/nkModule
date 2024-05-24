@@ -12,10 +12,6 @@ NKWindow::NKWindow()
 	m_worldTransform.y = 50.f;
 	m_worldTransform.w = 300.f;
 	m_worldTransform.h = 600.f;
-
-	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
 }
 
 NKWindow::~NKWindow()
@@ -25,7 +21,7 @@ NKWindow::~NKWindow()
 void NKWindow::Layout(nk_context* ctx)
 {
 	m_bHovering = false;
-	if (nk_begin(ctx, m_primaryName, m_worldTransform, m_flags))
+	if (nk_begin(ctx, m_baseName, m_worldTransform, m_flags))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
@@ -39,4 +35,9 @@ void NKWindow::Layout(nk_context* ctx)
 		}
 	}
 	nk_end(ctx);
+}
+
+void NKWindow::EditInfo()
+{
+
 }

@@ -81,6 +81,7 @@ private:
 
 	//데이터 관리
 public:
+	void SetPrimary(NKBase* pBase);
 	void Add(NKBase* type);
 	struct nk_image* SearchImage(int SID);
 
