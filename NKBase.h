@@ -76,6 +76,7 @@ class NKBase
 {
 public:
 	NKBase();
+	NKBase(const NKBase& other);
 	~NKBase();
 
 	virtual std::string getClassName() const;
@@ -106,6 +107,7 @@ public:
 	virtual std::list<NKBase*>* GetChildList();
 	virtual void AddChild(NKBase* nkBase);
 	virtual void LAddChild(luabridge::LuaRef ref);
+	virtual void RemoveChildDisConnect(NKBase* nkBase);
 	virtual void RemoveChild(NKBase* nkBase);
 	virtual void LRemoveChild(luabridge::LuaRef ref);
 
@@ -137,18 +139,15 @@ public:
 public:
 	virtual void LayoutEditor();
 	virtual void EditInfo();
-	virtual nk_tree_type GetTreeType(); 
-	virtual nk_collapse_states GetCollapseState();
 
 	virtual struct nk_vec2* EditPivot();
 	virtual struct nk_rect* EditTransform();
-	virtual nk_bool* EditSelected();
 	virtual void EditBaseName(const char* name);
 	virtual const char* GetBaseName();
 
+	virtual void CreateUI(const char* classname);
 protected:
 	NuklearUI* m_manager;
-	const char* m_cName;
 
 	unsigned int m_primaryID;
 	char m_primaryName[64];
@@ -174,10 +173,6 @@ protected:
 
 	NKBase* m_pParent;
 	std::list<NKBase*> m_pChildList;
-
-	nk_tree_type m_nkType;
-	nk_collapse_states m_nkState;
-	nk_bool m_selected;
 
 #pragma region Style Setup	
 public:

@@ -248,6 +248,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -460,6 +461,7 @@
     <ClInclude Include="NKTooltip.h" />
     <ClInclude Include="NKTree.h" />
     <ClInclude Include="NKWindow.h" />
+    <ClInclude Include="NuklearEditor.h" />
     <ClInclude Include="NuklearUI.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="sprLoader.h" />
@@ -489,6 +491,7 @@
     <ClCompile Include="NKTooltip.cpp" />
     <ClCompile Include="NKTree.cpp" />
     <ClCompile Include="NKWindow.cpp" />
+    <ClCompile Include="NuklearEditor.cpp" />
     <ClCompile Include="NuklearUI.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

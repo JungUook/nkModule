@@ -21,8 +21,10 @@
 #include <shlobj.h>
 
 #include "UiLibrary.h"
+#include "NuklearEditor.h"
 
 struct nk_image g_img;
+NuklearEditor g_editor;
 
 NuklearUI::NuklearUI()
 {
@@ -32,7 +34,14 @@ NuklearUI::NuklearUI()
 	m_bEditActive = false;
 	m_original_height = 0;
 	m_primaryIDCheck = 0;
-	m_selectedNode = nullptr;
+	m_pivot = nk_vec2(0, 0);
+	m_viewRect = nk_rect(0, 0, 0, 0);
+	Register_UI();
+#ifdef _DEBUG
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr);
+#endif // _DEBUG
+
+
 
 	m_lua = nullptr;
 }
@@ -355,173 +364,7 @@ void NuklearUI::DebugLayout()
 	static struct nk_rect debugRect = nk_rect(viewport.dwWidth - debugRectWidth, debugRectPosY, debugRectWidth, debugRectHeight);
 #endif
 
-	if (nk_begin(m_ctx, "debug", debugRect, NK_WINDOW_TITLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_NO_SCROLLBAR))
-	{
-		nk_layout_row_dynamic(m_ctx, 50.f, 2);
-		if (nk_button_label(m_ctx, "New"))
-		{
-
-		}
-		if (nk_button_label(m_ctx, "Refresh"))
-		{
-			for (std::vector<NKBase*>::iterator iter = m_vecObject.begin(); iter != m_vecObject.end();)
-			{
-				NKBase* pNKBase = *iter;
-
-				if (pNKBase)
-				{
-					pNKBase->Release();
-					delete pNKBase;
-					pNKBase = NULL;
-				}
-				iter = m_vecObject.erase(iter);
-			}
-			m_vecObject.clear();
-			m_vecModule.clear();
-			m_mapModuleID.clear();
-			m_mapModuleName.clear();
-
-			RunFunction("Init");
-		}
-
-
-		if (nk_contextual_begin(m_ctx, 0, nk_vec2(100, 220), nk_window_get_bounds(m_ctx))) {
-			const char* grid_option[] = { "Show Grid", "Hide Grid" };
-			nk_layout_row_dynamic(m_ctx, 25, 1);
-			if (nk_contextual_item_label(m_ctx, "New", NK_TEXT_CENTERED))
-			{
-			}
-			if (nk_contextual_item_label(m_ctx, grid_option[0], NK_TEXT_CENTERED))
-			{
-
-			}
-			nk_contextual_end(m_ctx);
-		}
-		enum { EASY, HARD, NORMAL };
-		static int op = EASY;
-		nk_layout_row_dynamic(m_ctx, 30, 3);
-		if (nk_option_label(m_ctx, "easy", op == EASY)) op = EASY;
-		if (nk_option_label(m_ctx, "hard", op == HARD)) op = HARD;
-		if (nk_option_label(m_ctx, "normal", op == NORMAL)) op = NORMAL;
-
-		static int groupLeft = 150;
-		nk_layout_row_dynamic(m_ctx, 22, 1);
-		nk_property_int(m_ctx, "#Left:", 150, &groupLeft, debugRectWidth - 100, 1, 1);
-
-		float row_layout[2];
-		row_layout[0] = groupLeft;
-		row_layout[1] = debugRectWidth - groupLeft;
-
-		nk_layout_row(m_ctx, NK_STATIC, debugRectHeight, 2, row_layout);
-		DebugLayoutLeft(row_layout[0]);
-		DebugLayoutRight(row_layout[1]);
-	}
-	nk_end(m_ctx);
-}
-
-void NuklearUI::DebugLayoutLeft(int width)
-{
-	if (nk_group_begin(m_ctx, "Node", NK_WINDOW_TITLE)) {
-		for (int i = 0; i < m_vecObject.size(); ++i)
-		{
-			DebugLayoutLeftNodes(m_vecObject.at(i), NK_TREE_TAB, NK_MINIMIZED);
-		}
-		//for (i = 0; i < 16; ++i)
-			//nk_selectable_label(m_ctx, (selected[i]) ? "Selected" : "Unselected", NK_TEXT_LEFT, &selected[i]);
-		nk_group_end(m_ctx);
-	}
-}
-
-void NuklearUI::DebugLayoutLeftNodes(NKBase* pBase, nk_tree_type nkType, nk_collapse_states nkState)
-{
-	if (nk_tree_push_id(m_ctx, nkType, pBase->GetBaseName(), nkState, reinterpret_cast<intptr_t>(pBase)))
-	{
-		if (nk_button_label(m_ctx, "Select"))
-		{
-			SelectNode(pBase);
-		}
-
-		auto childList = pBase->GetChildList();
-		for (auto child = childList->begin(); child != childList->end(); ++child)
-		{
-			if (*child)
-			{
-				DebugLayoutLeftNodes(*child, NK_TREE_NODE, NK_MINIMIZED);
-			}
-		}
-
-		nk_tree_pop(m_ctx);
-	}
-}
-
-void NuklearUI::DebugLayoutRight(int width)
-{
-	const char* ObjectInfo = m_selectedNode ? m_selectedNode->GetBaseName() : "ObjectInfo";
-	if (nk_group_begin(m_ctx, ObjectInfo, NK_WINDOW_TITLE)) {
-
-		if (m_selectedNode)	{
-			m_selectedNode->LayoutEditor();
-			
-			//if (nk_tree_push(m_ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "text", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "contextual_button", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "menu_button", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "option", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "checkbox", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "selectable", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "slider", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "progress", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "property", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "edit", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "chart", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollh", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "scrollv", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "tab", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "combo", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-			//	if (nk_tree_push(m_ctx, NK_TREE_NODE, "window", NK_MINIMIZED)) {
-			//		nk_tree_pop(m_ctx);
-			//	}
-
-			//	nk_tree_pop(m_ctx);
-			//}
-		}
-		nk_group_end(m_ctx);
-	}
-}
-
-void NuklearUI::SelectNode(NKBase* pBase)
-{
-	m_selectedNode = pBase;
+	g_editor.EditorLayout(m_ctx, debugRect);
 }
 
 #ifdef _DX9
@@ -684,6 +527,7 @@ void NuklearUI::Render(IDirect3DDevice7* pdevice)
 	{
 		(*iter)->SafeRenderEnd();
 	}
+	ReleaseRenderData();
 }
 int NuklearUI::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -781,6 +625,63 @@ bool NuklearUI::ReadImageFile(const char* filename, IDirectDrawSurface7** pTextu
 	return true;
 }
 #endif
+void NuklearUI::Register_UI()
+{
+	REGISTER_CHILD(NKWindow);
+	REGISTER_CHILD(NKSpace);
+	REGISTER_CHILD(NKGroup);
+	REGISTER_CHILD(NKPopup);
+	REGISTER_CHILD(NKCombo);
+	REGISTER_CHILD(NKButton);
+	REGISTER_CHILD(NKEdit);
+	REGISTER_CHILD(NKImage);
+	REGISTER_CHILD(NKLabel);
+	REGISTER_CHILD(NKComboItem);
+	REGISTER_CHILD(NKCheckbox);
+	REGISTER_CHILD(NKSlider);
+	REGISTER_CHILD(NKProgress);
+	REGISTER_CHILD(NKSelectable);
+	REGISTER_CHILD(NKTree);
+	REGISTER_CHILD(NKChart);
+	REGISTER_CHILD(NKTooltip);
+	REGISTER_CHILD(NKMenu);
+	REGISTER_CHILD(NKScrollbar);
+	REGISTER_CHILD(NKColorPicker);
+}
+void NuklearUI::CreateUI(const char* classname, NKBase* parent)
+{
+	NKBase* pBase = m_factory.create(classname);
+
+	if (pBase) {
+		if (parent) {
+			parent->AddChild(pBase);
+		}
+		else {
+			Add(pBase);
+		}
+	}
+	else
+	{
+		throw;
+	}
+}
+struct nk_vec2* NuklearUI::GetPivot()
+{
+	return &m_pivot;
+}
+struct nk_rect* NuklearUI::GetViewport()
+{
+#ifdef _DX9
+	m_viewRect = nk_rect(0, 0, d3d9.viewport.Width, d3d9.viewport.Height);
+
+#elif _DX7
+	D3DVIEWPORT7 viewport;
+	d3d7.device->GetViewport(&viewport);
+	m_viewRect = nk_rect(0,0, (float)viewport.dwWidth, (float)viewport.dwHeight);
+#endif // _DX9
+
+	return &m_viewRect;
+}
 void NuklearUI::SetPrimary(NKBase* pBase)
 {
 	while (true)
@@ -796,7 +697,7 @@ void NuklearUI::SetPrimary(NKBase* pBase)
 		}
 	}
 
-	pBase->SetPrimaryID(m_primaryIDCheck++);
+	pBase->SetPrimaryID(m_primaryIDCheck);
 	if (m_primaryIDCheck == 4294967295)
 	{
 		m_primaryIDCheck = 0;
@@ -804,7 +705,7 @@ void NuklearUI::SetPrimary(NKBase* pBase)
 	pBase->SetNuklearIndex(m_vecModule.size());
 
 	char primaryName[256] = { 0, };
-	sprintf_s(primaryName, "%s%ld", pBase->GetPrimaryName(), m_primaryIDCheck);
+	sprintf_s(primaryName, "%s%ld", pBase->GetPrimaryName(), m_primaryIDCheck++);
 	pBase->SetPrimaryName(primaryName);
 }
 void NuklearUI::Add(NKBase* type)
@@ -836,6 +737,20 @@ void NuklearUI::Remove(unsigned int id)
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
 
+		if (pBase->GetType() == eWINDOW)
+		{
+			auto it = m_vecObject.begin();
+			for (; it != m_vecObject.end();)
+			{
+				if ((*it)->GetPrimaryID() == pBase->GetPrimaryID()) {
+					it = m_vecObject.erase(it);
+				}
+				else {
+					++it;
+				}
+			}
+		}
+
 		for (int i = pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
@@ -848,7 +763,7 @@ void NuklearUI::Remove(unsigned int id)
 		NKBase* parent = pBase->GetParent();
 		if (parent != nullptr)
 		{
-			parent->RemoveChild(pBase);
+			parent->RemoveChildDisConnect(pBase);
 		}
 
 		pBase->Release();
@@ -874,6 +789,20 @@ void NuklearUI::Remove(const char* name)
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
 
+		if (pBase->GetType() == eWINDOW)
+		{
+			auto it = m_vecObject.begin();
+			for (; it != m_vecObject.end();)
+			{
+				if ((*it)->GetPrimaryID() == pBase->GetPrimaryID()) {
+					it = m_vecObject.erase(it);
+				}
+				else {
+					++it;
+				}
+			}
+		}
+
 		for (int i = pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
@@ -886,7 +815,7 @@ void NuklearUI::Remove(const char* name)
 		NKBase* parent = pBase->GetParent();
 		if (parent != nullptr)
 		{
-			parent->RemoveChild(pBase);
+			parent->RemoveChildDisConnect(pBase);
 		}
 
 		pBase->Release();
@@ -909,6 +838,20 @@ void NuklearUI::Remove(NKBase* obj)
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + obj->GetNuklearIndex());
 
+		if (obj->GetType() == eWINDOW)
+		{
+			auto it = m_vecObject.begin();
+			for (; it != m_vecObject.end();)
+			{
+				if ((*it)->GetPrimaryID() == obj->GetPrimaryID()) {
+					it = m_vecObject.erase(it);
+				}
+				else {
+					++it;
+				}
+			}
+		}
+
 		for (int i = obj->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
@@ -921,7 +864,7 @@ void NuklearUI::Remove(NKBase* obj)
 		NKBase* parent = obj->GetParent();
 		if (parent != nullptr)
 		{
-			parent->RemoveChild(obj);
+			parent->RemoveChildDisConnect(obj);
 		}
 
 		obj->Release();
@@ -946,6 +889,20 @@ void NuklearUI::Remove(int idx)
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
 
+		if (pBase->GetType() == eWINDOW)
+		{
+			auto it = m_vecObject.begin();
+			for (; it != m_vecObject.end();)
+			{
+				if ((*it)->GetPrimaryID() == pBase->GetPrimaryID()) {
+					it = m_vecObject.erase(it);
+				}
+				else {
+					++it;
+				}
+			}
+		}
+
 		for (int i = pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
@@ -958,7 +915,7 @@ void NuklearUI::Remove(int idx)
 		NKBase* parent = pBase->GetParent();
 		if (parent != nullptr)
 		{
-			parent->RemoveChild(pBase);
+			parent->RemoveChildDisConnect(pBase);
 		}
 
 		pBase->Release();
@@ -1042,6 +999,142 @@ struct nk_image* NuklearUI::SearchImage(int SID)
 		return nullptr;
 	}
 }
+
+#ifdef _DX7
+void NuklearUI::Register_spr(sprLoader* pSpr)
+{
+	m_sprLoader = pSpr;
+}
+void NuklearUI::OpenFileDialog()
+{
+	OPENFILENAMEW ofn;
+	const size_t buffer_size = 65536; // 충분히 큰 버퍼 크기
+	wchar_t* szFile = new wchar_t[buffer_size];
+	ZeroMemory(szFile, buffer_size * sizeof(wchar_t));
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = buffer_size;
+	ofn.lpstrFilter = L"All Files\0*.*\0SPR Files\0*.spr\0";
+	ofn.nFilterIndex = 2; // 기본 선택을 SPR Files로 설정
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER;
+
+	if (GetOpenFileNameW(&ofn) == TRUE) {
+		wchar_t* p = szFile;
+		std::wstring directory = p;
+		p += directory.length() + 1;
+
+		while (*p) {
+			std::wstring filePath = directory + L"\\" + p;
+			std::filesystem::path path(filePath);
+			if (path.extension() == L".spr") {
+				int size_needed = WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, NULL, 0, NULL, NULL);
+				char* result = new char[size_needed];
+				WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, result, size_needed, NULL, NULL);
+				LoadSprFile(result);
+				delete[] result;
+			}
+			p += wcslen(p) + 1;
+		}
+
+		// If only one file is selected, GetOpenFileNameW does not add the directory separately
+		if (directory.length() > 0 && *p == '\0') {
+			std::filesystem::path path(directory);
+			if (path.extension() == L".spr") {
+				int size_needed = WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, NULL, 0, NULL, NULL);
+				char* result = new char[size_needed];
+				WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, result, size_needed, NULL, NULL);
+				LoadSprFile(result);
+				delete[] result;
+			}
+		}
+	}
+
+	delete[] szFile; // 동적으로 할당한 메모리 해제
+}
+void NuklearUI::LoadSprFile(const char* filename)
+{
+	sprData* pData = m_sprLoader->LoadSprite(filename);
+	m_mapSpr.insert(std::make_pair(filename, pData));
+}
+void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg)
+{
+	auto it = m_mapSpr.find(filename);
+	if (it != m_mapSpr.end()) {
+		sprData* pSpr = (*it).second;
+		bool bSuccess = RegisterRenderData(pSpr);
+		if (!bSuccess) {
+			throw;
+		}
+		int totalSprites = pSpr->GetSpr()->GetXCount() * pSpr->GetSpr()->GetYCount();
+
+		if (index >= 0 && index < totalSprites)	{
+
+			int x = index % pSpr->GetSpr()->GetXCount();
+			int y = index % pSpr->GetSpr()->GetYCount();
+
+			struct nk_image img;
+			memset(&img, 0, sizeof(img));
+			img.handle = nk_handle_ptr(pSpr->GetSurface());
+
+			img.w = pSpr->GetSpr()->GetHres();
+			img.h = pSpr->GetSpr()->GetVres();
+
+			img.region[0] = pSpr->GetSpr()->GetXSize() * x;
+			img.region[1] = pSpr->GetSpr()->GetYSize() * y;
+			img.region[2] = pSpr->GetSpr()->GetXSize();
+			img.region[3] = pSpr->GetSpr()->GetYSize();
+
+			outimg = img;
+		}
+	}
+}
+void NuklearUI::GetImage(const char* filename, struct nk_image& outimg)
+{
+	auto it = m_mapSpr.find(filename);
+	if (it != m_mapSpr.end()) {
+		sprData* pSpr = (*it).second;
+		bool bSuccess = RegisterRenderData(pSpr);
+		if (!bSuccess) {
+			throw;
+		}
+		struct nk_image img;
+		memset(&img, 0, sizeof(img));
+		img.handle = nk_handle_ptr(pSpr->GetSurface());
+		outimg = img;
+	}
+}
+std::map<std::string, sprData*>* NuklearUI::GetSprMap()
+{
+	return &m_mapSpr;
+}
+bool NuklearUI::RegisterRenderData(sprData* pData)
+{
+	if (pData->GetSurface() == nullptr) {
+		pData->LoadTexture(d3d7.dd);
+		m_vecRenderData.push_back(pData);
+	}
+
+	if (pData->GetSurface()) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+void NuklearUI::ReleaseRenderData()
+{
+	for (auto it = m_vecRenderData.begin(); it != m_vecRenderData.end();) {
+		sprData* pData = *it;
+		pData->Release();
+		it = m_vecRenderData.erase(it);
+	}
+}
+#endif // _DX7
 
 void NuklearUI::LoadLuaFile(const char* filePath)
 {

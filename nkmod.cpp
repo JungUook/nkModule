@@ -200,6 +200,7 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
     if (pdd && pdevice) {
         g_nuklear->Initialize(pdd, pdevice, width, height, lang);
         g_sprLoader->Init(pdd);
+        g_nuklear->Register_spr(g_sprLoader);
     }
     else {
         if (hwnd) {
@@ -207,6 +208,7 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
             CreateD3D7Device(hwnd, width, height);
             g_nuklear->Initialize(g_pDD, g_pD3DDevice, width, height, lang);
             g_sprLoader->Init(g_pDD);
+            g_nuklear->Register_spr(g_sprLoader);
             CoUninitialize();
         }
         else {

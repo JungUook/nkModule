@@ -26,8 +26,43 @@ NKBase::NKBase()
 	m_pParent = nullptr;
 	m_primaryID = 0;
 	m_nkIndex = 0;
+	m_editName_len = 0;
 	memset(m_primaryName, 0, sizeof(m_primaryName));
+	memset(m_baseName, 0, sizeof(m_baseName));
 	memset(m_editName, 0, sizeof(m_editName));
+}
+
+NKBase::NKBase(const NKBase& other)
+{
+	m_manager = other.m_manager;
+	m_ctx = other.m_ctx;
+	m_font = other.m_font;
+	m_style = other.m_style;
+	m_pivot.x = other.m_pivot.x;
+	m_pivot.y = other.m_pivot.y;
+	m_worldTransform.x = other.m_worldTransform.x;
+	m_worldTransform.y = other.m_worldTransform.y;
+	m_worldTransform.w = other.m_worldTransform.w;
+	m_worldTransform.h = other.m_worldTransform.h;
+	m_position.x = other.m_position.x;
+	m_position.y = other.m_position.y;
+	m_type = other.m_type;
+	m_flags = other.m_flags;
+	m_bActive = other.m_bActive;
+	m_bEditActive = other.m_bEditActive;
+	m_bHovering = other.m_bHovering;
+	m_pParent = other.m_pParent;
+	m_primaryID = 0;
+	m_nkIndex = 0;
+	m_editName_len = other.m_editName_len;
+	memset(m_primaryName, 0, sizeof(m_primaryName));
+	memset(m_baseName, 0, sizeof(m_baseName));
+	memset(m_editName, 0, sizeof(m_editName));
+	m_manager->Add(this);
+	//m_primaryID = other.m_primaryID;
+	//m_nkIndex = other.m_nkIndex;
+	//strcpy_s(m_primaryName, other.m_primaryName);
+	//strcpy_s(m_editName, other.m_editName);
 }
 
 NKBase::~NKBase()
@@ -56,9 +91,8 @@ void NKBase::Initialize(NuklearUI* pManager)
 	m_style = m_ctx->style;
 
 	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
-	strcpy_s(m_baseName, m_cName);
+	strcpy_s(m_primaryName, className.c_str());
+	strcpy_s(m_baseName, className.c_str());
 }
 
 void NKBase::Initialize(NKBase* pParent)
@@ -71,9 +105,8 @@ void NKBase::Initialize(NKBase* pParent)
 	m_style = m_pParent->m_style;
 
 	std::string className = getClassName().c_str();
-	m_cName = className.c_str();
-	strcpy_s(m_primaryName, m_cName);
-	strcpy_s(m_baseName, m_cName);
+	strcpy_s(m_primaryName, className.c_str());
+	strcpy_s(m_baseName, className.c_str());
 }
 
 void NKBase::Update(nk_context* ctx)
@@ -101,6 +134,12 @@ void NKBase::SafeRenderEnd()
 
 void NKBase::Release()
 {
+	auto it = m_pChildList.begin();
+	for (; it != m_pChildList.end();) {
+		NKBase* pBase = (*it);
+		pBase->Release();
+		it = m_pChildList.erase(it);
+	}
 }
 
 bool NKBase::IsHovering()
@@ -178,6 +217,15 @@ void NKBase::LAddChild(luabridge::LuaRef ref)
 	AddChild(nkBase);
 }
 
+void NKBase::RemoveChildDisConnect(NKBase* nkBase)
+{
+	CHECK_PTR(nkBase);
+	if (m_pChildList.size() > 0)
+	{
+		m_pChildList.remove(nkBase);
+	}
+}
+
 void NKBase::RemoveChild(NKBase* nkBase)
 {
 	CHECK_PTR(nkBase);
@@ -213,12 +261,30 @@ void NKBase::SetPivot(float x, float y)
 
 	m_pivot.x = x;
 	m_pivot.y = y;
+
+	if (m_pParent) {
+		m_position.x = m_worldTransform.x + (m_pivot.x * m_worldTransform.w) - (m_pParent->GetPivot().x * m_pParent->GetWidth());
+		m_position.y = m_worldTransform.y + (m_pivot.y * m_worldTransform.h) - (m_pParent->GetPivot().y * m_pParent->GetHeight());
+	}
+	else {
+		m_position.x = m_worldTransform.x + (m_pivot.x * m_worldTransform.w) - (m_manager->GetPivot()->x * m_manager->GetViewport()->w);
+		m_position.y = m_worldTransform.y + (m_pivot.y * m_worldTransform.h) - (m_manager->GetPivot()->y * m_manager->GetViewport()->h);
+	}
 }
 
 void NKBase::SetPosition(float x, float y)
 {
-	m_worldTransform.x = m_pivot.x * m_worldTransform.w + x;
-	m_worldTransform.y = m_pivot.y * m_worldTransform.h + y;
+	m_position.x = x;
+	m_position.y = y;
+
+	if (m_pParent) {
+		m_worldTransform.x = x - (m_pivot.x * m_worldTransform.w) + (m_pParent->GetPivot().x * m_pParent->GetWidth());
+		m_worldTransform.y = y - (m_pivot.y * m_worldTransform.h) + (m_pParent->GetPivot().y * m_pParent->GetHeight());
+	}
+	else {
+		m_worldTransform.x = x - (m_pivot.x * m_worldTransform.w) + (m_manager->GetPivot()->x * m_manager->GetViewport()->w);
+		m_worldTransform.y = y - (m_pivot.y * m_worldTransform.h) + (m_manager->GetPivot()->y * m_manager->GetViewport()->h);
+	}
 }
 
 void NKBase::SetSize(float width, float heigth)
@@ -244,8 +310,14 @@ struct nk_vec2 NKBase::GetPivot()
 
 struct nk_vec2 NKBase::GetPosition()
 {
-	m_position.x = m_worldTransform.x + (m_pivot.x * m_worldTransform.w);
-	m_position.y = m_worldTransform.y + (m_pivot.y * m_worldTransform.h);
+	if (m_pParent) {
+		m_position.x = m_worldTransform.x + (m_pivot.x * m_worldTransform.w) - (m_pParent->GetPivot().x * m_pParent->GetWidth());
+		m_position.y = m_worldTransform.y + (m_pivot.y * m_worldTransform.h) - (m_pParent->GetPivot().y * m_pParent->GetHeight());
+	}
+	else {
+		m_position.x = m_worldTransform.x + (m_pivot.x * m_worldTransform.w) - (m_manager->GetPivot()->x * m_manager->GetViewport()->w);
+		m_position.y = m_worldTransform.y + (m_pivot.y * m_worldTransform.h) - (m_manager->GetPivot()->y * m_manager->GetViewport()->h);
+	}
 	return m_position;
 }
 
@@ -342,26 +414,17 @@ void NKBase::LayoutEditor()
 		nk_property_float(m_ctx, "#W:", .0f, &m_worldTransform.w, 1920.f, 1.f, 1.f);
 		nk_property_float(m_ctx, "#H:", .0f, &m_worldTransform.h, 1920.f, 1.f, 1.f);
 
-
-
 		nk_tree_pop(m_ctx);
 	}
 
-	EditInfo();
+	if (nk_tree_push(m_ctx, NK_TREE_TAB, getClassName().c_str(), NK_MINIMIZED)) {
+		EditInfo();
+		nk_tree_pop(m_ctx);
+	}
 }
 
 void NKBase::EditInfo()
 {
-}
-
-nk_tree_type NKBase::GetTreeType()
-{
-	return m_nkType;
-}
-
-nk_collapse_states NKBase::GetCollapseState()
-{
-	return m_nkState;
 }
 
 struct nk_vec2* NKBase::EditPivot()
@@ -374,11 +437,6 @@ struct nk_rect* NKBase::EditTransform()
 	return &m_worldTransform;
 }
 
-nk_bool* NKBase::EditSelected()
-{
-	return &m_selected;
-}
-
 void NKBase::EditBaseName(const char* name)
 {
 	memset(m_baseName, 0, sizeof(m_baseName));
@@ -388,4 +446,9 @@ void NKBase::EditBaseName(const char* name)
 const char* NKBase::GetBaseName()
 {
 	return m_baseName;
+}
+
+void NKBase::CreateUI(const char* classname)
+{
+	m_manager->CreateUI(classname, this);
 }

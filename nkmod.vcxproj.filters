@@ -111,6 +111,9 @@
     <ClInclude Include="NKScrollbar.h">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClInclude>
+    <ClInclude Include="NuklearEditor.h">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -190,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="NKScrollbar.cpp">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NuklearEditor.cpp">
+      <Filter>소스 파일\Nuklear</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

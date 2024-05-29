@@ -12,7 +12,44 @@
 #include <vector>
 #include <map>
 #include <fstream>
+#include <unordered_map>
+#include <Windows.h>
+#include <commdlg.h>
+#include <string>
+#include <iostream>
+#include <filesystem>
+
 #include "NKBase.h"
+#include "sprLoader.h"
+
+class NKBase;
+enum eTypeUI;
+
+class Factory {
+public:
+	using FactoryMap = std::unordered_map<std::string, std::function<NKBase* ()>>;
+
+	template <typename T>
+	static void registerChild(const std::string& className) {
+		getFactoryMap()[className] = []() -> NKBase* { return new T(); };
+	}
+
+	NKBase* create(const std::string& className) {
+		auto it = getFactoryMap().find(className);
+		if (it != getFactoryMap().end()) {
+			return it->second();
+		}
+		return nullptr;
+	}
+
+private:
+	static FactoryMap& getFactoryMap() {
+		static FactoryMap factoryMap;
+		return factoryMap;
+	}
+};
+
+#define REGISTER_CHILD(CLASS) Factory::registerChild<CLASS>(#CLASS)		
 
 class ObjMaker {
 public:
@@ -23,7 +60,6 @@ public:
 	}
 };
 
-class NKBase;
 class NuklearUI
 {
 public:
@@ -49,10 +85,6 @@ public:
 	void NKInputEnd();
 	void Update();
 	void DebugLayout();
-	void DebugLayoutLeft(int width);
-	void DebugLayoutLeftNodes(NKBase* pBase, nk_tree_type nkType, nk_collapse_states nkState);
-	void DebugLayoutRight(int width);
-	void SelectNode(NKBase* pBase);
 #ifdef _DX9
 	void Render(IDirect3DDevice9* device);
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam, D3DPRESENT_PARAMETERS* present);
@@ -81,6 +113,10 @@ private:
 
 	//데이터 관리
 public:
+	void Register_UI();
+	void CreateUI(const char* classname, NKBase* parent = nullptr);
+	struct nk_vec2* GetPivot();
+	struct nk_rect* GetViewport();
 	void SetPrimary(NKBase* pBase);
 	void Add(NKBase* type);
 	struct nk_image* SearchImage(int SID);
@@ -100,6 +136,7 @@ private:
 #endif // _DX9
 
 private:
+	Factory m_factory;
 	unsigned int m_primaryIDCheck;
 
 	std::vector<NKBase*> m_vecObject;
@@ -108,7 +145,31 @@ private:
 	std::map<const char*, NKBase*> m_mapModuleName;
 	std::map<int, struct nk_image> m_mapImage;
 
-	NKBase* m_selectedNode;
+	struct nk_vec2 m_pivot;
+	struct nk_rect m_viewRect;
+
+#ifdef _DX7
+	//spr loader
+public:
+	void Register_spr(sprLoader* pSpr);
+	void OpenFileDialog();
+	void LoadSprFile(const char* filename);
+	void GetSprite(const char* filename, int index, struct nk_image& outimg);
+	void GetImage(const char* filename, struct nk_image& outimg);
+	std::map<std::string, sprData*>* GetSprMap();
+
+	bool RegisterRenderData(sprData* pData);
+	void ReleaseRenderData();
+
+private:
+	sprLoader* m_sprLoader;
+	std::map<std::string, sprData*> m_mapSpr;
+
+	std::vector<sprData*> m_vecRenderData;
+
+#endif // _DX7
+
+
 	//lua
 public:
 	void LoadLuaFile(const char* filePath);

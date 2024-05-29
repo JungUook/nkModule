@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "sprLoader.h"
 #ifdef _DX7
-void sprData::Init(IDirectDraw7* pDD)
+void sprData::LoadTexture(IDirectDraw7* pDD)
 {
     int x = 0, y = 0;
 
@@ -91,11 +91,114 @@ void sprData::Init(IDirectDraw7* pDD)
 
     m_pSurface = pSurface;
 }
+void sprData::Release()
+{
+    m_pSurface->Release();
+    m_pSurface = nullptr;
+}
+//void sprData::Init(IDirectDraw7* pDD)
+//{
+//    int x = 0, y = 0;
+//
+//    int drawHres = m_pSpr->clHeader.siHRes;
+//    int drawVres = m_pSpr->clHeader.siVRes;
+//
+//    unsigned char* pSrc = m_pSpr->Image;
+//    unsigned short* pPalette = m_pSpr->pal;
+//
+//    int _colEnd = m_pSpr->GetXCount();
+//    int _rowEnd = m_pSpr->GetYCount();
+//    int _colSize = m_pSpr->GetXSize();
+//    int _rowSize = m_pSpr->GetYSize();
+//
+//    DDSURFACEDESC2 ddsd;
+//    ZeroMemory(&ddsd, sizeof(ddsd));
+//    ddsd.dwSize = sizeof(ddsd);
+//    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
+//    ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
+//    ZeroMemory(&ddsd.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
+//    ddsd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
+//    ddsd.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
+//    ddsd.ddpfPixelFormat.dwRGBBitCount = 8;
+//    ddsd.dwWidth = drawHres;
+//    ddsd.dwHeight = drawVres;
+//
+//    IDirectDrawSurface7* pSurface = nullptr;
+//    HRESULT hr = pDD->CreateSurface(&ddsd, &pSurface, nullptr);
+//    assert(SUCCEEDED(hr));
+//
+//    // 팔레트를 설정합니다.
+//    PALETTEENTRY paletteEntries[256];
+//    for (int i = 0; i < 256; ++i)
+//    {
+//        unsigned short rgb16Color = pPalette[i];
+//        paletteEntries[i].peRed = static_cast<unsigned char>((rgb16Color >> 11) & 0x1F) << 3;
+//        paletteEntries[i].peGreen = static_cast<unsigned char>((rgb16Color >> 5) & 0x3F) << 2;
+//        paletteEntries[i].peBlue = static_cast<unsigned char>((rgb16Color) & 0x1F) << 3;
+//        paletteEntries[i].peFlags = 0;
+//    }
+//
+//    IDirectDrawPalette* pPaletteDD = nullptr;
+//    hr = pDD->CreatePalette(DDPCAPS_8BIT, paletteEntries, &pPaletteDD, nullptr);
+//    assert(SUCCEEDED(hr));
+//
+//    hr = pSurface->SetPalette(pPaletteDD);
+//    assert(SUCCEEDED(hr));
+//
+//    hr = pSurface->Lock(nullptr, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, nullptr);
+//    assert(SUCCEEDED(hr));
+//
+//    int pitch = ddsd.lPitch;
+//    unsigned char* pBuffer = (unsigned char*)ddsd.lpSurface;
+//
+//    for (int _row = 0; _row < _rowEnd; ++_row)
+//    {
+//        int offsetY = y + _row * _rowSize;
+//        for (int _col = 0; _col < _colEnd; ++_col)
+//        {
+//            int offsetX = x + _col * _colSize;
+//            for (int i = 0; i < _rowSize; ++i)
+//            {
+//                int j = 0;
+//                while (j < _colSize)
+//                {
+//                    unsigned char colorIndex = *pSrc;
+//
+//                    if (colorIndex == COLOR_TRANS)
+//                    {
+//                        int k = j;
+//                        unsigned char* pTempSour = pSrc;
+//                        int _end = k + *(++pTempSour);
+//
+//                        for (int k = j; k < _end; k++)
+//                        {
+//                            pBuffer[(offsetY + i) * pitch + (offsetX + k)] = 0; // 투명한 색상 인덱스를 0으로 설정
+//                        }
+//                        ++pSrc;
+//                        j += *pSrc;
+//                    }
+//                    else
+//                    {
+//                        pBuffer[(offsetY + i) * pitch + (offsetX + j)] = colorIndex;
+//                        ++j;
+//                    }
+//                    ++pSrc;
+//                }
+//            }
+//        } // end column
+//    } // end row
+//
+//    hr = pSurface->Unlock(nullptr);
+//    assert(SUCCEEDED(hr));
+//
+//    m_pSurface = pSurface;
+//}
+
 
 
 sprData* sprLoader::LoadSprite(const char* filename)
 {
-	std::map<const char*, sprData*>::iterator it = m_mapSprite.find(filename);
+	std::map<std::string, sprData*>::iterator it = m_mapSprite.find(filename);
     sprData* pData = nullptr;
 	if (it != m_mapSprite.end()) {
         pData = it->second;
@@ -121,7 +224,7 @@ void sprLoader::Init(IDirectDraw7* pDD)
 }
 void sprLoader::Release()
 {
-    std::map<const char*, sprData*>::iterator it;
+    std::map<std::string, sprData*>::iterator it;
 
     for (it = m_mapSprite.begin(); it != m_mapSprite.end();)
     {

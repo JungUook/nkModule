@@ -141,8 +141,6 @@ public:
     {
         m_pSurface = nullptr;
         m_pSpr = spr;
-
-        Init(pDD);
     }
 
     ~sprData()
@@ -159,10 +157,13 @@ public:
     IDirectDrawSurface7* GetSurface() { return m_pSurface; }
     cltTSpr* GetSpr() { return m_pSpr; }
 
+public:
+    void LoadTexture(IDirectDraw7* pDD);
+    void Release();
+
 private:
     IDirectDrawSurface7* m_pSurface;
     cltTSpr* m_pSpr;
-    void Init(IDirectDraw7* pDD);
 };
 
 class sprLoader
@@ -172,7 +173,7 @@ public:
     void Init(IDirectDraw7* pDD);
     void Release();
 private:
-    std::map<const char*, sprData*> m_mapSprite;
+    std::map<std::string, sprData*> m_mapSprite;
     IDirectDraw7* m_pDD;
 };
 #endif // _DX7

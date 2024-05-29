@@ -38,6 +38,57 @@ void NKSpace::Layout(nk_context* ctx)
 	}
 }
 
+void NKSpace::EditInfo()
+{
+	nk_layout_row_dynamic(m_ctx, 22, 1);
+
+	nk_label(m_ctx, "Space_Type", NK_TEXT_LEFT);
+	if (nk_option_label(m_ctx, "STATIC", m_layoutFormat == NK_STATIC)) m_layoutFormat = NK_STATIC;
+	if (nk_option_label(m_ctx, "DYNAMIC", m_layoutFormat == NK_DYNAMIC)) m_layoutFormat = NK_DYNAMIC;
+
+	if (m_layoutFormat == NK_DYNAMIC)
+	{
+		nk_label(m_ctx, "Widget_Count", NK_TEXT_LEFT);
+		nk_property_int(m_ctx, "#Count:", 1, &m_dynamicCount, 16, 1, 1);
+	}
+
+
+	nk_layout_row_dynamic(m_ctx, 22, 1);
+	nk_label(m_ctx, "Create_UI", NK_TEXT_LEFT);
+	if (nk_button_label(m_ctx, "Group"))
+	{
+		CreateUI("NKGroup");
+	}
+	if (nk_button_label(m_ctx, "Popup"))
+	{
+		CreateUI("NKPopup");
+	}
+	if (nk_button_label(m_ctx, "Combo"))
+	{
+		CreateUI("NKCombo");
+	}
+	if (nk_button_label(m_ctx, "Button"))
+	{
+		CreateUI("NKButton");
+	}
+	if (nk_button_label(m_ctx, "InputBox"))
+	{
+		CreateUI("NKEdit");
+	}
+	if (nk_button_label(m_ctx, "Image"))
+	{
+		CreateUI("NKImage");
+	}
+	if (nk_button_label(m_ctx, "Label"))
+	{
+		CreateUI("NKLabel");
+	}
+	if (nk_button_label(m_ctx, "CheckBox"))
+	{
+		CreateUI("NKCheckbox");
+	}
+}
+
 void NKSpace::SetLayout(int type)
 {
 	m_layoutFormat = (nk_layout_format)type;
