@@ -114,6 +114,9 @@
     <ClInclude Include="NuklearEditor.h">
       <Filter>소스 파일\Nuklear</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">

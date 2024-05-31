@@ -438,6 +438,7 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="NKBase.h" />
     <ClInclude Include="NKButton.h" />

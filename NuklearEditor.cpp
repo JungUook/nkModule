@@ -16,13 +16,16 @@ NuklearEditor::NuklearEditor()
 	m_option = 0;
 	m_selectedNode = nullptr;
 	m_deletedNode = nullptr;
+
+	m_show_popup = 0;
+	memset(m_popup_content, 0, sizeof(m_popup_content));
 }
 
 NuklearEditor::~NuklearEditor()
 {
 }
 
-void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<const char*, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr)
+void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr)
 {
 	m_selectedNode = nullptr;
 	m_deletedNode = nullptr;
@@ -37,7 +40,6 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 
 void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 {
-
 	if (nk_begin(ctx, "debug", debugRect, NK_WINDOW_TITLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_MOVABLE))
 	{
 		nk_layout_row_dynamic(ctx, 50.f, 2);
@@ -64,6 +66,7 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 			m_vecModule->clear();
 			m_mapModuleID->clear();
 			m_mapModuleName->clear();
+			m_selectedNode = nullptr;
 
 			m_manager->RunFunction("Init");
 		}
@@ -95,14 +98,29 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 
 			float row_layout[2];
 			row_layout[0] = groupLeft;
-			row_layout[1] = debugRect.w - groupLeft;
+			row_layout[1] = debugRect.w -25 - groupLeft;
 
-			nk_layout_row(ctx, NK_STATIC, debugRect.h, 2, row_layout);
+			nk_layout_row(ctx, NK_STATIC, debugRect.h - 175, 2, row_layout);
 			NodeLayout(ctx, row_layout[0]);
 			InfoLayout(ctx, row_layout[1]);
 		}
 		else {
 			FileLayout(ctx);
+		}
+
+		if (m_show_popup) {
+			if (nk_popup_begin(ctx, NK_POPUP_STATIC, "Error", NK_WINDOW_TITLE, nk_rect(debugRect.w / 2 - 400 / 2, debugRect.h / 2 - 100 / 2, 400, 200)))	{
+				
+				nk_layout_row_dynamic(ctx, 100, 1);
+				nk_label_wrap(ctx, m_popup_content);
+
+				nk_layout_row_dynamic(ctx, 20, 1);
+				if (nk_button_label(ctx, "Close Popup")) {
+					m_show_popup = 0;
+					nk_popup_close(ctx);
+				}
+				nk_popup_end(ctx);
+			}
 		}
 	}
 	nk_end(ctx);
@@ -256,4 +274,11 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 			nk_group_end(ctx);
 		}
 	}
+}
+
+void NuklearEditor::OpenErrorPopup(const char* content)
+{
+	memset(m_popup_content, 0, sizeof(m_popup_content));
+	strcpy_s(m_popup_content, content);
+	m_show_popup = 1;
 }

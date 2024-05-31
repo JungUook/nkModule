@@ -6,11 +6,13 @@ class NKSpace : public NKBase
 {
 public:
 	NKSpace();
+	NKSpace(const NKSpace& other);
 	~NKSpace();
 
 public:
-	void Layout(nk_context* ctx) override;
-	void EditInfo() override;
+	virtual void Layout(nk_context* ctx) override;
+	virtual void EditInfo() override;
+	virtual void EditStyle() override;
 	
 	void SetLayout(int type);
 	void SetCols(int cols);

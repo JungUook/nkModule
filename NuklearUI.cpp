@@ -367,6 +367,11 @@ void NuklearUI::DebugLayout()
 	g_editor.EditorLayout(m_ctx, debugRect);
 }
 
+void NuklearUI::ErrorPopup(const char* content)
+{
+	g_editor.OpenErrorPopup(content);
+}
+
 #ifdef _DX9
 void NuklearUI::Render(IDirect3DDevice9* device)
 {
@@ -708,6 +713,18 @@ void NuklearUI::SetPrimary(NKBase* pBase)
 	sprintf_s(primaryName, "%s%ld", pBase->GetPrimaryName(), m_primaryIDCheck++);
 	pBase->SetPrimaryName(primaryName);
 }
+bool NuklearUI::SetPrimaryname(NKBase* pBase, const char* name)
+{
+	bool bSuccess = false;
+	auto it = m_mapModuleName.find(name);
+	if (it == m_mapModuleName.end()) {
+		m_mapModuleName.erase(pBase->GetPrimaryName());
+		pBase->SetPrimaryName(name);
+		m_mapModuleName.insert(std::make_pair(pBase->GetPrimaryName(), pBase));
+		bSuccess = true;
+	}
+	return bSuccess;
+}
 void NuklearUI::Add(NKBase* type)
 {
 	NKBase* base = type;
@@ -778,7 +795,7 @@ void NuklearUI::Remove(unsigned int id)
 
 void NuklearUI::Remove(const char* name)
 {
-	std::map<const char*, NKBase*>::iterator it = m_mapModuleName.find(name);
+	std::map<std::string, NKBase*>::iterator it = m_mapModuleName.find(name);
 	if (it != m_mapModuleName.end())
 	{
 		NKBase* pBase = it->second;
@@ -1061,12 +1078,12 @@ void NuklearUI::LoadSprFile(const char* filename)
 	sprData* pData = m_sprLoader->LoadSprite(filename);
 	m_mapSpr.insert(std::make_pair(filename, pData));
 }
-void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg)
+void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal)
 {
 	auto it = m_mapSpr.find(filename);
 	if (it != m_mapSpr.end()) {
 		sprData* pSpr = (*it).second;
-		bool bSuccess = RegisterRenderData(pSpr);
+		bool bSuccess = RegisterRenderData(pSpr, bImmortal);
 		if (!bSuccess) {
 			throw;
 		}
@@ -1093,12 +1110,12 @@ void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outi
 		}
 	}
 }
-void NuklearUI::GetImage(const char* filename, struct nk_image& outimg)
+void NuklearUI::GetImage(const char* filename, struct nk_image& outimg, bool bImmortal)
 {
 	auto it = m_mapSpr.find(filename);
 	if (it != m_mapSpr.end()) {
 		sprData* pSpr = (*it).second;
-		bool bSuccess = RegisterRenderData(pSpr);
+		bool bSuccess = RegisterRenderData(pSpr, bImmortal);
 		if (!bSuccess) {
 			throw;
 		}
@@ -1112,11 +1129,16 @@ std::map<std::string, sprData*>* NuklearUI::GetSprMap()
 {
 	return &m_mapSpr;
 }
-bool NuklearUI::RegisterRenderData(sprData* pData)
+bool NuklearUI::RegisterRenderData(sprData* pData, bool bImmortal)
 {
 	if (pData->GetSurface() == nullptr) {
 		pData->LoadTexture(d3d7.dd);
-		m_vecRenderData.push_back(pData);
+		if (bImmortal) {
+			m_vecImmortalRenderData.push_back(pData);
+		}
+		else {
+			m_vecRenderData.push_back(pData);
+		}
 	}
 
 	if (pData->GetSurface()) {

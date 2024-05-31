@@ -1,12 +1,20 @@
 #include "pch.h"
 #include "NKSpace.h"
 
-NKSpace::NKSpace()
+NKSpace::NKSpace() : NKBase()
 {
 	m_layoutFormat	= NK_STATIC;
 	m_widgetCount	= 0;
 	m_type			= eSPACE;
 	m_dynamicCount	= 1;
+}
+
+NKSpace::NKSpace(const NKSpace& other) : NKBase()
+{
+	m_layoutFormat	= other.m_layoutFormat;
+	m_widgetCount	= other.m_widgetCount;	
+	m_type			= other.m_type;	
+	m_dynamicCount	= other.m_dynamicCount;	
 }
 
 NKSpace::~NKSpace()
@@ -87,6 +95,11 @@ void NKSpace::EditInfo()
 	{
 		CreateUI("NKCheckbox");
 	}
+}
+
+void NKSpace::EditStyle()
+{
+	nk_label(m_ctx, "None", NK_TEXT_LEFT);
 }
 
 void NKSpace::SetLayout(int type)

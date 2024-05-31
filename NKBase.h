@@ -15,61 +15,7 @@
 #include "LuaLibrary.h"
 #include "LuaBridge/LuaBridge.h"
 #include "NuklearUI.h"
-
-
-#ifdef _DEBUG
-#define CHECK_PTR(ptr) \
-    if ((ptr) == nullptr) { \
-        std::cerr << "Error: Null " << __func__ <<" pointer passed to processPointer" << std::endl; \
-        return; \
-    }
-
-#define CHECK_LUA_REF(ref) \
-    if ((ref).isNil() || !(ref).isUserdata()) { \
-        lua_State* L = (ref).state(); \
-        lua_Debug ar; \
-        if (lua_getstack(L, 1, &ar) && lua_getinfo(L, "Sl", &ar)) { \
-            std::cerr << "Error: Invalid reference passed at " \
-                      << ar.short_src << ":" << ar.currentline << std::endl; \
-        } \
-        return; \
-    }
-
-#else
-#define CHECK_PTR(ptr) \
-	if ((ptr) == nullptr) { \
-		return; \
-	}
-
-#define CHECK_LUA_REF(ref) \
-	if ((ref).isNil() || !(ref).isUserdata()) { \
-        return; \
-    }
-#endif // _DEBUG
-enum eTypeUI {
-	eBASE = -1
-
-	, eWINDOW = 0
-	, eSPACE
-	, eGROUP
-	, ePOPUP
-	, eCOMBO
-	, eBUTTON
-	, eEDIT
-	, eIMAGE
-	, eLABEL
-	, eCOMBO_ITEM
-	, eCHECKBOX
-	, eSLIDER
-	, ePROGRESS
-	, eSELECTABLE
-	, eTREE
-	, eCHART
-	, eCOLOR_PICKER
-	, eTOOLTIP
-	, eMENU
-	, eSCROLLBAR
-};
+#include "Constants.h"
 
 class NuklearUI;
 class NKBase
@@ -85,6 +31,7 @@ public:
 public:
 	virtual void Initialize(NuklearUI* pManager);
 	virtual void Initialize(NKBase* pParent);
+	virtual void Initialize();
 	virtual void Update(nk_context* ctx);
 	virtual void Layout(nk_context* ctx);
 	virtual void SafeRenderStart();
@@ -139,6 +86,7 @@ public:
 public:
 	virtual void LayoutEditor();
 	virtual void EditInfo();
+	virtual void EditStyle();
 
 	virtual struct nk_vec2* EditPivot();
 	virtual struct nk_rect* EditTransform();
@@ -174,9 +122,92 @@ protected:
 	NKBase* m_pParent;
 	std::list<NKBase*> m_pChildList;
 
-#pragma region Style Setup	
+#pragma region Style Setup
+
+protected:
+	//header
+	void HeaderEditor();
+	void HeaderCloseButtonEditor();
+	void HeaderMinimizeButtonEditor();
+
+	//window
+	void WindowEditor();
+	void FixedBackgroundEditor();
+	void BackgroundEditor();
+	void ScalerEditor();
+	void PropertiesEditor();
+	void PopupEditor();
+	void ComboEditor();
+	void ContextualEditor();
+	void MenuEditor();
+	void GroupEditor();
+	void TooltipEditor();
+
+	//component
+	void ComponentEditor();
+	void TextComponentEditor();
+	void ButtonComponentEditor();
+	void ContextualButtonComponentEditor();
+	void MenuButtonComponentEditor();
+	void OptionComponentEditor();
+	void CheckboxComponentEditor();
+	void SelectableComponentEditor();
+	void SliderComponentEditor();
+	void ProgressComponentEditor();
+	void PropertyComponentEditor();
+	void EditComponentEditor();
+	void ChartComponentEditor();
+	void ScrollhComponentEditor();
+	void ScrollvComponentEditor();
+	void TabComponentEditor();
+	void ComboComponentEditor();
+
+
+	//make editor tool
+	void CustomComponentsEditor(ComponentButton& tpi, struct nk_style_button& button, int id);
+	void CustomComponentsEditor(ComponentToggle& tpi, struct nk_style_toggle& toggle, int id);
+	void CustomComponentsEditor(ComponentSelectable& tpi, struct nk_style_selectable& selectable, int id);
+	void CustomComponentsEditor(ComponentSlider& tpi, struct nk_style_slider& slider, int id);
+	void CustomComponentsEditor(ComponentProgress& tpi, struct nk_style_progress& progress, int id);
+	void CustomComponentsEditor(ComponentProperty& tpi, struct nk_style_property& property, int id);
+	void CustomComponentsEditor(ComponentEdit& tpi, struct nk_style_edit& edit, int id);
+	void CustomComponentsEditor(NKStyleItem& nsi, struct nk_style_chart& chart, int id);
+	void CustomComponentsEditor(ComponentScrollbar& tpi, struct nk_style_scrollbar& scrollbar, int id);
+	void CustomComponentsEditor(ComponentTab& tpi, struct nk_style_tab& tab, int id);
+	void CustomComponentsEditor(ComponentCombo& tpi, struct nk_style_combo& combo, int id);
+	void ItemEditor(NKStyleItem& sItem);
+	void PropertyVector2(const char* name, struct nk_vec2& vec, float max, float min, float step, float inc_per_pixel);
+	void ColorPicker(struct nk_color& color);
+
 public:
 	nk_style m_style;
+	nk_style* m_pParentStyle;
+	nk_bool m_followParentStyle;
+
+	ComponentItem m_sHeader;
+	ComponentButton m_sButton_close;
+	ComponentButton m_sButton_minimize;
+
+	NKStyleItem m_sBackground;
+	NKStyleItem m_sScaler;
+
+	ComponentButton m_sButton_default;
+	ComponentButton m_sButton_contextual;
+	ComponentButton m_sButton_menu;
+
+	ComponentToggle m_sToggle_option;
+	ComponentToggle m_sToggle_checkbox;
+	ComponentSelectable m_sSelectable;
+	ComponentSlider m_sSlider;
+	ComponentProgress m_sProgress;
+	ComponentProperty m_sProperty;
+	ComponentEdit m_sEdit;
+	NKStyleItem m_sChart;
+	ComponentScrollbar m_sScrollbarh;
+	ComponentScrollbar m_sScrollbarv;
+	ComponentTab m_sTab;
+	ComponentCombo m_sCombo;
+
 
 #pragma endregion // Style Setup
 };

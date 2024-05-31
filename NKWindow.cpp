@@ -24,42 +24,29 @@ NKWindow::NKWindow() : NKBase()
 	m_background = 0;
 	m_scale_left = 0;
 	m_no_input = 0;
-
-	m_bgImagePath = "None";
-	m_bgSprIndex = 0;
-	m_bgSprSize = 0;
-	m_bbgCustom = false;
 }
 
 NKWindow::NKWindow(const NKWindow& other) : NKBase()
 {
-	m_type				= other.m_type;
-	m_flags				= other.m_flags;
-	m_pivot.x			= other.m_pivot.x;
-	m_pivot.y			= other.m_pivot.y;
-	m_worldTransform.x	= other.m_worldTransform.x;
-	m_worldTransform.y	= other.m_worldTransform.y;
-	m_worldTransform.w	= other.m_worldTransform.w;
-	m_worldTransform.h	= other.m_worldTransform.h;
-	m_border			= other.m_border;
-	m_movable			= other.m_movable;
-	m_scalable			= other.m_scalable;
-	m_closable			= other.m_closable;
-	m_minimizable		= other.m_minimizable;
-	m_no_scrollbar		= other.m_no_scrollbar;
-	m_title				= other.m_title;
-	m_scroll_auto_hide	= other.m_scroll_auto_hide;
-	m_background		= other.m_background;
-	m_scale_left		= other.m_scale_left;
-	m_no_input			= other.m_no_input;
-	m_titlebgImagePath	= other.m_titlebgImagePath;
-	m_titlebgSprIndex	= other.m_titlebgSprIndex;
-	m_titlebgSprSize	= other.m_titlebgSprSize;
-	m_btitlebgCustom	= other.m_btitlebgCustom;
-	m_bgImagePath		= other.m_bgImagePath;
-	m_bgSprIndex		= other.m_bgSprIndex;
-	m_bgSprSize			= other.m_bgSprSize;
-	m_bbgCustom			= other.m_bbgCustom;
+	m_type					= other.m_type;
+	m_flags					= other.m_flags;
+	m_pivot.x				= other.m_pivot.x;
+	m_pivot.y				= other.m_pivot.y;
+	m_worldTransform.x		= other.m_worldTransform.x;
+	m_worldTransform.y		= other.m_worldTransform.y;
+	m_worldTransform.w		= other.m_worldTransform.w;
+	m_worldTransform.h		= other.m_worldTransform.h;
+	m_border				= other.m_border;
+	m_movable				= other.m_movable;
+	m_scalable				= other.m_scalable;
+	m_closable				= other.m_closable;
+	m_minimizable			= other.m_minimizable;
+	m_no_scrollbar			= other.m_no_scrollbar;
+	m_title					= other.m_title;
+	m_scroll_auto_hide		= other.m_scroll_auto_hide;
+	m_background			= other.m_background;
+	m_scale_left			= other.m_scale_left;
+	m_no_input				= other.m_no_input;	
 }
 
 NKWindow::~NKWindow()
@@ -88,19 +75,25 @@ void NKWindow::Layout(nk_context* ctx)
 
 void NKWindow::SafeRenderStart()
 {
-	if (m_btitlebgCustom)
-	{
-		struct nk_image img;
-		m_manager->GetSprite(m_titlebgImagePath.c_str(), m_titlebgSprIndex, img);
-		m_style.window.header.normal = nk_style_item_image(img);
-	}
-
-	if (m_bbgCustom)
-	{
-		struct nk_image img;
-		m_manager->GetSprite(m_bgImagePath.c_str(), m_bgSprIndex, img);
-		m_style.window.fixed_background = nk_style_item_image(img);
-	}
+	//if (m_bbgCustom)
+	//{
+	//	if (m_titlebgOption == 1) {
+	//		struct nk_image img;
+	//		m_manager->GetSprite(m_bgImagePath.c_str(), m_bgSprIndex, img);
+	//		m_style.window.fixed_background = nk_style_item_image(img);
+	//	}
+	//	else if (m_titlebgOption == 2) {
+	//		struct nk_image img;
+	//		m_manager->GetSprite(m_titlebgImagePath.c_str(), m_titlebgSprIndex, img);
+	//		struct nk_nine_slice nineslice;
+	//		nineslice.img = img;
+	//		nineslice.l = (nk_ushort)m_bgNineslice[0];
+	//		nineslice.t = (nk_ushort)m_bgNineslice[1];
+	//		nineslice.r = (nk_ushort)m_bgNineslice[2];
+	//		nineslice.b = (nk_ushort)m_bgNineslice[3];
+	//		m_style.window.fixed_background = nk_style_item_nine_slice(nineslice);
+	//	}
+	//}
 }
 
 void NKWindow::SafeRenderEnd()
@@ -155,98 +148,11 @@ void NKWindow::EditInfo()
 		}
 		nk_tree_pop(m_ctx);
 	}
+}
 
-	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Select_Title_BG", NK_MINIMIZED)) {
-		auto mapSpr = m_manager->GetSprMap();
-		int size = mapSpr->size();
-
-		nk_layout_row_dynamic(m_ctx, 22, 1);
-		nk_property_int(m_ctx, "#Index:", 0, &m_titlebgSprIndex, m_titlebgSprSize - 1, 1, 1);
-		nk_layout_row_dynamic(m_ctx, 22, 2);
-		nk_label(m_ctx, "Selected:", NK_TEXT_LEFT);
-		std::filesystem::path filePath(m_titlebgImagePath.c_str());
-		nk_label(m_ctx, filePath.filename().string().c_str(), NK_TEXT_RIGHT);
-		if (nk_button_label(m_ctx, "apply"))
-		{
-			m_btitlebgCustom = true;
-		}
-		if (nk_button_label(m_ctx, "clear"))
-		{
-			m_btitlebgCustom = false;
-			m_style.window.header.normal = m_ctx->style.window.header.normal;
-		}
-
-		if (size > 0)
-		{
-			nk_layout_row_dynamic(m_ctx, 150 + 22 * size, 1);
-			if (nk_group_begin(m_ctx, "SPR List", NK_WINDOW_TITLE)) {
-
-				float ratio[2] = { 0.8f, 0.2f };
-				nk_layout_row(m_ctx, NK_DYNAMIC, 22, 2, ratio);
-				int selected = 0;
-
-				for (auto it = mapSpr->begin(); it != mapSpr->end(); ++it) {
-					std::filesystem::path filePath((*it).first.c_str());
-					nk_label(m_ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
-
-					if (nk_button_label(m_ctx, "Load")) {
-						m_titlebgImagePath = (*it).first;
-						m_titlebgSprSize = ((*it).second)->GetSpr()->GetXCount() * ((*it).second)->GetSpr()->GetYCount();
-						if (m_titlebgSprSize <= m_titlebgSprIndex) {
-							m_titlebgSprIndex = 0;
-						}
-					}
-				}
-				nk_group_end(m_ctx);
-			}
-		}
-		nk_tree_pop(m_ctx);
-	}
-
-	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Select_BG", NK_MINIMIZED)) {
-		auto mapSpr = m_manager->GetSprMap();
-		int size = mapSpr->size();
-
-		nk_layout_row_dynamic(m_ctx, 22, 1);
-		nk_property_int(m_ctx, "#Index:", 0, &m_bgSprIndex, m_bgSprSize - 1, 1, 1);
-		nk_layout_row_dynamic(m_ctx, 22, 2);
-		nk_label(m_ctx, "Selected:", NK_TEXT_LEFT);
-		std::filesystem::path filePath(m_bgImagePath.c_str());
-		nk_label(m_ctx, filePath.filename().string().c_str(), NK_TEXT_RIGHT);
-		if (nk_button_label(m_ctx, "apply"))
-		{
-			m_bbgCustom = true;
-		}
-		if (nk_button_label(m_ctx, "clear"))
-		{
-			m_bbgCustom = false;
-			m_style.window.fixed_background = m_ctx->style.window.fixed_background;
-		}
-
-		if (size > 0)
-		{
-			nk_layout_row_dynamic(m_ctx, 150 + 22 * size, 1);
-			if (nk_group_begin(m_ctx, "SPR List", NK_WINDOW_TITLE)) {
-
-				float ratio[2] = { 0.8f, 0.2f};
-				nk_layout_row(m_ctx, NK_DYNAMIC, 22, 2, ratio);
-				int selected = 0;
-
-				for (auto it = mapSpr->begin(); it != mapSpr->end(); ++it) {
-					std::filesystem::path filePath((*it).first.c_str());
-					nk_label(m_ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
-
-					if (nk_button_label(m_ctx, "Load")) {
-						m_bgImagePath = (*it).first;
-						m_bgSprSize = ((*it).second)->GetSpr()->GetXCount() * ((*it).second)->GetSpr()->GetYCount();
-						if (m_bgSprSize <= m_bgSprIndex) {
-							m_bgSprIndex = 0;
-						}
-					}
-				}
-				nk_group_end(m_ctx);
-			}
-		}
-		nk_tree_pop(m_ctx);
-	}
+void NKWindow::EditStyle()
+{
+	HeaderEditor();
+	WindowEditor();
+	ComponentEditor();
 }

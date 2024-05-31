@@ -85,6 +85,7 @@ public:
 	void NKInputEnd();
 	void Update();
 	void DebugLayout();
+	void ErrorPopup(const char* content);
 #ifdef _DX9
 	void Render(IDirect3DDevice9* device);
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam, D3DPRESENT_PARAMETERS* present);
@@ -118,6 +119,7 @@ public:
 	struct nk_vec2* GetPivot();
 	struct nk_rect* GetViewport();
 	void SetPrimary(NKBase* pBase);
+	bool SetPrimaryname(NKBase* pBase, const char* name);
 	void Add(NKBase* type);
 	struct nk_image* SearchImage(int SID);
 
@@ -142,7 +144,7 @@ private:
 	std::vector<NKBase*> m_vecObject;
 	std::vector<NKBase*> m_vecModule;
 	std::map<unsigned int, NKBase*> m_mapModuleID;
-	std::map<const char*, NKBase*> m_mapModuleName;
+	std::map<std::string, NKBase*> m_mapModuleName;
 	std::map<int, struct nk_image> m_mapImage;
 
 	struct nk_vec2 m_pivot;
@@ -154,11 +156,11 @@ public:
 	void Register_spr(sprLoader* pSpr);
 	void OpenFileDialog();
 	void LoadSprFile(const char* filename);
-	void GetSprite(const char* filename, int index, struct nk_image& outimg);
-	void GetImage(const char* filename, struct nk_image& outimg);
+	void GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal = false);
+	void GetImage(const char* filename, struct nk_image& outimg, bool bImmortal = false);
 	std::map<std::string, sprData*>* GetSprMap();
 
-	bool RegisterRenderData(sprData* pData);
+	bool RegisterRenderData(sprData* pData, bool bImmortal = false);
 	void ReleaseRenderData();
 
 private:
@@ -166,6 +168,7 @@ private:
 	std::map<std::string, sprData*> m_mapSpr;
 
 	std::vector<sprData*> m_vecRenderData;
+	std::vector<sprData*> m_vecImmortalRenderData;
 
 #endif // _DX7
 

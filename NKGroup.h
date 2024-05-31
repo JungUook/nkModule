@@ -6,10 +6,28 @@ class NKGroup : public NKBase
 {
 public:
 	NKGroup();
+	NKGroup(const NKGroup& other);
 	~NKGroup();
 
 public:
-	void Layout(nk_context* ctx) override;
+	virtual void Layout(nk_context* ctx) override;
+	virtual void SafeRenderStart() override;
+	virtual void SafeRenderEnd() override;
+	virtual void EditInfo() override;
+	virtual void EditStyle() override;
+
+private:
+	int m_border;
+	int m_movable;
+	int m_scalable;
+	int m_closable;
+	int m_minimizable;
+	int m_no_scrollbar;
+	int m_title;
+	int m_scroll_auto_hide;
+	int m_background;
+	int m_scale_left;
+	int m_no_input;
 
 public:
 	nk_layout_format m_layoutFormat;

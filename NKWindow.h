@@ -10,10 +10,11 @@ public:
 	~NKWindow();
 
 public:
-	void Layout(nk_context* ctx) override;
-	void SafeRenderStart() override;
-	void SafeRenderEnd() override;
-	void EditInfo() override;
+	virtual void Layout(nk_context* ctx) override;
+	virtual void SafeRenderStart() override;
+	virtual void SafeRenderEnd() override;
+	virtual void EditInfo() override;
+	virtual void EditStyle() override;
 
 private:
 	int m_border;
@@ -28,19 +29,8 @@ private:
 	int m_scale_left;
 	int m_no_input;
 
-	//title_bg
-private:
-	std::string m_titlebgImagePath;
-	int m_titlebgSprIndex;
-	int m_titlebgSprSize;
-	bool m_btitlebgCustom;
-
 	//bg
 private:
-	std::string m_bgImagePath;
-	int m_bgSprIndex;
-	int m_bgSprSize;
-	bool m_bbgCustom;
 };
 
 #endif //NKWindow_h__
