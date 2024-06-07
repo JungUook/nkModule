@@ -152,7 +152,5 @@ void NKWindow::EditInfo()
 
 void NKWindow::EditStyle()
 {
-	HeaderEditor();
-	WindowEditor();
-	ComponentEditor();
+	NKBase::EditStyle();
 }

@@ -24,7 +24,7 @@ void NKCheckbox::EditInfo()
 	nk_label(m_ctx, "Text: ", NK_TEXT_LEFT);
 
 	//nk_flags result = nk_edit_string(m_ctx, NK_EDIT_FIELD, m_editName, &m_editName_len, 64, nk_filter_default);
-	nk_flags result = nk_edit_string_zero_terminated(m_ctx, NK_EDIT_FIELD, m_editName, sizeof(m_editName), nk_filter_default);
+	nk_flags result = nk_edit_string_zero_terminated(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, m_editName, sizeof(m_editName), nk_filter_default);
 	if (result & NK_EDIT_ACTIVE) {
 		m_manager->IMEInputSystem(m_editName, &m_editName_len);
 	}

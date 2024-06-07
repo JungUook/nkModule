@@ -500,6 +500,9 @@ void NKBase::EditInfo()
 
 void NKBase::EditStyle()
 {
+	HeaderEditor();
+	WindowEditor();
+	ComponentEditor();
 }
 
 struct nk_vec2* NKBase::EditPivot()
