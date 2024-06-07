@@ -447,12 +447,33 @@ void NKBase::LayoutEditor()
 		nk_layout_row_dynamic(m_ctx, 22, 1);
 		nk_checkbox_label(m_ctx, "follow_parent_style", &m_followParentStyle);
 
+		if (m_followParentStyle) {
+			if (m_pParent != nullptr) {
+
+				if (m_pParent->m_pParentStyle != nullptr) {
+					m_pParentStyle = m_pParent->m_pParentStyle;
+				}
+				else {
+					m_pParentStyle = &m_pParent->m_style;
+				}
+
+			}
+			else {
+				m_pParentStyle = nullptr;
+			}
+		}
+		else {
+			m_pParentStyle = nullptr;
+		}
+
 		nk_tree_pop(m_ctx);		
 	}
 	if (nk_tree_push(m_ctx, NK_TREE_TAB, "Transform", NK_MINIMIZED)) {
 
 		PropertyVector2("pivot", m_pivot, .0f, 1.f, 0.01f, 0.01f);
 		PropertyVector2("Position", m_position, -1920.f, 1920.f, 1.f, 1.f);
+
+		SetPosition(m_position.x, m_position.y);
 
 		nk_label(m_ctx, "Rect", NK_TEXT_LEFT);
 		nk_layout_row_dynamic(m_ctx, 22, 2);
@@ -2027,6 +2048,4 @@ void NKBase::ColorPicker(struct nk_color& color)
 	color.r = ((nk_byte)(colorf.r * 255.0f));
 	color.g = ((nk_byte)(colorf.g * 255.0f));
 	color.b = ((nk_byte)(colorf.b * 255.0f));
-
-
 }

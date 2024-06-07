@@ -27,6 +27,10 @@ void NKEdit::Layout(nk_context* ctx)
 {
 	nk_flags nkFlag = nk_edit_string(ctx, m_flags, m_inputText, &m_inputTextLength, sizeof(m_inputText), m_filter);
 
+	if (nkFlag & NK_EDIT_ACTIVE) {
+		m_manager->IMEInputSystem(m_editName, &m_editName_len);
+	}
+
 	if (nkFlag & NK_EDIT_COMMITED)
 	{
 		CallEvent(NK_EDIT_COMMITED);

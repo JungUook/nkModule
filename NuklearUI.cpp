@@ -629,6 +629,45 @@ bool NuklearUI::ReadImageFile(const char* filename, IDirectDrawSurface7** pTextu
 	stbi_image_free(data);
 	return true;
 }
+void NuklearUI::IMEInputSystem(char* memory, int* len)
+{
+	if (d3d7.ctx.text_edit.bComposition) {
+		nk_hash hash;
+		struct nk_text_edit* edit;
+		struct nk_window* win;
+		win = d3d7.ctx.current;
+		hash = win->edit.seq;
+		edit = &d3d7.ctx.text_edit;
+
+		if (edit->cursor <= 0) {
+			return;
+		}
+
+		edit->select_start = edit->cursor - 1;
+		edit->select_end = edit->cursor;
+
+		win->edit.sel_start = edit->select_start;
+		win->edit.sel_end = edit->select_end;
+	}
+
+	//char utf8[5];
+	//int len = nk_utf_encode(buffer[0], utf8, sizeof(utf8));
+
+	//// Ensure the edit buffer has enough space
+	//if (len > 0 && d3d7.ctx.text_edit.string.len + len < d3d7.ctx.text_edit.string.buffer.allocated) {
+	//	// Clear current selection
+	//	nk_textedit_delete_selection(&d3d7.ctx.text_edit);
+
+	//	// Insert the unicode character at the cursor position
+	//	for (int i = 0; i < len; i++) {
+	//		nk_textedit_text(&d3d7.ctx.text_edit, &utf8[i], 1);
+	//	}
+
+	//	// Update the selection to include the newly inserted character
+	//	d3d7.ctx.text_edit.select_start = d3d7.ctx.text_edit.cursor - len;
+	//	d3d7.ctx.text_edit.select_end = d3d7.ctx.text_edit.cursor;
+	//}
+}
 #endif
 void NuklearUI::Register_UI()
 {
@@ -1215,71 +1254,6 @@ void NuklearUI::DebugLoadLuaFile(const char* filePath)
 	}
 }
 
-//원래 함수
-//void NuklearUI::RegisterBase()
-//{
-//	luabridge::getGlobalNamespace(m_lua)
-//		.beginClass<NuklearUI>("NuklearUI")
-//		.addFunction("Add", &NuklearUI::Add)
-//		.endClass();
-//
-//	luabridge::push(m_lua, this);
-//	lua_setglobal(m_lua, "system");
-//
-//	luabridge::getGlobalNamespace(m_lua)
-//		.beginClass<NKBase>("NKBase")
-//		.addFunction("SetActive", &NKBase::SetActive)
-//		.addFunction("AddChild", &NKBase::LAddChild)
-//		.addFunction("RemoveChild", &NKBase::LRemoveChild)
-//		.addFunction("SetPivot", &NKBase::SetPivot)
-//		.addFunction("SetPosition", &NKBase::SetPosition)
-//		.addFunction("SetSize", &NKBase::SetSize)
-//		.addFunction("SetBackground", &NKBase::SetBackground)
-//		.addFunction("SetPrimaryName", &NKBase::SetPrimaryName)
-//		.endClass()
-//		.deriveClass<NKWindow, NKBase>("NKWindow")
-//		.endClass()
-//		.deriveClass<NKSpace, NKBase>("NKSpace")
-//		.endClass()
-//		.deriveClass<NKGroup, NKBase>("NKGroup")
-//		.endClass()
-//		.deriveClass<NKPopup, NKBase>("NKPopup")
-//		.endClass()
-//		.deriveClass<NKCombo, NKBase>("NKCombo")
-//		.addFunction("SetComboName", &NKCombo::SetComboName)
-//		.addFunction("SetLabelSize", &NKCombo::SetLabelSize)
-//		.endClass()
-//		.deriveClass<NKComboItem, NKBase>("NKComboItem")
-//		.addFunction("SetComboName", &NKComboItem::SetComboName)
-//		.addFunction("RegistFunction", &NKComboItem::RegistFunction)
-//		.endClass()
-//		.deriveClass<NKButton, NKBase>("NKButton")
-//		.addFunction("SetComboName", &NKButton::SetButtonName)
-//		.addFunction("RegistFunction", &NKButton::RegistFunction)
-//		.endClass()
-//		.deriveClass<NKEdit, NKBase>("NKEdit")
-//		.addFunction("Clear", &NKEdit::Clear)
-//		.addFunction("RegistFunction", &NKEdit::RegistFunction)
-//		.endClass()
-//		.deriveClass<NKImage, NKBase>("NKImage")
-//		.endClass()
-//		.deriveClass<NKLabel, NKBase>("NKLabel")
-//		.endClass()
-//		.beginClass<ObjMaker>("ObjMaker")
-//		.addStaticFunction("createWindow", &ObjMaker::create<NKWindow>)
-//		.addStaticFunction("createSpace", &ObjMaker::create<NKSpace>)
-//		.addStaticFunction("createGroup", &ObjMaker::create<NKGroup>)
-//		.addStaticFunction("createPopup", &ObjMaker::create<NKPopup>)
-//		.addStaticFunction("createCombo", &ObjMaker::create<NKCombo>)
-//		.addStaticFunction("createComboItem", &ObjMaker::create<NKComboItem>)
-//		.addStaticFunction("createButton", &ObjMaker::create<NKButton>)
-//		.addStaticFunction("createEdit", &ObjMaker::create<NKEdit>)
-//		.addStaticFunction("createImage", &ObjMaker::create<NKImage>)
-//		.addStaticFunction("createLabel", &ObjMaker::create<NKLabel>)
-//		.endClass();
-//}
-
-//GPT4o 결과물
 void NuklearUI::RegisterBase()
 {
 	luabridge::getGlobalNamespace(m_lua)
@@ -1328,7 +1302,6 @@ void NuklearUI::RegisterBase()
 		.addFunction("RegistFunction", &NKEdit::RegistFunction)
 		.endClass()
 		.deriveClass<NKImage, NKBase>("NKImage")
-		.addFunction("SetImage", &NKImage::SetImage)
 		.endClass()
 		.deriveClass<NKLabel, NKBase>("NKLabel")
 		.endClass()

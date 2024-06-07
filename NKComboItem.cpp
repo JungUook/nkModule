@@ -10,10 +10,10 @@ NKComboItem::NKComboItem()
 
 	m_pivot.x = 0.f;
 	m_pivot.y = 0.f;
-	m_worldTransform.x = 50.f;
-	m_worldTransform.y = 50.f;
-	m_worldTransform.w = 150.f;
-	m_worldTransform.h = 60.f;
+	m_worldTransform.x = 0.f;
+	m_worldTransform.y = 0.f;
+	m_worldTransform.w = 100;
+	m_worldTransform.h = 22.f;
 
 	memset(m_content, 0, sizeof(m_content));
 	memset(m_functionName, 0, sizeof(m_functionName));
@@ -26,12 +26,31 @@ NKComboItem::~NKComboItem()
 
 void NKComboItem::Layout(nk_context* ctx)
 {
-	if (nk_combo_item_label(ctx, m_content, m_flags))
+	NKCombo* parent = (NKCombo*)m_pParent;
+	if (parent)
 	{
-		NKCombo* pParent = (NKCombo*) m_pParent;
-		pParent->SetCurrentLabel(m_labelNumber);
-		pParent->SetComboName(m_content);
-		CallEvent();
+		if (nk_combo_item_label(ctx, m_content, parent->m_labelAlignment))
+		{
+			parent->SetCurrentLabel(m_labelNumber);
+			parent->SetComboName(m_content);
+			CallEvent();
+		}
+	}
+	else {
+
+	}
+}
+
+void NKComboItem::EditInfo()
+{
+	float ratio[2];
+	ratio[0] = 0.3f;
+	ratio[1] = 0.7f;
+	nk_layout_row(m_ctx, NK_DYNAMIC, 44, 2, ratio);
+	nk_label(m_ctx, "Text: ", NK_TEXT_LEFT);
+	nk_flags result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_editName, &m_editName_len, 64, nk_filter_default);
+	if (result & NK_EDIT_COMMITED) {
+		SetComboName(m_editName);
 	}
 }
 

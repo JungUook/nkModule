@@ -9,11 +9,13 @@ public:
 	~NKImage();
 
 public:
-	void Layout(nk_context* ctx) override;
+	virtual void Layout(nk_context* ctx) override;
+	virtual void EditInfo() override;
 
-	void SetImage(int SID);
 public:
-	struct nk_image* m_image;
+	std::string m_imagePath;
+	int m_sprIndex;
+	int m_sprSize;
 };
 
 

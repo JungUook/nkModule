@@ -4395,6 +4395,8 @@ struct nk_text_edit {
     unsigned char padding1;
     float preferred_x;
     struct nk_text_undo_state undo;
+
+    bool bComposition;
 };
 
 /* filter function */

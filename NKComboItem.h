@@ -9,7 +9,9 @@ public:
 	~NKComboItem();
 
 public:
-	void Layout(nk_context* ctx) override;
+	virtual void Layout(nk_context* ctx) override;
+	virtual void EditInfo() override;
+		
 	void SetComboName(const char* name);
 	void RegistFunction(const char* functionName, const char* argsName = nullptr);
 	void SetLabel(int number);

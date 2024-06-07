@@ -65,6 +65,9 @@ static struct {
     LPDIRECT3DDEVICE7 device;
     LPDIRECTDRAWSURFACE7 font_texture;
     int bInit;
+
+    nk_rune lastUnicode;
+    int keyDown;
 } d3d7;
 
 static void
@@ -152,6 +155,7 @@ nk_d3d7_init(LPDIRECTDRAW7 pdd, LPDIRECT3DDEVICE7 pdevice) {
     nk_buffer_init_default(&d3d7.cmds);
 
     d3d7.bInit = 10000;
+    d3d7.keyDown = 0;
     return &d3d7.ctx;
 }
 
@@ -495,10 +499,11 @@ nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     case WM_KEYUP:
     case WM_SYSKEYDOWN:
     case WM_SYSKEYUP:
+    case WM_IME_KEYDOWN:
+    case WM_IME_KEYUP:
     {
         int down = !((lparam >> 31) & 1);
         int ctrl = GetKeyState(VK_CONTROL) & (1 << 15);
-
         switch (wparam)
         {
         case VK_SHIFT:
@@ -508,6 +513,7 @@ nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
             return 1;
 
         case VK_DELETE:
+            d3d7.lastUnicode = 0;
             nk_input_key(&d3d7.ctx, NK_KEY_DEL, down);
             return 1;
 
@@ -516,33 +522,60 @@ nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
             return 1;
 
         case VK_TAB:
+            d3d7.lastUnicode = 0;
             nk_input_key(&d3d7.ctx, NK_KEY_TAB, down);
             return 1;
 
         case VK_LEFT:
-            if (ctrl)
+            d3d7.lastUnicode = 0;
+            if (ctrl) {
                 nk_input_key(&d3d7.ctx, NK_KEY_TEXT_WORD_LEFT, down);
-            else
+            }
+            else {
                 nk_input_key(&d3d7.ctx, NK_KEY_LEFT, down);
+            }
             return 1;
 
         case VK_RIGHT:
-            if (ctrl)
-                nk_input_key(&d3d7.ctx, NK_KEY_TEXT_WORD_RIGHT, down);
-            else
-                nk_input_key(&d3d7.ctx, NK_KEY_RIGHT, down);
+            d3d7.lastUnicode = 0;
+			if (ctrl) {
+				nk_input_key(&d3d7.ctx, NK_KEY_TEXT_WORD_RIGHT, down);
+			}
+			else {
+				nk_input_key(&d3d7.ctx, NK_KEY_RIGHT, down);
+			}
             return 1;
 
         case VK_BACK:
-            nk_input_key(&d3d7.ctx, NK_KEY_BACKSPACE, down);
+            if (d3d7.ctx.text_edit.bComposition) {
+                nk_input_key(&d3d7.ctx, NK_KEY_BACKSPACE, down);
+            }
+            else {
+                if (down) {
+                    ++d3d7.keyDown;
+                }
+                else {
+                    --d3d7.keyDown;
+                }
+
+                if (d3d7.keyDown < 0) {
+                    down = 1;
+                    d3d7.keyDown = 0;
+                }
+
+                d3d7.lastUnicode = 0;
+                nk_input_key(&d3d7.ctx, NK_KEY_BACKSPACE, down);
+            }
             return 1;
 
         case VK_HOME:
+            d3d7.lastUnicode = 0;
             nk_input_key(&d3d7.ctx, NK_KEY_TEXT_START, down);
             nk_input_key(&d3d7.ctx, NK_KEY_SCROLL_START, down);
             return 1;
 
         case VK_END:
+            d3d7.lastUnicode = 0;
             nk_input_key(&d3d7.ctx, NK_KEY_TEXT_END, down);
             nk_input_key(&d3d7.ctx, NK_KEY_SCROLL_END, down);
             return 1;
@@ -592,98 +625,119 @@ nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
         }
         return 0;
     }
-
-    case WM_CHAR:
-        if (wparam >= 32)
-        {
-            nk_input_unicode(&d3d7.ctx, (nk_rune)wparam);
-            return 1;
-        }
-        break;
-    case WM_IME_COMPOSITION: {
-        HIMC hIMC = ImmGetContext(hwnd);
-        if (!hIMC) {
-            break;
-        }
-
-        // 조합 완료된 문자열을 가져오는 부분
-        if (lparam & GCS_RESULTSTR) {
-            DWORD size = ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, NULL, 0);
-            if (size > 0) {
-                WCHAR* buffer = new WCHAR[size / sizeof(WCHAR) + 1];
-                ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, buffer, size);
-                buffer[size / sizeof(WCHAR)] = 0;  // null-terminate
-                // buffer를 사용하여 입력 처리
-                nk_input_unicode(&d3d7.ctx, buffer[0]);
-                delete[] buffer;
-            }
-        }
-
-        // 조합 중인 문자열을 가져오는 부분
-        if (lparam & GCS_COMPSTR) {
-            DWORD size = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, NULL, 0);
-            if (size > 0) {
-                WCHAR* buffer = new WCHAR[size / sizeof(WCHAR) + 1];
-                ImmGetCompositionStringW(hIMC, GCS_COMPSTR, buffer, size);
-                buffer[size / sizeof(WCHAR)] = 0;  // null-terminate
-                // nk_input_unicode 함수를 사용하여 Nuklear에 문자열 입력을 반영할 수 있습니다.
-                // 각 문자에 대해 nk_input_unicode 호출이 필요할 수 있습니다.
-                for (int i = 0; buffer[i] != 0; ++i) {
-                    nk_input_unicode(&d3d7.ctx, buffer[i]);
-                }
-                delete[] buffer;
-            }
-        }
-
-        ImmReleaseContext(hwnd, hIMC);
-
-        return 1;
-    }
-
     case WM_LBUTTONDOWN:
+        d3d7.lastUnicode = 0;
         nk_input_button(&d3d7.ctx, NK_BUTTON_LEFT, pt.x, pt.y, 1);
         SetCapture(hwnd);
         return 1;
 
     case WM_LBUTTONUP:
+        d3d7.lastUnicode = 0;
         nk_input_button(&d3d7.ctx, NK_BUTTON_DOUBLE, pt.x, pt.y, 0);
         nk_input_button(&d3d7.ctx, NK_BUTTON_LEFT, pt.x, pt.y, 0);
         ReleaseCapture();
         return 1;
 
     case WM_RBUTTONDOWN:
+        d3d7.lastUnicode = 0;
         nk_input_button(&d3d7.ctx, NK_BUTTON_RIGHT, pt.x, pt.y, 1);
         SetCapture(hwnd);
         return 1;
 
     case WM_RBUTTONUP:
+        d3d7.lastUnicode = 0;
         nk_input_button(&d3d7.ctx, NK_BUTTON_RIGHT, pt.x, pt.y, 0);
         ReleaseCapture();
         return 1;
 
     case WM_MBUTTONDOWN:
+        d3d7.lastUnicode = 0;
         nk_input_button(&d3d7.ctx, NK_BUTTON_MIDDLE, pt.x, pt.y, 1);
         SetCapture(hwnd);
         return 1;
 
     case WM_MBUTTONUP:
+        d3d7.lastUnicode = 0;
         nk_input_button(&d3d7.ctx, NK_BUTTON_MIDDLE, pt.x, pt.y, 0);
         ReleaseCapture();
         return 1;
 
     case WM_MOUSEWHEEL:
+        d3d7.lastUnicode = 0;
         nk_input_scroll(&d3d7.ctx, nk_vec2(0, (float)(short)HIWORD(wparam) / WHEEL_DELTA));
         return 1;
 
     case WM_MOUSEMOVE:
+        d3d7.lastUnicode = 0;
         nk_input_motion(&d3d7.ctx, pt.x, pt.y);
         return 1;
 
     case WM_LBUTTONDBLCLK:
+        d3d7.lastUnicode = 0;
         nk_input_button(&d3d7.ctx, NK_BUTTON_DOUBLE, pt.x, pt.y, 1);
         return 1;
-    }
 
+    case WM_CHAR:
+        if (wparam >= 32)
+        {
+            if (d3d7.lastUnicode != 0) {
+                nk_input_unicode(&d3d7.ctx, d3d7.lastUnicode);
+                d3d7.lastUnicode = 0;
+            }
+            nk_input_unicode(&d3d7.ctx, (nk_rune)wparam);
+            return 1;
+        }
+		break;
+	case WM_IME_STARTCOMPOSITION:
+		d3d7.ctx.text_edit.bComposition = true;
+		return 1;
+	case WM_IME_COMPOSITION: {
+		HIMC hIMC = ImmGetContext(hwnd);
+		if (!hIMC) {
+			return 0;
+		}
+		//조합 완료된 문자열을 가져오는 부분
+		if (lparam & GCS_RESULTSTR) {
+			DWORD size = ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, NULL, 0);
+			if (size > 0) {
+				WCHAR* buffer = new WCHAR[size / sizeof(WCHAR) + 1];
+				ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, buffer, size);
+				buffer[size / sizeof(WCHAR)] = 0;  // null-terminate
+				// buffer를 사용하여 입력 처리
+				d3d7.lastUnicode = buffer[0];
+				//nk_input_unicode(&d3d7.ctx, buffer[0]);
+				delete[] buffer;
+			}
+		}
+		// 조합 중인 문자열을 가져오는 부분
+		else if (lparam & GCS_COMPSTR) {
+
+			if (d3d7.ctx.text_edit.bComposition && d3d7.lastUnicode != 0) {
+				nk_input_unicode(&d3d7.ctx, d3d7.lastUnicode);
+				d3d7.lastUnicode = 0;
+			}
+
+			DWORD size = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, NULL, 0);
+			if (size > 0) {
+				WCHAR* buffer = new WCHAR[size / sizeof(WCHAR) + 1];
+				ImmGetCompositionStringW(hIMC, GCS_COMPSTR, buffer, size);
+				buffer[size / sizeof(WCHAR)] = 0;  // null-terminate
+				// nk_input_unicode 함수를 사용하여 Nuklear에 문자열 입력을 반영할 수 있습니다.
+				// 각 문자에 대해 nk_input_unicode 호출이 필요할 수 있습니다.
+
+				for (int i = 0; buffer[i] != 0; ++i) {
+					nk_input_unicode(&d3d7.ctx, buffer[i]);
+				}
+				delete[] buffer;
+			}
+		}
+		ImmReleaseContext(hwnd, hIMC);
+		return 1;
+	}
+	case WM_IME_ENDCOMPOSITION:
+		d3d7.ctx.text_edit.bComposition = false;
+		return 1;
+	}
     return 0;
 }
 

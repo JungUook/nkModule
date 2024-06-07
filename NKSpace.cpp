@@ -95,6 +95,38 @@ void NKSpace::EditInfo()
 	{
 		CreateUI("NKCheckbox");
 	}
+	if (nk_button_label(m_ctx, "Slider"))
+	{
+		CreateUI("NKSlider");
+	}
+	if (nk_button_label(m_ctx, "Progress"))
+	{
+		CreateUI("NKProgress");
+	}
+	if (nk_button_label(m_ctx, "Selectable"))
+	{
+		CreateUI("NKSelectable");
+	}
+	if (nk_button_label(m_ctx, "Tree"))
+	{
+		CreateUI("NKTree");
+	}
+	if (nk_button_label(m_ctx, "Chart"))
+	{
+		CreateUI("NKChart");
+	}
+	if (nk_button_label(m_ctx, "Tooltip"))
+	{
+		CreateUI("NKTooltip");
+	}
+	if (nk_button_label(m_ctx, "Menu"))
+	{
+		CreateUI("NKMenu");
+	}
+	if (nk_button_label(m_ctx, "ColorPicker"))
+	{
+		CreateUI("NKColorPicker");
+	}
 }
 
 void NKSpace::EditStyle()

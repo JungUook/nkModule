@@ -103,6 +103,9 @@ public:
 	struct nk_context* GetContext() { return m_ctx; }
 	struct nk_font* GetFont() { return m_font; }
 	float GetOriginalFontSize() { return m_original_height; }
+
+	void IMEInputSystem(char* memory, int* len);
+
 private:
 	struct nk_context* m_ctx;
 	struct nk_font* m_font;

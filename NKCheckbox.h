@@ -9,7 +9,10 @@ public:
     ~NKCheckbox();
 
 public:
-    void Layout(nk_context* ctx) override;
+    virtual void Layout(nk_context* ctx) override;
+    virtual void EditInfo() override;
+
+
     void SetLabel(const char* label);
     void SetChecked(bool checked);
     bool IsChecked() const;
