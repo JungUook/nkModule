@@ -1,11 +1,14 @@
 #include "pch.h"
-#include "NuklearUI.h"
 
 #ifndef NK_ASSERT
 #include <assert.h>
 #define NK_ASSERT(expr) assert(expr)
 #endif
 
+#define NK_IMPLEMENTATION
+#define NK_INCLUDE_STANDARD_VARARGS
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#include "NuklearUI.h"
 
 #ifdef _DX9
 #define NK_D3D9_IMPLEMENTATION
@@ -13,13 +16,12 @@
 #elif _DX7
 #define NK_D3D7_IMPLEMENTATION
 #include <nuklear_d3d7.h>
+#endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-#endif
 
 #include <shlobj.h>
-
 #include "UiLibrary.h"
 #include "NuklearEditor.h"
 
@@ -222,11 +224,11 @@ void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int wid
 					   break;
 
 	case NuklearUI::KOR:
-	default: {
+	default:
 		sprintf_s(fontPath, "%s\\gulim.ttc", path);
 		cfg.range = nk_font_korean_glyph_ranges();
-	}
-		   break;
+
+		break;
 	}
 
 
@@ -1269,10 +1271,10 @@ void NuklearUI::RegisterBase()
 		.addFunction("SetActive", &NKBase::SetActive)
 		.addFunction("AddChild", &NKBase::LAddChild)
 		.addFunction("RemoveChild", &NKBase::LRemoveChild)
-		.addFunction("SetPivot", &NKBase::SetPivot)
-		.addFunction("SetPosition", &NKBase::SetPosition)
-		.addFunction("SetSize", &NKBase::SetSize)
-		.addFunction("SetBackground", &NKBase::SetBackground)
+		//.addFunction("SetPivot", &NKBase::SetPivot)
+		//.addFunction("SetPosition", &NKBase::SetPosition)
+		//.addFunction("SetSize", &NKBase::SetSize)
+		//.addFunction("SetBackground", &NKBase::SetBackground)
 		.addFunction("SetPrimaryName", &NKBase::SetPrimaryName)
 		.endClass()
 		.deriveClass<NKWindow, NKBase>("NKWindow")

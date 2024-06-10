@@ -2,6 +2,27 @@
 #ifndef NuklearUI_h__
 #define NuklearUI_h__
 
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_DEFAULT_FONT
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_STANDARD_VARARGS_h__
+#define NK_INCLUDE_DEFAULT_ALLOCATOR_h__
+#define NK_BUTTON_TRIGGER_ON_RELEASE
+#include <nuklear.h>
+#include "LuaLibrary.h"
+#include "LuaBridge/LuaBridge.h"
+
+#include <vector>
+#include <map>
+#include <list>
+#include <fstream>
+#include <unordered_map>
+#include <commdlg.h>
+#include <string>
+#include <filesystem>
+#include "sprLoader.h"
+
 #ifdef _DX9
 #include <d3d9.h>
 #elif _DX7
@@ -9,21 +30,9 @@
 #include <d3d.h>
 #endif // _DX9
 
-#include <vector>
-#include <map>
-#include <fstream>
-#include <unordered_map>
-#include <Windows.h>
-#include <commdlg.h>
-#include <string>
-#include <iostream>
-#include <filesystem>
-
 #include "NKBase.h"
-#include "sprLoader.h"
 
 class NKBase;
-enum eTypeUI;
 
 class Factory {
 public:

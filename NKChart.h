@@ -2,8 +2,6 @@
 #ifndef NKChart_h__
 #define NKChart_h__
 #include "NKBase.h"
-#include <vector>
-
 class NKChart : public NKBase
 {
 public:

@@ -19,11 +19,14 @@
     <Filter Include="소스 파일\Nuklear\Base">
       <UniqueIdentifier>{eb9a2b7a-43f7-4931-9406-28da5384ef14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Nuklear\Base\Module">
-      <UniqueIdentifier>{b239dfc3-cf29-4169-bc9d-a652c123163f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\etc">
       <UniqueIdentifier>{9274d780-b543-4f12-bd17-613962ffa17e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Nuklear\Base\Object">
+      <UniqueIdentifier>{1b1e697b-c72a-4023-8b4b-62d06a757d4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Nuklear\Base\Module">
+      <UniqueIdentifier>{054f7d1c-1a0f-4fe1-b299-76b75319272a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -39,77 +42,14 @@
     <ClInclude Include="NKBase.h">
       <Filter>소스 파일\Nuklear\Base</Filter>
     </ClInclude>
-    <ClInclude Include="NKWindow.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
     <ClInclude Include="NuklearUI.h">
       <Filter>소스 파일\Nuklear</Filter>
     </ClInclude>
     <ClInclude Include="nkmod.h">
       <Filter>소스 파일\etc</Filter>
     </ClInclude>
-    <ClInclude Include="NKSpace.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKGroup.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKPopup.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKButton.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKCombo.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKEdit.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKImage.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKLabel.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="UiLibrary.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKComboItem.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
     <ClInclude Include="sprLoader.h">
       <Filter>소스 파일\etc</Filter>
-    </ClInclude>
-    <ClInclude Include="NKCheckbox.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKSlider.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKProgress.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKSelectable.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKTree.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKChart.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKColorPicker.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKTooltip.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKMenu.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NKScrollbar.h">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClInclude>
     <ClInclude Include="NuklearEditor.h">
       <Filter>소스 파일\Nuklear</Filter>
@@ -117,13 +57,82 @@
     <ClInclude Include="Constants.h">
       <Filter>소스 파일\Nuklear</Filter>
     </ClInclude>
+    <ClInclude Include="NKButton.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKChart.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKCheckbox.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKColorPicker.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKCombo.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKComboItem.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKEdit.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKGroup.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKImage.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKLabel.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKMenu.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKPopup.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKProgress.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKScrollbar.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKSelectable.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKSlider.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKSpace.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKTooltip.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKTree.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKWindow.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UiLibrary.h">
+      <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="NKProperty.h">
+      <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyle.h">
+      <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="NKTransform.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
       <Filter>소스 파일\Nuklear\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="NKWindow.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClCompile>
     <ClCompile Include="NuklearUI.cpp">
       <Filter>소스 파일\Nuklear</Filter>
@@ -137,68 +146,80 @@
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일\etc</Filter>
     </ClCompile>
-    <ClCompile Include="NKSpace.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKGroup.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKPopup.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKButton.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKCombo.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKEdit.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKImage.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKLabel.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKComboItem.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
     <ClCompile Include="sprLoader.cpp">
       <Filter>소스 파일\etc</Filter>
     </ClCompile>
-    <ClCompile Include="NKCheckbox.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKSlider.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKProgress.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKSelectable.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKTree.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKChart.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKColorPicker.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKTooltip.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKMenu.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NKScrollbar.cpp">
-      <Filter>소스 파일\Nuklear\Base\Module</Filter>
-    </ClCompile>
     <ClCompile Include="NuklearEditor.cpp">
       <Filter>소스 파일\Nuklear</Filter>
+    </ClCompile>
+    <ClCompile Include="NKButton.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKChart.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKCheckbox.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKColorPicker.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKCombo.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKComboItem.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKEdit.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKGroup.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKImage.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKLabel.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKMenu.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKPopup.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKProgress.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKScrollbar.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKSelectable.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKSlider.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKSpace.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKTooltip.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKTree.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKWindow.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKProperty.cpp">
+      <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyle.cpp">
+      <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="NKTransform.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

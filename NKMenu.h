@@ -2,8 +2,6 @@
 #ifndef NKMenu_h__
 #define NKMenu_h__
 #include "NKBase.h"
-#include <vector>
-
 class NKMenu : public NKBase
 {
 public:

@@ -30,3 +30,13 @@ void NKPopup::Layout(nk_context* ctx)
 		nk_popup_end(ctx);
 	}
 }
+
+void NKPopup::EditInfo()
+{
+	EditInfoWindow();
+}
+
+void NKPopup::EditStyle()
+{
+	NKBase::EditStyle();
+}

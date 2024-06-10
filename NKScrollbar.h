@@ -2,7 +2,6 @@
 #ifndef NKScrollbar_h__
 #define NKScrollbar_h__
 #include "NKBase.h"
-
 class NKScrollbar : public NKBase
 {
 public:

@@ -94,15 +94,15 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 
 		if (m_option != eFILE) {
 			nk_layout_row_dynamic(ctx, 22, 1);
-			nk_property_int(ctx, "#Left:", 150, &groupLeft, debugRect.w - 100, 1, 1);
+			nk_property_int(ctx, "#Left:", 150, &groupLeft, (int)debugRect.w - 100, 1, 1.f);
 
 			float row_layout[2];
-			row_layout[0] = groupLeft;
-			row_layout[1] = debugRect.w -25 - groupLeft;
+			row_layout[0] = (float) groupLeft;
+			row_layout[1] = debugRect.w - 25.f - (float)groupLeft;
 
 			nk_layout_row(ctx, NK_STATIC, debugRect.h - 175, 2, row_layout);
-			NodeLayout(ctx, row_layout[0]);
-			InfoLayout(ctx, row_layout[1]);
+			NodeLayout(ctx, (int)row_layout[0]);
+			InfoLayout(ctx, (int)row_layout[1]);
 		}
 		else {
 			FileLayout(ctx);

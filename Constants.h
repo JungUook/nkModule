@@ -1,4 +1,6 @@
 #pragma once
+#ifndef Constants_h__
+#define Constants_h__
 
 #ifdef _DEBUG
 #define CHECK_PTR(ptr) \
@@ -305,3 +307,12 @@ struct ComponentCombo {
 		button.Init(&pTarget->button, &pRestore->button);
 	}
 };
+
+static void PropertyVector2(nk_context* ctx, const char* name, struct nk_vec2& vec, float max, float min, float step, float inc_per_pixel)
+{
+	nk_label(ctx, name, NK_TEXT_LEFT);
+	nk_layout_row_dynamic(ctx, 22, 2);
+	nk_property_float(ctx, "#X:", max, &vec.x, min, step, inc_per_pixel);
+	nk_property_float(ctx, "#Y:", max, &vec.y, min, step, inc_per_pixel);
+}
+#endif //Constants_h__

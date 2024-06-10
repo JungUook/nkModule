@@ -2,7 +2,6 @@
 #ifndef NKColorPicker_h__
 #define NKColorPicker_h__
 #include "NKBase.h"
-
 class NKColorPicker : public NKBase
 {
 public:

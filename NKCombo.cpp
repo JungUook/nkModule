@@ -61,7 +61,7 @@ void NKCombo::EditInfo()
 	if (nk_option_label(m_ctx, "center", m_labelAlignment == NK_TEXT_CENTERED)) m_labelAlignment = NK_TEXT_CENTERED;
 	if (nk_option_label(m_ctx, "right", m_labelAlignment == NK_TEXT_RIGHT)) m_labelAlignment = NK_TEXT_RIGHT;
 
-	PropertyVector2("Label Size", m_labelSize, .0f, 500.f, 0.01f, 0.01f);
+	PropertyVector2(m_ctx, "Label Size", m_labelSize, .0f, 500.f, 0.01f, 0.01f);
 
 	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Combo Item List", NK_MINIMIZED)) {
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {

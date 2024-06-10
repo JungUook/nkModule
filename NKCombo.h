@@ -2,7 +2,6 @@
 #ifndef NKCombo_h__
 #define NKCombo_h__
 #include "NKBase.h"
-#include <vector>
 class NKCombo : public NKBase
 {
 public:

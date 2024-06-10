@@ -2,7 +2,6 @@
 #ifndef NKTooltip_h__
 #define NKTooltip_h__
 #include "NKBase.h"
-
 class NKTooltip : public NKBase
 {
 public:
