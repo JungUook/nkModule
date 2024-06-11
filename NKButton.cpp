@@ -4,9 +4,6 @@
 NKButton::NKButton()
 {
 	m_type = eBUTTON;
-
-	m_pivot.x = 0.f;
-	m_pivot.y = 0.f;
 	m_worldTransform.x = 0.f;
 	m_worldTransform.y = 0.f;
 	m_worldTransform.w = 150.f;

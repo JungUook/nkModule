@@ -69,6 +69,13 @@ public:
 	}
 };
 
+struct CustomData {
+	char name[256];
+	int nameLen;
+	char tableName[256];
+	int tableLen;
+};
+
 class NuklearUI
 {
 public:
@@ -113,6 +120,7 @@ public:
 	struct nk_font* GetFont() { return m_font; }
 	float GetOriginalFontSize() { return m_original_height; }
 
+	nk_flags IMEInputSystem(struct nk_context* ctx, nk_flags flags,	char* buffer, int max, nk_plugin_filter filter, int* len);
 	void IMEInputSystem(char* memory, int* len);
 
 private:
@@ -181,7 +189,6 @@ private:
 
 	std::vector<sprData*> m_vecRenderData;
 	std::vector<sprData*> m_vecImmortalRenderData;
-
 #endif // _DX7
 
 
@@ -201,6 +208,10 @@ private:
 
 private:
 	lua_State* m_lua;
+
+	std::vector<CustomData> m_vecVariable;
+	std::vector<CustomData> m_vecFunction;
+
 #ifdef _DEBUG
 	char m_filePath[256];
 #endif // _DEBUG

@@ -40,7 +40,7 @@ NuklearUI::NuklearUI()
 	m_viewRect = nk_rect(0, 0, 0, 0);
 	Register_UI();
 #ifdef _DEBUG
-	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr);
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction);
 #endif // _DEBUG
 
 
@@ -631,6 +631,15 @@ bool NuklearUI::ReadImageFile(const char* filename, IDirectDrawSurface7** pTextu
 	stbi_image_free(data);
 	return true;
 }
+nk_flags NuklearUI::IMEInputSystem(nk_context* ctx, nk_flags flags, char* buffer, int max, nk_plugin_filter filter, int* len)
+{
+	nk_flags result = nk_edit_string_zero_terminated(ctx, flags, buffer, max, filter);
+
+	if (result & NK_EDIT_ACTIVE) {
+		IMEInputSystem(buffer, len);
+	}
+	return result;
+}
 void NuklearUI::IMEInputSystem(char* memory, int* len)
 {
 	if (d3d7.ctx.text_edit.bComposition) {
@@ -651,24 +660,6 @@ void NuklearUI::IMEInputSystem(char* memory, int* len)
 		win->edit.sel_start = edit->select_start;
 		win->edit.sel_end = edit->select_end;
 	}
-
-	//char utf8[5];
-	//int len = nk_utf_encode(buffer[0], utf8, sizeof(utf8));
-
-	//// Ensure the edit buffer has enough space
-	//if (len > 0 && d3d7.ctx.text_edit.string.len + len < d3d7.ctx.text_edit.string.buffer.allocated) {
-	//	// Clear current selection
-	//	nk_textedit_delete_selection(&d3d7.ctx.text_edit);
-
-	//	// Insert the unicode character at the cursor position
-	//	for (int i = 0; i < len; i++) {
-	//		nk_textedit_text(&d3d7.ctx.text_edit, &utf8[i], 1);
-	//	}
-
-	//	// Update the selection to include the newly inserted character
-	//	d3d7.ctx.text_edit.select_start = d3d7.ctx.text_edit.cursor - len;
-	//	d3d7.ctx.text_edit.select_end = d3d7.ctx.text_edit.cursor;
-	//}
 }
 #endif
 void NuklearUI::Register_UI()

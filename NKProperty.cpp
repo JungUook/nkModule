@@ -4,6 +4,18 @@
 NKProperty::NKProperty() : NKStyle(), NKTransform()
 {
 	m_flags = 0;
+
+	m_border = 0;
+	m_movable = 0;
+	m_scalable = 0;
+	m_closable = 0;
+	m_minimizable = 0;
+	m_no_scrollbar = 0;
+	m_title = 1;
+	m_scroll_auto_hide = 0;
+	m_background = 0;
+	m_scale_left = 0;
+	m_no_input = 0;
 }
 
 NKProperty::NKProperty(const NKProperty& other) : NKStyle(other), NKTransform(other)

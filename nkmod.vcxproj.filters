@@ -28,6 +28,9 @@
     <Filter Include="소스 파일\Nuklear\Base\Module">
       <UniqueIdentifier>{054f7d1c-1a0f-4fe1-b299-76b75319272a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Nuklear\Base\Style">
+      <UniqueIdentifier>{401c125e-3464-4a05-9259-69cc34eafcf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

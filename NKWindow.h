@@ -6,7 +6,6 @@ class NKWindow : public NKBase
 {
 public:
 	NKWindow();
-	NKWindow(const NKWindow& other);
 	~NKWindow();
 
 public:
