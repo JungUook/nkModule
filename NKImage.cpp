@@ -26,12 +26,12 @@ void NKImage::Layout(nk_context* ctx)
 	if (m_imagePath != "None") {
 		if (m_sprSize > 0) {
 			struct nk_image img;
-			m_manager->GetSprite(m_imagePath.c_str(), m_sprIndex, img);
+			m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img);
 			nk_image(ctx, img);
 		}
 		else {
 			struct nk_image img;
-			m_manager->GetImage(m_imagePath.c_str(), img);
+			m_pManager->GetImage(m_imagePath.c_str(), img);
 			nk_image(ctx, img);
 		}
 	}
@@ -39,7 +39,7 @@ void NKImage::Layout(nk_context* ctx)
 
 void NKImage::EditInfo()
 {
-	auto mapSpr = m_manager->GetSprMap();
+	auto mapSpr = m_pManager->GetSprMap();
 	int size = mapSpr->size();
 
 	if (m_sprSize > 0)
@@ -55,7 +55,7 @@ void NKImage::EditInfo()
 	if (nk_button_label(m_ctx, "apply"))
 	{
 		struct nk_image img;
-		m_manager->GetSprite(m_imagePath.c_str(), m_sprIndex, img, true);
+		m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img, true);
 	}
 	if (nk_button_label(m_ctx, "clear"))
 	{

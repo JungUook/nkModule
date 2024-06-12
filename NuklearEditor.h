@@ -31,10 +31,8 @@ public:
 
 	void OpenErrorPopup(const char* content);
 
-	static std::wstring utf8ToWstring(const char* str);
-	static bool customCompare(const CustomData aData, const CustomData bData);
 private:
-	NuklearUI* m_manager;
+	NuklearUI* m_pManager;
 
 	std::vector<NKBase*>* m_vecObject;
 	std::vector<NKBase*>* m_vecModule;

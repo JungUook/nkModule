@@ -63,26 +63,25 @@ public:
 	virtual void EditInfo();
 	virtual void EditStyle();
 
-	virtual void EditInfoWindow();
-
 	virtual void EditBaseName(const char* name);
 	virtual const char* GetBaseName();
 
 	virtual void CreateUI(const char* classname);
 protected:
-	NuklearUI* m_manager;
+	NuklearUI* m_pManager;
 
 	unsigned int m_primaryID;
 	char m_primaryName[64];
 
-	char m_baseName[64];
-	char m_editName[64];
-	int m_editName_len;
+	char m_cBaseName[64];
+	char m_cEditName[64];
+	int m_cEditName_len;
 
-	int m_nkIndex;
+	int m_iNKIndex;
 
 	nk_context* m_ctx;
 
+	nk_flags m_flags;
 	eTypeUI m_type;
 
 	bool m_bActive;

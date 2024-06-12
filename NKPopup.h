@@ -2,7 +2,8 @@
 #ifndef NKPopup_h__
 #define NKPopup_h__
 #include "NKBase.h"
-class NKPopup : public NKBase
+#include "NKBaseWindow.h"
+class NKPopup : public NKBase, public NKBaseWindow
 {
 public:
 	NKPopup();

@@ -302,3 +302,5 @@ __pycache__/
 #custom ignore
 DX7_Debug/
 DX9_Debug/
+DX7_Release/
+DX9_Release/

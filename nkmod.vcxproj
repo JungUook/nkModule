@@ -244,7 +244,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NKMOD_EXPORTS;FVF_XYZRHW#1;_DX7#1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NKMOD_EXPORTS;FVF_XYZRHW#1;_DX7#1;_NKDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -298,10 +298,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;NKMOD_EXPORTS;_WINDOWS;_USRDLL;FVF_XYZRHW#1;_DX7#1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;NKMOD_EXPORTS;_WINDOWS;_USRDLL;FVF_XYZRHW#1;_DX7#1;_NKDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -441,6 +442,8 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="NKBase.h" />
+    <ClInclude Include="NKBaseStyle.h" />
+    <ClInclude Include="NKBaseWindow.h" />
     <ClInclude Include="NKButton.h" />
     <ClInclude Include="NKChart.h" />
     <ClInclude Include="NKCheckbox.h" />
@@ -449,6 +452,7 @@
     <ClInclude Include="NKComboItem.h" />
     <ClInclude Include="NKEdit.h" />
     <ClInclude Include="NKGroup.h" />
+    <ClInclude Include="NKHandler.h" />
     <ClInclude Include="NKImage.h" />
     <ClInclude Include="NKLabel.h" />
     <ClInclude Include="NKMenu.h" />
@@ -474,6 +478,8 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="NKBase.cpp" />
+    <ClCompile Include="NKBaseStyle.cpp" />
+    <ClCompile Include="NKBaseWindow.cpp" />
     <ClCompile Include="NKButton.cpp" />
     <ClCompile Include="NKChart.cpp" />
     <ClCompile Include="NKCheckbox.cpp" />
@@ -482,6 +488,7 @@
     <ClCompile Include="NKComboItem.cpp" />
     <ClCompile Include="NKEdit.cpp" />
     <ClCompile Include="NKGroup.cpp" />
+    <ClCompile Include="NKHandler.cpp" />
     <ClCompile Include="NKImage.cpp" />
     <ClCompile Include="NKLabel.cpp" />
     <ClCompile Include="NKMenu.cpp" />

@@ -11,7 +11,7 @@
 
 NuklearEditor::NuklearEditor()
 {
-	m_manager = nullptr;
+	m_pManager = nullptr;
 
 	m_vecObject = nullptr;
 	m_vecModule = nullptr;
@@ -23,7 +23,8 @@ NuklearEditor::NuklearEditor()
 	m_option = 0;
 	m_selectedNode = nullptr;
 	m_deletedNode = nullptr;
-
+	m_vecVariable = nullptr;
+	m_vecFunction = nullptr;
 	m_show_popup = 0;
 	memset(m_popup_content, 0, sizeof(m_popup_content));
 }
@@ -36,7 +37,7 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 {
 	m_selectedNode = nullptr;
 	m_deletedNode = nullptr;
-	m_manager = manager;
+	m_pManager = manager;
 	m_vecObject = obj;
 	m_vecModule = module;
 	m_mapModuleID = moduleID;
@@ -55,7 +56,7 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 		if (nk_button_label(ctx, "New"))
 		{
 			NKWindow* pWin = new NKWindow();
-			m_manager->Add(pWin);
+			m_pManager->Add(pWin);
 		}
 		if (nk_button_label(ctx, "Refresh"))
 		{
@@ -77,7 +78,7 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 			m_mapModuleName->clear();
 			m_selectedNode = nullptr;
 
-			m_manager->RunFunction("Init");
+			m_pManager->RunFunction("Init");
 		}
 
 
@@ -118,7 +119,7 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 				nk_layout_row_dynamic(ctx, 22, 1);
 				nk_property_int(ctx, "#Left:", 150, &groupLeft, (int)debugRect.w - 100, 1, 1.f);
 
-				float row_layout[2];
+				float row_layout[2] = { 0.f };
 				row_layout[0] = (float)groupLeft;
 				row_layout[1] = debugRect.w - 25.f - (float)groupLeft;
 
@@ -130,7 +131,7 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 
 
 		if (m_show_popup) {
-			if (nk_popup_begin(ctx, NK_POPUP_STATIC, "Error", NK_WINDOW_TITLE, nk_rect(debugRect.w / 2 - 400 / 2, debugRect.h / 2 - 100 / 2, 400, 200)))	{
+			if (nk_popup_begin(ctx, NK_POPUP_STATIC, "Error", NK_WINDOW_TITLE, nk_rect(debugRect.w / 2.f - 400.f / 2, debugRect.h / 2.f - 100.f / 2.f, 400.f, 200.f)))	{
 				
 				nk_layout_row_dynamic(ctx, 100, 1);
 				nk_label_wrap(ctx, m_popup_content);
@@ -150,7 +151,7 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 {
 	if (nk_group_begin(ctx, "Node", NK_WINDOW_TITLE)) {
-		for (int i = 0; i < m_vecObject->size(); ++i)
+		for (size_t i = 0; i < m_vecObject->size(); ++i)
 		{
 			NodesLayout(ctx, m_vecObject->at(i), NK_TREE_TAB, NK_MINIMIZED);
 		}
@@ -160,7 +161,7 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 	}
 
 	if (m_deletedNode) {
-		m_manager->Remove(m_deletedNode);
+		m_pManager->Remove(m_deletedNode);
 		m_deletedNode = nullptr;
 	}
 }
@@ -234,20 +235,20 @@ void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 			if (nk_tree_push(ctx, NK_TREE_TAB, "ViewportInfo", NK_MINIMIZED)) {
 
 				nk_label(ctx, "Pivot", NK_TEXT_LEFT);
-				nk_property_float(ctx, "#X:", .0f, &m_manager->GetPivot()->x, 1.f, 0.01f, 0.01f);
-				nk_property_float(ctx, "#Y:", .0f, &m_manager->GetPivot()->y, 1.f, 0.01f, 0.01f);
+				nk_property_float(ctx, "#X:", .0f, &m_pManager->GetPivot()->x, 1.f, 0.01f, 0.01f);
+				nk_property_float(ctx, "#Y:", .0f, &m_pManager->GetPivot()->y, 1.f, 0.01f, 0.01f);
 
 				static char viewportStr[32] = { 0, };
 
 				nk_label(ctx, "Viewport", NK_TEXT_LEFT);
 
-				sprintf_s(viewportStr, "%.1f", m_manager->GetViewport()->w);
+				sprintf_s(viewportStr, "%.1f", m_pManager->GetViewport()->w);
 				nk_layout_row_dynamic(ctx, 22, 2);
 				nk_label(ctx, "Width:", NK_TEXT_LEFT);
 				nk_label(ctx, viewportStr, NK_TEXT_RIGHT);
 
 
-				sprintf_s(viewportStr, "%.1f", m_manager->GetViewport()->h);
+				sprintf_s(viewportStr, "%.1f", m_pManager->GetViewport()->h);
 				nk_layout_row_dynamic(ctx, 22, 2);
 				nk_label(ctx, "Height", NK_TEXT_LEFT);
 				nk_label(ctx, viewportStr, NK_TEXT_RIGHT);
@@ -263,8 +264,22 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 {
 	nk_layout_row_dynamic(ctx, 22, 1);
 	if (nk_button_label(ctx, "Open")) {
-		m_manager->OpenFileDialog();
+		m_pManager->OpenFileDialog();
 	}
+
+
+	float row_layout[2] = { 0.f };
+	row_layout[0] = 0.7f;
+	row_layout[1] = 0.3f;
+	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
+	static char SearchFunction[256] = { 0, };
+	static int SearchFunction_Len = 0;
+	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, SearchFunction, sizeof(SearchFunction), nk_filter_default, &SearchFunction_Len);
+
+	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
+
+	}
+
 	static char selectedFilename[260] = { 0, };
 	float ratio[2] = { 0.8f, 0.2f };
 	nk_layout_row_dynamic(ctx, 500, 1);
@@ -272,6 +287,31 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
 		for (std::map<std::string, sprData*>::iterator it = m_mapSpr->begin(); it != m_mapSpr->end(); ++it) {
 			std::filesystem::path filePath((*it).first.c_str());
+
+			bool bSearch = false;
+			bool bSearchResult = true;
+			if (strlen(SearchFunction) > 0) {
+				bSearch = true;
+			}
+
+			if (bSearch) {
+				std::wstring word = NuklearUI::utf8ToWstring(filePath.filename().string().c_str());
+				std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+
+				// word¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				std::transform(word.begin(), word.end(), word.begin(), towlower);
+				// filter¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
+
+				bSearchResult = word.find(filter) != std::wstring::npos;
+			}
+
+			if (!bSearchResult) {
+				continue;
+			}
+
+
+
 			nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
 
 			if (nk_button_label(ctx, "Load")) {
@@ -286,7 +326,7 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 		if (strlen(selectedFilename))
 		{
 			struct nk_image img;
-			m_manager->GetImage(selectedFilename, img);
+			m_pManager->GetImage(selectedFilename, img);
 			nk_layout_row_dynamic(ctx, 300, 1);
 			nk_image(ctx, img);			
 		}
@@ -296,45 +336,47 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 
 void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std::vector<CustomData>* vCustom)
 {
-	float row_layout[2];
+	float row_layout[2] = { 0.f };
 	row_layout[0] = 0.7f;
 	row_layout[1] = 0.3f;
 	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
 	static char SearchFunction[256] = { 0, };
 	static int SearchFunction_Len = 0;
-	nk_flags searchResult = m_manager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, SearchFunction, sizeof(SearchFunction), nk_filter_default, &SearchFunction_Len);
+	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, SearchFunction, sizeof(SearchFunction), nk_filter_default, &SearchFunction_Len);
 
 	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 
 	}
 
-	nk_layout_row_dynamic(ctx, 500, 1);
+	nk_layout_row_dynamic(ctx, 800, 1);
 	if (nk_group_begin(ctx, dataName, NK_WINDOW_TITLE)) {
 
 		nk_layout_row_dynamic(ctx, 22, 1);
 		if (nk_button_label(ctx, "Add")) {
 			CustomData cfunc;
-			memset(cfunc.name, 0, sizeof(cfunc.name));
-			memset(cfunc.tableName, 0, sizeof(cfunc.tableName));
-
 			sprintf_s(cfunc.name, "%s%d", dataName, vCustom->size());
 			sprintf_s(cfunc.tableName, "table%d", vCustom->size());
 			vCustom->push_back(cfunc);
 
-			std::sort(vCustom->begin(), vCustom->end(), customCompare);
+			std::sort(vCustom->begin(), vCustom->end(), NuklearUI::customCompare);
 		}
 
 		for (auto it = vCustom->begin(); it != vCustom->end(); ++it) {
 			CustomData& d = *it;
 			bool bSearch = false;
 			bool bSearchResult = true;
-			if (strlen(d.name) > 0) {
+			if (strlen(SearchFunction) > 0) {
 				bSearch = true;
 			}
 
 			if (bSearch) {
-				std::wstring word = utf8ToWstring(d.name);
-				std::wstring filter = utf8ToWstring(SearchFunction);
+				std::wstring word = NuklearUI::utf8ToWstring(d.name);
+				std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+
+				// word¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				std::transform(word.begin(), word.end(), word.begin(), towlower);
+				// filter¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
 
 				bSearchResult = word.find(filter) != std::wstring::npos;
 			}
@@ -344,15 +386,15 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 			}
 
 			if (nk_tree_push_id(ctx, NK_TREE_TAB, d.name, NK_MINIMIZED, reinterpret_cast<intptr_t>(&d))) {
-				float tree_layout[2];
+				float tree_layout[2] = { 0.f, };
 				tree_layout[0] = 0.3f;
 				tree_layout[1] = 0.7f;
 				nk_layout_row(ctx, NK_DYNAMIC, 55, 2, tree_layout);
 				nk_label(ctx, "name: ", NK_TEXT_LEFT);
-				m_manager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, d.name, sizeof(d.name), nk_filter_default, &d.nameLen);
+				m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, d.name, sizeof(d.name), nk_filter_default, &d.nameLen);
 
 				nk_label(ctx, "table: ", NK_TEXT_LEFT);
-				m_manager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, d.tableName, sizeof(d.tableName), nk_filter_default, &d.tableLen);
+				m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, d.tableName, sizeof(d.tableName), nk_filter_default, &d.tableLen);
 
 				if (nk_button_label(ctx, "remove")) {
 					it = vCustom->erase(it);
@@ -377,45 +419,3 @@ void NuklearEditor::OpenErrorPopup(const char* content)
 	strcpy_s(m_popup_content, content);
 	m_show_popup = 1;
 }
-
-std::wstring NuklearEditor::utf8ToWstring(const char* str)
-{
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
-	std::wstring wstrTo(size_needed - 1, 0); // -1 to exclude the null terminator
-	MultiByteToWideChar(CP_UTF8, 0, str, -1, &wstrTo[0], size_needed);
-	return wstrTo;
-}
-
-bool NuklearEditor::customCompare(const CustomData aData, const CustomData bData)
-{
-	const wchar_t kFirstHangulConsonant = L'°¡'; // Unicode value for '°¡'
-	const wchar_t kLastHangulConsonant = L'ÆR'; // Unicode value for 'ÆR'
-
-	std::wstring a = utf8ToWstring(aData.name);
-	std::wstring b = utf8ToWstring(bData.name);
-
-	std::locale loc("ko_KR.UTF-8");
-
-	// µÎ ¹®ÀÚ¿­ÀÌ ¿µ¾î·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ¾ËÆÄºª ¼ø¼­·Î Á¤·Ä
-	if (std::isalpha(a[0], loc) && std::isalpha(b[0], loc)) {
-		return a < b;
-	}
-
-	// µÎ ¹®ÀÚ¿­ÀÌ ÇÑ±Û·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ÀÚ¸ð ¼ø¼­·Î Á¤·Ä
-	if (a[0] >= kFirstHangulConsonant && a[0] <= kLastHangulConsonant &&
-		b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant) {
-		return a < b;
-	}
-
-	// ¿µ¾î¿Í ÇÑ±ÛÀÌ ¼¯¿© ÀÖ´Â °æ¿ì ¿µ¾î¸¦ ¸ÕÀú, ÇÑ±ÛÀ» ³ªÁß¿¡ Á¤·Ä
-	if (std::isalpha(a[0], loc) && (b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant)) {
-		return true;
-	}
-	if ((a[0] >= kFirstHangulConsonant && a[0] <= kLastHangulConsonant) && std::isalpha(b[0], loc)) {
-		return false;
-	}
-
-	// ±× ¿ÜÀÇ °æ¿ì¿¡´Â ±âº» ºñ±³
-	return a < b;
-}
-

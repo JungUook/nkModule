@@ -433,7 +433,7 @@ void NKStyle::CheckboxComponentEditor(nk_context* ctx, NuklearUI* pManager)
 }
 void NKStyle::SelectableComponentEditor(nk_context* ctx, NuklearUI* pManager)
 {
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Checkbox", NK_MINIMIZED)) {
+	if (nk_tree_push(ctx, NK_TREE_NODE, "Selectable", NK_MINIMIZED)) {
 		CustomComponentsEditor(ctx, pManager, m_sSelectable, m_style.selectable, eTreeSelectable);
 		nk_tree_pop(ctx);
 	}
@@ -1599,15 +1599,50 @@ void NKStyle::ItemEditor(nk_context* ctx, NuklearUI* pManager, NKStyleItem& sIte
 
 		if (size > 0)
 		{
+
+			static char selectedFilename[260] = { 0, };
+			float ratio[2] = { 0.7f, 0.3f };
+			static char SearchFunction[256] = { 0, };
+			static int SearchFunction_Len = 0;
+			nk_layout_row(ctx, NK_DYNAMIC, 40, 2, ratio);
+			nk_flags searchResult = pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, SearchFunction, sizeof(SearchFunction), nk_filter_default, &SearchFunction_Len);
+
+			if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
+
+			}
+
 			nk_layout_row_dynamic(ctx, 300, 1);
 			if (nk_group_begin(ctx, "SPR List", NK_WINDOW_TITLE)) {
 
 				float ratio[2] = { 0.8f, 0.2f };
 				nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
-				int selected = 0;
 
 				for (auto it = mapSpr->begin(); it != mapSpr->end(); ++it) {
 					std::filesystem::path filePath((*it).first.c_str());
+
+					bool bSearch = false;
+					bool bSearchResult = true;
+					if (strlen(SearchFunction) > 0) {
+						bSearch = true;
+					}
+
+					if (bSearch) {
+						std::wstring word = NuklearUI::utf8ToWstring(filePath.filename().string().c_str());
+						std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+
+						// word를 소문자로 변환
+						std::transform(word.begin(), word.end(), word.begin(), towlower);
+						// filter를 소문자로 변환
+						std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
+
+						bSearchResult = word.find(filter) != std::wstring::npos;
+					}
+
+					if (!bSearchResult) {
+						continue;
+					}
+
+
 					nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
 
 					if (nk_button_label(ctx, "Load")) {

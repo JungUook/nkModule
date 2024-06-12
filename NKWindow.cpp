@@ -32,14 +32,22 @@ void NKWindow::Layout(nk_context* ctx)
 		{
 			m_bHovering = true;
 		}
-		GetPosition(m_pParent, m_manager);
+		GetPosition(m_pParent, m_pManager);
 	}
 	nk_end(ctx);
 }
 
 void NKWindow::EditInfo()
 {
-	EditInfoWindow();
+	EditInfoWindowProperty(m_ctx, m_flags);
+
+	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
+		if (nk_button_label(m_ctx, "Space"))
+		{
+			CreateUI("NKSpace");
+		}
+		nk_tree_pop(m_ctx);
+	}
 }
 
 void NKWindow::EditStyle()

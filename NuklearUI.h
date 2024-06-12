@@ -74,6 +74,12 @@ struct CustomData {
 	int nameLen;
 	char tableName[256];
 	int tableLen;
+
+	std::vector<NKBase*> vUseObj;
+	CustomData(): nameLen(0), tableLen(0) {
+		memset(name, 0, sizeof(name));
+		memset(tableName, 0, sizeof(tableName));
+	}
 };
 
 class NuklearUI
@@ -199,9 +205,14 @@ public:
 	bool RunFunction(const char* functionName);
 	bool RunFunctionArgs(const char* functionName, const luabridge::LuaRef& args);
 
-#ifdef _DEBUG
+	void AddVariable(CustomData& var);
+	void AddFunction(CustomData& func);
+
+	static std::wstring utf8ToWstring(const char* str);
+	static bool customCompare(const CustomData aData, const CustomData bData);
+#ifdef _NKDEBUG
 	void DebugLoadLuaFile(const char* filePath);
-#endif // _DEBUG
+#endif // _NKDEBUG
 
 private:
 	void RegisterBase();
@@ -212,8 +223,8 @@ private:
 	std::vector<CustomData> m_vecVariable;
 	std::vector<CustomData> m_vecFunction;
 
-#ifdef _DEBUG
+#ifdef _NKDEBUG
 	char m_filePath[256];
-#endif // _DEBUG
+#endif // _NKDEBUG
 };
 #endif //NuklearUI_h__

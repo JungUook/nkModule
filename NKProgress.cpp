@@ -11,7 +11,7 @@ NKProgress::~NKProgress() {}
 
 void NKProgress::Layout(nk_context* ctx)
 {
-    nk_prog(ctx, m_progress, 100, NK_MODIFIABLE);
+    nk_progress(ctx, &m_progress, 100, NK_MODIFIABLE);
 }
 
 void NKProgress::SetProgress(nk_size progress)

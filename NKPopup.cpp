@@ -21,7 +21,7 @@ NKPopup::~NKPopup()
 
 void NKPopup::Layout(nk_context* ctx)
 {
-	if (nk_popup_begin(ctx, m_popupType, m_baseName, m_flags, GetTransform()))
+	if (nk_popup_begin(ctx, m_popupType, m_cBaseName, m_flags, GetTransform()))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
@@ -33,7 +33,15 @@ void NKPopup::Layout(nk_context* ctx)
 
 void NKPopup::EditInfo()
 {
-	EditInfoWindow();
+	EditInfoWindowProperty(m_ctx, m_flags);
+
+	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
+		if (nk_button_label(m_ctx, "Space"))
+		{
+			CreateUI("NKSpace");
+		}
+		nk_tree_pop(m_ctx);
+	}
 }
 
 void NKPopup::EditStyle()

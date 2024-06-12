@@ -345,8 +345,6 @@ nk_d3d7_create_state_restore(void) {
 
 NK_API void
 nk_d3d7_render(enum nk_anti_aliasing AA) {
-    HRESULT hr;
-
     nk_d3d7_create_state();
 
     struct nk_buffer vbuf, ebuf;
@@ -383,7 +381,7 @@ nk_d3d7_render(enum nk_anti_aliasing AA) {
     offset = (const nk_draw_index*)nk_buffer_memory_const(&ebuf);
 
     vertices = (struct nk_d3d7_vertex*)nk_buffer_memory_const(&vbuf);
-    for (unsigned i = 0; i < vertex_count; ++i) {
+    for (int i = 0; i < vertex_count; ++i) {
         struct nk_d3d7_vertex vertex = vertices[i];
         vertices[i].x += 0.5f;
         vertices[i].y += 0.5f;
@@ -418,12 +416,12 @@ nk_d3d7_render(enum nk_anti_aliasing AA) {
         if (vp.dwWidth > 0 && vp.dwHeight > 0) {
             d3d7.device->SetViewport(&vp);
 
-            for (int i = 0; i < cmd->elem_count; i += 3) {
+            for (unsigned int i = 0; i < cmd->elem_count; i += 3) {
                 struct nk_d3d7_vertex v0 = vertices[offset[i]];
                 struct nk_d3d7_vertex v1 = vertices[offset[i + 1]];
                 struct nk_d3d7_vertex v2 = vertices[offset[i + 2]];
 
-                D3DTLVERTEX tl_vertices[3];
+                D3DTLVERTEX tl_vertices[3] = { 0, };
                 tl_vertices[0].sx = v0.x; tl_vertices[0].sy = v0.y; tl_vertices[0].sz = v0.z; tl_vertices[0].rhw = v0.rhw;
                 tl_vertices[0].color = v0.col; tl_vertices[0].specular = 0; tl_vertices[0].tu = v0.u; tl_vertices[0].tv = v0.v;
                 tl_vertices[1].sx = v1.x; tl_vertices[1].sy = v1.y; tl_vertices[1].sz = v1.z; tl_vertices[1].rhw = v1.rhw;

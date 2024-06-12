@@ -132,6 +132,15 @@
     <ClInclude Include="NKTransform.h">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClInclude>
+    <ClInclude Include="NKBaseWindow.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKHandler.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKBaseStyle.h">
+      <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -223,6 +232,15 @@
     </ClCompile>
     <ClCompile Include="NKTransform.cpp">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKBaseWindow.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKHandler.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKBaseStyle.cpp">
+      <Filter>소스 파일\Nuklear\Base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

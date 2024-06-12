@@ -2,7 +2,8 @@
 #ifndef NKComboItem_h__
 #define NKComboItem_h__
 #include "NKBase.h"
-class NKComboItem : public NKBase
+#include "NKHandler.h"
+class NKComboItem : public NKBase, public NKHandler
 {
 public:
 	NKComboItem();
@@ -13,15 +14,10 @@ public:
 	virtual void EditInfo() override;
 		
 	void SetComboName(const char* name);
-	void RegistFunction(const char* functionName, const char* argsName = nullptr);
 	void SetLabel(int number);
-
-	void CallEvent();
 public:
 	int m_labelNumber;
 	char m_content[64];
-	char m_functionName[64];
-	char m_argsName[64];
 };
 
 

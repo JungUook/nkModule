@@ -39,9 +39,9 @@ NuklearUI::NuklearUI()
 	m_pivot = nk_vec2(0, 0);
 	m_viewRect = nk_rect(0, 0, 0, 0);
 	Register_UI();
-#ifdef _DEBUG
+#ifdef _NKDEBUG
 	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction);
-#endif // _DEBUG
+#endif // _NKDEBUG
 
 
 
@@ -246,7 +246,7 @@ void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int wid
 	std::streamsize file_size = file.tellg();
 	file.seekg(0, std::ios::beg);
 
-	char* buffer = new char[file_size];
+	char* buffer = new char[(unsigned int)file_size];
 	nk_size size;
 	if (file.read(buffer, file_size)) {
 		size = static_cast<nk_size>(file_size);
@@ -325,10 +325,10 @@ void NuklearUI::Update()
 	m_bMouseHovering = false;
 	m_bEditActive = false;
 
-#ifdef _DEBUG
+#ifdef _NKDEBUG
 	DebugLoadLuaFile(m_filePath);
 	RunFunction("Modify");
-#endif // _DEBUG
+#endif // _NKDEBUG
 
 	for (std::vector<NKBase*>::iterator iter = m_vecObject.begin(); iter != m_vecObject.end(); ++iter)
 	{
@@ -341,9 +341,9 @@ void NuklearUI::Update()
 			m_bEditActive = true;
 	}
 
-#ifdef _DEBUG
+#ifdef _NKDEBUG
 	DebugLayout();
-#endif // _DEBUG
+#endif // _NKDEBUG
 }
 
 void NuklearUI::DebugLayout()
@@ -568,7 +568,7 @@ bool NuklearUI::LoadSpriteData(IDirectDrawSurface7* sprite, int width, int heigh
 		{
 			for (int x = 0; x < countX; ++x)
 			{
-				uint16_t region[4];
+				uint16_t region[4] = { 0, };
 				region[0] = sliceSizeX * x;
 				region[1] = sliceSizeY * y;
 				region[2] = sliceSizeX;
@@ -800,7 +800,7 @@ void NuklearUI::Remove(unsigned int id)
 			}
 		}
 
-		for (int i = pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)
@@ -852,7 +852,7 @@ void NuklearUI::Remove(const char* name)
 			}
 		}
 
-		for (int i = pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)
@@ -901,7 +901,7 @@ void NuklearUI::Remove(NKBase* obj)
 			}
 		}
 
-		for (int i = obj->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)obj->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)
@@ -952,7 +952,7 @@ void NuklearUI::Remove(int idx)
 			}
 		}
 
-		for (int i = pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)
@@ -1065,7 +1065,7 @@ void NuklearUI::OpenFileDialog()
 	ofn.hwndOwner = NULL;
 	ofn.lpstrFile = szFile;
 	ofn.nMaxFile = buffer_size;
-	ofn.lpstrFilter = L"All Files\0*.*\0SPR Files\0*.spr\0";
+	ofn.lpstrFilter = L"All Files\0*.*\0SPR Files\0*.spr;*.Spr;*.SPR\0";
 	ofn.nFilterIndex = 2; // ±âº» ¼±ÅÃÀ» SPR Files·Î ¼³Á¤
 	ofn.lpstrFileTitle = NULL;
 	ofn.nMaxFileTitle = 0;
@@ -1080,7 +1080,9 @@ void NuklearUI::OpenFileDialog()
 		while (*p) {
 			std::wstring filePath = directory + L"\\" + p;
 			std::filesystem::path path(filePath);
-			if (path.extension() == L".spr") {
+			std::wstring extension = path.extension().wstring();
+			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
+			if (extension == L".spr") {
 				int size_needed = WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, NULL, 0, NULL, NULL);
 				char* result = new char[size_needed];
 				WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, result, size_needed, NULL, NULL);
@@ -1093,7 +1095,9 @@ void NuklearUI::OpenFileDialog()
 		// If only one file is selected, GetOpenFileNameW does not add the directory separately
 		if (directory.length() > 0 && *p == '\0') {
 			std::filesystem::path path(directory);
-			if (path.extension() == L".spr") {
+			std::wstring extension = path.extension().wstring();
+			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
+			if (extension == L".spr") {
 				int size_needed = WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, NULL, 0, NULL, NULL);
 				char* result = new char[size_needed];
 				WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, result, size_needed, NULL, NULL);
@@ -1192,7 +1196,7 @@ void NuklearUI::ReleaseRenderData()
 
 void NuklearUI::LoadLuaFile(const char* filePath)
 {
-#ifdef _DEBUG
+#ifdef _NKDEBUG
 	memset(m_filePath, 0, sizeof(m_filePath));
 	strcpy_s(m_filePath, filePath);
 	if (luaL_dofile(m_lua, m_filePath) != LUA_OK) {
@@ -1202,7 +1206,7 @@ void NuklearUI::LoadLuaFile(const char* filePath)
 	if (luaL_dofile(m_lua, filePath) != LUA_OK) {
 		std::cerr << lua_tostring(m_lua, -1) << std::endl;
 	}
-#endif // _DEBUG
+#endif // _NKDEBUG
 
 	RunFunction("Init");
 }
@@ -1232,21 +1236,75 @@ bool NuklearUI::RunFunctionArgs(const char* functionName, const luabridge::LuaRe
 		}
 	}
 	catch (const luabridge::LuaException& e) {
-#ifdef _DEBUG
+#ifdef _NKDEBUG
 		std::cerr << "LuaException: " << e.what() << std::endl;
-#endif // _DEBUG
+#endif // _NKDEBUG
 		return false;
 	}
 	return true;
 }
 
+void NuklearUI::AddVariable(CustomData& var)
+{
+	m_vecVariable.push_back(var);
+	std::sort(m_vecVariable.begin(), m_vecVariable.end(), customCompare);
+}
+
+void NuklearUI::AddFunction(CustomData& func)
+{
+	m_vecFunction.push_back(func);
+	std::sort(m_vecFunction.begin(), m_vecFunction.end(), customCompare);
+}
+
+std::wstring NuklearUI::utf8ToWstring(const char* str)
+{
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
+	std::wstring wstrTo(size_needed - 1, 0); // -1 to exclude the null terminator
+	MultiByteToWideChar(CP_UTF8, 0, str, -1, &wstrTo[0], size_needed);
+	return wstrTo;
+}
+
+bool NuklearUI::customCompare(const CustomData aData, const CustomData bData)
+{
+	const wchar_t kFirstHangulConsonant = L'°¡'; // Unicode value for '°¡'
+	const wchar_t kLastHangulConsonant = L'ÆR'; // Unicode value for 'ÆR'
+
+	std::wstring a = utf8ToWstring(aData.name);
+	std::wstring b = utf8ToWstring(bData.name);
+
+	std::locale loc("ko_KR.UTF-8");
+
+	// µÎ ¹®ÀÚ¿­ÀÌ ¿µ¾î·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ¾ËÆÄºª ¼ø¼­·Î Á¤·Ä
+	if (std::isalpha(a[0], loc) && std::isalpha(b[0], loc)) {
+		return a < b;
+	}
+
+	// µÎ ¹®ÀÚ¿­ÀÌ ÇÑ±Û·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ÀÚ¸ð ¼ø¼­·Î Á¤·Ä
+	if (a[0] >= kFirstHangulConsonant && a[0] <= kLastHangulConsonant &&
+		b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant) {
+		return a < b;
+	}
+
+	// ¿µ¾î¿Í ÇÑ±ÛÀÌ ¼¯¿© ÀÖ´Â °æ¿ì ¿µ¾î¸¦ ¸ÕÀú, ÇÑ±ÛÀ» ³ªÁß¿¡ Á¤·Ä
+	if (std::isalpha(a[0], loc) && (b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant)) {
+		return true;
+	}
+	if ((a[0] >= kFirstHangulConsonant && a[0] <= kLastHangulConsonant) && std::isalpha(b[0], loc)) {
+		return false;
+	}
+
+	// ±× ¿ÜÀÇ °æ¿ì¿¡´Â ±âº» ºñ±³
+	return a < b;
+}
+
+#ifdef _NKDEBUG
 void NuklearUI::DebugLoadLuaFile(const char* filePath)
 {
 	if (luaL_dofile(m_lua, filePath) != LUA_OK) {
 		std::cerr << lua_tostring(m_lua, -1) << std::endl;
 	}
 }
-
+#endif // _NKDEBUG
 void NuklearUI::RegisterBase()
 {
 	luabridge::getGlobalNamespace(m_lua)
@@ -1335,7 +1393,6 @@ void NuklearUI::RegisterBase()
 		.endClass()
 		.deriveClass<NKMenu, NKBase>("NKMenu")
 		.addFunction("SetLabel", &NKMenu::SetLabel)
-		.addFunction("AddMenuItem", &NKMenu::AddMenuItem)
 		.endClass()
 		.deriveClass<NKScrollbar, NKBase>("NKScrollbar")
 		.addFunction("SetScroll", &NKScrollbar::SetScroll)

@@ -2,7 +2,7 @@
 #ifndef Constants_h__
 #define Constants_h__
 
-#ifdef _DEBUG
+#ifdef _NKDEBUG
 #define CHECK_PTR(ptr) \
     if ((ptr) == nullptr) { \
         std::cerr << "Error: Null " << __func__ <<" pointer passed to processPointer" << std::endl; \
@@ -30,7 +30,7 @@
 	if ((ref).isNil() || !(ref).isUserdata()) { \
         return; \
     }
-#endif // _DEBUG
+#endif // _NKDEBUG
 
 enum eTypeUI {
 	eBASE = -1
