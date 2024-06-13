@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKSlider.h"
 
-NKSlider::NKSlider()
+NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = eSLIDER;
     m_min = 0.0f;

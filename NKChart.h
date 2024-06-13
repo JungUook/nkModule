@@ -5,7 +5,7 @@
 class NKChart : public NKBase
 {
 public:
-    NKChart();
+    NKChart(nk_context* ctx, NuklearUI* pManager);
     ~NKChart();
 
 public:

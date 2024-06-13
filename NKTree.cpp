@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKTree.h"
 
-NKTree::NKTree()
+NKTree::NKTree(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = eTREE;
     m_state = NK_MINIMIZED;

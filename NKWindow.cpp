@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKWindow.h"
 
-NKWindow::NKWindow() : NKBase()
+NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type = eWINDOW;
 	m_flags = NK_WINDOW_TITLE;
@@ -10,7 +10,6 @@ NKWindow::NKWindow() : NKBase()
 	m_worldTransform.y = 50.f;
 	m_worldTransform.w = 300.f;
 	m_worldTransform.h = 600.f;
-
 }
 
 NKWindow::~NKWindow()
@@ -53,4 +52,11 @@ void NKWindow::EditInfo()
 void NKWindow::EditStyle()
 {
 	NKBase::EditStyle();
+	EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKWindow::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleHeader::EditComponentStyle(ctx, pManager);
+	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }

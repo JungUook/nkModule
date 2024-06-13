@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKImage.h"
 
-NKImage::NKImage()
+NKImage::NKImage(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eIMAGE;
 

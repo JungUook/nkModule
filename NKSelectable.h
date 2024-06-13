@@ -6,7 +6,7 @@
 class NKSelectable : public NKBase, public NKHandler
 {
 public:
-    NKSelectable();
+    NKSelectable(nk_context* ctx, NuklearUI* pManager);
     ~NKSelectable();
 
 public:

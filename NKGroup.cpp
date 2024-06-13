@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "NKGroup.h"
 
-NKGroup::NKGroup() : NKBase()
+NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type			= eGROUP;
 	m_flags			= 0;
 }
 
-NKGroup::NKGroup(const NKGroup& other) : NKBase()
+NKGroup::NKGroup(const NKGroup& other) : NKBase(other)
 {
 	m_type			= other.m_type;
 	m_flags			= other.m_flags;

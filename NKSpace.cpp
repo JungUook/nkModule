@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKSpace.h"
 
-NKSpace::NKSpace() : NKBase()
+NKSpace::NKSpace(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_layoutFormat	= NK_STATIC;
 	m_widgetCount	= 0;
@@ -9,7 +9,7 @@ NKSpace::NKSpace() : NKBase()
 	m_dynamicCount	= 1;
 }
 
-NKSpace::NKSpace(const NKSpace& other) : NKBase()
+NKSpace::NKSpace(const NKSpace& other) : NKBase(other)
 {
 	m_layoutFormat	= other.m_layoutFormat;
 	m_widgetCount	= other.m_widgetCount;	

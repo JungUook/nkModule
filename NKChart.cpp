@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKChart.h"
 
-NKChart::NKChart()
+NKChart::NKChart(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = eCHART;
     m_min = 0.0f;

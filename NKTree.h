@@ -5,7 +5,7 @@
 class NKTree : public NKBase
 {
 public:
-    NKTree();
+    NKTree(nk_context* ctx, NuklearUI* pManager);
     ~NKTree();
 
 public:

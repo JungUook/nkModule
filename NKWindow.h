@@ -3,16 +3,20 @@
 #define NKWindow_h__
 #include "NKBase.h"
 #include "NKBaseWindow.h"
-class NKWindow : public NKBase, public NKBaseWindow
+#include "NKStyleHeader.h"
+#include "NKStyleWindow.h"
+class NKWindow : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow
 {
 public:
-	NKWindow();
+	NKWindow(nk_context* ctx, NuklearUI* pManager);
 	~NKWindow();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
 	virtual void EditInfo() override;
 	virtual void EditStyle() override;
+
+	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 };
 
 #endif //NKWindow_h__

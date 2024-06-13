@@ -1,5 +1,6 @@
 #pragma once
-
+#ifndef NKHandler_h__
+#define NKHandler_h__
 class NuklearUI;
 
 class NKHandler
@@ -20,3 +21,4 @@ public:
 	char m_functionName[64];
 	char m_argsName[64];
 };
+#endif //NKHandler_h__

@@ -1,0 +1,30 @@
+#pragma once
+#ifndef ComponentSlider_h__
+#define ComponentSlider_h__
+#include "NKStyleItem.h"
+#include "ComponentButton.h"
+
+class ComponentSlider : public NKComponent
+{
+public:
+	ComponentSlider(struct nk_style_slider* pTarget, struct nk_style_slider* pRestore);
+	~ComponentSlider();
+
+	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
+
+protected:
+	struct nk_style_slider* m_pTarget;
+	struct nk_style_slider* m_pRestore;
+
+	NKStyleItem* m_pNormal;
+	NKStyleItem* m_pHover;
+	NKStyleItem* m_pActive;
+
+	NKStyleItem* m_CursorNormal;
+	NKStyleItem* m_CursorHover;
+	NKStyleItem* m_CursorActive;
+
+	ComponentButton* m_pIncButton;
+	ComponentButton* m_pDecButton;
+};
+#endif //ComponentSlider_h__

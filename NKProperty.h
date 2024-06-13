@@ -1,13 +1,13 @@
 #pragma once
 #ifndef NKProperty_h__
 #define NKProperty_h__
-#include "NKStyle.h"
+#include "NKBaseStyle.h"
 #include "NKTransform.h"
 
-class NKStyle;
+class NKBaseStyle;
 class NKTransform;
 
-class NKProperty : public NKStyle, public NKTransform
+class NKProperty : public NKBaseStyle, public NKTransform
 {
 public:
 	NKProperty();

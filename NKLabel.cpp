@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKLabel.h"
 
-NKLabel::NKLabel()
+NKLabel::NKLabel(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eLABEL;
 	m_flags = NK_TEXT_CENTERED;

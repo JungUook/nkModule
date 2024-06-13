@@ -5,7 +5,7 @@
 class NKLabel : public NKBase
 {
 public:
-	NKLabel();
+	NKLabel(nk_context* ctx, NuklearUI* pManager);
 	~NKLabel();
 
 public:

@@ -55,7 +55,7 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 		nk_layout_row_dynamic(ctx, 50.f, 2);
 		if (nk_button_label(ctx, "New"))
 		{
-			NKWindow* pWin = new NKWindow();
+			NKWindow* pWin = new NKWindow(ctx, m_pManager);
 			m_pManager->Add(pWin);
 		}
 		if (nk_button_label(ctx, "Refresh"))

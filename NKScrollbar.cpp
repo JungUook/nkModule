@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKScrollbar.h"
 
-NKScrollbar::NKScrollbar()
+NKScrollbar::NKScrollbar(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = eSCROLLBAR;
     m_scroll = 0.0f;

@@ -2,7 +2,7 @@
 #include "NKCombo.h"
 #include "NKComboItem.h"
 
-NKCombo::NKCombo() 
+NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eCOMBO;
 

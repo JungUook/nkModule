@@ -5,7 +5,7 @@
 class NKProgress : public NKBase
 {
 public:
-    NKProgress();
+    NKProgress(nk_context* ctx, NuklearUI* pManager);
     ~NKProgress();
 
 public:

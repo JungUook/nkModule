@@ -5,7 +5,7 @@
 class NKSlider : public NKBase
 {
 public:
-    NKSlider();
+    NKSlider(nk_context* ctx, NuklearUI* pManager);
     ~NKSlider();
 
 public:

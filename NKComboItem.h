@@ -6,7 +6,7 @@
 class NKComboItem : public NKBase, public NKHandler
 {
 public:
-	NKComboItem();
+	NKComboItem(nk_context* ctx, NuklearUI* pManager);
 	~NKComboItem();
 
 public:

@@ -5,7 +5,7 @@
 class NKSpace : public NKBase
 {
 public:
-	NKSpace();
+	NKSpace(nk_context* ctx, NuklearUI* pManager);
 	NKSpace(const NKSpace& other);
 	~NKSpace();
 

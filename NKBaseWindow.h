@@ -1,4 +1,6 @@
 #pragma once
+#ifndef NKBaseWindow_h__
+#define NKBaseWindow_h__
 class NKBaseWindow
 {
 public:
@@ -22,4 +24,4 @@ protected:
 	int m_scale_left;
 	int m_no_input;
 };
-
+#endif //NKBaseWindow_h__

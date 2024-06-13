@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKSelectable.h"
 
-NKSelectable::NKSelectable()
+NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = eSELECTABLE;
     m_selected = 0;

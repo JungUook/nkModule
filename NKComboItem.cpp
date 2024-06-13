@@ -2,7 +2,7 @@
 #include "NKComboItem.h"
 #include "NKCombo.h"
 
-NKComboItem::NKComboItem() : NKBase()
+NKComboItem::NKComboItem(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eCOMBO_ITEM;
 	m_flags = NK_TEXT_CENTERED;

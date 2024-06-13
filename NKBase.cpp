@@ -2,10 +2,10 @@
 #include "NKBase.h"
 #include "NKProperty.h"
 
-NKBase::NKBase() : NKProperty()
+NKBase::NKBase(nk_context* ctx, NuklearUI* pManager) : NKProperty()
 {
-	m_pManager = nullptr;
-	m_ctx = nullptr;
+	m_pManager = pManager;
+	m_ctx = ctx;
 	m_type = eBASE;
 	m_bActive = true;
 	m_bEditActive = false;
@@ -63,8 +63,6 @@ std::string NKBase::getClassName() const
 void NKBase::Initialize(NuklearUI* pManager)
 {
 	CHECK_PTR(pManager);
-	m_pManager = pManager;
-	m_ctx = m_pManager->GetContext();
 	InitializeStyle(m_ctx, pManager);
 	Initialize();
 }
@@ -74,7 +72,6 @@ void NKBase::Initialize(NKBase* pParent)
 	CHECK_PTR(pParent);
 	m_pParent = pParent;
 	m_pManager = m_pParent->m_pManager;
-	m_ctx = m_pParent->m_ctx;
 	InitializeStyle(m_pParent->m_font, m_pParent->m_style, m_pParent->m_pParentStyle);
 	Initialize();
 }
@@ -292,9 +289,9 @@ void NKBase::EditInfo()
 
 void NKBase::EditStyle()
 {
-	HeaderEditor(m_ctx, m_pManager);
-	WindowEditor(m_ctx, m_pManager);
-	ComponentEditor(m_ctx, m_pManager);
+	//HeaderEditor(m_ctx, m_pManager);
+	//WindowEditor(m_ctx, m_pManager);
+	//ComponentEditor(m_ctx, m_pManager);
 }
 
 void NKBase::EditBaseName(const char* name)

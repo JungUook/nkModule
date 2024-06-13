@@ -5,7 +5,7 @@
 class NKCheckbox : public NKBase
 {
 public:
-    NKCheckbox();
+    NKCheckbox(nk_context* ctx, NuklearUI* pManager);
     ~NKCheckbox();
 
 public:

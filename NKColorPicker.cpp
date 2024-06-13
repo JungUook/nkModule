@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKColorPicker.h"
 
-NKColorPicker::NKColorPicker()
+NKColorPicker::NKColorPicker(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = eCOLOR_PICKER;
     m_color = nk_hsva_colorf(255, 255, 255, 255);

@@ -6,7 +6,7 @@
 class NKGroup : public NKBase, public NKBaseWindow
 {
 public:
-	NKGroup();
+	NKGroup(nk_context* ctx, NuklearUI* pManager);
 	NKGroup(const NKGroup& other);
 	~NKGroup();
 

@@ -31,6 +31,9 @@
     <Filter Include="소스 파일\Nuklear\Base\Style">
       <UniqueIdentifier>{401c125e-3464-4a05-9259-69cc34eafcf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Nuklear\Base\Style\Component">
+      <UniqueIdentifier>{11b1ccbf-f6a3-4987-9eae-86ae828247bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -126,9 +129,6 @@
     <ClInclude Include="NKProperty.h">
       <Filter>소스 파일\Nuklear\Base</Filter>
     </ClInclude>
-    <ClInclude Include="NKStyle.h">
-      <Filter>소스 파일\Nuklear\Base</Filter>
-    </ClInclude>
     <ClInclude Include="NKTransform.h">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClInclude>
@@ -140,6 +140,96 @@
     </ClInclude>
     <ClInclude Include="NKBaseStyle.h">
       <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleHeader.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentButton.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleItem.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentToggle.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSelectable.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSlider.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentProgress.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentScrollbar.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentEdit.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentProperty.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentTab.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentCombo.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentHeader.h">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleWindow.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleButton.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleContextualButton.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleMenuButton.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleOption.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleCheckbox.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleSelectedable.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleSlider.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleProgress.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleText.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleProperty.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleEdit.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleChart.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleScrollbarH.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleScrollbarV.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleTab.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClInclude>
+    <ClInclude Include="NKStyleCombo.h">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -227,9 +317,6 @@
     <ClCompile Include="NKProperty.cpp">
       <Filter>소스 파일\Nuklear\Base</Filter>
     </ClCompile>
-    <ClCompile Include="NKStyle.cpp">
-      <Filter>소스 파일\Nuklear\Base</Filter>
-    </ClCompile>
     <ClCompile Include="NKTransform.cpp">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClCompile>
@@ -241,6 +328,96 @@
     </ClCompile>
     <ClCompile Include="NKBaseStyle.cpp">
       <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleHeader.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentButton.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleItem.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentToggle.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSelectable.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSlider.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentProgress.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentScrollbar.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentEdit.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentProperty.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentTab.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentCombo.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentHeader.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleWindow.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleButton.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleContextualButton.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleOption.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleMenuButton.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleCheckbox.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleSelectedable.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleSlider.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleProgress.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleText.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleProperty.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleEdit.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleChart.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleScrollbarH.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleScrollbarV.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleTab.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKStyleCombo.cpp">
+      <Filter>소스 파일\Nuklear\Base\Style</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

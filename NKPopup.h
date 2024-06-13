@@ -6,7 +6,7 @@
 class NKPopup : public NKBase, public NKBaseWindow
 {
 public:
-	NKPopup();
+	NKPopup(nk_context* ctx, NuklearUI* pManager);
 	~NKPopup();
 
 public:

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKPopup.h"
 
-NKPopup::NKPopup()
+NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = ePOPUP;
 	m_popupType = NK_POPUP_STATIC;

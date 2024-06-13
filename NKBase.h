@@ -10,7 +10,7 @@ class NKProperty;
 class NKBase : public NKProperty
 {
 public:
-	NKBase();
+	NKBase(nk_context* ctx, NuklearUI* pManager);
 	NKBase(const NKBase& other);
 	~NKBase();
 

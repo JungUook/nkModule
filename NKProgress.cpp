@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKProgress.h"
 
-NKProgress::NKProgress()
+NKProgress::NKProgress(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = ePROGRESS;
     m_progress = 0;

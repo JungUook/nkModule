@@ -5,7 +5,7 @@
 class NKScrollbar : public NKBase
 {
 public:
-    NKScrollbar();
+    NKScrollbar(nk_context* ctx, NuklearUI* pManager);
     ~NKScrollbar();
 
 public:

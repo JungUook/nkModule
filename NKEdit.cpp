@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKEdit.h"
 
-NKEdit::NKEdit()
+NKEdit::NKEdit(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eEDIT;
 	m_flags = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER;

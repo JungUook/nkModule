@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef UiLibrary_h__
+#define UiLibrary_h__
+
 #include "NKWindow.h"
 #include "NKSpace.h"
 #include "NKGroup.h"
@@ -20,3 +23,5 @@
 #include "NKMenu.h"
 #include "NKScrollbar.h"
 #include "NKColorPicker.h"
+
+#endif //UiLibrary_h__

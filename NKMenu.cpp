@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKMenu.h"
 
-NKMenu::NKMenu()
+NKMenu::NKMenu(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
     m_type = eMENU;
     memset(m_label, 0, sizeof(m_label));

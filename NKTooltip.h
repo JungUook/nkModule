@@ -5,7 +5,7 @@
 class NKTooltip : public NKBase
 {
 public:
-    NKTooltip();
+    NKTooltip(nk_context* ctx, NuklearUI* pManager);
     ~NKTooltip();
 
 public:

@@ -6,7 +6,7 @@
 class NKEdit : public NKBase, public NKHandler
 {
 public:
-	NKEdit();
+	NKEdit(nk_context* ctx, NuklearUI* pManager);
 	~NKEdit();
 
 public:

@@ -6,7 +6,7 @@
 class NKButton : public NKBase, public NKHandler
 {
 public:
-	NKButton();
+	NKButton(nk_context* ctx, NuklearUI* pManager);
 	~NKButton();
 
 public:

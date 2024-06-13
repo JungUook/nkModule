@@ -13,7 +13,7 @@ struct MenuItem {
 class NKMenu : public NKBase, public NKHandler
 {
 public:
-    NKMenu();
+    NKMenu(nk_context* ctx, NuklearUI* pManager);
     ~NKMenu();
 
 public:

@@ -33,20 +33,21 @@
 #include "NKBase.h"
 
 class NKBase;
+class NuklearUI;
 
 class Factory {
 public:
-	using FactoryMap = std::unordered_map<std::string, std::function<NKBase* ()>>;
+	using FactoryMap = std::unordered_map<std::string, std::function<NKBase* (nk_context*, NuklearUI*)>>;
 
 	template <typename T>
 	static void registerChild(const std::string& className) {
-		getFactoryMap()[className] = []() -> NKBase* { return new T(); };
+		getFactoryMap()[className] = [](nk_context* ctx, NuklearUI* pManager) -> NKBase* { return new T(ctx, pManager); };
 	}
 
-	NKBase* create(const std::string& className) {
+	NKBase* create(const std::string& className, nk_context* ctx, NuklearUI* pManager) {
 		auto it = getFactoryMap().find(className);
 		if (it != getFactoryMap().end()) {
-			return it->second();
+			return it->second(ctx, pManager);
 		}
 		return nullptr;
 	}
@@ -63,8 +64,8 @@ private:
 class ObjMaker {
 public:
 	template <typename T>
-	static T* create() {
-		T* obj = new T();
+	static T* create(nk_context* ctx, NuklearUI* pManager) {
+		T* obj = new T(ctx, pManager);
 		return obj;
 	}
 };

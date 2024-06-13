@@ -5,7 +5,7 @@
 class NKImage : public NKBase
 {
 public:
-	NKImage();
+	NKImage(nk_context* ctx, NuklearUI* pManager);
 	~NKImage();
 
 public:

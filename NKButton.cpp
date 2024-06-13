@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKButton.h"
 
-NKButton::NKButton()
+NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eBUTTON;
 	m_worldTransform.x = 0.f;

@@ -5,7 +5,7 @@
 class NKCombo : public NKBase
 {
 public:
-	NKCombo();
+	NKCombo(nk_context* ctx, NuklearUI* pManager);
 	~NKCombo();
 
 public:

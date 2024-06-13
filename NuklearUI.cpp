@@ -687,7 +687,7 @@ void NuklearUI::Register_UI()
 }
 void NuklearUI::CreateUI(const char* classname, NKBase* parent)
 {
-	NKBase* pBase = m_factory.create(classname);
+	NKBase* pBase = m_factory.create(classname, m_ctx, this);
 
 	if (pBase) {
 		if (parent) {
