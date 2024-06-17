@@ -6,6 +6,7 @@ class ComponentToggle : public NKComponent
 {
 public:
 	ComponentToggle(struct nk_style_toggle* pTarget, struct nk_style_toggle* pRestore);
+	ComponentToggle(const ComponentToggle& other);
 	~ComponentToggle();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;

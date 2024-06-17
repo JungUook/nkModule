@@ -2,22 +2,32 @@
 #include "NKCombo.h"
 #include "NKComboItem.h"
 
-NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleCombo(ctx, &m_style)
 {
 	m_type = eCOMBO;
 
-	m_pivot.x = 0.f;
-	m_pivot.y = 0.f;
-	m_worldTransform.x = 50.f;
-	m_worldTransform.y = 50.f;
-	m_worldTransform.w = 150.f;
-	m_worldTransform.h = 60.f;
+	m_cTransform.x = 50.f;
+	m_cTransform.y = 50.f;
+	m_cTransform.w = 150.f;
+	m_cTransform.h = 60.f;
 	m_labelSize.x = 150.f;
 	m_labelSize.y = 300.f;
 	m_currentLabel = 0;
 	m_labelAlignment = NK_TEXT_LEFT;
 
-	memset(m_content, 0, sizeof(m_content));
+	memset(m_cComboLabel, 0, sizeof(m_cComboLabel));
+}
+
+NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other)
+{
+	m_type = other.m_type;
+
+	m_labelSize.x = other.m_labelSize.x;
+	m_labelSize.y = other.m_labelSize.y;
+	m_currentLabel = other.m_currentLabel;
+	m_labelAlignment = other.m_labelAlignment;
+
+	memset(m_cComboLabel, 0, sizeof(m_cComboLabel));
 }
 
 NKCombo::~NKCombo()
@@ -26,7 +36,7 @@ NKCombo::~NKCombo()
 
 void NKCombo::Layout(nk_context* ctx)
 {
-	if (nk_combo_begin_label(ctx, m_content, m_labelSize))
+	if (nk_combo_begin_label(ctx, m_cComboLabel, m_labelSize))
 	{
 		nk_layout_space_begin(ctx, NK_STATIC, m_labelSize.y, m_pChildList.size());
 
@@ -37,7 +47,7 @@ void NKCombo::Layout(nk_context* ctx)
 			if ((*it)->GetType() == eCOMBO_ITEM)
 			{
 				NKComboItem* pItem = (NKComboItem*)(*it);
-				pItem->SetLabel(i);
+				pItem->SetLabelNumber(i);
 			}
 			(*it)->Update(ctx);
 		}
@@ -75,9 +85,14 @@ void NKCombo::EditInfo()
 	}	
 }
 
+void NKCombo::EditStyle()
+{
+	EditComponentStyle(m_ctx, m_pManager);
+}
+
 void NKCombo::SetComboName(const char* name)
 {
-	strcpy_s(m_content, name);
+	strcpy_s(m_cComboLabel, name);
 }
 
 void NKCombo::SetLabelSize(float x, float y)

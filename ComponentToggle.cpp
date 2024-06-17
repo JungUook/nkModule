@@ -15,6 +15,20 @@ ComponentToggle::ComponentToggle(nk_style_toggle* pTarget, nk_style_toggle* pRes
 	m_pCursorHover	= new NKStyleItem(&pTarget->cursor_hover, &pRestore->cursor_hover);
 }
 
+ComponentToggle::ComponentToggle(const ComponentToggle& other)
+{
+	m_pTarget		= other.m_pTarget;
+	m_pRestore		= other.m_pRestore;
+					  
+	m_pNormal		= new NKStyleItem(*other.m_pNormal);
+	m_pHover		= new NKStyleItem(*other.m_pHover);
+	m_pActive		= new NKStyleItem(*other.m_pActive);
+					  
+	m_pCursorNormal	= new NKStyleItem(*other.m_pCursorNormal);
+	m_pCursorHover	= new NKStyleItem(*other.m_pCursorHover);
+
+}
+
 ComponentToggle::~ComponentToggle()
 {
 	delete m_pNormal;

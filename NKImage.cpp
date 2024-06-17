@@ -5,16 +5,23 @@ NKImage::NKImage(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eIMAGE;
 
-	m_pivot.x = 0.f;
-	m_pivot.y = 0.f;
-	m_worldTransform.x = 50.f;
-	m_worldTransform.y = 50.f;
-	m_worldTransform.w = 100.f;
-	m_worldTransform.h = 100.f;
+	m_cTransform.x = 50.f;
+	m_cTransform.y = 50.f;
+	m_cTransform.w = 100.f;
+	m_cTransform.h = 100.f;
 
 	m_imagePath = "None";
 	m_sprIndex = 0;
 	m_sprSize = 0;
+}
+
+NKImage::NKImage(const NKImage& other) : NKBase(other)
+{
+	m_type = other.m_type;
+
+	m_imagePath = other.m_imagePath;
+	m_sprIndex = other.m_sprIndex;
+	m_sprSize = other.m_sprSize;
 }
 
 NKImage::~NKImage()

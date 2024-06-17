@@ -12,6 +12,16 @@ ComponentButton::ComponentButton(nk_style_button* pTarget, nk_style_button* pRes
 	m_pActive = new NKStyleItem(&pTarget->active, &pRestore->active);
 }
 
+ComponentButton::ComponentButton(const ComponentButton& other)
+{
+	m_pTarget = other.m_pTarget;
+	m_pRestore = other.m_pRestore;
+
+	m_pNormal = new NKStyleItem(*other.m_pNormal);
+	m_pHover = new NKStyleItem(*other.m_pHover);
+	m_pActive = new NKStyleItem(*other.m_pActive);
+}
+
 ComponentButton::~ComponentButton()
 {
 	delete m_pNormal;

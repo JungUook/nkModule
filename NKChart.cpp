@@ -1,11 +1,18 @@
 #include "pch.h"
 #include "NKChart.h"
 
-NKChart::NKChart(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKChart::NKChart(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleChart(ctx, &m_style)
 {
     m_type = eCHART;
     m_min = 0.0f;
     m_max = 1.0f;
+}
+
+NKChart::NKChart(const NKChart& other) : NKBase(other), NKStyleChart(other)
+{
+    m_type = other.m_type;
+    m_min = other.m_min;
+    m_max = other.m_max;
 }
 
 NKChart::~NKChart() {}
@@ -13,11 +20,17 @@ NKChart::~NKChart() {}
 void NKChart::Layout(nk_context* ctx)
 {
     nk_chart_begin(ctx, NK_CHART_LINES, m_values.size(), m_min, m_max);
-    for (float value : m_values)
+    for (auto it = m_values.begin(); it != m_values.end(); ++it)
     {
-        nk_chart_push(ctx, value);
+        nk_chart_push(ctx, *it);
     }
     nk_chart_end(ctx);
+}
+
+void NKChart::EditStyle()
+{
+    NKBase::EditStyle();
+    EditComponentStyle(m_ctx, m_pManager);
 }
 
 void NKChart::AddValue(float value)

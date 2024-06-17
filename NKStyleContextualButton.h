@@ -6,6 +6,7 @@ class NKStyleContextualButton
 {
 public:
 	NKStyleContextualButton(nk_context* ctx, nk_style* style);
+	NKStyleContextualButton(const NKStyleContextualButton& other);
 	~NKStyleContextualButton();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

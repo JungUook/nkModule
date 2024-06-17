@@ -7,6 +7,7 @@ class NKStyleTab
 {
 public:
 	NKStyleTab(nk_context* ctx, nk_style* style);
+	NKStyleTab(const NKStyleTab& other);
 	~NKStyleTab();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

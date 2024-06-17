@@ -17,6 +17,21 @@ NKStyleChart::NKStyleChart(nk_context* ctx, nk_style* style)
 	show_markers	= &style->chart.show_markers;
 }
 
+NKStyleChart::NKStyleChart(const NKStyleChart& other)
+{
+	m_pBackground = new NKStyleItem(*other.m_pBackground);
+
+	border_color = other.border_color;
+	selected_color = other.selected_color;
+	color = other.color;
+	border = other.border;
+	rounding = other.rounding;
+	padding = other.padding;
+	color_factor = other.color_factor;
+	disabled_factor = other.disabled_factor;
+	show_markers = other.show_markers;
+}
+
 NKStyleChart::~NKStyleChart()
 {
 	delete m_pBackground;
@@ -36,34 +51,37 @@ NKStyleChart::~NKStyleChart()
 
 void NKStyleChart::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 {
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Background", NK_MINIMIZED)) {
-		m_pBackground->ItemEditor(ctx, pManager);
-		nk_tree_pop(ctx);
-	}
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Border color", NK_MINIMIZED)) {
-		ColorPicker(ctx, *border_color);
-		nk_tree_pop(ctx);
-	}
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Selected color", NK_MINIMIZED)) {
-		ColorPicker(ctx, *selected_color);
-		nk_tree_pop(ctx);
-	}
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Color", NK_MINIMIZED)) {
-		ColorPicker(ctx, *color);
-		nk_tree_pop(ctx);
-	}
+	if (nk_tree_push(ctx, NK_TREE_TAB, "Chart", NK_MINIMIZED)) {
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Background", NK_MINIMIZED)) {
+			m_pBackground->ItemEditor(ctx, pManager);
+			nk_tree_pop(ctx);
+		}
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Border color", NK_MINIMIZED)) {
+			ColorPicker(ctx, *border_color);
+			nk_tree_pop(ctx);
+		}
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Selected color", NK_MINIMIZED)) {
+			ColorPicker(ctx, *selected_color);
+			nk_tree_pop(ctx);
+		}
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Color", NK_MINIMIZED)) {
+			ColorPicker(ctx, *color);
+			nk_tree_pop(ctx);
+		}
 
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Properties", NK_MINIMIZED)) {
-		nk_layout_row_dynamic(ctx, 22, 1);
-		nk_property_float(ctx, "#border:", 0.f, border, 100.f, 1.f, 1.f);
-		nk_property_float(ctx, "#rounding:", 0.f, rounding, 100.f, 1.f, 1.f);
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Properties", NK_MINIMIZED)) {
+			nk_layout_row_dynamic(ctx, 22, 1);
+			nk_property_float(ctx, "#border:", 0.f, border, 100.f, 1.f, 1.f);
+			nk_property_float(ctx, "#rounding:", 0.f, rounding, 100.f, 1.f, 1.f);
 
-		PropertyVector2(ctx, "padding", *padding, 0.f, 1000.f, 1.f, 1.f);
+			PropertyVector2(ctx, "padding", *padding, 0.f, 1000.f, 1.f, 1.f);
 
-		nk_property_float(ctx, "#color factor:", 0.f, color_factor, 100.f, 1.f, 1.f);
-		nk_property_float(ctx, "#disabled factor:", 0.f, disabled_factor, 100.f, 1.f, 1.f);
+			nk_property_float(ctx, "#color factor:", 0.f, color_factor, 100.f, 1.f, 1.f);
+			nk_property_float(ctx, "#disabled factor:", 0.f, disabled_factor, 100.f, 1.f, 1.f);
 
-		nk_checkbox_label(ctx, "show markers", show_markers);
+			nk_checkbox_label(ctx, "show markers", show_markers);
+			nk_tree_pop(ctx);
+		}
 		nk_tree_pop(ctx);
 	}
 }

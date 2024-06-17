@@ -7,6 +7,7 @@ class NKStyleScrollbarV
 {
 public:
 	NKStyleScrollbarV(nk_context* ctx, nk_style* style);
+	NKStyleScrollbarV(const NKStyleScrollbarV& other);
 	~NKStyleScrollbarV();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

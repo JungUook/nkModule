@@ -6,6 +6,7 @@ class NKImage : public NKBase
 {
 public:
 	NKImage(nk_context* ctx, NuklearUI* pManager);
+	NKImage(const NKImage& other);
 	~NKImage();
 
 public:

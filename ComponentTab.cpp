@@ -15,6 +15,20 @@ ComponentTab::ComponentTab(nk_style_tab* pTarget, nk_style_tab* pRestore)
 	m_pNodeMinimizeButton = new ComponentButton(&pTarget->node_minimize_button, &pRestore->node_minimize_button);
 }
 
+ComponentTab::ComponentTab(const ComponentTab& other)
+{
+	m_pTarget = other.m_pTarget;
+	m_pRestore = other.m_pRestore;
+
+	m_pBackground 		  = new NKStyleItem(*other.m_pBackground);
+
+	m_pTabMaximizeButton  = new ComponentButton(*other.m_pTabMaximizeButton);
+	m_pTabMinimizeButton  = new ComponentButton(*other.m_pTabMinimizeButton);
+	m_pNodeMaximizeButton = new ComponentButton(*other.m_pNodeMaximizeButton);
+	m_pNodeMinimizeButton = new ComponentButton(*other.m_pNodeMinimizeButton);
+
+}
+
 ComponentTab::~ComponentTab()
 {
 	delete m_pBackground;

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKSlider.h"
 
-NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleSlider(ctx, &m_style)
 {
     m_type = eSLIDER;
     m_min = 0.0f;
@@ -9,11 +9,24 @@ NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
     m_value = 0.0f;
 }
 
+NKSlider::NKSlider(const NKSlider& other) : NKBase(other), NKStyleSlider(other)
+{
+    m_type = other.m_type;
+    m_min = other.m_min;
+    m_max = other.m_max;
+    m_value = other.m_value;
+}
+
 NKSlider::~NKSlider() {}
 
 void NKSlider::Layout(nk_context* ctx)
 {
     nk_slider_float(ctx, m_min, &m_value, m_max, 0.01f);
+}
+
+void NKSlider::EditStyle()
+{
+    EditComponentStyle(m_ctx, m_pManager);
 }
 
 void NKSlider::SetRange(float min, float max)

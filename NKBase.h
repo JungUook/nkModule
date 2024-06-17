@@ -10,6 +10,7 @@ class NKProperty;
 class NKBase : public NKProperty
 {
 public:
+	NKBase();
 	NKBase(nk_context* ctx, NuklearUI* pManager);
 	NKBase(const NKBase& other);
 	~NKBase();
@@ -27,11 +28,12 @@ public:
 	virtual void SafeRenderEnd();
 	virtual void Release();
 
+	virtual nk_bool CheckMouseHover(nk_context* ctx);
+	virtual nk_bool IsHovering();
+
 	//제어함수
 public:
-	virtual bool IsHovering();
 	virtual void SetActive(bool bActive);
-	virtual void SetHovering(bool bHovering);
 	virtual void SetEdit(bool bEdit);
 	virtual bool IsEditActive();
 
@@ -72,10 +74,12 @@ protected:
 
 	unsigned int m_primaryID;
 	char m_primaryName[64];
+	char m_cprimaryEditName[64];
+	int m_cprimaryEditName_len;
 
 	char m_cBaseName[64];
-	char m_cEditName[64];
-	int m_cEditName_len;
+	char m_cBaseEditName[64];
+	int m_cBaseEditName_len;
 
 	int m_iNKIndex;
 
@@ -85,10 +89,11 @@ protected:
 	eTypeUI m_type;
 
 	bool m_bActive;
-	bool m_bHovering;
 	bool m_bEditActive;
 
+	NKBase* m_pWindow;
 	NKBase* m_pParent;
 	std::list<NKBase*> m_pChildList;
+
 };
 #endif //NKBaseObject_h__

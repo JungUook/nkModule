@@ -23,5 +23,6 @@
 #include "NKMenu.h"
 #include "NKScrollbar.h"
 #include "NKColorPicker.h"
+#include "NKSuperStyleObject.h"
 
 #endif //UiLibrary_h__

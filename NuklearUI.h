@@ -31,9 +31,11 @@
 #endif // _DX9
 
 #include "NKBase.h"
+#include "NKObjectFinder.h"
 
 class NKBase;
 class NuklearUI;
+class NKObjectFinder;
 
 class Factory {
 public:
@@ -127,7 +129,7 @@ public:
 	struct nk_font* GetFont() { return m_font; }
 	float GetOriginalFontSize() { return m_original_height; }
 
-	nk_flags IMEInputSystem(struct nk_context* ctx, nk_flags flags,	char* buffer, int max, nk_plugin_filter filter, int* len);
+	nk_flags IMEInputSystem(char* buffer, int max, int* len, nk_flags flag = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, nk_plugin_filter filter = nk_filter_default);
 	void IMEInputSystem(char* memory, int* len);
 
 private:
@@ -142,6 +144,7 @@ private:
 	//데이터 관리
 public:
 	void Register_UI();
+	std::vector<NKBase*>* GetNodes();
 	void CreateUI(const char* classname, NKBase* parent = nullptr);
 	struct nk_vec2* GetPivot();
 	struct nk_rect* GetViewport();
@@ -177,6 +180,7 @@ private:
 	struct nk_vec2 m_pivot;
 	struct nk_rect m_viewRect;
 
+	std::map<unsigned int, NKObjectFinder*> m_mapOF;
 #ifdef _DX7
 	//spr loader
 public:
@@ -227,5 +231,8 @@ private:
 #ifdef _NKDEBUG
 	char m_filePath[256];
 #endif // _NKDEBUG
+
+	//boost
+//public:
 };
 #endif //NuklearUI_h__

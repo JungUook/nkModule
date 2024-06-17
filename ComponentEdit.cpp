@@ -14,6 +14,18 @@ ComponentEdit::ComponentEdit(nk_style_edit* pTarget, nk_style_edit* pRestore)
 	m_pScrollbar = new ComponentScrollbar(&pTarget->scrollbar, &pRestore->scrollbar);
 }
 
+ComponentEdit::ComponentEdit(const ComponentEdit& other)
+{
+	m_pTarget = m_pTarget;
+	m_pRestore = m_pRestore;
+
+	m_pNormal = new NKStyleItem(*other.m_pNormal);
+	m_pHover = new NKStyleItem(*other.m_pHover);
+	m_pActive = new NKStyleItem(*other.m_pActive);
+
+	m_pScrollbar = new ComponentScrollbar(*other.m_pScrollbar);
+}
+
 ComponentEdit::~ComponentEdit()
 {
 	delete m_pNormal;

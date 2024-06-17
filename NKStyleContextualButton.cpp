@@ -7,6 +7,11 @@ NKStyleContextualButton::NKStyleContextualButton(nk_context* ctx, nk_style* styl
 	m_pComponent = new ComponentButton(&style->contextual_button, &ctx->style.contextual_button);
 }
 
+NKStyleContextualButton::NKStyleContextualButton(const NKStyleContextualButton& other)
+{
+	m_pComponent = new ComponentButton(*other.m_pComponent);
+}
+
 NKStyleContextualButton::~NKStyleContextualButton()
 {
 	delete m_pComponent;
@@ -15,7 +20,7 @@ NKStyleContextualButton::~NKStyleContextualButton()
 
 void NKStyleContextualButton::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 {
-	if (nk_tree_push(ctx, NK_TREE_NODE, "ContextualButton", NK_MINIMIZED)) {
+	if (nk_tree_push(ctx, NK_TREE_TAB, "ContextualButton", NK_MINIMIZED)) {
 		m_pComponent->CustomComponentsEditor(ctx, pManager);
 		nk_tree_pop(ctx);
 	}

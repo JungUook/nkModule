@@ -1,13 +1,18 @@
 #include "pch.h"
 #include "NKGroup.h"
 
-NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type			= eGROUP;
 	m_flags			= 0;
+
+	m_cTransform.x = 50.f;
+	m_cTransform.y = 50.f;
+	m_cTransform.w = 150.f;
+	m_cTransform.h = 300.f;
 }
 
-NKGroup::NKGroup(const NKGroup& other) : NKBase(other)
+NKGroup::NKGroup(const NKGroup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other), NKStyleWindow(other)
 {
 	m_type			= other.m_type;
 	m_flags			= other.m_flags;
@@ -27,7 +32,6 @@ void NKGroup::Layout(nk_context* ctx)
 		}
 		nk_group_end(ctx);
 	}
-	m_worldTransform = ctx->current->layout->row.item;
 }
 
 void NKGroup::SafeRenderStart()
@@ -54,4 +58,11 @@ void NKGroup::EditInfo()
 void NKGroup::EditStyle()
 {
 	NKBase::EditStyle();
+	EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKGroup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleHeader::EditComponentStyle(ctx, pManager);
+	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }

@@ -2,19 +2,19 @@
 #ifndef NKLabel_h__
 #define NKLabel_h__
 #include "NKBase.h"
-class NKLabel : public NKBase
+#include "NKBaseLabel.h"
+#include "NKStyleText.h"
+class NKLabel : public NKBase, public NKBaseLabel, public NKStyleText
 {
 public:
 	NKLabel(nk_context* ctx, NuklearUI* pManager);
+	NKLabel(const NKLabel& other);
 	~NKLabel();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
 	virtual void EditInfo() override;
-
-	void SetLabel(const char* text);
-public:
-	char m_content[256];
+	virtual void EditStyle() override;
 };
 
 

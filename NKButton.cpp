@@ -1,15 +1,18 @@
 #include "pch.h"
 #include "NKButton.h"
 
-NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleButton(ctx, &m_style)
 {
 	m_type = eBUTTON;
-	m_worldTransform.x = 0.f;
-	m_worldTransform.y = 0.f;
-	m_worldTransform.w = 150.f;
-	m_worldTransform.h = 40.f;
+	m_cTransform.x = 0.f;
+	m_cTransform.y = 0.f;
+	m_cTransform.w = 150.f;
+	m_cTransform.h = 40.f;
+}
 
-	memset(m_content, 0, sizeof(m_content));
+NKButton::NKButton(const NKButton& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleButton(other)
+{
+	m_type = eBUTTON;
 }
 
 NKButton::~NKButton()
@@ -18,7 +21,7 @@ NKButton::~NKButton()
 
 void NKButton::Layout(nk_context* ctx)
 {
-	if (nk_button_label(ctx, m_content))
+	if (nk_button_label(ctx, m_cContent))
 	{
 		CallEvent(m_pManager);
 	}
@@ -26,19 +29,11 @@ void NKButton::Layout(nk_context* ctx)
 
 void NKButton::EditInfo()
 {
-	float ratio[2];
-	ratio[0] = 0.3f;
-	ratio[1] = 0.7f;
-	nk_layout_row(m_ctx, NK_DYNAMIC, 44, 2, ratio);
-	nk_label(m_ctx, "Text: ", NK_TEXT_LEFT);
-	nk_flags result = m_pManager->IMEInputSystem(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, m_cEditName, sizeof(m_cEditName), nk_filter_default, &m_cEditName_len);
-	if (result & NK_EDIT_COMMITED) {
-		SetButtonName(m_cEditName);
-	}
-
+	EditLabel(m_ctx, m_pManager);
 }
 
-void NKButton::SetButtonName(const char* name)
+void NKButton::EditStyle()
 {
-	strcpy_s(m_content, name);
+	NKBase::EditStyle();
+	EditComponentStyle(m_ctx, m_pManager);
 }

@@ -7,6 +7,7 @@ class NKStyleProperty
 {
 public:
 	NKStyleProperty(nk_context* ctx, nk_style* style);
+	NKStyleProperty(const NKStyleProperty& other);
 	~NKStyleProperty();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

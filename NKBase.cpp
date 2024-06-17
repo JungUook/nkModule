@@ -2,6 +2,26 @@
 #include "NKBase.h"
 #include "NKProperty.h"
 
+NKBase::NKBase() : NKProperty()
+, m_pManager(nullptr)
+, m_primaryID(0)
+, m_ctx(nullptr)
+, m_flags(0)
+, m_type(eBASE)
+, m_bActive(true)
+, m_bEditActive(false)
+, m_pWindow(nullptr)
+, m_pParent(nullptr)
+, m_iNKIndex(0)
+, m_cprimaryEditName_len(0)
+, m_cBaseEditName_len(0)
+{
+	memset(m_primaryName, 0, sizeof(m_primaryName));
+	memset(m_cBaseName, 0, sizeof(m_cBaseName));
+	memset(m_cprimaryEditName, 0, sizeof(m_cprimaryEditName));
+	memset(m_cBaseEditName, 0, sizeof(m_cBaseEditName));
+}
+
 NKBase::NKBase(nk_context* ctx, NuklearUI* pManager) : NKProperty()
 {
 	m_pManager = pManager;
@@ -9,15 +29,17 @@ NKBase::NKBase(nk_context* ctx, NuklearUI* pManager) : NKProperty()
 	m_type = eBASE;
 	m_bActive = true;
 	m_bEditActive = false;
-	m_bHovering = false;
+	m_pWindow = nullptr;
 	m_pParent = nullptr;
 	m_primaryID = 0;
 	m_iNKIndex = 0;
-	m_cEditName_len = 0;
+	m_cprimaryEditName_len = 0;
+	m_cBaseEditName_len = 0;
 	m_flags = 0;
 	memset(m_primaryName, 0, sizeof(m_primaryName));
 	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	memset(m_cEditName, 0, sizeof(m_cEditName));
+	memset(m_cprimaryEditName, 0, sizeof(m_cprimaryEditName));
+	memset(m_cBaseEditName, 0, sizeof(m_cBaseEditName));
 }
 
 NKBase::NKBase(const NKBase& other) : NKProperty(other)
@@ -27,20 +49,18 @@ NKBase::NKBase(const NKBase& other) : NKProperty(other)
 	m_type = other.m_type;
 	m_bActive = other.m_bActive;
 	m_bEditActive = other.m_bEditActive;
-	m_bHovering = other.m_bHovering;
+	m_pWindow = other.m_pWindow;
 	m_pParent = other.m_pParent;
-	m_primaryID = 0;
-	m_iNKIndex = 0;
-	m_cEditName_len = other.m_cEditName_len;
+	m_primaryID = 0; // NuklearUI에서 설정
+	m_iNKIndex = 0; // NuklearUI에서 설정
+	m_cprimaryEditName_len = other.m_cprimaryEditName_len;
+	m_cBaseEditName_len = other.m_cBaseEditName_len;
 	m_flags = other.m_flags;
-	memset(m_primaryName, 0, sizeof(m_primaryName));
-	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	memset(m_cEditName, 0, sizeof(m_cEditName));
+	strcpy_s(m_primaryName, other.m_primaryName);
+	strcpy_s(m_cBaseName, other.m_cBaseName);
+	strcpy_s(m_cprimaryEditName, other.m_cprimaryEditName);
+	strcpy_s(m_cBaseEditName, other.m_cBaseEditName);
 	m_pManager->Add(this);
-	//m_primaryID = other.m_primaryID;
-	//m_iNKIndex = other.m_iNKIndex;
-	//strcpy_s(m_primaryName, other.m_primaryName);
-	//strcpy_s(m_cEditName, other.m_cEditName);
 }
 
 NKBase::~NKBase()
@@ -64,6 +84,7 @@ void NKBase::Initialize(NuklearUI* pManager)
 {
 	CHECK_PTR(pManager);
 	InitializeStyle(m_ctx, pManager);
+	m_pWindow = this;
 	Initialize();
 }
 
@@ -71,8 +92,9 @@ void NKBase::Initialize(NKBase* pParent)
 {
 	CHECK_PTR(pParent);
 	m_pParent = pParent;
+	m_pWindow = m_pParent->m_pWindow;
 	m_pManager = m_pParent->m_pManager;
-	InitializeStyle(m_pParent->m_font, m_pParent->m_style, m_pParent->m_pParentStyle);
+	InitializeStyle(m_pParent->m_font, m_ctx->style, m_pParent->m_pParentStyle);
 	Initialize();
 }
 
@@ -81,8 +103,6 @@ void NKBase::Initialize()
 	std::string className = getClassName().c_str();
 	strcpy_s(m_primaryName, className.c_str());
 	strcpy_s(m_cBaseName, className.c_str());
-
-	InitializeStyle(m_ctx);
 }
 
 void NKBase::Update(nk_context* ctx)
@@ -121,19 +141,31 @@ void NKBase::Release()
 	}
 }
 
-bool NKBase::IsHovering()
+nk_bool NKBase::CheckMouseHover(nk_context* ctx)
 {
-	return m_bHovering;
+	struct nk_rect b = nk_layout_space_rect_to_screen(ctx, m_cTransform);
+
+	if (!nk_window_is_active(ctx, m_pWindow->GetPrimaryName()) || !nk_input_is_mouse_hovering_rect(&ctx->input, m_pWindow->GetTransform())) {
+		m_bMouseHover = false;
+		return m_bMouseHover;
+	}
+
+	if (nk_input_is_mouse_hovering_rect(&ctx->input, b)) {
+		m_bMouseHover = true;
+	}
+	else {
+		m_bMouseHover = false;
+	}
+	return m_bMouseHover;
+}
+
+nk_bool NKBase::IsHovering() {
+	return m_bMouseHover;
 }
 
 void NKBase::SetActive(bool bActive)
 {
 	m_bActive = bActive;
-}
-
-void NKBase::SetHovering(bool bHovering)
-{
-	m_bHovering = bHovering;
 }
 
 void NKBase::SetEdit(bool bEdit)
@@ -256,13 +288,21 @@ void NKBase::LayoutEditor()
 		float ratio[2] = { 0.f };
 		ratio[0] = 0.3f;
 		ratio[1] = 0.7f;
-		nk_layout_row(m_ctx, NK_DYNAMIC, 44, 2, ratio);
-		nk_label(m_ctx, "Name", NK_TEXT_LEFT);
-		nk_flags result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cEditName, &m_cEditName_len, 64, nk_filter_default);
+		nk_layout_row(m_ctx, NK_DYNAMIC, 44, 1, ratio);
+		nk_label(m_ctx, "Window Name", NK_TEXT_LEFT);
+		nk_flags result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cprimaryEditName, &m_cprimaryEditName_len, 64, nk_filter_default);
 
 		if (result & NK_EDIT_COMMITED)
 		{
-			EditBaseName(m_cEditName);
+			EditBaseName(m_cprimaryEditName);
+		}
+
+		nk_label(m_ctx, "Node Name", NK_TEXT_LEFT);
+		result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cBaseEditName, &m_cBaseEditName_len, 64, nk_filter_default);
+
+		if (result & NK_EDIT_COMMITED)
+		{
+			EditBaseName(m_cBaseEditName);
 		}
 
 		FollowParentStyle(m_ctx, m_pParent);
@@ -289,9 +329,6 @@ void NKBase::EditInfo()
 
 void NKBase::EditStyle()
 {
-	//HeaderEditor(m_ctx, m_pManager);
-	//WindowEditor(m_ctx, m_pManager);
-	//ComponentEditor(m_ctx, m_pManager);
 }
 
 void NKBase::EditBaseName(const char* name)

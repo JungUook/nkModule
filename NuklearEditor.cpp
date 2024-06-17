@@ -81,19 +81,24 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 			m_pManager->RunFunction("Init");
 		}
 
-
-		if (nk_contextual_begin(ctx, 0, nk_vec2(100, 220), nk_window_get_bounds(ctx))) {
-			const char* grid_option[] = { "Show Grid", "Hide Grid" };
-			nk_layout_row_dynamic(ctx, 25, 1);
-			if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED))
-			{
-			}
-			if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_CENTERED))
-			{
-
-			}
-			nk_contextual_end(ctx);
+		if (nk_button_label(ctx, "Save")){
 		}
+		if (nk_button_label(ctx, "Load")){
+		}
+
+		//if (nk_contextual_begin(ctx, 0, nk_vec2(100, 220), nk_window_get_bounds(ctx))) {
+		//	const char* grid_option[] = { "Show Grid", "Hide Grid" };
+		//	nk_layout_row_dynamic(ctx, 25, 1);
+		//	if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED))
+		//	{
+		//	}
+		//	if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_CENTERED))
+		//	{
+
+		//	}
+		//	nk_contextual_end(ctx);
+		//}
+
 		nk_layout_row_dynamic(ctx, 30, 4);
 		if (nk_option_label(ctx, "node", m_option == eNODE)) m_option = eNODE;
 		if (nk_option_label(ctx, "copy", m_option == eCOPY)) m_option = eCOPY;
@@ -170,6 +175,12 @@ void NuklearEditor::NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkT
 {
 	if (nk_tree_push_id(ctx, nkType, pBase->GetBaseName(), nkState, reinterpret_cast<intptr_t>(pBase)))
 	{
+		nk_widget_bounds(ctx);
+
+		nk_bool bHover = nk_widget_is_hovered(ctx);
+		if(bHover)
+			nk_tooltip(ctx, pBase->GetBaseName());
+
 		switch (m_option)
 		{
 		case eNODE:
@@ -274,7 +285,7 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
 	static char SearchFunction[256] = { 0, };
 	static int SearchFunction_Len = 0;
-	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, SearchFunction, sizeof(SearchFunction), nk_filter_default, &SearchFunction_Len);
+	nk_flags searchResult = m_pManager->IMEInputSystem(SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
 
 	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 
@@ -342,7 +353,7 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
 	static char SearchFunction[256] = { 0, };
 	static int SearchFunction_Len = 0;
-	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, SearchFunction, sizeof(SearchFunction), nk_filter_default, &SearchFunction_Len);
+	nk_flags searchResult = m_pManager->IMEInputSystem(SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
 
 	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 
@@ -391,10 +402,10 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 				tree_layout[1] = 0.7f;
 				nk_layout_row(ctx, NK_DYNAMIC, 55, 2, tree_layout);
 				nk_label(ctx, "name: ", NK_TEXT_LEFT);
-				m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, d.name, sizeof(d.name), nk_filter_default, &d.nameLen);
+				m_pManager->IMEInputSystem(d.name, sizeof(d.name), &d.nameLen);
 
 				nk_label(ctx, "table: ", NK_TEXT_LEFT);
-				m_pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, d.tableName, sizeof(d.tableName), nk_filter_default, &d.tableLen);
+				m_pManager->IMEInputSystem(d.tableName, sizeof(d.tableName), &d.tableLen);
 
 				if (nk_button_label(ctx, "remove")) {
 					it = vCustom->erase(it);

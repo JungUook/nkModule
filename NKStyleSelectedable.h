@@ -7,6 +7,7 @@ class NKStyleSelectedable
 {
 public:
 	NKStyleSelectedable(nk_context* ctx, nk_style* style);
+	NKStyleSelectedable(const NKStyleSelectedable& other);
 	~NKStyleSelectedable();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

@@ -35,10 +35,6 @@ void NKBaseStyle::InitializeStyle(nk_font* font, nk_style& parentStyle, nk_style
 	m_pParentStyle = parent_of_parentStyle != nullptr ? parent_of_parentStyle : &parentStyle;
 }
 
-void NKBaseStyle::InitializeStyle(nk_context* ctx)
-{
-}
-
 void NKBaseStyle::StyleUpdateStart(nk_context* ctx, nk_style& original, NKBaseStyle* pParent)
 {
 	original = ctx->style;

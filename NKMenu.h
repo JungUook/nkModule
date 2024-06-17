@@ -3,6 +3,8 @@
 #define NKMenu_h__
 #include "NKBase.h"
 #include "NKHandler.h"
+#include "NKBaseLabel.h"
+#include "NKStyleMenuButton.h"
 
 struct MenuItem {
     char name[256];
@@ -10,19 +12,18 @@ struct MenuItem {
     CustomData data;
 };
 
-class NKMenu : public NKBase, public NKHandler
+class NKMenu : public NKBase, public NKHandler, public NKBaseLabel, public NKStyleMenuButton
 {
 public:
     NKMenu(nk_context* ctx, NuklearUI* pManager);
+    NKMenu(const NKMenu& other);
     ~NKMenu();
 
 public:
     virtual void Layout(nk_context* ctx) override;
     virtual void EditInfo() override;
-
-    void SetLabel(const char* label);
+    virtual void EditStyle() override;
 public:
-    char m_label[64];
     std::vector<MenuItem> m_items;
 };
 #endif //NKMenu_h__

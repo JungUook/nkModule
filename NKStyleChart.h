@@ -6,6 +6,7 @@ class NKStyleChart
 {
 public:
 	NKStyleChart(nk_context* ctx, nk_style* style);
+	NKStyleChart(const NKStyleChart& other);
 	~NKStyleChart();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

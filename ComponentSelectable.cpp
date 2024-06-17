@@ -16,6 +16,20 @@ ComponentSelectable::ComponentSelectable(nk_style_selectable* pTarget, nk_style_
 	m_pPressedActive = new NKStyleItem(&pTarget->pressed_active, &pRestore->pressed_active);
 }
 
+ComponentSelectable::ComponentSelectable(const ComponentSelectable& other)
+{
+	m_pTarget		 = other.m_pTarget;
+	m_pRestore		 = other.m_pRestore;
+					 
+	m_pNormal		 = new NKStyleItem(*other.m_pNormal);
+	m_pHover		 = new NKStyleItem(*other.m_pHover);
+	m_pPressed		 = new NKStyleItem(*other.m_pPressed);
+					 
+	m_pNormalActive	 = new NKStyleItem(*other.m_pNormalActive);
+	m_pHoverActive	 = new NKStyleItem(*other.m_pHoverActive);
+	m_pPressedActive = new NKStyleItem(*other.m_pPressedActive);
+}
+
 ComponentSelectable::~ComponentSelectable()
 {
 	m_pTarget	= nullptr;

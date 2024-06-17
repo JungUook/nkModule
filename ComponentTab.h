@@ -7,6 +7,7 @@ class ComponentTab : public NKComponent
 {
 public:
 	ComponentTab(struct nk_style_tab* pTarget, struct nk_style_tab* pRestore);
+	ComponentTab(const ComponentTab& other);
 	~ComponentTab();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;

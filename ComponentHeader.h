@@ -7,6 +7,7 @@ class ComponentHeader : public NKComponent
 {
 public:
 	ComponentHeader(struct nk_style_window_header* pTarget, struct nk_style_window_header* pRestore);
+	ComponentHeader(const ComponentHeader& other);
 	~ComponentHeader();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;

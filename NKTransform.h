@@ -5,6 +5,11 @@
 
 class NuklearUI;
 
+enum POSTYPE {
+	eSTATIC = 0,
+	eDYNAMIC = 1
+};
+
 class NKTransform
 {
 public:
@@ -23,16 +28,18 @@ public:
 	virtual float GetWidth();
 	virtual float GetHeight();
 
-	virtual struct nk_vec2* EditPivot();
-	virtual struct nk_rect* EditTransform();
+	virtual struct nk_vec2* RefPivot();
+	virtual struct nk_rect* RefTransform();
 
 	//ui 편집용 함수
 protected:
 	virtual void PropertyTransform(nk_context* ctx, NKTransform* parent, NuklearUI* pManager);
 
 protected:
-	struct nk_vec2 m_pivot;
-	struct nk_vec2 m_position;
-	struct nk_rect m_worldTransform;
+	struct nk_vec2 m_cPivot;
+	struct nk_vec2 m_cPosition;
+	struct nk_rect m_cTransform;
+	struct nk_rect* m_cSyncTransform;
+	nk_bool m_bMouseHover;
 };
 #endif //NKTransform_h__

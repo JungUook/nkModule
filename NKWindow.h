@@ -9,9 +9,11 @@ class NKWindow : public NKBase, public NKBaseWindow, public NKStyleHeader, publi
 {
 public:
 	NKWindow(nk_context* ctx, NuklearUI* pManager);
+	NKWindow(const NKWindow& other);
 	~NKWindow();
 
 public:
+	virtual void Update(nk_context* ctx) override;
 	virtual void Layout(nk_context* ctx) override;
 	virtual void EditInfo() override;
 	virtual void EditStyle() override;

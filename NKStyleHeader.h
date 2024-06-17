@@ -7,6 +7,7 @@ class NKStyleHeader
 {
 public:
 	NKStyleHeader(nk_context* ctx, nk_style* style);
+	NKStyleHeader(const NKStyleHeader& other);
 	~NKStyleHeader();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

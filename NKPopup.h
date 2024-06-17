@@ -3,16 +3,20 @@
 #define NKPopup_h__
 #include "NKBase.h"
 #include "NKBaseWindow.h"
-class NKPopup : public NKBase, public NKBaseWindow
+#include "NKStyleHeader.h"
+#include "NKStyleWindow.h"
+class NKPopup : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow
 {
 public:
 	NKPopup(nk_context* ctx, NuklearUI* pManager);
+	NKPopup(const NKPopup& other);
 	~NKPopup();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
 	virtual void EditInfo() override;
 	virtual void EditStyle() override;
+	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 
 public:
 	nk_popup_type m_popupType;

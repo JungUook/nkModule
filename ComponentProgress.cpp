@@ -16,6 +16,20 @@ ComponentProgress::ComponentProgress(nk_style_progress* pTarget, nk_style_progre
 	m_CursorActive = new NKStyleItem(&pTarget->cursor_active, &pRestore->cursor_active);
 }
 
+ComponentProgress::ComponentProgress(const ComponentProgress& other)
+{
+	m_pTarget = other.m_pTarget;
+	m_pRestore = other.m_pRestore;
+
+	m_pNormal = new NKStyleItem(*other.m_pNormal);
+	m_pHover = new NKStyleItem(*other.m_pHover);
+	m_pActive = new NKStyleItem(*other.m_pActive);
+
+	m_CursorNormal = new NKStyleItem(*other.m_CursorNormal);
+	m_CursorHover = new NKStyleItem(*other.m_CursorHover);
+	m_CursorActive = new NKStyleItem(*other.m_CursorActive);
+}
+
 ComponentProgress::~ComponentProgress()
 {
 	delete m_pNormal;

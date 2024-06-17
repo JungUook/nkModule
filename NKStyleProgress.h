@@ -7,6 +7,7 @@ class NKStyleProgress
 {
 public:
 	NKStyleProgress(nk_context* ctx, nk_style* style);
+	NKStyleProgress(const NKStyleProgress& other);
 	~NKStyleProgress();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

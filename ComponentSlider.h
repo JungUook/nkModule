@@ -8,6 +8,7 @@ class ComponentSlider : public NKComponent
 {
 public:
 	ComponentSlider(struct nk_style_slider* pTarget, struct nk_style_slider* pRestore);
+	ComponentSlider(const ComponentSlider& other);
 	~ComponentSlider();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;

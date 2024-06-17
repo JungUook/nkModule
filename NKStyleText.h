@@ -6,6 +6,7 @@ class NKStyleText
 {
 public:
 	NKStyleText(nk_context* ctx, nk_style* style);
+	NKStyleText(const NKStyleText& other);
 	~NKStyleText();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

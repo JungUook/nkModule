@@ -1,7 +1,6 @@
 #pragma once
 #ifndef NKBaseStyle_h__
 #define NKBaseStyle_h__
-
 class NuklearUI;
 
 class NKBaseStyle
@@ -14,7 +13,6 @@ public:
 protected:
 	virtual void InitializeStyle(nk_context* ctx, NuklearUI* pManager);
 	virtual void InitializeStyle(nk_font* font, nk_style& parentStyle, nk_style* parent_of_parentStyle);
-	virtual void InitializeStyle(nk_context* ctx);
 
 	virtual void StyleUpdateStart(nk_context* ctx, nk_style& original, NKBaseStyle* pParent);
 	virtual void StyleUpdateEnd(nk_context* ctx, nk_style& original);

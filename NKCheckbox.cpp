@@ -1,42 +1,33 @@
 #include "pch.h"
 #include "NKCheckbox.h"
 
-NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKStyleCheckbox(ctx, &m_style)
 {
     m_type = eCHECKBOX;
     m_checked = 0;
-    memset(m_label, 0, sizeof(m_label));
+}
+
+NKCheckbox::NKCheckbox(const NKCheckbox& other) : NKBase(other), NKBaseLabel(other), NKStyleCheckbox(other)
+{
+	m_type = other.m_type;
+	m_checked = other.m_checked;
 }
 
 NKCheckbox::~NKCheckbox() {}
 
 void NKCheckbox::Layout(nk_context* ctx)
 {
-    nk_checkbox_label(ctx, m_label, &m_checked);
+    nk_checkbox_label(ctx, m_cContent, &m_checked);
 }
 
 void NKCheckbox::EditInfo()
 {
-	float ratio[2];
-	ratio[0] = 0.3f;
-	ratio[1] = 0.7f;
-	nk_layout_row(m_ctx, NK_DYNAMIC, 44, 2, ratio);
-	nk_label(m_ctx, "Text: ", NK_TEXT_LEFT);
-
-	//nk_flags result = nk_edit_string(m_ctx, NK_EDIT_FIELD, m_cEditName, &m_cEditName_len, 64, nk_filter_default);
-	nk_flags result = nk_edit_string_zero_terminated(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, m_cEditName, sizeof(m_cEditName), nk_filter_default);
-	if (result & NK_EDIT_ACTIVE) {
-		m_pManager->IMEInputSystem(m_cEditName, &m_cEditName_len);
-	}
-
-	if (result & NK_EDIT_COMMITED) {
-		SetLabel(m_cEditName);
-	}
+    EditLabel(m_ctx, m_pManager);
 }
 
-void NKCheckbox::SetLabel(const char* label)
+void NKCheckbox::EditStyle()
 {
-    strcpy_s(m_label, label);
+    EditComponentStyle(m_ctx, m_pManager);
 }
 
 void NKCheckbox::SetChecked(bool checked)

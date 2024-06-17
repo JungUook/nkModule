@@ -7,6 +7,7 @@ class NKStyleEdit
 {
 public:
 	NKStyleEdit(nk_context* ctx, nk_style* style);
+	NKStyleEdit(const NKStyleEdit& other);
 	~NKStyleEdit();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);

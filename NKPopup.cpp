@@ -1,18 +1,23 @@
 #include "pch.h"
 #include "NKPopup.h"
 
-NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type = ePOPUP;
 	m_popupType = NK_POPUP_STATIC;
 	m_flags = NK_WINDOW_TITLE;
 
-	m_pivot.x = 0.f;
-	m_pivot.y = 0.f;
-	m_worldTransform.x = 50.f;
-	m_worldTransform.y = 50.f;
-	m_worldTransform.w = 150.f;
-	m_worldTransform.h = 100.f;
+	m_cTransform.x = 50.f;
+	m_cTransform.y = 50.f;
+	m_cTransform.w = 150.f;
+	m_cTransform.h = 100.f;
+}
+
+NKPopup::NKPopup(const NKPopup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other), NKStyleWindow(other)
+{
+	m_type = other.m_type;
+	m_popupType = other.m_popupType;
+	m_flags = other.m_flags;
 }
 
 NKPopup::~NKPopup()
@@ -47,4 +52,11 @@ void NKPopup::EditInfo()
 void NKPopup::EditStyle()
 {
 	NKBase::EditStyle();
+	EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKPopup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleHeader::EditComponentStyle(ctx, pManager);
+	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }

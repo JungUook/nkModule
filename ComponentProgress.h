@@ -6,6 +6,7 @@ class ComponentProgress : public NKComponent
 {
 public:
 	ComponentProgress(struct nk_style_progress* pTarget, struct nk_style_progress* pRestore);
+	ComponentProgress(const ComponentProgress& other);
 	~ComponentProgress();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;

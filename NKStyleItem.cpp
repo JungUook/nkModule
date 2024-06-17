@@ -10,6 +10,20 @@ NKStyleItem::NKStyleItem(nk_style_item* pTarget, nk_style_item* pRestore) : m_sI
 	m_pRestore = pRestore;
 }
 
+NKStyleItem::NKStyleItem(const NKStyleItem& other)
+{
+	for (int i = 0; i < 4; ++i) {
+		m_iNineslice[i] = other.m_iNineslice[i];
+	}
+	m_sImagePath = other.m_sImagePath;
+	m_iOption = other.m_iOption;
+	m_iSprIndex = other.m_iSprIndex;
+	m_iSprSize = other.m_iSprSize;
+	m_pTarget = other.m_pTarget;
+	m_pRestore = other.m_pRestore;
+
+}
+
 NKStyleItem::~NKStyleItem()
 {
 }
@@ -46,7 +60,7 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 			else if (m_iOption == 2) {
 				struct nk_image img;
 				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img, true);
-				struct nk_nine_slice nineslice;
+				struct nk_nine_slice nineslice {};
 				nineslice.img = img;
 				nineslice.l = (nk_ushort)m_iNineslice[0];
 				nineslice.t = (nk_ushort)m_iNineslice[1];
@@ -76,7 +90,7 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 			static char SearchFunction[256] = { 0, };
 			static int SearchFunction_Len = 0;
 			nk_layout_row(ctx, NK_DYNAMIC, 40, 2, ratio);
-			nk_flags searchResult = pManager->IMEInputSystem(ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, SearchFunction, sizeof(SearchFunction), nk_filter_default, &SearchFunction_Len);
+			nk_flags searchResult = pManager->IMEInputSystem(SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
 
 			if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 

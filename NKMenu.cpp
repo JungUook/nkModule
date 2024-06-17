@@ -1,17 +1,22 @@
 #include "pch.h"
 #include "NKMenu.h"
 
-NKMenu::NKMenu(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKMenu::NKMenu(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleMenuButton(ctx, &m_style)
 {
     m_type = eMENU;
-    memset(m_label, 0, sizeof(m_label));
+}
+
+NKMenu::NKMenu(const NKMenu& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleMenuButton(other)
+{
+    m_type = eMENU;
+    m_items = other.m_items;
 }
 
 NKMenu::~NKMenu() {}
 
 void NKMenu::Layout(nk_context* ctx)
 {
-    if (nk_menu_begin_label(ctx, m_label, NK_TEXT_LEFT, nk_vec2(120, 200)))
+    if (nk_menu_begin_label(ctx, m_cContent, NK_TEXT_LEFT, nk_vec2(120, 200)))
     {
         nk_layout_row_dynamic(ctx, 25, 1);
         for (auto it = m_items.begin(); it != m_items.end(); ++it)
@@ -29,15 +34,7 @@ void NKMenu::Layout(nk_context* ctx)
 
 void NKMenu::EditInfo()
 {
-    float ratio[2];
-    ratio[0] = 0.3f;
-    ratio[1] = 0.7f;
-    nk_layout_row(m_ctx, NK_DYNAMIC, 44, 2, ratio);
-    nk_label(m_ctx, "Text: ", NK_TEXT_LEFT);
-    nk_flags result = m_pManager->IMEInputSystem(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, m_cEditName, sizeof(m_cEditName), nk_filter_default, &m_cEditName_len);
-    if (result & NK_EDIT_COMMITED) {
-        SetLabel(m_cEditName);
-    }
+    EditLabel(m_ctx, m_pManager);
 
     nk_layout_row_dynamic(m_ctx, 33, 1);
     if (nk_button_label(m_ctx, "Add")) {
@@ -61,13 +58,13 @@ void NKMenu::EditInfo()
                 nk_layout_row(m_ctx, NK_DYNAMIC, 55, 2, tree_layout);
 
                 nk_label(m_ctx, "name: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, item.name, sizeof(item.name), nk_filter_default, &item.nameLen);
+                m_pManager->IMEInputSystem(item.name, sizeof(item.name), &item.nameLen);
 
                 nk_label(m_ctx, "funcname: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, item.data.name, sizeof(item.data.name), nk_filter_default, &item.data.nameLen);
+                m_pManager->IMEInputSystem(item.data.name, sizeof(item.data.name), &item.data.nameLen);
 
                 nk_label(m_ctx, "table: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, item.data.tableName, sizeof(item.data.tableName), nk_filter_default, &item.data.tableLen);
+                m_pManager->IMEInputSystem(item.data.tableName, sizeof(item.data.tableName), &item.data.tableLen);
 
                 nk_tree_pop(m_ctx);
             }
@@ -76,7 +73,8 @@ void NKMenu::EditInfo()
     }
 }
 
-void NKMenu::SetLabel(const char* label)
+void NKMenu::EditStyle()
 {
-    strcpy_s(m_label, label);
+    NKBase::EditStyle();
+    EditComponentStyle(m_ctx, m_pManager);
 }

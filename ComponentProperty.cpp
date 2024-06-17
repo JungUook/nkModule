@@ -16,6 +16,20 @@ ComponentProperty::ComponentProperty(nk_style_property* pTarget, nk_style_proper
 	m_pDecButton = new ComponentButton(&pTarget->dec_button, &pRestore->dec_button);
 }
 
+ComponentProperty::ComponentProperty(const ComponentProperty& other)
+{
+	m_pTarget = other.m_pTarget;
+	m_pRestore = other.m_pRestore;
+
+	m_pNormal = new NKStyleItem(*other.m_pNormal);
+	m_pHover = new NKStyleItem(*other.m_pHover);
+	m_pActive = new NKStyleItem(*other.m_pActive);
+
+	m_pEdit = new ComponentEdit(*other.m_pEdit);
+	m_pIncButton = new ComponentButton(*other.m_pIncButton);
+	m_pDecButton = new ComponentButton(*other.m_pDecButton);
+}
+
 ComponentProperty::~ComponentProperty()
 {
 	delete m_pNormal;

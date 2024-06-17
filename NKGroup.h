@@ -3,7 +3,9 @@
 #define NKGroup_h__
 #include "NKBase.h"
 #include "NKBaseWindow.h"
-class NKGroup : public NKBase, public NKBaseWindow
+#include "NKStyleHeader.h"
+#include "NKStyleWindow.h"
+class NKGroup : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow
 {
 public:
 	NKGroup(nk_context* ctx, NuklearUI* pManager);
@@ -16,6 +18,7 @@ public:
 	virtual void SafeRenderEnd() override;
 	virtual void EditInfo() override;
 	virtual void EditStyle() override;
+	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 };
 
 #endif //NKGroup_h__

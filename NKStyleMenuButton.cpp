@@ -7,6 +7,11 @@ NKStyleMenuButton::NKStyleMenuButton(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentButton(&style->button, &ctx->style.menu_button);
 }
 
+NKStyleMenuButton::NKStyleMenuButton(const NKStyleMenuButton& other)
+{
+	m_pComponent = new ComponentButton(*other.m_pComponent);
+}
+
 NKStyleMenuButton::~NKStyleMenuButton()
 {
 	delete m_pComponent;
@@ -15,7 +20,7 @@ NKStyleMenuButton::~NKStyleMenuButton()
 
 void NKStyleMenuButton::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 {
-	if (nk_tree_push(ctx, NK_TREE_NODE, "MenuButton", NK_MINIMIZED)) {
+	if (nk_tree_push(ctx, NK_TREE_TAB, "MenuButton", NK_MINIMIZED)) {
 		m_pComponent->CustomComponentsEditor(ctx, pManager);
 		nk_tree_pop(ctx);
 	}

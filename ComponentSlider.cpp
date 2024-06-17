@@ -19,6 +19,23 @@ ComponentSlider::ComponentSlider(nk_style_slider* pTarget, nk_style_slider* pRes
 	m_pDecButton	= new ComponentButton(&pTarget->dec_button, &pRestore->dec_button);
 }
 
+ComponentSlider::ComponentSlider(const ComponentSlider& other)
+{
+	m_pTarget = other.m_pTarget;
+	m_pRestore = other.m_pRestore;
+
+	m_pNormal		= new NKStyleItem(*other.m_pNormal);
+	m_pHover		= new NKStyleItem(*other.m_pHover);
+	m_pActive		= new NKStyleItem(*other.m_pActive);
+
+	m_CursorNormal	= new NKStyleItem(*other.m_CursorNormal);
+	m_CursorHover	= new NKStyleItem(*other.m_CursorHover);
+	m_CursorActive	= new NKStyleItem(*other.m_CursorActive);
+
+	m_pIncButton	= new ComponentButton(*other.m_pIncButton);
+	m_pDecButton	= new ComponentButton(*other.m_pDecButton);
+}
+
 ComponentSlider::~ComponentSlider()
 {
 	delete m_pNormal;

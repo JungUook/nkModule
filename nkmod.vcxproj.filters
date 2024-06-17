@@ -231,6 +231,15 @@
     <ClInclude Include="NKStyleCombo.h">
       <Filter>소스 파일\Nuklear\Base\Style</Filter>
     </ClInclude>
+    <ClInclude Include="NKSuperStyleObject.h">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NKBaseLabel.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="NKObjectFinder.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -418,6 +427,15 @@
     </ClCompile>
     <ClCompile Include="NKStyleCombo.cpp">
       <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="NKSuperStyleObject.cpp">
+      <Filter>소스 파일\Nuklear\Base\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NKBaseLabel.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NKObjectFinder.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

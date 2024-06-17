@@ -19,6 +19,23 @@ ComponentScrollbar::ComponentScrollbar(nk_style_scrollbar* pTarget, nk_style_scr
 	m_pDecButton = new ComponentButton(&pTarget->dec_button, &pRestore->dec_button);
 }
 
+ComponentScrollbar::ComponentScrollbar(const ComponentScrollbar& other)
+{
+	m_pTarget		= other.m_pTarget;
+	m_pRestore		= other.m_pRestore;
+
+	m_pNormal		= new NKStyleItem(*other.m_pNormal);
+	m_pHover		= new NKStyleItem(*other.m_pHover);
+	m_pActive		= new NKStyleItem(*other.m_pActive);
+
+	m_CursorNormal	= new NKStyleItem(*other.m_CursorNormal);
+	m_CursorHover	= new NKStyleItem(*other.m_CursorHover);
+	m_CursorActive	= new NKStyleItem(*other.m_CursorActive);
+
+	m_pIncButton	= new ComponentButton(*other.m_pIncButton);
+	m_pDecButton	= new ComponentButton(*other.m_pDecButton);
+}
+
 ComponentScrollbar::~ComponentScrollbar()
 {
 	delete m_pNormal;

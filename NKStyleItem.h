@@ -9,6 +9,7 @@ class NKStyleItem
 {
 public:
 	NKStyleItem(struct nk_style_item* pTarget, struct nk_style_item* pRestore);
+	NKStyleItem(const NKStyleItem& other);
 	~NKStyleItem();
 
 	void ItemEditor(nk_context* ctx, NuklearUI* pManager);

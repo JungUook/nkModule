@@ -1,45 +1,47 @@
 #include "pch.h"
 #include "NKSelectable.h"
 
-NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleSelectedable(ctx, &m_style)
 {
     m_type = eSELECTABLE;
     m_selected = 0;
-    memset(m_label, 0, sizeof(m_label));
-    memcpy_s(m_label, sizeof(m_label), "Selectable", sizeof("Selectable"));
+    memcpy_s(m_cContent, sizeof(m_cContent), "Selectable", sizeof("Selectable"));
+}
+
+NKSelectable::NKSelectable(const NKSelectable& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleSelectedable(other)
+{
+    m_type = other.m_type;
+    m_selected = other.m_selected;
 }
 
 NKSelectable::~NKSelectable() {}
 
 void NKSelectable::Layout(nk_context* ctx)
 {
-    if (nk_selectable_label(ctx, m_label, NK_TEXT_CENTERED, &m_selected)) {
+    if (nk_selectable_label(ctx, m_cContent, NK_TEXT_CENTERED, &m_selected)) {
         CallEvent(m_pManager);
     }
 }
 
 void NKSelectable::EditInfo()
 {
-    float ratio[2];
-    ratio[0] = 0.3f;
-    ratio[1] = 0.7f;
-    nk_layout_row(m_ctx, NK_DYNAMIC, 44, 2, ratio);
-    nk_label(m_ctx, "Text: ", NK_TEXT_LEFT);
-    nk_flags result = m_pManager->IMEInputSystem(m_ctx, NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, m_cEditName, sizeof(m_cEditName), nk_filter_default, &m_cEditName_len);
-    if (result & NK_EDIT_COMMITED) {
-        SetLabel(m_cEditName);
-    }
+    EditLabel(m_ctx, m_pManager);
 }
 
-void NKSelectable::SetLabel(const char* label)
+void NKSelectable::EditStyle()
 {
-    if (strlen(label) <= 0) {
+    EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKSelectable::SetLabel(const char* text)
+{
+    if (strlen(text) <= 0) {
 
         m_pManager->ErrorPopup("A selectable must have a string.");
         return;
     }
 
-    strcpy_s(m_label, label);
+    NKBaseLabel::SetLabel(text);
 }
 
 void NKSelectable::SetSelected(bool selected)

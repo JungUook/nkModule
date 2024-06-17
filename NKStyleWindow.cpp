@@ -17,6 +17,21 @@ NKStyleWindow::NKStyleWindow(nk_context* ctx, nk_style* style)
 	padding				= &style->window.padding;
 }
 
+NKStyleWindow::NKStyleWindow(const NKStyleWindow& other)
+{
+	m_pFixedBackground = new NKStyleItem(*other.m_pFixedBackground);
+	m_pScaler = new NKStyleItem(*other.m_pScaler);
+
+	m_pBackground = other.m_pBackground;
+	border = other.border;
+	border_color = other.border_color;
+	rounding = other.rounding;
+	spacing = other.spacing;
+	scrollbar_size = other.scrollbar_size;
+	min_size = other.min_size;
+	padding = other.padding;
+}
+
 NKStyleWindow::~NKStyleWindow()
 {
 	delete m_pFixedBackground;
@@ -30,29 +45,32 @@ NKStyleWindow::~NKStyleWindow()
 
 void NKStyleWindow::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 {
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Fixed Background", NK_MINIMIZED)) {
-		m_pFixedBackground->ItemEditor(ctx, pManager);
-		nk_tree_pop(ctx);
-	}
-	if (nk_tree_push(ctx, NK_TREE_NODE, "background", NK_MINIMIZED)) {
-		ColorPicker(ctx, *m_pBackground);
-		nk_tree_pop(ctx);
-	}
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Scaler", NK_MINIMIZED)) {
-		m_pScaler->ItemEditor(ctx, pManager);
-		nk_tree_pop(ctx);
-	}
+	if (nk_tree_push(ctx, NK_TREE_TAB, "Window", NK_MINIMIZED)) {
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Fixed Background", NK_MINIMIZED)) {
+			m_pFixedBackground->ItemEditor(ctx, pManager);
+			nk_tree_pop(ctx);
+		}
+		if (nk_tree_push(ctx, NK_TREE_NODE, "background", NK_MINIMIZED)) {
+			ColorPicker(ctx, *m_pBackground);
+			nk_tree_pop(ctx);
+		}
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Scaler", NK_MINIMIZED)) {
+			m_pScaler->ItemEditor(ctx, pManager);
+			nk_tree_pop(ctx);
+		}
 
-	if (nk_tree_push(ctx, NK_TREE_NODE, "Properties", NK_MINIMIZED)) {
-		nk_layout_row_dynamic(ctx, 22, 1);
-		nk_property_float(ctx, "#border:", 0.f, border, 100.f, 1.f, 1.f);
-		ColorPicker(ctx, *border_color);
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Properties", NK_MINIMIZED)) {
+			nk_layout_row_dynamic(ctx, 22, 1);
+			nk_property_float(ctx, "#border:", 0.f, border, 100.f, 1.f, 1.f);
+			ColorPicker(ctx, *border_color);
 
-		nk_property_float(ctx, "#rounding:", 0.f, rounding, 100.f, 1.f, 1.f);
-		PropertyVector2(ctx, "padding", *padding, 0.f, 1000.f, 1.f, 1.f);
-		PropertyVector2(ctx, "spacing", *spacing, 0.f, 1000.f, 1.f, 1.f);
-		PropertyVector2(ctx, "scrollbar_size", *scrollbar_size, 0.f, 1000.f, 1.f, 1.f);
-		PropertyVector2(ctx, "min_size", *min_size, 0.f, 1000.f, 1.f, 1.f);
+			nk_property_float(ctx, "#rounding:", 0.f, rounding, 100.f, 1.f, 1.f);
+			PropertyVector2(ctx, "padding", *padding, 0.f, 1000.f, 1.f, 1.f);
+			PropertyVector2(ctx, "spacing", *spacing, 0.f, 1000.f, 1.f, 1.f);
+			PropertyVector2(ctx, "scrollbar_size", *scrollbar_size, 0.f, 1000.f, 1.f, 1.f);
+			PropertyVector2(ctx, "min_size", *min_size, 0.f, 1000.f, 1.f, 1.f);
+			nk_tree_pop(ctx);
+		}
 		nk_tree_pop(ctx);
 	}
 }

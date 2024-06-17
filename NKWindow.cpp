@@ -6,33 +6,48 @@ NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_type = eWINDOW;
 	m_flags = NK_WINDOW_TITLE;
 
-	m_worldTransform.x = 50.f;
-	m_worldTransform.y = 50.f;
-	m_worldTransform.w = 300.f;
-	m_worldTransform.h = 600.f;
+	m_cTransform.x = 50.f;
+	m_cTransform.y = 50.f;
+	m_cTransform.w = 300.f;
+	m_cTransform.h = 600.f;
+}
+
+NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other), NKStyleWindow(other)
+{
+	m_type = other.m_type;
+	m_flags = other.m_flags;
 }
 
 NKWindow::~NKWindow()
 {
 }
 
+void NKWindow::Update(nk_context* ctx)
+{
+	if (m_bActive)
+	{
+		nk_style original = ctx->style;
+
+		ctx->style = m_pParent != nullptr && m_followParentStyle ? *m_pParentStyle : m_style;
+
+		Layout(ctx);
+
+		ctx->style = original;
+	}
+}
+
 void NKWindow::Layout(nk_context* ctx)
 {
-	m_bHovering = false;
-	if (nk_begin(ctx, m_primaryName, m_worldTransform, m_flags))
+	if (nk_begin(ctx, m_primaryName, m_cTransform, m_flags))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
 			(*it)->Update(ctx);
 		}
-
-		m_worldTransform = nk_window_get_bounds(ctx);
-		if (nk_input_is_mouse_hovering_rect(&ctx->input, m_worldTransform))
-		{
-			m_bHovering = true;
-		}
+		m_cTransform = nk_window_get_bounds(ctx);
+		CheckMouseHover(ctx);
 		GetPosition(m_pParent, m_pManager);
-	}
+	}	
 	nk_end(ctx);
 }
 
@@ -44,6 +59,10 @@ void NKWindow::EditInfo()
 		if (nk_button_label(m_ctx, "Space"))
 		{
 			CreateUI("NKSpace");
+		}
+		if (nk_button_label(m_ctx, "SuperStyle"))
+		{
+			CreateUI("NKSuperStyleObject");
 		}
 		nk_tree_pop(m_ctx);
 	}

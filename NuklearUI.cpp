@@ -631,9 +631,9 @@ bool NuklearUI::ReadImageFile(const char* filename, IDirectDrawSurface7** pTextu
 	stbi_image_free(data);
 	return true;
 }
-nk_flags NuklearUI::IMEInputSystem(nk_context* ctx, nk_flags flags, char* buffer, int max, nk_plugin_filter filter, int* len)
+nk_flags NuklearUI::IMEInputSystem(char* buffer, int max, int* len, nk_flags flag, nk_plugin_filter filter)
 {
-	nk_flags result = nk_edit_string_zero_terminated(ctx, flags, buffer, max, filter);
+	nk_flags result = nk_edit_string_zero_terminated(m_ctx, flag, buffer, max, filter);
 
 	if (result & NK_EDIT_ACTIVE) {
 		IMEInputSystem(buffer, len);
@@ -684,6 +684,11 @@ void NuklearUI::Register_UI()
 	REGISTER_CHILD(NKMenu);
 	REGISTER_CHILD(NKScrollbar);
 	REGISTER_CHILD(NKColorPicker);
+	REGISTER_CHILD(NKSuperStyleObject);
+}
+std::vector<NKBase*>* NuklearUI::GetNodes()
+{
+	return &m_vecModule;
 }
 void NuklearUI::CreateUI(const char* classname, NKBase* parent)
 {
@@ -772,6 +777,11 @@ void NuklearUI::Add(NKBase* type)
 	m_vecModule.push_back(base);
 	m_mapModuleID.insert(std::make_pair(base->GetPrimaryID(), base));
 	m_mapModuleName.insert(std::make_pair(base->GetPrimaryName(), base));
+
+	auto bFinder = dynamic_cast<NKObjectFinder*>(base);
+	if (bFinder) {
+		m_mapOF.insert(std::make_pair(base->GetPrimaryID(), bFinder));
+	}
 }
 
 void NuklearUI::Remove(unsigned int id)
@@ -785,6 +795,10 @@ void NuklearUI::Remove(unsigned int id)
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
+		auto pOF = m_mapOF.find(id);
+		if (pOF != m_mapOF.end()) {
+			m_mapOF.erase(pOF);
+		}
 
 		if (pBase->GetType() == eWINDOW)
 		{
@@ -813,6 +827,10 @@ void NuklearUI::Remove(unsigned int id)
 		if (parent != nullptr)
 		{
 			parent->RemoveChildDisConnect(pBase);
+		}
+
+		for (auto it = m_mapOF.begin(); it != m_mapOF.end(); ++it) {
+			it->second->LostObjectEvent(id);
 		}
 
 		pBase->Release();
@@ -837,6 +855,10 @@ void NuklearUI::Remove(const char* name)
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
+		auto pOF = m_mapOF.find(id);
+		if (pOF != m_mapOF.end()) {
+			m_mapOF.erase(pOF);
+		}
 
 		if (pBase->GetType() == eWINDOW)
 		{
@@ -867,6 +889,10 @@ void NuklearUI::Remove(const char* name)
 			parent->RemoveChildDisConnect(pBase);
 		}
 
+		for (auto it = m_mapOF.begin(); it != m_mapOF.end(); ++it) {
+			it->second->LostObjectEvent(id);
+		}
+
 		pBase->Release();
 		delete pBase;
 		pBase = nullptr;
@@ -886,6 +912,10 @@ void NuklearUI::Remove(NKBase* obj)
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + obj->GetNuklearIndex());
+		auto pOF = m_mapOF.find(id);
+		if (pOF != m_mapOF.end()) {
+			m_mapOF.erase(pOF);
+		}
 
 		if (obj->GetType() == eWINDOW)
 		{
@@ -916,6 +946,10 @@ void NuklearUI::Remove(NKBase* obj)
 			parent->RemoveChildDisConnect(obj);
 		}
 
+		for (auto it = m_mapOF.begin(); it != m_mapOF.end(); ++it) {
+			it->second->LostObjectEvent(id);
+		}
+
 		obj->Release();
 		delete obj;
 		obj = nullptr;
@@ -937,6 +971,10 @@ void NuklearUI::Remove(int idx)
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
+		auto pOF = m_mapOF.find(id);
+		if (pOF != m_mapOF.end()) {
+			m_mapOF.erase(pOF);
+		}
 
 		if (pBase->GetType() == eWINDOW)
 		{
@@ -965,6 +1003,10 @@ void NuklearUI::Remove(int idx)
 		if (parent != nullptr)
 		{
 			parent->RemoveChildDisConnect(pBase);
+		}
+
+		for (auto it = m_mapOF.begin(); it != m_mapOF.end(); ++it) {
+			it->second->LostObjectEvent(id);
 		}
 
 		pBase->Release();
@@ -1341,11 +1383,9 @@ void NuklearUI::RegisterBase()
 		.addFunction("SetLabelSize", &NKCombo::SetLabelSize)
 		.endClass()
 		.deriveClass<NKComboItem, NKBase>("NKComboItem")
-		.addFunction("SetComboName", &NKComboItem::SetComboName)
 		.addFunction("RegistFunction", &NKComboItem::RegistFunction)
 		.endClass()
 		.deriveClass<NKButton, NKBase>("NKButton")
-		.addFunction("SetButtonName", &NKButton::SetButtonName)
 		.addFunction("RegistFunction", &NKButton::RegistFunction)
 		.endClass()
 		.deriveClass<NKEdit, NKBase>("NKEdit")
@@ -1389,7 +1429,6 @@ void NuklearUI::RegisterBase()
 		.addFunction("GetColor", &NKColorPicker::GetColor)
 		.endClass()
 		.deriveClass<NKTooltip, NKBase>("NKTooltip")
-		.addFunction("SetTooltip", &NKTooltip::SetTooltip)
 		.endClass()
 		.deriveClass<NKMenu, NKBase>("NKMenu")
 		.addFunction("SetLabel", &NKMenu::SetLabel)

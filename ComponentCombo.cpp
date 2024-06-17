@@ -14,6 +14,18 @@ ComponentCombo::ComponentCombo(nk_style_combo* pTarget, nk_style_combo* pRestore
 	m_pButton = new ComponentButton(&pTarget->button, &pRestore->button);
 }
 
+ComponentCombo::ComponentCombo(const ComponentCombo& other)
+{
+	m_pTarget = other.m_pTarget;
+	m_pRestore = other.m_pRestore;
+
+	m_pNormal = new NKStyleItem(*other.m_pNormal);
+	m_pHover = new NKStyleItem(*other.m_pHover);
+	m_pActive = new NKStyleItem(*other.m_pActive);
+
+	m_pButton = new ComponentButton(*other.m_pButton);
+}
+
 ComponentCombo::~ComponentCombo()
 {
 	delete m_pNormal;
