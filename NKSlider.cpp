@@ -1,6 +1,14 @@
 #include "pch.h"
 #include "NKSlider.h"
 
+NKSlider::NKSlider() : NKBase(), NKStyleSlider()
+{
+    m_type = eSLIDER;
+    m_min = 0.0f;
+    m_max = 1.0f;
+    m_value = 0.0f;
+}
+
 NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleSlider(ctx, &m_style)
 {
     m_type = eSLIDER;

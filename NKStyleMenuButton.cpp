@@ -2,6 +2,11 @@
 #include "NKStyleMenuButton.h"
 #include "NuklearUI.h"
 
+NKStyleMenuButton::NKStyleMenuButton()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleMenuButton::NKStyleMenuButton(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentButton(&style->button, &ctx->style.menu_button);

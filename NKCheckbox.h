@@ -7,9 +7,10 @@
 class NKCheckbox : public NKBase, public NKBaseLabel, public NKStyleCheckbox
 {
 public:
+    NKCheckbox();
     NKCheckbox(nk_context* ctx, NuklearUI* pManager);
     NKCheckbox(const NKCheckbox& other);
-    ~NKCheckbox();
+    virtual ~NKCheckbox();
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -21,5 +22,14 @@ public:
 
 public:
     int m_checked;
+
+public:
+    template <class Archive>
+    void serialize(Archive& ar) {
+        ar(cereal::base_class<NKBase>(this)
+            , cereal::base_class<NKBaseLabel>(this)
+            , cereal::base_class<NKStyleCheckbox>(this)
+        );
+    }
 };
 #endif //NKCheckbox_h__

@@ -13,7 +13,7 @@ public:
 	NKBase();
 	NKBase(nk_context* ctx, NuklearUI* pManager);
 	NKBase(const NKBase& other);
-	~NKBase();
+	virtual ~NKBase();
 
 	virtual std::string getClassName() const;
 
@@ -47,6 +47,8 @@ public:
 	virtual void RemoveChild(NKBase* nkBase);
 	virtual void LRemoveChild(luabridge::LuaRef ref);
 
+	virtual void Load(nk_context* ctx, NuklearUI* pManager) override;
+
 	//각 객체의 기본값
 public:
 	virtual unsigned int GetPrimaryID();
@@ -57,6 +59,7 @@ public:
 	virtual void SetManager(NuklearUI* manager);
 	virtual void SetPrimaryID(unsigned int id);
 	virtual void SetPrimaryName(const char* name);
+	virtual void SetBaseName(const char* name);
 	virtual void SetNuklearIndex(int index);
 
 	// ui 편집용 함수
@@ -65,7 +68,7 @@ public:
 	virtual void EditInfo();
 	virtual void EditStyle();
 
-	virtual void EditBaseName(const char* name);
+	virtual void EditPrimaryName(const char* name);
 	virtual const char* GetBaseName();
 
 	virtual void CreateUI(const char* classname);
@@ -95,5 +98,22 @@ protected:
 	NKBase* m_pParent;
 	std::list<NKBase*> m_pChildList;
 
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKProperty>(this)
+			, m_primaryID
+			, m_primaryName
+			, m_cprimaryEditName
+			, m_cprimaryEditName_len
+			, m_cBaseName
+			, m_cBaseEditName
+			, m_cBaseEditName_len
+			, m_iNKIndex
+			, m_flags
+			, m_type
+			, m_bActive
+			, m_bEditActive);
+	}
 };
 #endif //NKBaseObject_h__

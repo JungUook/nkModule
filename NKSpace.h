@@ -5,9 +5,10 @@
 class NKSpace : public NKBase
 {
 public:
+	NKSpace();
 	NKSpace(nk_context* ctx, NuklearUI* pManager);
 	NKSpace(const NKSpace& other);
-	~NKSpace();
+	virtual ~NKSpace();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -20,6 +21,12 @@ public:
 	nk_layout_format m_layoutFormat;
 	int m_widgetCount;
 	int m_dynamicCount;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKBase>(this));
+	}
 };
 
 #endif //NKSpace_h__

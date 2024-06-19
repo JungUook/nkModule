@@ -2,6 +2,21 @@
 #include "ComponentProperty.h"
 #include "NuklearUI.h"
 
+ComponentProperty::ComponentProperty()
+{
+	m_pTarget	 = nullptr;
+	m_pRestore	 = nullptr;
+
+	m_pNormal	 = nullptr;
+	m_pHover	 = nullptr;
+	m_pActive	 = nullptr;
+
+	m_pEdit		 = nullptr;
+	m_pIncButton = nullptr;
+	m_pDecButton = nullptr;
+
+}
+
 ComponentProperty::ComponentProperty(nk_style_property* pTarget, nk_style_property* pRestore)
 {
 	m_pTarget = pTarget;

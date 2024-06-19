@@ -6,9 +6,10 @@
 class ComponentScrollbar : public NKComponent
 {
 public:
+	ComponentScrollbar();
 	ComponentScrollbar(struct nk_style_scrollbar* pTarget, struct nk_style_scrollbar* pRestore);
 	ComponentScrollbar(const ComponentScrollbar& other);
-	~ComponentScrollbar();
+	virtual ~ComponentScrollbar();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 

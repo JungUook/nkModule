@@ -146,6 +146,7 @@ public:
 	void Register_UI();
 	std::vector<NKBase*>* GetNodes();
 	void CreateUI(const char* classname, NKBase* parent = nullptr);
+	NKBase* RegistUI(const char* classname, NKBase* loadPtr);
 	struct nk_vec2* GetPivot();
 	struct nk_rect* GetViewport();
 	void SetPrimary(NKBase* pBase);
@@ -233,6 +234,11 @@ private:
 #endif // _NKDEBUG
 
 	//boost
-//public:
+public:
+	void SaveFile(const std::string& filename);
+	void SaveSwitch(std::vector<std::shared_ptr<NKBase>>& vec, NKBase* ptr);
+
+	void LoadFile(const std::string& filename);
+	void LoadNode(NKBase* pBase);
 };
 #endif //NuklearUI_h__

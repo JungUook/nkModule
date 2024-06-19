@@ -6,13 +6,19 @@
 class NKStyleOption
 {
 public:
+	NKStyleOption();
 	NKStyleOption(nk_context* ctx, nk_style* style);
 	NKStyleOption(const NKStyleOption& other);
-	~NKStyleOption();
+	virtual ~NKStyleOption();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:
 	ComponentToggle* m_pComponent;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleOption_h__

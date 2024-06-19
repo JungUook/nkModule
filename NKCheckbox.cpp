@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "NKCheckbox.h"
 
+NKCheckbox::NKCheckbox() : NKBase(), NKBaseLabel(), NKStyleCheckbox()
+{
+    m_type = eCHECKBOX;
+    m_checked = 0;
+}
+
 NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKStyleCheckbox(ctx, &m_style)
 {
     m_type = eCHECKBOX;

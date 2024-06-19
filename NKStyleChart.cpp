@@ -2,6 +2,22 @@
 #include "NKStyleChart.h"
 #include "NuklearUI.h"
 
+NKStyleChart::NKStyleChart()
+{
+	m_pBackground   = nullptr;
+
+	border_color    = nullptr;
+	selected_color  = nullptr;
+	color		    = nullptr;
+	border		    = nullptr;
+	rounding	    = nullptr;
+	padding		    = nullptr;
+	color_factor    = nullptr;
+	disabled_factor = nullptr;
+	show_markers    = nullptr;
+
+}
+
 NKStyleChart::NKStyleChart(nk_context* ctx, nk_style* style)
 {
 	m_pBackground = new NKStyleItem(&style->chart.background, &ctx->style.chart.background);

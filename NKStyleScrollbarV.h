@@ -6,13 +6,19 @@
 class NKStyleScrollbarV
 {
 public:
+	NKStyleScrollbarV();
 	NKStyleScrollbarV(nk_context* ctx, nk_style* style);
 	NKStyleScrollbarV(const NKStyleScrollbarV& other);
-	~NKStyleScrollbarV();
+	virtual ~NKStyleScrollbarV();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:
 	ComponentScrollbar* m_pComponent;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleScrollbarV_h__

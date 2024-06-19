@@ -5,13 +5,19 @@
 class NKStyleMenuButton
 {
 public:
+	NKStyleMenuButton();
 	NKStyleMenuButton(nk_context* ctx, nk_style* style);
 	NKStyleMenuButton(const NKStyleMenuButton& other);
-	~NKStyleMenuButton();
+	virtual ~NKStyleMenuButton();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:
 	ComponentButton* m_pComponent;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleMenuButton_h__

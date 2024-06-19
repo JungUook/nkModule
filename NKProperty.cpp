@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "NKProperty.h"
-
 NKProperty::NKProperty() : NKBaseStyle(), NKTransform()
 {
 }

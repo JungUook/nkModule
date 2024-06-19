@@ -9,7 +9,7 @@ class NKBaseLabel
 public:
 	NKBaseLabel();
 	NKBaseLabel(const NKBaseLabel& other);
-	~NKBaseLabel();
+	virtual ~NKBaseLabel();
 
 	virtual nk_flags EditLabel(nk_context* ctx, NuklearUI* pManager);
 	virtual void SetLabel(const char* text);
@@ -17,6 +17,15 @@ protected:
 	char m_cEditLabel[256];
 	int m_iEditLabelLen;
 	char m_cContent[256];
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(m_cEditLabel
+			, m_iEditLabelLen
+			, m_cContent
+		);
+	}
 };
 
 #endif //NKBaseLabel_h__

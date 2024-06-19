@@ -8,9 +8,10 @@
 class NKWindow : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow
 {
 public:
+	NKWindow();
 	NKWindow(nk_context* ctx, NuklearUI* pManager);
 	NKWindow(const NKWindow& other);
-	~NKWindow();
+	virtual ~NKWindow() override;
 
 public:
 	virtual void Update(nk_context* ctx) override;
@@ -19,6 +20,16 @@ public:
 	virtual void EditStyle() override;
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKBase>(this)
+			, cereal::base_class<NKBaseWindow>(this)
+			, cereal::base_class<NKStyleHeader>(this)
+			, cereal::base_class<NKStyleWindow>(this)
+		);
+	}
 };
 
 #endif //NKWindow_h__

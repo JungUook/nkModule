@@ -2,6 +2,19 @@
 #include "ComponentCombo.h"
 #include "NuklearUI.h"
 
+ComponentCombo::ComponentCombo()
+{
+	m_pTarget  = nullptr;
+	m_pRestore = nullptr;
+
+	m_pNormal  = nullptr;
+	m_pHover   = nullptr;
+	m_pActive  = nullptr;
+
+	m_pButton  = nullptr;
+
+}
+
 ComponentCombo::ComponentCombo(nk_style_combo* pTarget, nk_style_combo* pRestore)
 {
 	m_pTarget = pTarget;

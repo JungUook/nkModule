@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "NKGroup.h"
 
+NKGroup::NKGroup() : NKBase(), NKBaseWindow(), NKStyleHeader(), NKStyleWindow()
+{
+	m_type = eGROUP;
+	m_flags = 0;
+}
+
 NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type			= eGROUP;

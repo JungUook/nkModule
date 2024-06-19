@@ -2,6 +2,11 @@
 #include "NKStyleCheckbox.h"
 #include "NuklearUI.h"
 
+NKStyleCheckbox::NKStyleCheckbox()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleCheckbox::NKStyleCheckbox(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentToggle(&style->checkbox, &ctx->style.checkbox);

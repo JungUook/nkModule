@@ -2,6 +2,10 @@
 #ifndef Constants_h__
 #define Constants_h__
 
+#include <cereal/types/vector.hpp>
+#include <cereal/types/array.hpp>
+#include <cereal/archives/json.hpp>
+
 #ifdef _NKDEBUG
 #define CHECK_PTR(ptr) \
     if ((ptr) == nullptr) { \
@@ -55,6 +59,7 @@ enum eTypeUI {
 	, eTOOLTIP
 	, eMENU
 	, eSCROLLBAR
+	, eSUPERSTYLE
 };
 
 static void PropertyVector2(nk_context* ctx, const char* name, struct nk_vec2& vec, float max, float min, float step, float inc_per_pixel)
@@ -96,5 +101,23 @@ static void ColorPicker(nk_context* ctx, struct nk_color& color)
 	color.r = ((nk_byte)(colorf.r * 255.0f));
 	color.g = ((nk_byte)(colorf.g * 255.0f));
 	color.b = ((nk_byte)(colorf.b * 255.0f));
+}
+
+namespace cereal {
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_vec2& vec2) {
+		ar(CEREAL_NVP(vec2.x), CEREAL_NVP(vec2.y));
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_rect& rect) {
+		ar(CEREAL_NVP(rect.x), CEREAL_NVP(rect.y), CEREAL_NVP(rect.w), CEREAL_NVP(rect.h));
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_color& color) {
+		ar(CEREAL_NVP(color.r), CEREAL_NVP(color.g), CEREAL_NVP(color.b), CEREAL_NVP(color.a));
+	}
 }
 #endif //Constants_h__

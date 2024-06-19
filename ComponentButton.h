@@ -5,9 +5,10 @@
 class ComponentButton : public NKComponent
 {
 public:
+	ComponentButton();
 	ComponentButton(struct nk_style_button* pTarget, struct nk_style_button* pRestore);
 	ComponentButton(const ComponentButton& other);
-	~ComponentButton();
+	virtual ~ComponentButton();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 

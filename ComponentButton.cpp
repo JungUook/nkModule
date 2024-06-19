@@ -2,6 +2,17 @@
 #include "ComponentButton.h"
 #include "NuklearUI.h"
 
+ComponentButton::ComponentButton()
+{
+	m_pTarget  = nullptr;
+	m_pRestore = nullptr;
+
+	m_pNormal  = nullptr;
+	m_pHover   = nullptr;
+	m_pActive  = nullptr;
+
+}
+
 ComponentButton::ComponentButton(nk_style_button* pTarget, nk_style_button* pRestore)
 {
 	m_pTarget = pTarget;

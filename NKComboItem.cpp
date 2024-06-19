@@ -2,6 +2,13 @@
 #include "NKComboItem.h"
 #include "NKCombo.h"
 
+NKComboItem::NKComboItem() : NKBase(), NKHandler(), NKBaseLabel()
+{
+	m_type = eCOMBO_ITEM;
+	m_flags = NK_TEXT_CENTERED;
+	m_labelNumber = 0;
+}
+
 NKComboItem::NKComboItem(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel()
 {
 	m_type = eCOMBO_ITEM;

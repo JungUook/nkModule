@@ -2,6 +2,18 @@
 #include "NKCombo.h"
 #include "NKComboItem.h"
 
+NKCombo::NKCombo() : NKBase(), NKStyleCombo()
+{
+	m_type = eCOMBO;
+
+	m_labelSize.x = 150.f;
+	m_labelSize.y = 300.f;
+	m_currentLabel = 0;
+	m_labelAlignment = NK_TEXT_LEFT;
+
+	memset(m_cComboLabel, 0, sizeof(m_cComboLabel));
+}
+
 NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleCombo(ctx, &m_style)
 {
 	m_type = eCOMBO;

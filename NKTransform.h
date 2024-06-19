@@ -2,6 +2,7 @@
 #ifndef NKTransform_h__
 #define NKTransform_h__
 #include "Constants.h"
+#include <cereal/types/polymorphic.hpp>
 
 class NuklearUI;
 
@@ -15,7 +16,7 @@ class NKTransform
 public:
 	NKTransform();
 	NKTransform(const NKTransform& other);
-	~NKTransform();
+	virtual ~NKTransform();
 
 	//속성관련 함수
 public:
@@ -41,5 +42,15 @@ protected:
 	struct nk_rect m_cTransform;
 	struct nk_rect* m_cSyncTransform;
 	nk_bool m_bMouseHover;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(m_cPivot
+			, m_cPosition
+			, m_cTransform
+			, m_bMouseHover
+		);
+	}
 };
 #endif //NKTransform_h__

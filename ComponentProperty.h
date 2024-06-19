@@ -7,9 +7,10 @@
 class ComponentProperty : public NKComponent
 {
 public:
+	ComponentProperty();
 	ComponentProperty(struct nk_style_property* pTarget, struct nk_style_property* pRestore);
 	ComponentProperty(const ComponentProperty& other);
-	~ComponentProperty();
+	virtual ~ComponentProperty();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 

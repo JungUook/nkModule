@@ -2,6 +2,11 @@
 #include "NKStyleCombo.h"
 #include "NuklearUI.h"
 
+NKStyleCombo::NKStyleCombo()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleCombo::NKStyleCombo(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentCombo(&style->combo, &ctx->style.combo);

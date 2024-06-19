@@ -2,6 +2,19 @@
 #include "ComponentEdit.h"
 #include "NuklearUI.h"
 
+ComponentEdit::ComponentEdit()
+{
+	m_pTarget	 = nullptr;
+	m_pRestore	 = nullptr;
+
+	m_pNormal	 = nullptr;
+	m_pHover	 = nullptr;
+	m_pActive	 = nullptr;
+
+	m_pScrollbar = nullptr;
+
+}
+
 ComponentEdit::ComponentEdit(nk_style_edit* pTarget, nk_style_edit* pRestore)
 {
 	m_pTarget = pTarget;

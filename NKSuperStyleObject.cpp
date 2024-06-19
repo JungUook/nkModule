@@ -1,6 +1,29 @@
 #include "pch.h"
 #include "NKSuperStyleObject.h"
 
+NKSuperStyleObject::NKSuperStyleObject()
+	: NKBase()
+	, NKStyleButton()
+	, NKStyleChart()
+	, NKStyleCheckbox()
+	, NKStyleCombo()
+	, NKStyleContextualButton()
+	, NKStyleEdit()
+	, NKStyleHeader()
+	, NKStyleMenuButton()
+	, NKStyleOption()
+	, NKStyleProgress()
+	, NKStyleProperty()
+	, NKStyleScrollbarH()
+	, NKStyleScrollbarV()
+	, NKStyleSelectedable()
+	, NKStyleSlider()
+	, NKStyleTab()
+	, NKStyleText()
+	, NKStyleWindow()
+{
+}
+
 NKSuperStyleObject::NKSuperStyleObject(nk_context* ctx, NuklearUI* pManager)
 	: NKBase(ctx, pManager)
 	, NKStyleButton(ctx, &m_style)

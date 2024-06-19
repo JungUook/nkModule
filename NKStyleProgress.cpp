@@ -2,6 +2,11 @@
 #include "NKStyleProgress.h"
 #include "NuklearUI.h"
 
+NKStyleProgress::NKStyleProgress()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleProgress::NKStyleProgress(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentProgress(&style->progress, &ctx->style.progress);

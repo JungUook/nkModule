@@ -2,6 +2,20 @@
 #include "ComponentHeader.h"
 #include "NuklearUI.h"
 
+ComponentHeader::ComponentHeader()
+{
+	m_pTarget		  = nullptr;
+	m_pRestore		  = nullptr;
+
+	m_pNormal		  = nullptr;
+	m_pHover		  = nullptr;
+	m_pActive		  = nullptr;
+
+	m_pCloseButton	  = nullptr;
+	m_pMinimizeButton = nullptr;
+
+}
+
 ComponentHeader::ComponentHeader(nk_style_window_header* pTarget, nk_style_window_header* pRestore)
 {
 	m_pTarget = pTarget;

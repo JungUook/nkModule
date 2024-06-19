@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "NKTooltip.h"
 
+NKTooltip::NKTooltip() : NKBase(), NKBaseLabel(), NKObjectFinder(), NKStyleWindow(), NKStyleText()
+{
+    m_type = eTOOLTIP;
+}
+
 NKTooltip::NKTooltip(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKObjectFinder(pManager), NKStyleWindow(ctx, &m_style), NKStyleText(ctx, &m_style)
 {
     m_type = eTOOLTIP;

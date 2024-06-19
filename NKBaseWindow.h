@@ -1,12 +1,15 @@
 #pragma once
 #ifndef NKBaseWindow_h__
 #define NKBaseWindow_h__
+
+class NuklearUI;
+
 class NKBaseWindow
 {
 public:
 	NKBaseWindow();
 	NKBaseWindow(const NKBaseWindow& other);
-	~NKBaseWindow();
+	virtual ~NKBaseWindow();
 
 protected:
 	void EditInfoWindowProperty(nk_context* ctx, nk_flags& flags);
@@ -23,5 +26,22 @@ protected:
 	int m_background;
 	int m_scale_left;
 	int m_no_input;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(m_border
+			, m_movable
+			, m_scalable
+			, m_closable
+			, m_minimizable
+			, m_no_scrollbar
+			, m_title
+			, m_scroll_auto_hide
+			, m_background
+			, m_scale_left
+			, m_no_input
+		);
+	}
 };
 #endif //NKBaseWindow_h__

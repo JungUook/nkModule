@@ -5,9 +5,10 @@
 class NKStyleText
 {
 public:
+	NKStyleText();
 	NKStyleText(nk_context* ctx, nk_style* style);
 	NKStyleText(const NKStyleText& other);
-	~NKStyleText();
+	virtual ~NKStyleText();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
@@ -16,5 +17,10 @@ protected:
 	struct nk_vec2* padding;
 	float* color_factor;
 	float* disabled_factor;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleText_h__

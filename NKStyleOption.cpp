@@ -2,6 +2,11 @@
 #include "NKStyleOption.h"
 #include "NuklearUI.h"
 
+NKStyleOption::NKStyleOption()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleOption::NKStyleOption(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentToggle(&style->option, &ctx->style.option);

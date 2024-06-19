@@ -8,9 +8,10 @@ class NKBase;
 class NKObjectFinder
 {
 public:
+	NKObjectFinder();
 	NKObjectFinder(NuklearUI* pManager);
 	NKObjectFinder(const NKObjectFinder& other);
-	~NKObjectFinder();
+	virtual ~NKObjectFinder();
 
 public:
 	void FoundObject(nk_context* ctx, NuklearUI* pManager);
@@ -24,5 +25,12 @@ protected:
 
 	NKBase* m_pResultObject;
 
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(m_cSearchObject
+			, m_iSearchObjectLen
+		);
+	}
 };
 #endif NKObjectFinder_h__

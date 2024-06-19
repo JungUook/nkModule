@@ -1,6 +1,15 @@
 #include "pch.h"
 #include "NKEdit.h"
 
+NKEdit::NKEdit() : NKBase(), NKHandler(), NKStyleEdit()
+{
+	m_type = eEDIT;
+	m_flags = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER;
+	memset(m_inputText, 0, sizeof(m_inputText));
+	m_filter = nk_filter_default;
+	m_inputTextLength = 0;
+}
+
 NKEdit::NKEdit(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKStyleEdit(ctx, &m_style)
 {
 	m_type = eEDIT;

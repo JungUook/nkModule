@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "NKChart.h"
 
+NKChart::NKChart() : NKBase(), NKStyleChart()
+{
+    m_type = eCHART;
+    m_min = 0.0f;
+    m_max = 1.0f;
+}
+
 NKChart::NKChart(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleChart(ctx, &m_style)
 {
     m_type = eCHART;

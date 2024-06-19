@@ -41,9 +41,10 @@ class NKSuperStyleObject
 	, public NKStyleWindow
 {
 public:
+	NKSuperStyleObject();
 	NKSuperStyleObject(nk_context* ctx, NuklearUI* pManager);
 	NKSuperStyleObject(const NKSuperStyleObject& other);
-	~NKSuperStyleObject();
+	virtual ~NKSuperStyleObject();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -51,5 +52,30 @@ public:
 	virtual void EditStyle() override;
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKBase>(this)
+			, cereal::base_class<NKStyleButton>(this)
+			, cereal::base_class<NKStyleChart>(this)
+			, cereal::base_class<NKStyleCheckbox>(this)
+			, cereal::base_class<NKStyleCombo>(this)
+			, cereal::base_class<NKStyleContextualButton>(this)
+			, cereal::base_class<NKStyleEdit>(this)
+			, cereal::base_class<NKStyleHeader>(this)
+			, cereal::base_class<NKStyleMenuButton>(this)
+			, cereal::base_class<NKStyleOption>(this)
+			, cereal::base_class<NKStyleProgress>(this)
+			, cereal::base_class<NKStyleProperty>(this)
+			, cereal::base_class<NKStyleScrollbarH>(this)
+			, cereal::base_class<NKStyleScrollbarV>(this)
+			, cereal::base_class<NKStyleSelectedable>(this)
+			, cereal::base_class<NKStyleSlider>(this)
+			, cereal::base_class<NKStyleTab>(this)
+			, cereal::base_class<NKStyleText>(this)
+			, cereal::base_class<NKStyleWindow>(this)
+		);
+	}
 };
 

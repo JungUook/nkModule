@@ -68,6 +68,11 @@ void NKBaseStyle::SetBackground(NuklearUI* pManager, int SID)
 	}
 }
 
+void NKBaseStyle::Load(nk_context* ctx, NuklearUI* pManager)
+{
+	InitializeStyle(ctx, pManager);
+}
+
 void NKBaseStyle::FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent)
 {
 	nk_layout_row_dynamic(ctx, 22, 1);

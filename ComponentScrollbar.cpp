@@ -2,6 +2,24 @@
 #include "ComponentScrollbar.h"
 #include "NuklearUI.h"
 
+ComponentScrollbar::ComponentScrollbar()
+{
+	m_pTarget	   = nullptr;
+	m_pRestore	   = nullptr;
+
+	m_pNormal	   = nullptr;
+	m_pHover	   = nullptr;
+	m_pActive	   = nullptr;
+
+	m_CursorNormal = nullptr;
+	m_CursorHover  = nullptr;
+	m_CursorActive = nullptr;
+
+	m_pIncButton   = nullptr;
+	m_pDecButton   = nullptr;
+
+}
+
 ComponentScrollbar::ComponentScrollbar(nk_style_scrollbar* pTarget, nk_style_scrollbar* pRestore)
 {
 	m_pTarget = pTarget;

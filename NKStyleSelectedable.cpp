@@ -2,6 +2,11 @@
 #include "NKStyleSelectedable.h"
 #include "NuklearUI.h"
 
+NKStyleSelectedable::NKStyleSelectedable()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleSelectedable::NKStyleSelectedable(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentSelectable(&style->selectable, &ctx->style.selectable);

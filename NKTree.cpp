@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "NKTree.h"
 
+NKTree::NKTree() : NKBase(), NKBaseLabel(), NKStyleTab()
+{
+    m_treeType = NK_TREE_NODE;
+    m_type = eTREE;
+    m_state = NK_MINIMIZED;
+}
+
 NKTree::NKTree(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKStyleTab(ctx, &m_style)
 {
     m_treeType = NK_TREE_NODE;

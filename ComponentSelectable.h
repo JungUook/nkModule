@@ -5,9 +5,10 @@
 class ComponentSelectable : public NKComponent
 {
 public:
+	ComponentSelectable();
 	ComponentSelectable(struct nk_style_selectable* pTarget, struct nk_style_selectable* pRestore);
 	ComponentSelectable(const ComponentSelectable& other);
-	~ComponentSelectable();
+	virtual ~ComponentSelectable();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 

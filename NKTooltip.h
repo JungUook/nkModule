@@ -9,9 +9,10 @@
 class NKTooltip : public NKBase, public NKBaseLabel, public NKObjectFinder, public NKStyleWindow, public NKStyleText
 {
 public:
+    NKTooltip();
     NKTooltip(nk_context* ctx, NuklearUI* pManager);
     NKTooltip(const NKTooltip& other);
-    ~NKTooltip();
+    virtual ~NKTooltip();
 
 public:
     void Layout(nk_context* ctx) override;
@@ -19,5 +20,16 @@ public:
     virtual void EditStyle() override;
 
     virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
+
+public:
+    template <class Archive>
+    void serialize(Archive& ar) {
+        ar(cereal::base_class<NKBase>(this)
+            , cereal::base_class<NKBaseLabel>(this)
+            , cereal::base_class<NKObjectFinder>(this)
+            , cereal::base_class<NKStyleWindow>(this)
+            , cereal::base_class<NKStyleText>(this)
+        );
+    }
 };
 #endif //NKTooltip_h__

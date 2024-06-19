@@ -2,6 +2,21 @@
 #include "ComponentProgress.h"
 #include "NuklearUI.h"
 
+ComponentProgress::ComponentProgress()
+{
+	m_pTarget	   = nullptr;
+	m_pRestore	   = nullptr;
+
+	m_pNormal	   = nullptr;
+	m_pHover	   = nullptr;
+	m_pActive	   = nullptr;
+
+	m_CursorNormal = nullptr;
+	m_CursorHover  = nullptr;
+	m_CursorActive = nullptr;
+
+}
+
 ComponentProgress::ComponentProgress(nk_style_progress* pTarget, nk_style_progress* pRestore)
 {
 	m_pTarget = pTarget;

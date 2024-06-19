@@ -2,6 +2,21 @@
 #include "NKStyleWindow.h"
 #include "NuklearUI.h"
 
+NKStyleWindow::NKStyleWindow()
+{
+	m_pFixedBackground = nullptr;
+	m_pScaler		   = nullptr;
+	m_pBackground	   = nullptr;
+	border			   = nullptr;
+	border_color	   = nullptr;
+	rounding		   = nullptr;
+	spacing			   = nullptr;
+	scrollbar_size	   = nullptr;
+	min_size		   = nullptr;
+	padding			   = nullptr;
+
+}
+
 NKStyleWindow::NKStyleWindow(nk_context* ctx, nk_style* style)
 {
 	m_pFixedBackground	= new NKStyleItem(&style->window.fixed_background, &ctx->style.window.fixed_background);

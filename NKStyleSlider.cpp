@@ -2,6 +2,11 @@
 #include "NKStyleSlider.h"
 #include "NuklearUI.h"
 
+NKStyleSlider::NKStyleSlider()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleSlider::NKStyleSlider(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentSlider(&style->slider, &ctx->style.slider);

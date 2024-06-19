@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "NKLabel.h"
 
+NKLabel::NKLabel() : NKBase(), NKBaseLabel(), NKStyleText()
+{
+	m_type = eLABEL;
+	m_flags = NK_TEXT_CENTERED;
+}
+
 NKLabel::NKLabel(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKStyleText(ctx, &m_style)
 {
 	m_type = eLABEL;

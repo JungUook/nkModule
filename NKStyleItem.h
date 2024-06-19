@@ -8,9 +8,10 @@ class NuklearUI;
 class NKStyleItem
 {
 public:
+	NKStyleItem();
 	NKStyleItem(struct nk_style_item* pTarget, struct nk_style_item* pRestore);
 	NKStyleItem(const NKStyleItem& other);
-	~NKStyleItem();
+	virtual ~NKStyleItem();
 
 	void ItemEditor(nk_context* ctx, NuklearUI* pManager);
 protected:
@@ -27,7 +28,7 @@ class NKComponent
 {
 public:
 	NKComponent() {};
-	~NKComponent() {};
+	virtual ~NKComponent() {};
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) = 0;
 };
 #endif //NKStyleItem_h__

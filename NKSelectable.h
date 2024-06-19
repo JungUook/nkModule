@@ -8,9 +8,10 @@
 class NKSelectable : public NKBase, public NKHandler, public NKBaseLabel, public NKStyleSelectedable
 {
 public:
+    NKSelectable();
     NKSelectable(nk_context* ctx, NuklearUI* pManager);
     NKSelectable(const NKSelectable& other);
-    ~NKSelectable();
+    virtual ~NKSelectable();
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -25,5 +26,15 @@ public:
 
 public:
     int m_selected;
+
+public:
+    template <class Archive>
+    void serialize(Archive& ar) {
+        ar(cereal::base_class<NKBase>(this)
+            , cereal::base_class<NKHandler>(this)
+            , cereal::base_class<NKBaseLabel>(this)
+            , cereal::base_class<NKStyleSelectedable>(this)
+        );
+    }
 };
 #endif //NKSelectable_h__

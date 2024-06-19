@@ -6,9 +6,10 @@
 class NKProgress : public NKBase, public NKStyleProgress
 {
 public:
+    NKProgress();
     NKProgress(nk_context* ctx, NuklearUI* pManager);
     NKProgress(const NKProgress& other);
-    ~NKProgress();
+    virtual ~NKProgress();
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -18,5 +19,13 @@ public:
 
 public:
     nk_size m_progress;
+
+public:
+    template <class Archive>
+    void serialize(Archive& ar) {
+        ar(cereal::base_class<NKBase>(this)
+            , cereal::base_class<NKStyleProgress>(this)
+        );
+    }
 };
 #endif //NKProgress_h__

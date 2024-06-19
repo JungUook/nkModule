@@ -2,6 +2,14 @@
 #include "NKObjectFinder.h"
 #include "NuklearUI.h"
 
+NKObjectFinder::NKObjectFinder()
+{
+	m_pResultObject = nullptr;
+
+	memset(m_cSearchObject, 0, sizeof(m_cSearchObject));
+	m_iSearchObjectLen = 0;
+}
+
 NKObjectFinder::NKObjectFinder(NuklearUI* pManager)
 {
 	m_pResultObject = nullptr;

@@ -5,9 +5,10 @@
 class NKStyleWindow
 {
 public:
+	NKStyleWindow();
 	NKStyleWindow(nk_context* ctx, nk_style* style);
 	NKStyleWindow(const NKStyleWindow& other);
-	~NKStyleWindow();
+	virtual ~NKStyleWindow();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 protected:
@@ -24,5 +25,10 @@ protected:
 	struct nk_vec2* scrollbar_size;
 	struct nk_vec2* min_size;
 	struct nk_vec2* padding;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleWindow_h__

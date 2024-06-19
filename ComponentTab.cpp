@@ -2,6 +2,20 @@
 #include "ComponentTab.h"
 #include "NuklearUI.h"
 
+ComponentTab::ComponentTab()
+{
+	m_pTarget			  = nullptr;
+	m_pRestore			  = nullptr;
+
+	m_pBackground		  = nullptr;
+
+	m_pTabMaximizeButton  = nullptr;
+	m_pTabMinimizeButton  = nullptr;
+	m_pNodeMaximizeButton = nullptr;
+	m_pNodeMinimizeButton = nullptr;
+
+}
+
 ComponentTab::ComponentTab(nk_style_tab* pTarget, nk_style_tab* pRestore)
 {
 	m_pTarget = pTarget;

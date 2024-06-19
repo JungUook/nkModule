@@ -2,6 +2,21 @@
 #include "ComponentSelectable.h"
 #include "NuklearUI.h"
 
+ComponentSelectable::ComponentSelectable()
+{
+	m_pTarget		 = nullptr;
+	m_pRestore		 = nullptr;
+
+	m_pNormal		 = nullptr;
+	m_pHover		 = nullptr;
+	m_pPressed		 = nullptr;
+
+	m_pNormalActive	 = nullptr;
+	m_pHoverActive	 = nullptr;
+	m_pPressedActive = nullptr;
+
+}
+
 ComponentSelectable::ComponentSelectable(nk_style_selectable* pTarget, nk_style_selectable* pRestore)
 {
 	m_pTarget		 = pTarget;

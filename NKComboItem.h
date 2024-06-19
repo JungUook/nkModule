@@ -7,9 +7,10 @@
 class NKComboItem : public NKBase, public NKHandler, public NKBaseLabel
 {
 public:
+	NKComboItem();
 	NKComboItem(nk_context* ctx, NuklearUI* pManager);
 	NKComboItem(const NKComboItem& other);
-	~NKComboItem();
+	virtual ~NKComboItem();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -18,6 +19,15 @@ public:
 	void SetLabelNumber(int number);
 public:
 	int m_labelNumber;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKBase>(this)
+			, cereal::base_class<NKHandler>(this)
+			, cereal::base_class<NKBaseLabel>(this)
+		);
+	}
 };
 
 

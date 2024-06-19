@@ -8,9 +8,10 @@
 class NKPopup : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow
 {
 public:
+	NKPopup();
 	NKPopup(nk_context* ctx, NuklearUI* pManager);
 	NKPopup(const NKPopup& other);
-	~NKPopup();
+	virtual ~NKPopup();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -20,6 +21,16 @@ public:
 
 public:
 	nk_popup_type m_popupType;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKBase>(this)
+			, cereal::base_class<NKBaseWindow>(this)
+			, cereal::base_class<NKStyleHeader>(this)
+			, cereal::base_class<NKStyleWindow>(this)
+		);
+	}
 };
 
 

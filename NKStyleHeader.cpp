@@ -2,6 +2,11 @@
 #include "NKStyleHeader.h"
 #include "NuklearUI.h"
 
+NKStyleHeader::NKStyleHeader()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleHeader::NKStyleHeader(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentHeader(&style->window.header, &ctx->style.window.header);

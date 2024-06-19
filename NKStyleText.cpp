@@ -2,6 +2,14 @@
 #include "NKStyleText.h"
 #include "NuklearUI.h"
 
+NKStyleText::NKStyleText()
+{
+	color			= nullptr;
+	padding			= nullptr;
+	color_factor	= nullptr;
+	disabled_factor	= nullptr;
+}
+
 NKStyleText::NKStyleText(nk_context* ctx, nk_style* style)
 {
 	color			 = &style->text.color;

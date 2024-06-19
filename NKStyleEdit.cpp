@@ -2,6 +2,11 @@
 #include "NKStyleEdit.h"
 #include "NuklearUI.h"
 
+NKStyleEdit::NKStyleEdit()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleEdit::NKStyleEdit(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentEdit(&style->edit, &ctx->style.edit);

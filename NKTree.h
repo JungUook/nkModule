@@ -8,9 +8,10 @@
 class NKTree : public NKBase, public NKBaseLabel, public NKStyleTab
 {
 public:
+    NKTree();
     NKTree(nk_context* ctx, NuklearUI* pManager);
     NKTree(const NKTree& other);
-    ~NKTree();
+    virtual ~NKTree();
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -23,5 +24,14 @@ public:
 public:
     nk_tree_type m_treeType;
     nk_collapse_states m_state;
+
+public:
+    template <class Archive>
+    void serialize(Archive& ar) {
+        ar(cereal::base_class<NKBase>(this)
+            , cereal::base_class<NKBaseLabel>(this)
+            , cereal::base_class<NKStyleTab>(this)
+        );
+    }
 };
 #endif //NKTree_h__

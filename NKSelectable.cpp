@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "NKSelectable.h"
 
+NKSelectable::NKSelectable() : NKBase(), NKHandler(), NKBaseLabel(), NKStyleSelectedable()
+{
+    m_type = eSELECTABLE;
+    m_selected = 0;
+    memcpy_s(m_cContent, sizeof(m_cContent), "Selectable", sizeof("Selectable"));
+}
+
 NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleSelectedable(ctx, &m_style)
 {
     m_type = eSELECTABLE;

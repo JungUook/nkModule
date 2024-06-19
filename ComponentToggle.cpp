@@ -2,6 +2,20 @@
 #include "ComponentToggle.h"
 #include "NuklearUI.h"
 
+ComponentToggle::ComponentToggle()
+{
+	m_pTarget		= nullptr;
+	m_pRestore		= nullptr;
+
+	m_pNormal		= nullptr;
+	m_pHover		= nullptr;
+	m_pActive		= nullptr;
+
+	m_pCursorNormal	= nullptr;
+	m_pCursorHover	= nullptr;
+
+}
+
 ComponentToggle::ComponentToggle(nk_style_toggle* pTarget, nk_style_toggle* pRestore)
 {
 	m_pTarget = pTarget;

@@ -6,9 +6,10 @@
 class ComponentEdit : public NKComponent
 {
 public:
+	ComponentEdit();
 	ComponentEdit(struct nk_style_edit* pTarget, struct nk_style_edit* pRestore);
 	ComponentEdit(const ComponentEdit& other);
-	~ComponentEdit();
+	virtual ~ComponentEdit();
 
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 

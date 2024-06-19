@@ -8,14 +8,24 @@
 class NKButton : public NKBase, public NKHandler, public NKBaseLabel, public NKStyleButton
 {
 public:
+	NKButton();
 	NKButton(nk_context* ctx, NuklearUI* pManager);
 	NKButton(const NKButton& other);
-	~NKButton();
+	virtual ~NKButton();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
 	virtual void EditInfo() override;
 	virtual void EditStyle() override;
 
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKBase>(this)
+			, cereal::base_class<NKHandler>(this)
+			, cereal::base_class<NKBaseLabel>(this)
+			, cereal::base_class<NKStyleButton>(this)
+		);
+	}
 };
 #endif //NKButton_h__

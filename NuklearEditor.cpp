@@ -82,8 +82,10 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 		}
 
 		if (nk_button_label(ctx, "Save")){
+			m_pManager->SaveFile("nkmod.json");
 		}
 		if (nk_button_label(ctx, "Load")){
+			m_pManager->LoadFile("nkmod.json");
 		}
 
 		//if (nk_contextual_begin(ctx, 0, nk_vec2(100, 220), nk_window_get_bounds(ctx))) {

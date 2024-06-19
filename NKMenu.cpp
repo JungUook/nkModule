@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "NKMenu.h"
 
+NKMenu::NKMenu() : NKBase(), NKHandler(), NKBaseLabel(), NKStyleMenuButton()
+{
+    m_type = eMENU;
+}
+
 NKMenu::NKMenu(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleMenuButton(ctx, &m_style)
 {
     m_type = eMENU;

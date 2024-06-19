@@ -2,6 +2,24 @@
 #include "ComponentSlider.h"
 #include "NuklearUI.h"
 
+ComponentSlider::ComponentSlider()
+{
+	m_pTarget	   = nullptr;
+	m_pRestore	   = nullptr;
+
+	m_pNormal	   = nullptr;
+	m_pHover	   = nullptr;
+	m_pActive	   = nullptr;
+
+	m_CursorNormal = nullptr;
+	m_CursorHover  = nullptr;
+	m_CursorActive = nullptr;
+
+	m_pIncButton   = nullptr;
+	m_pDecButton   = nullptr;
+
+}
+
 ComponentSlider::ComponentSlider(nk_style_slider* pTarget, nk_style_slider* pRestore)
 {
 	m_pTarget = pTarget;

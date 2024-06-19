@@ -6,9 +6,10 @@
 class NKCombo : public NKBase, public NKStyleCombo
 {
 public:
+	NKCombo();
 	NKCombo(nk_context* ctx, NuklearUI* pManager);
 	NKCombo(const NKCombo& other);
-	~NKCombo();
+	virtual ~NKCombo();
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -23,6 +24,14 @@ public:
 	nk_text_alignment m_labelAlignment;
 	struct nk_vec2 m_labelSize;
 	char m_cComboLabel[256];
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKBase>(this)
+			, cereal::base_class<NKStyleCombo>(this)
+		);
+	}
 };
 
 

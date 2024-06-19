@@ -22,8 +22,15 @@
 #include <stb_image.h>
 
 #include <shlobj.h>
+
+#include <cereal/types/vector.hpp>
+#include <cereal/types/array.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "UiLibrary.h"
 #include "NuklearEditor.h"
+
 
 struct nk_image g_img;
 NuklearEditor g_editor;
@@ -707,6 +714,30 @@ void NuklearUI::CreateUI(const char* classname, NKBase* parent)
 		throw;
 	}
 }
+
+NKBase* NuklearUI::RegistUI(const char* classname, NKBase* loadPtr)
+{
+	NKBase* pBase = m_factory.create(classname, m_ctx, this);
+	(*pBase) = *loadPtr;
+	pBase->Load(m_ctx, this);
+
+	if (pBase->GetType() == eWINDOW)
+	{
+		m_vecObject.push_back(pBase);
+	}
+
+	m_vecModule.push_back(pBase);
+	m_mapModuleID.insert(std::make_pair(pBase->GetPrimaryID(), pBase));
+	m_mapModuleName.insert(std::make_pair(pBase->GetPrimaryName(), pBase));
+
+	auto bFinder = dynamic_cast<NKObjectFinder*>(pBase);
+	if (bFinder) {
+		m_mapOF.insert(std::make_pair(pBase->GetPrimaryID(), bFinder));
+	}
+
+	return pBase;
+}
+
 struct nk_vec2* NuklearUI::GetPivot()
 {
 	return &m_pivot;
@@ -1459,4 +1490,185 @@ void NuklearUI::RegisterBase()
 		.addStaticFunction("createMenu", &ObjMaker::create<NKMenu>)
 		.addStaticFunction("createScrollbar", &ObjMaker::create<NKScrollbar>)
 		.endClass();
+}
+
+void NuklearUI::SaveFile(const std::string& filename)
+{
+	std::vector<std::shared_ptr<NKBase>> vec;
+	size_t size = m_vecObject.size();
+	for (size_t i = 0; i < size; ++i) {
+		NKBase* ptr = m_vecObject.at(i);
+		SaveSwitch(vec, ptr);
+	}
+
+
+	std::ofstream os(filename);
+	cereal::JSONOutputArchive archive(os);
+	archive(CEREAL_NVP(vec));
+
+
+	std::vector<NKBase*>::iterator it = m_vecObject.begin() + size;
+	m_vecObject.erase(it, m_vecObject.end());
+}
+
+void NuklearUI::SaveSwitch(std::vector<std::shared_ptr<NKBase>>& vec, NKBase* ptr)
+{
+	eTypeUI eType = ptr->GetType();
+	switch (eType)
+	{
+	case eWINDOW: {
+		NKWindow* nkWindow = static_cast<NKWindow*>(ptr);
+		NKWindow nWindow = *nkWindow;
+		vec.push_back(std::make_shared<NKWindow>(nWindow));
+		break;
+	}
+	case eSPACE: {
+		NKSpace* nkSpace = static_cast<NKSpace*>(ptr);
+		NKSpace* nSpace = new NKSpace(*nkSpace);
+		vec.push_back(std::make_shared<NKSpace>(*nSpace));
+		break;
+	}
+	case eGROUP: {
+		NKGroup* nkGroup = static_cast<NKGroup*>(ptr);
+		NKGroup* nGroup = new NKGroup(*nkGroup);
+		vec.push_back(std::make_shared<NKGroup>(*nGroup));
+		break;
+	}
+	case ePOPUP: {
+		NKPopup* nkPopup = static_cast<NKPopup*>(ptr);
+		NKPopup* nPopup = new NKPopup(*nkPopup);
+		vec.push_back(std::make_shared<NKPopup>(*nPopup));
+		break;
+	}
+	case eCOMBO: {
+		NKCombo* nkCombo = static_cast<NKCombo*>(ptr);
+		NKCombo* nCombo = new NKCombo(*nkCombo);
+		vec.push_back(std::make_shared<NKCombo>(*nCombo));
+		break;
+	}
+	case eBUTTON: {
+		NKButton* nkButton = static_cast<NKButton*>(ptr);
+		NKButton* nButton = new NKButton(*nkButton);
+		vec.push_back(std::make_shared<NKButton>(*nButton));
+		break;
+	}
+	case eEDIT: {
+		NKEdit* nkEdit = static_cast<NKEdit*>(ptr);
+		NKEdit* nEdit = new NKEdit(*nkEdit);
+		vec.push_back(std::make_shared<NKEdit>(*nEdit));
+		break;
+	}
+	case eIMAGE: {
+		NKImage* nkImage = static_cast<NKImage*>(ptr);
+		NKImage* nImage = new NKImage(*nkImage);
+		vec.push_back(std::make_shared<NKImage>(*nImage));
+		break;
+	}
+	case eLABEL: {
+		NKLabel* nkLabel = static_cast<NKLabel*>(ptr);
+		NKLabel* nLabel = new NKLabel(*nkLabel);
+		vec.push_back(std::make_shared<NKLabel>(*nLabel));
+		break;
+	}
+	case eCOMBO_ITEM: {
+		NKComboItem* nkComboItem = static_cast<NKComboItem*>(ptr);
+		NKComboItem* nComboItem = new NKComboItem(*nkComboItem);
+		vec.push_back(std::make_shared<NKComboItem>(*nComboItem));
+		break;
+	}
+	case eCHECKBOX: {
+		NKCheckbox* nkCheckbox = static_cast<NKCheckbox*>(ptr);
+		NKCheckbox* nCheckbox = new NKCheckbox(*nkCheckbox);
+		vec.push_back(std::make_shared<NKCheckbox>(*nCheckbox));
+		break;
+	}
+	case eSLIDER: {
+		NKSlider* nkSlider = static_cast<NKSlider*>(ptr);
+		NKSlider* nSlider = new NKSlider(*nkSlider);
+		vec.push_back(std::make_shared<NKSlider>(*nSlider));
+		break;
+	}
+	case ePROGRESS: {
+		NKProgress* nkProgress = static_cast<NKProgress*>(ptr);
+		NKProgress* nProgress = new NKProgress(*nkProgress);
+		vec.push_back(std::make_shared<NKProgress>(*nProgress));
+		break;
+	}
+	case eSELECTABLE: {
+		NKSelectable* nkSelectable = static_cast<NKSelectable*>(ptr);
+		NKSelectable* nSelectable = new NKSelectable(*nkSelectable);
+		vec.push_back(std::make_shared<NKSelectable>(*nSelectable));
+		break;
+	}
+	case eTREE: {
+		NKTree* nkTree = static_cast<NKTree*>(ptr);
+		NKTree* nTree = new NKTree(*nkTree);
+		vec.push_back(std::make_shared<NKTree>(*nTree));
+		break;
+	}
+	case eCHART: {
+		NKChart* nkChart = static_cast<NKChart*>(ptr);
+		NKChart* nChart = new NKChart(*nkChart);
+		vec.push_back(std::make_shared<NKChart>(*nChart));
+		break;
+	}
+	case eCOLOR_PICKER: {
+		NKTooltip* nkTooltip = static_cast<NKTooltip*>(ptr);
+		NKTooltip* nTooltip = new NKTooltip(*nkTooltip);
+		vec.push_back(std::make_shared<NKTooltip>(*nTooltip));
+		break;
+	}
+	case eTOOLTIP: {
+		NKMenu* nkMenu = static_cast<NKMenu*>(ptr);
+		NKMenu* nMenu = new NKMenu(*nkMenu);
+		vec.push_back(std::make_shared<NKMenu>(*nMenu));
+		break;
+	}
+	case eMENU: {
+		NKScrollbar* nkScrollbar = static_cast<NKScrollbar*>(ptr);
+		NKScrollbar* nScrollbar = new NKScrollbar(*nkScrollbar);
+		vec.push_back(std::make_shared<NKScrollbar>(*nScrollbar));
+		break;
+	}
+	case eSCROLLBAR: {
+		NKColorPicker* nkColorPicker = static_cast<NKColorPicker*>(ptr);
+		NKColorPicker* nColorPicker = new NKColorPicker(*nkColorPicker);
+		vec.push_back(std::make_shared<NKColorPicker>(*nColorPicker));
+		break;
+	}
+	case eSUPERSTYLE: {
+		NKSuperStyleObject* nkSuperStyleObject = static_cast<NKSuperStyleObject*>(ptr);
+		NKSuperStyleObject* nSuperStyleObject = new NKSuperStyleObject(*nkSuperStyleObject);
+		vec.push_back(std::make_shared<NKSuperStyleObject>(*nSuperStyleObject));
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void NuklearUI::LoadFile(const std::string& filename)
+{
+	std::vector<std::shared_ptr<NKBase>> vec;
+	std::ifstream is(filename);
+	cereal::JSONInputArchive archive(is);
+	archive(CEREAL_NVP(vec));
+
+	for (auto it = vec.begin(); it != vec.end(); ++it) {
+		LoadNode(it->get());
+	}
+}
+
+void NuklearUI::LoadNode(NKBase* pBase)
+{
+	NKBase* ptr = RegistUI(pBase->getClassName().c_str(), pBase);
+
+	auto childrens = ptr->GetChildList();
+
+	for (auto it = childrens->begin(); it != childrens->end(); ++it) {
+		NKBase* pChild = *it;
+		if (pChild) {
+			LoadNode(pChild);
+		}
+	}
 }

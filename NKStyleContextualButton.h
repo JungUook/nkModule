@@ -5,13 +5,19 @@
 class NKStyleContextualButton
 {
 public:
+	NKStyleContextualButton();
 	NKStyleContextualButton(nk_context* ctx, nk_style* style);
 	NKStyleContextualButton(const NKStyleContextualButton& other);
-	~NKStyleContextualButton();
+	virtual ~NKStyleContextualButton();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:
 	ComponentButton* m_pComponent;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleContextualButton_h__

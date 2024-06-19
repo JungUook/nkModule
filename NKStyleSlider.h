@@ -6,13 +6,19 @@
 class NKStyleSlider
 {
 public:
+	NKStyleSlider();
 	NKStyleSlider(nk_context* ctx, nk_style* style);
 	NKStyleSlider(const NKStyleSlider& other);
-	~NKStyleSlider();
+	virtual ~NKStyleSlider();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:
 	ComponentSlider* m_pComponent;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleSlider_h__

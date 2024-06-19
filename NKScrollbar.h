@@ -7,9 +7,10 @@
 class NKScrollbar : public NKBase, public NKStyleScrollbarH, public NKStyleScrollbarV
 {
 public:
+    NKScrollbar();
     NKScrollbar(nk_context* ctx, NuklearUI* pManager);
     NKScrollbar(const NKScrollbar& other);
-    ~NKScrollbar();
+    virtual ~NKScrollbar();
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -21,5 +22,14 @@ public:
 
 public:
     float m_scroll;
+
+public:
+    template <class Archive>
+    void serialize(Archive& ar) {
+        ar(cereal::base_class<NKBase>(this)
+            , cereal::base_class<NKStyleScrollbarH>(this)
+            , cereal::base_class<NKStyleScrollbarV>(this)
+        );
+    }
 };
 #endif //NKScrollbar_h__

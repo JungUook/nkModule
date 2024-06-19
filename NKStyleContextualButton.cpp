@@ -2,6 +2,11 @@
 #include "NKStyleContextualButton.h"
 #include "NuklearUI.h"
 
+NKStyleContextualButton::NKStyleContextualButton()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleContextualButton::NKStyleContextualButton(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentButton(&style->contextual_button, &ctx->style.contextual_button);

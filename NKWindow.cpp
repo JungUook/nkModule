@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "NKWindow.h"
 
+NKWindow::NKWindow() : NKBase(), NKBaseWindow(), NKStyleHeader(), NKStyleWindow()
+{
+	m_type = eWINDOW;
+	m_flags = NK_WINDOW_TITLE;
+}
+
 NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type = eWINDOW;

@@ -60,7 +60,6 @@ NKBase::NKBase(const NKBase& other) : NKProperty(other)
 	strcpy_s(m_cBaseName, other.m_cBaseName);
 	strcpy_s(m_cprimaryEditName, other.m_cprimaryEditName);
 	strcpy_s(m_cBaseEditName, other.m_cBaseEditName);
-	m_pManager->Add(this);
 }
 
 NKBase::~NKBase()
@@ -239,6 +238,14 @@ void NKBase::LRemoveChild(luabridge::LuaRef ref)
 	RemoveChild(nkBase);
 }
 
+void NKBase::Load(nk_context* ctx, NuklearUI* pManager)
+{
+	NKBaseStyle::Load(ctx, pManager);
+	m_ctx = ctx;
+	m_pManager = pManager;
+	m_pWindow = this;
+}
+
 unsigned int NKBase::GetPrimaryID()
 {
 	return m_primaryID;
@@ -276,6 +283,12 @@ void NKBase::SetPrimaryName(const char* name)
 	strcpy_s(m_primaryName, name);
 }
 
+void NKBase::SetBaseName(const char* name)
+{
+	memset(m_cBaseName, 0, sizeof(m_cBaseName));
+	strcpy_s(m_cBaseEditName, name);
+}
+
 void NKBase::SetNuklearIndex(int index)
 {
 	m_iNKIndex = index;
@@ -284,17 +297,13 @@ void NKBase::SetNuklearIndex(int index)
 void NKBase::LayoutEditor()
 {
 	if (nk_tree_push(m_ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
-
-		float ratio[2] = { 0.f };
-		ratio[0] = 0.3f;
-		ratio[1] = 0.7f;
-		nk_layout_row(m_ctx, NK_DYNAMIC, 44, 1, ratio);
+		nk_layout_row_dynamic(m_ctx, 44, 1);
 		nk_label(m_ctx, "Window Name", NK_TEXT_LEFT);
 		nk_flags result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cprimaryEditName, &m_cprimaryEditName_len, 64, nk_filter_default);
 
 		if (result & NK_EDIT_COMMITED)
 		{
-			EditBaseName(m_cprimaryEditName);
+			EditPrimaryName(m_cprimaryEditName);
 		}
 
 		nk_label(m_ctx, "Node Name", NK_TEXT_LEFT);
@@ -302,7 +311,7 @@ void NKBase::LayoutEditor()
 
 		if (result & NK_EDIT_COMMITED)
 		{
-			EditBaseName(m_cBaseEditName);
+			SetBaseName(m_cBaseEditName);
 		}
 
 		FollowParentStyle(m_ctx, m_pParent);
@@ -331,7 +340,7 @@ void NKBase::EditStyle()
 {
 }
 
-void NKBase::EditBaseName(const char* name)
+void NKBase::EditPrimaryName(const char* name)
 {
 	if (!m_pManager->SetPrimaryname(this, name)) {
 		m_pManager->ErrorPopup("There is already a primary name. primaryname cannot be duplicated.");

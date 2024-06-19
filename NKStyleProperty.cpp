@@ -2,6 +2,11 @@
 #include "NKStyleProperty.h"
 #include "NuklearUI.h"
 
+NKStyleProperty::NKStyleProperty()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleProperty::NKStyleProperty(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentProperty(&style->property, &ctx->style.property);

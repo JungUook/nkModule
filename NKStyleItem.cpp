@@ -2,6 +2,21 @@
 #include "NKStyleItem.h"
 #include "NuklearUI.h"
 
+NKStyleItem::NKStyleItem()
+{
+	for (int i = 0; i < 4; ++i) {
+		m_iNineslice[i] = 0;
+	}
+	m_pTarget	 = nullptr;
+	m_pRestore	 = nullptr;
+	m_sImagePath = "None";
+	m_iOption	 = 0;
+	m_iSprIndex	 = 0;
+	m_iSprSize	 = 0;
+	m_pTarget	 = nullptr;
+	m_pRestore	 = nullptr;
+}
+
 NKStyleItem::NKStyleItem(nk_style_item* pTarget, nk_style_item* pRestore) : m_sImagePath("None"), m_iOption(0), m_iSprIndex(0), m_iSprSize(0), m_pTarget(nullptr), m_pRestore(nullptr) {
 	for (int i = 0; i < 4; ++i) {
 		m_iNineslice[i] = 0;
@@ -26,6 +41,8 @@ NKStyleItem::NKStyleItem(const NKStyleItem& other)
 
 NKStyleItem::~NKStyleItem()
 {
+	m_pTarget  = nullptr;
+	m_pRestore = nullptr;
 }
 
 void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)

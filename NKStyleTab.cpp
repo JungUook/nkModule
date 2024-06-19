@@ -2,6 +2,11 @@
 #include "NKStyleTab.h"
 #include "NuklearUI.h"
 
+NKStyleTab::NKStyleTab()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleTab::NKStyleTab(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentTab(&style->tab, &ctx->style.tab);

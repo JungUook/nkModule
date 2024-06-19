@@ -2,6 +2,11 @@
 #include "NKStyleScrollbarV.h"
 #include "NuklearUI.h"
 
+NKStyleScrollbarV::NKStyleScrollbarV()
+{
+	m_pComponent = nullptr;
+}
+
 NKStyleScrollbarV::NKStyleScrollbarV(nk_context* ctx, nk_style* style)
 {
 	m_pComponent = new ComponentScrollbar(&style->scrollv, &ctx->style.scrollv);

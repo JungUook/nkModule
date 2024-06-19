@@ -6,13 +6,19 @@
 class NKStyleCheckbox
 {
 public:
+	NKStyleCheckbox();
 	NKStyleCheckbox(nk_context* ctx, nk_style* style);
 	NKStyleCheckbox(const NKStyleCheckbox& other);
-	~NKStyleCheckbox();
+	virtual ~NKStyleCheckbox();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:
 	ComponentToggle* m_pComponent;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleCheckbox_h__

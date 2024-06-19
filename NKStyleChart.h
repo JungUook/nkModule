@@ -5,9 +5,10 @@
 class NKStyleChart
 {
 public:
+	NKStyleChart();
 	NKStyleChart(nk_context* ctx, nk_style* style);
 	NKStyleChart(const NKStyleChart& other);
-	~NKStyleChart();
+	virtual ~NKStyleChart();
 
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
@@ -23,5 +24,10 @@ protected:
 	float* color_factor;
 	float* disabled_factor;
 	nk_bool* show_markers;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+	}
 };
 #endif //NKStyleChart_h__

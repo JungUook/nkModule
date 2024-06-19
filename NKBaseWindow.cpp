@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "NKBaseWindow.h"
+#include "NuklearUI.h"
 
 NKBaseWindow::NKBaseWindow()
 {

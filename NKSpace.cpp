@@ -1,6 +1,14 @@
 #include "pch.h"
 #include "NKSpace.h"
 
+NKSpace::NKSpace() : NKBase()
+{
+	m_layoutFormat = NK_STATIC;
+	m_widgetCount = 0;
+	m_type = eSPACE;
+	m_dynamicCount = 1;
+}
+
 NKSpace::NKSpace(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_layoutFormat	= NK_STATIC;

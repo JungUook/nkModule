@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "NKButton.h"
 
+NKButton::NKButton() : NKBase(), NKHandler(), NKBaseLabel(), NKStyleButton()
+{
+	m_type = eBUTTON;
+}
+
 NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleButton(ctx, &m_style)
 {
 	m_type = eBUTTON;

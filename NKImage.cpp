@@ -1,6 +1,14 @@
 #include "pch.h"
 #include "NKImage.h"
 
+NKImage::NKImage() : NKBase()
+{
+	m_type = eIMAGE;
+	m_imagePath = "None";
+	m_sprIndex = 0;
+	m_sprSize = 0;
+}
+
 NKImage::NKImage(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eIMAGE;

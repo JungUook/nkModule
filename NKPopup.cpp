@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "NKPopup.h"
 
+NKPopup::NKPopup() : NKBase(), NKBaseWindow(), NKStyleHeader(), NKStyleWindow()
+{
+	m_type = ePOPUP;
+	m_popupType = NK_POPUP_STATIC;
+	m_flags = NK_WINDOW_TITLE;
+}
+
 NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type = ePOPUP;
