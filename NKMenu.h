@@ -14,6 +14,14 @@ struct MenuItem {
     MenuItem() : nameLen(0) {
         std::memset(name, 0, sizeof(name));
     }
+
+    template <class Archive>
+    void serialize(Archive& ar) {
+        ar(name
+            , nameLen
+            , data
+        );
+    }
 };
 
 class NKMenu : public NKBase, public NKHandler, public NKBaseLabel, public NKStyleMenuButton
@@ -23,6 +31,7 @@ public:
     NKMenu(nk_context* ctx, NuklearUI* pManager);
     NKMenu(const NKMenu& other);
     virtual ~NKMenu();
+    
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -38,6 +47,7 @@ public:
             , cereal::base_class<NKHandler>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKStyleMenuButton>(this)
+            , m_items
         );
     }
 };

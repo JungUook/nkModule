@@ -23,5 +23,20 @@ protected:
 	NKStyleItem* m_pNormalActive;
 	NKStyleItem* m_pHoverActive;
 	NKStyleItem* m_pPressedActive;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pNormal
+			, *m_pHover
+			, *m_pPressed
+			, *m_pNormalActive
+			, *m_pHoverActive
+			, *m_pPressedActive
+		);
+	}
 };
 #endif //ComponentSelectable_h__

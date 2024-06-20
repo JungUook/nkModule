@@ -1,6 +1,7 @@
 #pragma once
 #ifndef NuklearEditor_h__
 #define NuklearEditor_h__
+
 #include "NuklearUI.h"
 
 class NKBase;
@@ -30,6 +31,9 @@ public:
 	void CustomDataLayout(nk_context* ctx, const char* dataName, std::vector<CustomData>* vCustom);
 
 	void OpenErrorPopup(const char* content);
+
+	bool CreateDirectoryIfNotExists(const std::string& path);
+	void Clear();
 
 private:
 	NuklearUI* m_pManager;

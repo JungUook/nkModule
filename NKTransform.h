@@ -2,7 +2,6 @@
 #ifndef NKTransform_h__
 #define NKTransform_h__
 #include "Constants.h"
-#include <cereal/types/polymorphic.hpp>
 
 class NuklearUI;
 

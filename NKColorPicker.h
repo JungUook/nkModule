@@ -8,6 +8,7 @@ public:
 	NKColorPicker();
     NKColorPicker(nk_context* ctx, NuklearUI* pManager);
 	virtual ~NKColorPicker();
+	
 
 public:
     void Layout(nk_context* ctx) override;
@@ -21,6 +22,7 @@ public:
 	template <class Archive>
 	void serialize(Archive& ar) {
 		ar(cereal::base_class<NKBase>(this)
+			, m_color
 		);
 	}
 };

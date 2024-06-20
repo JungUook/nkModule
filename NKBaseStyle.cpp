@@ -9,6 +9,14 @@ NKBaseStyle::NKBaseStyle()
 	m_followParentStyle = nk_true;
 }
 
+NKBaseStyle::NKBaseStyle(nk_context* ctx, NuklearUI* pManager)
+{
+	m_style = ctx->style;
+	m_font = pManager->GetFont();
+	m_pParentStyle = nullptr;
+	m_followParentStyle = nk_true;
+}
+
 NKBaseStyle::NKBaseStyle(const NKBaseStyle& other)
 {
 	m_style = other.m_style;
@@ -18,6 +26,10 @@ NKBaseStyle::NKBaseStyle(const NKBaseStyle& other)
 }
 
 NKBaseStyle::~NKBaseStyle()
+{
+}
+
+void NKBaseStyle::Init(nk_context* ctx, nk_style* style)
 {
 }
 
@@ -68,10 +80,10 @@ void NKBaseStyle::SetBackground(NuklearUI* pManager, int SID)
 	}
 }
 
-void NKBaseStyle::Load(nk_context* ctx, NuklearUI* pManager)
-{
-	InitializeStyle(ctx, pManager);
-}
+//void NKBaseStyle::Load(nk_context* ctx, NuklearUI* pManager)
+//{
+//	InitializeStyle(ctx, pManager);
+//}
 
 void NKBaseStyle::FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent)
 {

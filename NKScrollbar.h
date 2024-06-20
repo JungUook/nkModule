@@ -11,6 +11,7 @@ public:
     NKScrollbar(nk_context* ctx, NuklearUI* pManager);
     NKScrollbar(const NKScrollbar& other);
     virtual ~NKScrollbar();
+    
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -29,6 +30,7 @@ public:
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKStyleScrollbarH>(this)
             , cereal::base_class<NKStyleScrollbarV>(this)
+            , m_scroll
         );
     }
 };

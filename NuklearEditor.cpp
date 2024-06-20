@@ -60,32 +60,53 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 		}
 		if (nk_button_label(ctx, "Refresh"))
 		{
-			for (std::vector<NKBase*>::iterator iter = m_vecObject->begin(); iter != m_vecObject->end();)
-			{
-				NKBase* pNKBase = *iter;
-
-				if (pNKBase)
-				{
-					pNKBase->Release();
-					delete pNKBase;
-					pNKBase = NULL;
-				}
-				iter = m_vecObject->erase(iter);
-			}
-			m_vecObject->clear();
-			m_vecModule->clear();
-			m_mapModuleID->clear();
-			m_mapModuleName->clear();
-			m_selectedNode = nullptr;
-
-			m_pManager->RunFunction("Init");
+			Clear();
 		}
 
 		if (nk_button_label(ctx, "Save")){
-			m_pManager->SaveFile("nkmod.json");
+			char path[MAX_PATH];
+			HMODULE hModule = GetModuleHandle(NULL);
+			if (hModule != NULL) {
+				// 현재 실행 파일의 경로를 얻습니다.
+				GetModuleFileNameA(hModule, path, MAX_PATH);
+			}
+			else {
+				std::cerr << "Failed to get module handle." << std::endl;
+				return;
+			}
+			std::string basePath(path);
+			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+			std::string dataPath = basePath + "\\data";
+			if (!CreateDirectoryIfNotExists(dataPath)) {
+				std::cerr << "Failed to create directory: " << dataPath << std::endl;
+				return;
+			}
+			std::string filePath = dataPath + "\\nkmod.json";
+
+			m_pManager->SaveFile(filePath);
 		}
 		if (nk_button_label(ctx, "Load")){
-			m_pManager->LoadFile("nkmod.json");
+			Clear();
+			char path[MAX_PATH];
+			HMODULE hModule = GetModuleHandle(NULL);
+			if (hModule != NULL) {
+				// 현재 실행 파일의 경로를 얻습니다.
+				GetModuleFileNameA(hModule, path, MAX_PATH);
+			}
+			else {
+				std::cerr << "Failed to get module handle." << std::endl;
+				return;
+			}
+			std::string basePath(path);
+			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+			std::string dataPath = basePath + "\\data";
+			if (!CreateDirectoryIfNotExists(dataPath)) {
+				std::cerr << "Failed to create directory: " << dataPath << std::endl;
+				return;
+			}
+			std::string filePath = dataPath + "\\nkmod.json";
+
+			m_pManager->LoadFile(filePath);
 		}
 
 		//if (nk_contextual_begin(ctx, 0, nk_vec2(100, 220), nk_window_get_bounds(ctx))) {
@@ -431,4 +452,49 @@ void NuklearEditor::OpenErrorPopup(const char* content)
 	memset(m_popup_content, 0, sizeof(m_popup_content));
 	strcpy_s(m_popup_content, content);
 	m_show_popup = 1;
+}
+
+bool NuklearEditor::CreateDirectoryIfNotExists(const std::string& path)
+{
+	DWORD ftyp = GetFileAttributesA(path.c_str());
+	if (ftyp == INVALID_FILE_ATTRIBUTES) {
+		// 경로가 존재하지 않으므로 생성 시도
+		if (CreateDirectoryA(path.c_str(), NULL) || GetLastError() == ERROR_ALREADY_EXISTS) {
+			return true; // 생성 성공 또는 이미 존재
+		}
+		else {
+			return false; // 생성 실패
+		}
+	}
+	else if (ftyp & FILE_ATTRIBUTE_DIRECTORY) {
+		return true; // 이미 디렉토리로 존재
+	}
+	return false; // 파일은 존재하지만 디렉토리가 아님
+}
+
+void NuklearEditor::Clear()
+{
+	for (std::vector<NKBase*>::iterator iter = m_vecObject->begin(); iter != m_vecObject->end();)
+	{
+		NKBase* pNKBase = *iter;
+
+		if (pNKBase)
+		{
+			pNKBase->Release();
+			delete pNKBase;
+			pNKBase = NULL;
+		}
+		iter = m_vecObject->erase(iter);
+	}
+	m_vecObject->clear();
+	m_vecModule->clear();
+	m_mapModuleID->clear();
+	m_mapModuleName->clear();
+	m_selectedNode = nullptr;
+
+	m_mapSpr->clear();
+	m_vecVariable->clear();
+	m_vecFunction->clear();
+
+	m_pManager->RunFunction("Init");
 }

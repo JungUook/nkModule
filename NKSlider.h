@@ -10,6 +10,7 @@ public:
     NKSlider(nk_context* ctx, NuklearUI* pManager);
     NKSlider(const NKSlider& other);
     virtual ~NKSlider();
+    
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -29,6 +30,9 @@ public:
     void serialize(Archive& ar) {
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKStyleSlider>(this)
+            , m_min
+            , m_max
+            , m_value
         );
     }
 };

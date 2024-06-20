@@ -28,5 +28,22 @@ protected:
 
 	ComponentButton* m_pIncButton;
 	ComponentButton* m_pDecButton;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pNormal
+			, *m_pHover
+			, *m_pActive
+			, *m_CursorNormal
+			, *m_CursorHover
+			, *m_CursorActive
+			, *m_pIncButton
+			, *m_pDecButton
+		);
+	}
 };
 #endif //ComponentSlider_h__

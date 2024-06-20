@@ -23,5 +23,19 @@ protected:
 	ComponentButton* m_pTabMinimizeButton;
 	ComponentButton* m_pNodeMaximizeButton;
 	ComponentButton* m_pNodeMinimizeButton;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pBackground
+			, *m_pTabMaximizeButton
+			, *m_pTabMinimizeButton
+			, *m_pNodeMaximizeButton
+			, *m_pNodeMinimizeButton
+		);
+	}
 };
 #endif //ComponentTab_h__

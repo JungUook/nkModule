@@ -45,6 +45,7 @@ public:
 	NKSuperStyleObject(nk_context* ctx, NuklearUI* pManager);
 	NKSuperStyleObject(const NKSuperStyleObject& other);
 	virtual ~NKSuperStyleObject();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;

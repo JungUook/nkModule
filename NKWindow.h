@@ -12,6 +12,7 @@ public:
 	NKWindow(nk_context* ctx, NuklearUI* pManager);
 	NKWindow(const NKWindow& other);
 	virtual ~NKWindow() override;
+	
 
 public:
 	virtual void Update(nk_context* ctx) override;

@@ -23,5 +23,19 @@ protected:
 
 	ComponentButton* m_pCloseButton;
 	ComponentButton* m_pMinimizeButton;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pNormal
+			, *m_pHover
+			, *m_pActive
+			, *m_pCloseButton
+			, *m_pMinimizeButton
+		);
+	}
 };
 #endif //ComponentHeader_h__

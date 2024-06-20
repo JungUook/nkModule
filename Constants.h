@@ -5,6 +5,7 @@
 #include <cereal/types/vector.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #ifdef _NKDEBUG
 #define CHECK_PTR(ptr) \
@@ -37,7 +38,7 @@
 #endif // _NKDEBUG
 
 enum eTypeUI {
-	eBASE = -1
+	eNONE = -1
 
 	, eWINDOW = 0
 	, eSPACE
@@ -118,6 +119,313 @@ namespace cereal {
 	template <class Archive>
 	void serialize(Archive& ar, struct nk_color& color) {
 		ar(CEREAL_NVP(color.r), CEREAL_NVP(color.g), CEREAL_NVP(color.b), CEREAL_NVP(color.a));
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_colorf& color) {
+		ar(CEREAL_NVP(color.r), CEREAL_NVP(color.g), CEREAL_NVP(color.b), CEREAL_NVP(color.a));
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_image& img) {
+		ar(CEREAL_NVP(img.w)
+			, CEREAL_NVP(img.h)
+			, CEREAL_NVP(img.region));
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_nine_slice& nslice) {
+		ar(CEREAL_NVP(nslice.img)
+			, CEREAL_NVP(nslice.l)
+			, CEREAL_NVP(nslice.t)
+			, CEREAL_NVP(nslice.r)
+			, CEREAL_NVP(nslice.b));
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, union nk_style_item_data& data) {
+		ar(CEREAL_NVP(data.color)
+			, CEREAL_NVP(data.image)
+			, CEREAL_NVP(data.slice));
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_item& item) {
+		ar(CEREAL_NVP(item.type)
+			, CEREAL_NVP(item.data));
+	}
+
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_toggle& toggle) {
+		ar(
+			CEREAL_NVP(toggle.normal),
+			CEREAL_NVP(toggle.hover),
+			CEREAL_NVP(toggle.active),
+			CEREAL_NVP(toggle.border_color),
+			CEREAL_NVP(toggle.cursor_normal),
+			CEREAL_NVP(toggle.cursor_hover),
+			CEREAL_NVP(toggle.text_normal),
+			CEREAL_NVP(toggle.text_hover),
+			CEREAL_NVP(toggle.text_active),
+			CEREAL_NVP(toggle.text_background),
+			CEREAL_NVP(toggle.text_alignment),
+			CEREAL_NVP(toggle.padding),
+			CEREAL_NVP(toggle.touch_padding),
+			CEREAL_NVP(toggle.spacing),
+			CEREAL_NVP(toggle.border),
+			CEREAL_NVP(toggle.color_factor),
+			CEREAL_NVP(toggle.disabled_factor)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_button& button) {
+		ar(
+			CEREAL_NVP(button.normal),
+			CEREAL_NVP(button.hover),
+			CEREAL_NVP(button.active),
+			CEREAL_NVP(button.border_color),
+			CEREAL_NVP(button.color_factor_background),
+			CEREAL_NVP(button.text_background),
+			CEREAL_NVP(button.text_normal),
+			CEREAL_NVP(button.text_hover),
+			CEREAL_NVP(button.text_active),
+			CEREAL_NVP(button.text_alignment),
+			CEREAL_NVP(button.color_factor_text),
+			CEREAL_NVP(button.border),
+			CEREAL_NVP(button.rounding),
+			CEREAL_NVP(button.padding),
+			CEREAL_NVP(button.image_padding),
+			CEREAL_NVP(button.touch_padding),
+			CEREAL_NVP(button.disabled_factor)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_tab& tab) {
+		ar(
+			CEREAL_NVP(tab.background),
+			CEREAL_NVP(tab.border_color),
+			CEREAL_NVP(tab.text),
+			CEREAL_NVP(tab.tab_maximize_button),
+			CEREAL_NVP(tab.tab_minimize_button),
+			CEREAL_NVP(tab.node_maximize_button),
+			CEREAL_NVP(tab.node_minimize_button),
+			CEREAL_NVP(tab.sym_minimize),
+			CEREAL_NVP(tab.sym_maximize),
+			CEREAL_NVP(tab.border),
+			CEREAL_NVP(tab.rounding),
+			CEREAL_NVP(tab.indent),
+			CEREAL_NVP(tab.padding),
+			CEREAL_NVP(tab.spacing),
+			CEREAL_NVP(tab.color_factor),
+			CEREAL_NVP(tab.disabled_factor)
+			);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_slider& slider) {
+		ar(
+			CEREAL_NVP(slider.normal),
+			CEREAL_NVP(slider.hover),
+			CEREAL_NVP(slider.active),
+			CEREAL_NVP(slider.border_color),
+			CEREAL_NVP(slider.bar_normal),
+			CEREAL_NVP(slider.bar_hover),
+			CEREAL_NVP(slider.bar_active),
+			CEREAL_NVP(slider.bar_filled),
+			CEREAL_NVP(slider.cursor_normal),
+			CEREAL_NVP(slider.cursor_hover),
+			CEREAL_NVP(slider.cursor_active),
+			CEREAL_NVP(slider.border),
+			CEREAL_NVP(slider.rounding),
+			CEREAL_NVP(slider.bar_height),
+			CEREAL_NVP(slider.padding),
+			CEREAL_NVP(slider.spacing),
+			CEREAL_NVP(slider.cursor_size),
+			CEREAL_NVP(slider.color_factor),
+			CEREAL_NVP(slider.disabled_factor),
+			CEREAL_NVP(slider.show_buttons),
+			CEREAL_NVP(slider.inc_button),
+			CEREAL_NVP(slider.dec_button),
+			CEREAL_NVP(slider.inc_symbol),
+			CEREAL_NVP(slider.dec_symbol)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_selectable& selectable) {
+		ar(
+			CEREAL_NVP(selectable.normal),
+			CEREAL_NVP(selectable.hover),
+			CEREAL_NVP(selectable.pressed),
+			CEREAL_NVP(selectable.normal_active),
+			CEREAL_NVP(selectable.hover_active),
+			CEREAL_NVP(selectable.pressed_active),
+			CEREAL_NVP(selectable.text_normal),
+			CEREAL_NVP(selectable.text_hover),
+			CEREAL_NVP(selectable.text_pressed),
+			CEREAL_NVP(selectable.text_normal_active),
+			CEREAL_NVP(selectable.text_hover_active),
+			CEREAL_NVP(selectable.text_pressed_active),
+			CEREAL_NVP(selectable.text_background),
+			CEREAL_NVP(selectable.text_alignment),
+			CEREAL_NVP(selectable.rounding),
+			CEREAL_NVP(selectable.padding),
+			CEREAL_NVP(selectable.touch_padding),
+			CEREAL_NVP(selectable.image_padding),
+			CEREAL_NVP(selectable.color_factor),
+			CEREAL_NVP(selectable.disabled_factor)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_scrollbar& scrollbar) {
+		ar(
+			CEREAL_NVP(scrollbar.normal),
+			CEREAL_NVP(scrollbar.hover),
+			CEREAL_NVP(scrollbar.active),
+			CEREAL_NVP(scrollbar.border_color),
+			CEREAL_NVP(scrollbar.cursor_normal),
+			CEREAL_NVP(scrollbar.cursor_hover),
+			CEREAL_NVP(scrollbar.cursor_active),
+			CEREAL_NVP(scrollbar.cursor_border_color),
+			CEREAL_NVP(scrollbar.border),
+			CEREAL_NVP(scrollbar.rounding),
+			CEREAL_NVP(scrollbar.border_cursor),
+			CEREAL_NVP(scrollbar.rounding_cursor),
+			CEREAL_NVP(scrollbar.padding),
+			CEREAL_NVP(scrollbar.color_factor),
+			CEREAL_NVP(scrollbar.disabled_factor),
+			CEREAL_NVP(scrollbar.show_buttons),
+			CEREAL_NVP(scrollbar.inc_button),
+			CEREAL_NVP(scrollbar.dec_button),
+			CEREAL_NVP(scrollbar.inc_symbol),
+			CEREAL_NVP(scrollbar.dec_symbol)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_property& prop) {
+		ar(
+			CEREAL_NVP(prop.normal),
+			CEREAL_NVP(prop.hover),
+			CEREAL_NVP(prop.active),
+			CEREAL_NVP(prop.border_color),
+			CEREAL_NVP(prop.label_normal),
+			CEREAL_NVP(prop.label_hover),
+			CEREAL_NVP(prop.label_active),
+			CEREAL_NVP(prop.sym_left),
+			CEREAL_NVP(prop.sym_right),
+			CEREAL_NVP(prop.border),
+			CEREAL_NVP(prop.rounding),
+			CEREAL_NVP(prop.padding),
+			CEREAL_NVP(prop.color_factor),
+			CEREAL_NVP(prop.disabled_factor),
+			CEREAL_NVP(prop.edit),
+			CEREAL_NVP(prop.inc_button),
+			CEREAL_NVP(prop.dec_button)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_progress& progress) {
+		ar(
+			CEREAL_NVP(progress.normal),
+			CEREAL_NVP(progress.hover),
+			CEREAL_NVP(progress.active),
+			CEREAL_NVP(progress.border_color),
+			CEREAL_NVP(progress.cursor_normal),
+			CEREAL_NVP(progress.cursor_hover),
+			CEREAL_NVP(progress.cursor_active),
+			CEREAL_NVP(progress.cursor_border_color),
+			CEREAL_NVP(progress.rounding),
+			CEREAL_NVP(progress.border),
+			CEREAL_NVP(progress.cursor_border),
+			CEREAL_NVP(progress.cursor_rounding),
+			CEREAL_NVP(progress.padding),
+			CEREAL_NVP(progress.color_factor),
+			CEREAL_NVP(progress.disabled_factor)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_window_header& header) {
+		ar(
+			CEREAL_NVP(header.normal),
+			CEREAL_NVP(header.hover),
+			CEREAL_NVP(header.active),
+			CEREAL_NVP(header.close_button),
+			CEREAL_NVP(header.minimize_button),
+			CEREAL_NVP(header.close_symbol),
+			CEREAL_NVP(header.minimize_symbol),
+			CEREAL_NVP(header.maximize_symbol),
+			CEREAL_NVP(header.label_normal),
+			CEREAL_NVP(header.label_hover),
+			CEREAL_NVP(header.label_active),
+			CEREAL_NVP(header.align),
+			CEREAL_NVP(header.padding),
+			CEREAL_NVP(header.label_padding),
+			CEREAL_NVP(header.spacing)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_edit& edit) {
+		ar(
+			CEREAL_NVP(edit.normal),
+			CEREAL_NVP(edit.hover),
+			CEREAL_NVP(edit.active),
+			CEREAL_NVP(edit.border_color),
+			CEREAL_NVP(edit.scrollbar),
+			CEREAL_NVP(edit.cursor_normal),
+			CEREAL_NVP(edit.cursor_hover),
+			CEREAL_NVP(edit.cursor_text_normal),
+			CEREAL_NVP(edit.cursor_text_hover),
+			CEREAL_NVP(edit.text_normal),
+			CEREAL_NVP(edit.text_hover),
+			CEREAL_NVP(edit.text_active),
+			CEREAL_NVP(edit.selected_normal),
+			CEREAL_NVP(edit.selected_hover),
+			CEREAL_NVP(edit.selected_text_normal),
+			CEREAL_NVP(edit.selected_text_hover),
+			CEREAL_NVP(edit.border),
+			CEREAL_NVP(edit.rounding),
+			CEREAL_NVP(edit.cursor_size),
+			CEREAL_NVP(edit.scrollbar_size),
+			CEREAL_NVP(edit.padding),
+			CEREAL_NVP(edit.row_padding),
+			CEREAL_NVP(edit.color_factor),
+			CEREAL_NVP(edit.disabled_factor)
+		);
+	}
+
+	template <class Archive>
+	void serialize(Archive& ar, struct nk_style_combo& combo) {
+		ar(
+			CEREAL_NVP(combo.normal),
+			CEREAL_NVP(combo.hover),
+			CEREAL_NVP(combo.active),
+			CEREAL_NVP(combo.border_color),
+			CEREAL_NVP(combo.label_normal),
+			CEREAL_NVP(combo.label_hover),
+			CEREAL_NVP(combo.label_active),
+			CEREAL_NVP(combo.symbol_normal),
+			CEREAL_NVP(combo.symbol_hover),
+			CEREAL_NVP(combo.symbol_active),
+			CEREAL_NVP(combo.button),
+			CEREAL_NVP(combo.sym_normal),
+			CEREAL_NVP(combo.sym_hover),
+			CEREAL_NVP(combo.sym_active),
+			CEREAL_NVP(combo.border),
+			CEREAL_NVP(combo.rounding),
+			CEREAL_NVP(combo.content_padding),
+			CEREAL_NVP(combo.button_padding),
+			CEREAL_NVP(combo.spacing),
+			CEREAL_NVP(combo.color_factor),
+			CEREAL_NVP(combo.disabled_factor)
+		);
 	}
 }
 #endif //Constants_h__

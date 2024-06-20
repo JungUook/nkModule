@@ -18,6 +18,9 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
+		ar(
+			*m_pComponent
+		);
 	}
 };
 #endif //NKStyleButton_h__

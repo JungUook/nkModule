@@ -23,5 +23,20 @@ protected:
 	NKStyleItem* m_CursorNormal;
 	NKStyleItem* m_CursorHover;
 	NKStyleItem* m_CursorActive;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pNormal
+			, *m_pHover
+			, *m_pActive
+			, *m_CursorNormal
+			, *m_CursorHover
+			, *m_CursorActive
+		);
+	}
 };
 #endif //ComponentProgress_h__

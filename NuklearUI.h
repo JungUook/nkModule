@@ -83,6 +83,15 @@ struct CustomData {
 		memset(name, 0, sizeof(name));
 		memset(tableName, 0, sizeof(tableName));
 	}
+
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(name
+			, nameLen
+			, tableName
+			, tableLen
+		);
+	}
 };
 
 class NuklearUI
@@ -146,7 +155,7 @@ public:
 	void Register_UI();
 	std::vector<NKBase*>* GetNodes();
 	void CreateUI(const char* classname, NKBase* parent = nullptr);
-	NKBase* RegistUI(const char* classname, NKBase* loadPtr);
+	NKBase* RegistUI(const char* classname, NKBase* pBase);
 	struct nk_vec2* GetPivot();
 	struct nk_rect* GetViewport();
 	void SetPrimary(NKBase* pBase);
@@ -236,7 +245,6 @@ private:
 	//boost
 public:
 	void SaveFile(const std::string& filename);
-	void SaveSwitch(std::vector<std::shared_ptr<NKBase>>& vec, NKBase* ptr);
 
 	void LoadFile(const std::string& filename);
 	void LoadNode(NKBase* pBase);

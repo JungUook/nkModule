@@ -4,104 +4,66 @@
 
 NKBase::NKBase() : NKProperty()
 , m_pManager(nullptr)
-, m_primaryID(0)
 , m_ctx(nullptr)
 , m_flags(0)
-, m_type(eBASE)
 , m_bActive(true)
 , m_bEditActive(false)
 , m_pWindow(nullptr)
 , m_pParent(nullptr)
 , m_iNKIndex(0)
-, m_cprimaryEditName_len(0)
-, m_cBaseEditName_len(0)
 {
-	memset(m_primaryName, 0, sizeof(m_primaryName));
-	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	memset(m_cprimaryEditName, 0, sizeof(m_cprimaryEditName));
-	memset(m_cBaseEditName, 0, sizeof(m_cBaseEditName));
 }
 
 NKBase::NKBase(nk_context* ctx, NuklearUI* pManager) : NKProperty()
 {
 	m_pManager = pManager;
 	m_ctx = ctx;
-	m_type = eBASE;
 	m_bActive = true;
 	m_bEditActive = false;
 	m_pWindow = nullptr;
 	m_pParent = nullptr;
-	m_primaryID = 0;
 	m_iNKIndex = 0;
-	m_cprimaryEditName_len = 0;
-	m_cBaseEditName_len = 0;
 	m_flags = 0;
-	memset(m_primaryName, 0, sizeof(m_primaryName));
-	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	memset(m_cprimaryEditName, 0, sizeof(m_cprimaryEditName));
-	memset(m_cBaseEditName, 0, sizeof(m_cBaseEditName));
 }
 
 NKBase::NKBase(const NKBase& other) : NKProperty(other)
 {
 	m_pManager = other.m_pManager;
 	m_ctx = other.m_ctx;
-	m_type = other.m_type;
 	m_bActive = other.m_bActive;
 	m_bEditActive = other.m_bEditActive;
 	m_pWindow = other.m_pWindow;
 	m_pParent = other.m_pParent;
-	m_primaryID = 0; // NuklearUI에서 설정
-	m_iNKIndex = 0; // NuklearUI에서 설정
-	m_cprimaryEditName_len = other.m_cprimaryEditName_len;
-	m_cBaseEditName_len = other.m_cBaseEditName_len;
+	m_iNKIndex = other.m_iNKIndex;
 	m_flags = other.m_flags;
-	strcpy_s(m_primaryName, other.m_primaryName);
-	strcpy_s(m_cBaseName, other.m_cBaseName);
-	strcpy_s(m_cprimaryEditName, other.m_cprimaryEditName);
-	strcpy_s(m_cBaseEditName, other.m_cBaseEditName);
 }
 
 NKBase::~NKBase()
 {
 }
 
-std::string NKBase::getClassName() const
-{
-	std::string className = typeid(*this).name();
-	std::string prefix = "class ";
-
-	// Remove the prefix if it exists
-	if (className.find(prefix) == 0) {
-		className = className.substr(prefix.length());
-	}
-
-	return className;
-}
-
-void NKBase::Initialize(NuklearUI* pManager)
+void NKBase::Initialize(NuklearUI* pManager) 
 {
 	CHECK_PTR(pManager);
 	InitializeStyle(m_ctx, pManager);
-	m_pWindow = this;
-	Initialize();
+	if (m_type == eWINDOW) {
+		m_pWindow = this;
+	}
+	else {
+		m_pWindow = nullptr;
+	}
+	NKProperty::Initialize();
 }
 
 void NKBase::Initialize(NKBase* pParent)
 {
 	CHECK_PTR(pParent);
 	m_pParent = pParent;
+	m_iParentPrimaryID = pParent->GetPrimaryID();
 	m_pWindow = m_pParent->m_pWindow;
 	m_pManager = m_pParent->m_pManager;
 	InitializeStyle(m_pParent->m_font, m_ctx->style, m_pParent->m_pParentStyle);
-	Initialize();
-}
-
-void NKBase::Initialize()
-{
-	std::string className = getClassName().c_str();
-	strcpy_s(m_primaryName, className.c_str());
-	strcpy_s(m_cBaseName, className.c_str());
+	NKProperty::Initialize();
 }
 
 void NKBase::Update(nk_context* ctx)
@@ -187,6 +149,7 @@ void NKBase::SetParent(NKBase* nkBase)
 {
 	CHECK_PTR(nkBase);
 	m_pParent = nkBase;
+	m_iParentPrimaryID = nkBase->GetPrimaryID();
 }
 
 NKBase* NKBase::GetParent()
@@ -238,55 +201,46 @@ void NKBase::LRemoveChild(luabridge::LuaRef ref)
 	RemoveChild(nkBase);
 }
 
-void NKBase::Load(nk_context* ctx, NuklearUI* pManager)
+//void NKBase::Load(nk_context* ctx, NuklearUI* pManager)
+//{
+//	NKBaseStyle::Load(ctx, pManager);
+//	m_ctx = ctx;
+//	m_pManager = pManager;
+//	if (m_type == eWINDOW) {
+//		m_pWindow = this;
+//	}
+//	else {
+//		m_pWindow = nullptr;
+//	}
+//}
+
+void NKBase::RegistInit(NKBase* pParent)
 {
-	NKBaseStyle::Load(ctx, pManager);
-	m_ctx = ctx;
-	m_pManager = pManager;
-	m_pWindow = this;
+	CHECK_PTR(pParent);
+	m_pParent = pParent;
+	m_iParentPrimaryID = pParent->GetPrimaryID();
+	m_pWindow = m_pParent->m_pWindow;
+	m_pManager = m_pParent->m_pManager;
+	m_pParentStyle = m_pParent->m_pParentStyle != nullptr ? m_pParent->m_pParentStyle : &this->m_style;
 }
 
-unsigned int NKBase::GetPrimaryID()
+void NKBase::RegistChild(NKBase* nkBase)
 {
-	return m_primaryID;
+	CHECK_PTR(nkBase);
+	nkBase->RegistInit(this);
+	m_pChildList.push_back(nkBase);
 }
 
-const char* NKBase::GetPrimaryName()
-{
-	return m_primaryName;
-}
 
 int NKBase::GetNuklearIndex()
 {
 	return m_iNKIndex;
 }
 
-eTypeUI NKBase::GetType()
-{
-	return m_type;
-}
-
 void NKBase::SetManager(NuklearUI* manager)
 {
 	CHECK_PTR(manager);
 	m_pManager = manager;
-}
-
-void NKBase::SetPrimaryID(unsigned int id)
-{
-	m_primaryID = id;
-}
-
-void NKBase::SetPrimaryName(const char* name)
-{
-	memset(m_primaryName, 0, sizeof(m_primaryName));
-	strcpy_s(m_primaryName, name);
-}
-
-void NKBase::SetBaseName(const char* name)
-{
-	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	strcpy_s(m_cBaseEditName, name);
 }
 
 void NKBase::SetNuklearIndex(int index)
@@ -345,11 +299,6 @@ void NKBase::EditPrimaryName(const char* name)
 	if (!m_pManager->SetPrimaryname(this, name)) {
 		m_pManager->ErrorPopup("There is already a primary name. primaryname cannot be duplicated.");
 	}
-}
-
-const char* NKBase::GetBaseName()
-{
-	return m_cBaseName;
 }
 
 void NKBase::CreateUI(const char* classname)

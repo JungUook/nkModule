@@ -11,7 +11,7 @@ public:
     NKTree();
     NKTree(nk_context* ctx, NuklearUI* pManager);
     NKTree(const NKTree& other);
-    virtual ~NKTree();
+    virtual ~NKTree();   
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -31,6 +31,8 @@ public:
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKStyleTab>(this)
+            , m_treeType
+            , m_state
         );
     }
 };

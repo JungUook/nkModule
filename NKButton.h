@@ -12,6 +12,7 @@ public:
 	NKButton(nk_context* ctx, NuklearUI* pManager);
 	NKButton(const NKButton& other);
 	virtual ~NKButton();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;

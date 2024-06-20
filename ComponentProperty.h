@@ -25,5 +25,20 @@ protected:
 	ComponentEdit* m_pEdit;
 	ComponentButton* m_pIncButton;
 	ComponentButton* m_pDecButton;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pNormal
+			, *m_pHover
+			, *m_pActive
+			, *m_pEdit
+			, *m_pIncButton
+			, *m_pDecButton
+		);
+	}
 };
 #endif //ComponentProperty_h__

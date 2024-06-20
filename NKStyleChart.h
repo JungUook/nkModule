@@ -28,6 +28,18 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
+		ar(
+			*m_pBackground
+			, *border_color
+			, *selected_color
+			, *color
+			, *border
+			, *rounding
+			, *padding
+			, *color_factor
+			, *disabled_factor
+			, *show_markers
+		);
 	}
 };
 #endif //NKStyleChart_h__

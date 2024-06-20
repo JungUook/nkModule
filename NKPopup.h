@@ -12,6 +12,7 @@ public:
 	NKPopup(nk_context* ctx, NuklearUI* pManager);
 	NKPopup(const NKPopup& other);
 	virtual ~NKPopup();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -29,6 +30,7 @@ public:
 			, cereal::base_class<NKBaseWindow>(this)
 			, cereal::base_class<NKStyleHeader>(this)
 			, cereal::base_class<NKStyleWindow>(this)
+			, m_popupType
 		);
 	}
 };

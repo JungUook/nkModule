@@ -9,6 +9,7 @@ public:
 	NKSpace(nk_context* ctx, NuklearUI* pManager);
 	NKSpace(const NKSpace& other);
 	virtual ~NKSpace();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -25,7 +26,11 @@ public:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
-		ar(cereal::base_class<NKBase>(this));
+		ar(cereal::base_class<NKBase>(this)
+			, m_layoutFormat
+			, m_widgetCount
+			, m_dynamicCount
+		);
 	}
 };
 

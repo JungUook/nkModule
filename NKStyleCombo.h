@@ -17,6 +17,9 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
+		ar(
+			*m_pComponent
+		);
 	}
 };
 

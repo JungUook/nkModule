@@ -44,7 +44,7 @@ void NKWindow::Update(nk_context* ctx)
 
 void NKWindow::Layout(nk_context* ctx)
 {
-	if (nk_begin(ctx, m_primaryName, m_cTransform, m_flags))
+	if (nk_begin(ctx, m_cprimaryName, m_cTransform, m_flags))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{

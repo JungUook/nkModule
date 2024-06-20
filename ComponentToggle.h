@@ -22,5 +22,19 @@ protected:
 
 	NKStyleItem* m_pCursorNormal;
 	NKStyleItem* m_pCursorHover;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pNormal
+			, *m_pHover
+			, *m_pActive
+			, *m_pCursorNormal
+			, *m_pCursorHover
+		);
+	}
 };
 #endif //ComponentToggle_h__

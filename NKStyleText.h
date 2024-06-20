@@ -21,6 +21,11 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
+		ar(*color
+			, *padding
+			, *color_factor
+			, *disabled_factor
+		);
 	}
 };
 #endif //NKStyleText_h__

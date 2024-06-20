@@ -10,6 +10,7 @@ public:
     NKChart(nk_context* ctx, NuklearUI* pManager);
     NKChart(const NKChart& other);
     virtual ~NKChart();
+    
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -27,6 +28,9 @@ public:
     void serialize(Archive& ar) {
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKStyleChart>(this)
+            , m_values
+            , m_min
+            , m_max
         );
     }
 };

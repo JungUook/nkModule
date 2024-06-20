@@ -11,6 +11,7 @@ public:
 	NKEdit(nk_context* ctx, NuklearUI* pManager);
 	NKEdit(const NKEdit& other);
 	virtual ~NKEdit();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -28,6 +29,8 @@ public:
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKHandler>(this)
 			, cereal::base_class<NKStyleEdit>(this)
+			, m_inputText
+			, m_inputTextLength
 		);
 	}
 };

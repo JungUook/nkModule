@@ -11,6 +11,7 @@ public:
 	NKComboItem(nk_context* ctx, NuklearUI* pManager);
 	NKComboItem(const NKComboItem& other);
 	virtual ~NKComboItem();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -26,6 +27,7 @@ public:
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKHandler>(this)
 			, cereal::base_class<NKBaseLabel>(this)
+			, m_labelNumber
 		);
 	}
 };

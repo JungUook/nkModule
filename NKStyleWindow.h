@@ -29,6 +29,17 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
+		ar(*m_pFixedBackground
+			, *m_pScaler
+			, *m_pBackground
+			, *border
+			, *border_color
+			, *rounding
+			, *spacing
+			, *scrollbar_size
+			, *min_size
+			, *padding
+		);
 	}
 };
 #endif //NKStyleWindow_h__

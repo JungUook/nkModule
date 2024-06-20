@@ -12,7 +12,7 @@ public:
     NKTooltip();
     NKTooltip(nk_context* ctx, NuklearUI* pManager);
     NKTooltip(const NKTooltip& other);
-    virtual ~NKTooltip();
+    virtual ~NKTooltip();    
 
 public:
     void Layout(nk_context* ctx) override;

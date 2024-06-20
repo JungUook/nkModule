@@ -19,6 +19,9 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
+		ar(
+			*m_pComponent
+		);
 	}
 };
 #endif //NKStyleCheckbox_h__

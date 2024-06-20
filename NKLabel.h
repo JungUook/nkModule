@@ -11,6 +11,7 @@ public:
 	NKLabel(nk_context* ctx, NuklearUI* pManager);
 	NKLabel(const NKLabel& other);
 	virtual ~NKLabel();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;

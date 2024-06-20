@@ -12,6 +12,7 @@ public:
 	NKGroup(nk_context* ctx, NuklearUI* pManager);
 	NKGroup(const NKGroup& other);
 	virtual ~NKGroup();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;

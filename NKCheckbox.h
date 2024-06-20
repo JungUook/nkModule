@@ -11,6 +11,7 @@ public:
     NKCheckbox(nk_context* ctx, NuklearUI* pManager);
     NKCheckbox(const NKCheckbox& other);
     virtual ~NKCheckbox();
+    
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -29,6 +30,7 @@ public:
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKStyleCheckbox>(this)
+            , m_checked
         );
     }
 };

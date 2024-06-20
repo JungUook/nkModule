@@ -9,6 +9,7 @@ public:
 	NKImage(nk_context* ctx, NuklearUI* pManager);
 	NKImage(const NKImage& other);
 	virtual ~NKImage();
+	
 
 public:
 	virtual void Layout(nk_context* ctx) override;
@@ -23,6 +24,9 @@ public:
 	template <class Archive>
 	void serialize(Archive& ar) {
 		ar(cereal::base_class<NKBase>(this)
+			, m_imagePath
+			, m_sprIndex
+			, m_sprSize
 		);
 	}
 };

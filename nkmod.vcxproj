@@ -571,6 +571,7 @@
     <ClCompile Include="NKWindow.cpp" />
     <ClCompile Include="NuklearEditor.cpp" />
     <ClCompile Include="NuklearUI.cpp" />
+    <ClCompile Include="NuklearUI_Implementation.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DX7_Debug|x64'">Create</PrecompiledHeader>

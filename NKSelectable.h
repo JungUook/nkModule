@@ -12,6 +12,7 @@ public:
     NKSelectable(nk_context* ctx, NuklearUI* pManager);
     NKSelectable(const NKSelectable& other);
     virtual ~NKSelectable();
+    
 
 public:
     virtual void Layout(nk_context* ctx) override;
@@ -34,6 +35,7 @@ public:
             , cereal::base_class<NKHandler>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKStyleSelectedable>(this)
+            , m_selected
         );
     }
 };

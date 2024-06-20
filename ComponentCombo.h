@@ -23,5 +23,18 @@ protected:
 	NKStyleItem* m_pActive;
 
 	ComponentButton* m_pButton;
+
+public:
+	template <class Archive>
+	void serialize(Archive& ar) {
+		ar(cereal::base_class<NKComponent>(this)
+			, *m_pTarget
+			, *m_pRestore
+			, *m_pNormal
+			, *m_pHover
+			, *m_pActive
+			, *m_pButton
+		);
+	}
 };
 #endif //ComponentCombo_h__

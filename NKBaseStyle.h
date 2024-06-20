@@ -2,7 +2,6 @@
 #ifndef NKBaseStyle_h__
 #define NKBaseStyle_h__
 #include "Constants.h"
-#include <cereal/types/polymorphic.hpp>
 
 class NuklearUI;
 
@@ -10,8 +9,10 @@ class NKBaseStyle
 {
 public:
 	NKBaseStyle();
+	NKBaseStyle(nk_context* ctx, NuklearUI* pManager);
 	NKBaseStyle(const NKBaseStyle& other);
 	virtual ~NKBaseStyle();
+	virtual void Init(nk_context* ctx, nk_style* style);
 
 protected:
 	virtual void InitializeStyle(nk_context* ctx, NuklearUI* pManager);
@@ -26,7 +27,7 @@ protected:
 
 	//제어 함수
 public:
-	virtual void Load(nk_context* ctx, NuklearUI* pManager);
+	//virtual void Load(nk_context* ctx, NuklearUI* pManager);
 
 	//ui 편집용 함수
 protected:
@@ -42,8 +43,7 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
-		ar(m_followParentStyle
-		);
+		ar(m_followParentStyle);
 	}
 };
 #endif //NKBaseStyle_h__
