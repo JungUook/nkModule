@@ -18,7 +18,7 @@ NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_cTransform.h = 600.f;
 }
 
-NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other), NKStyleWindow(other)
+NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_flags = other.m_flags;
@@ -57,6 +57,15 @@ void NKWindow::Layout(nk_context* ctx)
 	nk_end(ctx);
 }
 
+void NKWindow::SafeRenderStart()
+{
+	UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKWindow::SafeRenderEnd()
+{
+}
+
 void NKWindow::EditInfo()
 {
 	EditInfoWindowProperty(m_ctx, m_flags);
@@ -78,6 +87,12 @@ void NKWindow::EditStyle()
 {
 	NKBase::EditStyle();
 	EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKWindow::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleHeader::UpdateComponent(ctx, pManager);
+	NKStyleWindow::UpdateComponent(ctx, pManager);
 }
 
 void NKWindow::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

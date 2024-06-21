@@ -11,7 +11,7 @@ NKTooltip::NKTooltip(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManage
     m_type = eTOOLTIP;
 }
 
-NKTooltip::NKTooltip(const NKTooltip& other) : NKBase(other), NKBaseLabel(other), NKObjectFinder(other), NKStyleWindow(other), NKStyleText(other)
+NKTooltip::NKTooltip(const NKTooltip& other) : NKBase(other), NKBaseLabel(other), NKObjectFinder(other), NKStyleWindow(other, m_ctx, &m_style), NKStyleText(other, m_ctx, &m_style)
 {
     m_type = other.m_type;
 }
@@ -24,6 +24,8 @@ void NKTooltip::Layout(nk_context* ctx)
 
     if (!m_pResultObject->IsHovering()) return;
 
+    UpdateComponent(ctx, m_pManager);
+
     if (nk_tooltip_begin(ctx, GetWidth()))
     {
         nk_layout_row_dynamic(ctx, 22, 1);
@@ -31,6 +33,15 @@ void NKTooltip::Layout(nk_context* ctx)
 
         nk_tooltip_end(ctx);
     }
+}
+
+void NKTooltip::SafeRenderStart()
+{
+    UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKTooltip::SafeRenderEnd()
+{
 }
 
 void NKTooltip::EditInfo()
@@ -45,6 +56,12 @@ void NKTooltip::EditStyle()
 {
     NKBase::EditStyle();
     EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKTooltip::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+    NKStyleWindow::UpdateComponent(ctx, pManager);
+    NKStyleText::UpdateComponent(ctx, pManager);
 }
 
 void NKTooltip::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

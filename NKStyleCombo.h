@@ -6,9 +6,10 @@ class NKStyleCombo
 public:
 	NKStyleCombo();
 	NKStyleCombo(nk_context* ctx, nk_style* style);
-	NKStyleCombo(const NKStyleCombo& other);
+	NKStyleCombo(const NKStyleCombo& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleCombo();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

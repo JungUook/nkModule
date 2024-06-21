@@ -49,9 +49,12 @@ public:
 
 public:
 	virtual void Layout(nk_context* ctx) override;
+	virtual void SafeRenderStart() override;
+	virtual void SafeRenderEnd() override;
 	virtual void EditInfo() override;
 	virtual void EditStyle() override;
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 
 public:

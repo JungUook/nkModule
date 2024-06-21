@@ -33,7 +33,6 @@ NuklearUI::NuklearUI()
 	m_bMouseHovering = false;
 	m_bEditActive = false;
 	m_original_height = 0;
-	m_primaryIDCheck = 1;
 	m_pivot = nk_vec2(0, 0);
 	m_viewRect = nk_rect(0, 0, 0, 0);
 	Register_UI();

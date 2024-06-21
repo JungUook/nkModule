@@ -18,7 +18,7 @@ NKLabel::NKLabel(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_cTransform.h = 60.f;
 }
 
-NKLabel::NKLabel(const NKLabel& other) : NKBase(other), NKBaseLabel(other), NKStyleText(other)
+NKLabel::NKLabel(const NKLabel& other) : NKBase(other), NKBaseLabel(other), NKStyleText(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_flags = other.m_flags;
@@ -31,6 +31,15 @@ NKLabel::~NKLabel()
 void NKLabel::Layout(nk_context* ctx)
 {
 	nk_label(ctx, m_cContent, m_flags);
+}
+
+void NKLabel::SafeRenderStart()
+{
+	UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKLabel::SafeRenderEnd()
+{
 }
 
 void NKLabel::EditInfo()

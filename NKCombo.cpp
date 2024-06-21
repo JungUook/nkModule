@@ -30,7 +30,7 @@ NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	memset(m_cComboLabel, 0, sizeof(m_cComboLabel));
 }
 
-NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other)
+NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 
@@ -66,6 +66,15 @@ void NKCombo::Layout(nk_context* ctx)
 		nk_layout_space_end(ctx);
 		nk_combo_end(ctx);
 	}
+}
+
+void NKCombo::SafeRenderStart()
+{
+	UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKCombo::SafeRenderEnd()
+{
 }
 
 void NKCombo::EditInfo()

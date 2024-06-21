@@ -6,6 +6,7 @@ NKProperty::NKProperty() : NKBaseStyle(), NKTransform()
 , m_cBaseEditName_len(0)
 , m_iParentPrimaryID(0)
 , m_type(eNONE)
+, m_iWindowPrimaryID(0)
 {
 	memset(m_cprimaryName, 0, sizeof(m_cprimaryName));
 	memset(m_cBaseName, 0, sizeof(m_cBaseName));
@@ -19,6 +20,7 @@ NKProperty::NKProperty(nk_context* ctx, NuklearUI* pManager) : NKBaseStyle(ctx, 
 , m_cBaseEditName_len(0)
 , m_iParentPrimaryID(0)
 , m_type(eNONE)
+, m_iWindowPrimaryID(0)
 {
 	memset(m_cprimaryName, 0, sizeof(m_cprimaryName));
 	memset(m_cBaseName, 0, sizeof(m_cBaseName));
@@ -28,8 +30,9 @@ NKProperty::NKProperty(nk_context* ctx, NuklearUI* pManager) : NKBaseStyle(ctx, 
 
 NKProperty::NKProperty(const NKProperty& other) : NKBaseStyle(other), NKTransform(other)
 {
-	m_iPrimaryID = other.m_iPrimaryID;
+	m_iPrimaryID = reinterpret_cast<intptr_t>(this);
 	m_iParentPrimaryID = other.m_iParentPrimaryID;
+	m_iWindowPrimaryID = other.m_iWindowPrimaryID;
 	m_cprimaryEditName_len = other.m_cprimaryEditName_len;
 	m_cBaseEditName_len = other.m_cBaseEditName_len;
 	m_type = other.m_type;

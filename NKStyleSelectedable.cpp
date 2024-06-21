@@ -12,15 +12,21 @@ NKStyleSelectedable::NKStyleSelectedable(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentSelectable(&style->selectable, &ctx->style.selectable);
 }
 
-NKStyleSelectedable::NKStyleSelectedable(const NKStyleSelectedable& other)
+NKStyleSelectedable::NKStyleSelectedable(const NKStyleSelectedable& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentSelectable(*other.m_pComponent);
+	m_pComponent = new ComponentSelectable(&style->selectable, &ctx->style.selectable);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleSelectedable::~NKStyleSelectedable()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleSelectedable::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleSelectedable::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

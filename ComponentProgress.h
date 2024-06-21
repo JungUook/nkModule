@@ -7,9 +7,10 @@ class ComponentProgress : public NKComponent
 public:
 	ComponentProgress();
 	ComponentProgress(struct nk_style_progress* pTarget, struct nk_style_progress* pRestore);
-	ComponentProgress(const ComponentProgress& other);
+	ComponentProgress& operator=(const ComponentProgress& other);
 	virtual ~ComponentProgress();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 
 protected:

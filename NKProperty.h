@@ -39,6 +39,7 @@ protected:
 	char m_cBaseEditName[64];
 	int m_cBaseEditName_len;
 
+	unsigned int m_iWindowPrimaryID;
 	unsigned int m_iParentPrimaryID;
 	eTypeUI m_type;
 public:
@@ -53,6 +54,7 @@ public:
 			, m_cBaseName
 			, m_cBaseEditName
 			, m_cBaseEditName_len
+			, m_iWindowPrimaryID
 			, m_iParentPrimaryID
 			, m_type
 		);

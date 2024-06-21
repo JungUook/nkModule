@@ -15,7 +15,7 @@ NKChart::NKChart(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
     m_max = 1.0f;
 }
 
-NKChart::NKChart(const NKChart& other) : NKBase(other), NKStyleChart(other)
+NKChart::NKChart(const NKChart& other) : NKBase(other), NKStyleChart(other, m_ctx, &m_style)
 {
     m_type = other.m_type;
     m_min = other.m_min;
@@ -26,12 +26,23 @@ NKChart::~NKChart() {}
 
 void NKChart::Layout(nk_context* ctx)
 {
+    UpdateComponent(ctx, m_pManager);
+
     nk_chart_begin(ctx, NK_CHART_LINES, m_values.size(), m_min, m_max);
     for (auto it = m_values.begin(); it != m_values.end(); ++it)
     {
         nk_chart_push(ctx, *it);
     }
     nk_chart_end(ctx);
+}
+
+void NKChart::SafeRenderStart()
+{
+    UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKChart::SafeRenderEnd()
+{
 }
 
 void NKChart::EditStyle()

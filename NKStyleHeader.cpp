@@ -12,15 +12,21 @@ NKStyleHeader::NKStyleHeader(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentHeader(&style->window.header, &ctx->style.window.header);
 }
 
-NKStyleHeader::NKStyleHeader(const NKStyleHeader& other)
+NKStyleHeader::NKStyleHeader(const NKStyleHeader& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentHeader(*other.m_pComponent);
+	m_pComponent = new ComponentHeader(&style->window.header, &ctx->style.window.header);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleHeader::~NKStyleHeader()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleHeader::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleHeader::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

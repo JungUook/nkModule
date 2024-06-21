@@ -12,15 +12,21 @@ NKStyleOption::NKStyleOption(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentToggle(&style->option, &ctx->style.option);
 }
 
-NKStyleOption::NKStyleOption(const NKStyleOption& other)
+NKStyleOption::NKStyleOption(const NKStyleOption& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentToggle(*other.m_pComponent);
+	m_pComponent = new ComponentToggle(&style->option, &ctx->style.option);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleOption::~NKStyleOption()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleOption::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleOption::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

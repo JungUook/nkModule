@@ -12,15 +12,21 @@ NKStyleCheckbox::NKStyleCheckbox(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentToggle(&style->checkbox, &ctx->style.checkbox);
 }
 
-NKStyleCheckbox::NKStyleCheckbox(const NKStyleCheckbox& other)
+NKStyleCheckbox::NKStyleCheckbox(const NKStyleCheckbox& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentToggle(*other.m_pComponent);
+	m_pComponent = new ComponentToggle(&style->checkbox, &ctx->style.checkbox);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleCheckbox::~NKStyleCheckbox()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleCheckbox::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleCheckbox::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

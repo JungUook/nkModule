@@ -56,6 +56,15 @@ void NKSpace::Layout(nk_context* ctx)
 	}
 }
 
+void NKSpace::SafeRenderStart()
+{
+	//UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKSpace::SafeRenderEnd()
+{
+}
+
 void NKSpace::EditInfo()
 {
 	nk_layout_row_dynamic(m_ctx, 22, 1);

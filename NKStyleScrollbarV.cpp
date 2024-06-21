@@ -12,15 +12,21 @@ NKStyleScrollbarV::NKStyleScrollbarV(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentScrollbar(&style->scrollv, &ctx->style.scrollv);
 }
 
-NKStyleScrollbarV::NKStyleScrollbarV(const NKStyleScrollbarV& other)
+NKStyleScrollbarV::NKStyleScrollbarV(const NKStyleScrollbarV& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentScrollbar(*other.m_pComponent);
+	m_pComponent = new ComponentScrollbar(&style->scrollv, &ctx->style.scrollv);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleScrollbarV::~NKStyleScrollbarV()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleScrollbarV::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleScrollbarV::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

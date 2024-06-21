@@ -12,15 +12,21 @@ NKStyleSlider::NKStyleSlider(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentSlider(&style->slider, &ctx->style.slider);
 }
 
-NKStyleSlider::NKStyleSlider(const NKStyleSlider& other)
+NKStyleSlider::NKStyleSlider(const NKStyleSlider& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentSlider(*other.m_pComponent);
+	m_pComponent = new ComponentSlider(&style->slider, &ctx->style.slider);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleSlider::~NKStyleSlider()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleSlider::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleSlider::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

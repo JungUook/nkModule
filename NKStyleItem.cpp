@@ -15,9 +15,10 @@ NKStyleItem::NKStyleItem()
 	m_iSprSize	 = 0;
 	m_pTarget	 = nullptr;
 	m_pRestore	 = nullptr;
+	m_bApply	 = false;
 }
 
-NKStyleItem::NKStyleItem(nk_style_item* pTarget, nk_style_item* pRestore) : m_sImagePath("None"), m_iOption(0), m_iSprIndex(0), m_iSprSize(0), m_pTarget(nullptr), m_pRestore(nullptr) {
+NKStyleItem::NKStyleItem(nk_style_item* pTarget, nk_style_item* pRestore) : m_sImagePath("None"), m_iOption(0), m_iSprIndex(0), m_iSprSize(0), m_pTarget(nullptr), m_pRestore(nullptr), m_bApply(false) {
 	for (int i = 0; i < 4; ++i) {
 		m_iNineslice[i] = 0;
 	}
@@ -25,24 +26,52 @@ NKStyleItem::NKStyleItem(nk_style_item* pTarget, nk_style_item* pRestore) : m_sI
 	m_pRestore = pRestore;
 }
 
-NKStyleItem::NKStyleItem(const NKStyleItem& other)
+NKStyleItem& NKStyleItem::operator=(const NKStyleItem& other)
 {
-	for (int i = 0; i < 4; ++i) {
-		m_iNineslice[i] = other.m_iNineslice[i];
-	}
-	m_sImagePath = other.m_sImagePath;
-	m_iOption = other.m_iOption;
-	m_iSprIndex = other.m_iSprIndex;
-	m_iSprSize = other.m_iSprSize;
-	m_pTarget = other.m_pTarget;
-	m_pRestore = other.m_pRestore;
+	if (this != &other) {
 
+		for (int i = 0; i < 4; ++i) {
+			m_iNineslice[i] = other.m_iNineslice[i];
+		}
+		m_sImagePath = other.m_sImagePath;
+		m_iOption = other.m_iOption;
+		m_iSprIndex = other.m_iSprIndex;
+		m_iSprSize = other.m_iSprSize;
+		m_bApply = other.m_bApply;
+		*m_pTarget = *other.m_pTarget;
+		*m_pRestore = *other.m_pRestore;
+	}
+	return *this;
 }
 
 NKStyleItem::~NKStyleItem()
 {
 	m_pTarget  = nullptr;
 	m_pRestore = nullptr;
+}
+
+void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	if (!m_bApply) return;
+
+	if (m_sImagePath == "None") return;
+
+	if (m_iOption == 1) {
+		struct nk_image img;
+		pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+		(*m_pTarget) = nk_style_item_image(img);
+	}
+	else if (m_iOption == 2) {
+		struct nk_image img;
+		pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+		struct nk_nine_slice nineslice {};
+		nineslice.img = img;
+		nineslice.l = (nk_ushort)m_iNineslice[0];
+		nineslice.t = (nk_ushort)m_iNineslice[1];
+		nineslice.r = (nk_ushort)m_iNineslice[2];
+		nineslice.b = (nk_ushort)m_iNineslice[3];
+		(*m_pTarget) = nk_style_item_nine_slice(nineslice);
+	}
 }
 
 void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
@@ -69,14 +98,15 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 		nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_RIGHT);
 		if (nk_button_label(ctx, "apply"))
 		{
+			m_bApply = true;
 			if (m_iOption == 1) {
 				struct nk_image img;
-				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img, true);
+				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 				(*m_pTarget) = nk_style_item_image(img);
 			}
 			else if (m_iOption == 2) {
 				struct nk_image img;
-				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img, true);
+				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 				struct nk_nine_slice nineslice {};
 				nineslice.img = img;
 				nineslice.l = (nk_ushort)m_iNineslice[0];
@@ -89,6 +119,7 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 		if (nk_button_label(ctx, "clear"))
 		{
 			(*m_pTarget) = (*m_pRestore);
+			m_bApply = false;
 		}
 		if (m_iOption == 2) {
 			nk_label(ctx, "nine_slice", NK_TEXT_LEFT);
@@ -101,7 +132,6 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 
 		if (size > 0)
 		{
-
 			static char selectedFilename[260] = { 0, };
 			float ratio[2] = { 0.7f, 0.3f };
 			static char SearchFunction[256] = { 0, };

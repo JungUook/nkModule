@@ -31,18 +31,21 @@ ComponentSelectable::ComponentSelectable(nk_style_selectable* pTarget, nk_style_
 	m_pPressedActive = new NKStyleItem(&pTarget->pressed_active, &pRestore->pressed_active);
 }
 
-ComponentSelectable::ComponentSelectable(const ComponentSelectable& other)
+ComponentSelectable& ComponentSelectable::operator=(const ComponentSelectable& other)
 {
-	m_pTarget		 = other.m_pTarget;
-	m_pRestore		 = other.m_pRestore;
-					 
-	m_pNormal		 = new NKStyleItem(*other.m_pNormal);
-	m_pHover		 = new NKStyleItem(*other.m_pHover);
-	m_pPressed		 = new NKStyleItem(*other.m_pPressed);
-					 
-	m_pNormalActive	 = new NKStyleItem(*other.m_pNormalActive);
-	m_pHoverActive	 = new NKStyleItem(*other.m_pHoverActive);
-	m_pPressedActive = new NKStyleItem(*other.m_pPressedActive);
+	if (this != &other) {
+		*m_pTarget = *other.m_pTarget;
+		*m_pRestore = *other.m_pRestore;
+
+		*m_pNormal = *other.m_pNormal;
+		*m_pHover = *other.m_pHover;
+		*m_pPressed = *other.m_pPressed;
+
+		*m_pNormalActive = *other.m_pNormalActive;
+		*m_pHoverActive = *other.m_pHoverActive;
+		*m_pPressedActive = *other.m_pPressedActive;
+	}
+	return *this;
 }
 
 ComponentSelectable::~ComponentSelectable()
@@ -65,6 +68,18 @@ ComponentSelectable::~ComponentSelectable()
 	m_pNormalActive	 = nullptr;
 	m_pHoverActive	 = nullptr;
 	m_pPressedActive = nullptr;
+}
+
+void ComponentSelectable::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pNormal->UpdateComponent(ctx, pManager);
+	m_pHover->UpdateComponent(ctx, pManager);
+	m_pPressed->UpdateComponent(ctx, pManager);
+
+	m_pNormalActive->UpdateComponent(ctx, pManager);
+	m_pHoverActive->UpdateComponent(ctx, pManager);
+	m_pPressedActive->UpdateComponent(ctx, pManager);
+
 }
 
 void ComponentSelectable::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager)

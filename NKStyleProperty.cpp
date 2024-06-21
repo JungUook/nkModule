@@ -12,15 +12,21 @@ NKStyleProperty::NKStyleProperty(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentProperty(&style->property, &ctx->style.property);
 }
 
-NKStyleProperty::NKStyleProperty(const NKStyleProperty& other)
+NKStyleProperty::NKStyleProperty(const NKStyleProperty& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentProperty(*other.m_pComponent);
+	m_pComponent = new ComponentProperty(&style->property, &ctx->style.property);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleProperty::~NKStyleProperty()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleProperty::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleProperty::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

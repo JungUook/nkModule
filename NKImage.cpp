@@ -52,6 +52,15 @@ void NKImage::Layout(nk_context* ctx)
 	}
 }
 
+void NKImage::SafeRenderStart()
+{
+	//UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKImage::SafeRenderEnd()
+{
+}
+
 void NKImage::EditInfo()
 {
 	auto mapSpr = m_pManager->GetSprMap();

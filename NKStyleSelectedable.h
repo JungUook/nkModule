@@ -8,9 +8,10 @@ class NKStyleSelectedable
 public:
 	NKStyleSelectedable();
 	NKStyleSelectedable(nk_context* ctx, nk_style* style);
-	NKStyleSelectedable(const NKStyleSelectedable& other);
+	NKStyleSelectedable(const NKStyleSelectedable& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleSelectedable();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

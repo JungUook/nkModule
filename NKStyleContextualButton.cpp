@@ -12,15 +12,21 @@ NKStyleContextualButton::NKStyleContextualButton(nk_context* ctx, nk_style* styl
 	m_pComponent = new ComponentButton(&style->contextual_button, &ctx->style.contextual_button);
 }
 
-NKStyleContextualButton::NKStyleContextualButton(const NKStyleContextualButton& other)
+NKStyleContextualButton::NKStyleContextualButton(const NKStyleContextualButton& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentButton(*other.m_pComponent);
+	m_pComponent = new ComponentButton(&style->contextual_button, &ctx->style.contextual_button);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleContextualButton::~NKStyleContextualButton()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleContextualButton::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleContextualButton::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

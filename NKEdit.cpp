@@ -24,7 +24,7 @@ NKEdit::NKEdit(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NK
 	m_inputTextLength = 0;
 }
 
-NKEdit::NKEdit(const NKEdit& other) : NKBase(other), NKHandler(other), NKStyleEdit(other)
+NKEdit::NKEdit(const NKEdit& other) : NKBase(other), NKHandler(other), NKStyleEdit(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_flags = other.m_flags;
@@ -46,6 +46,15 @@ void NKEdit::Layout(nk_context* ctx)
 	{
 		CallEvent(m_pManager,NK_EDIT_COMMITED, m_inputText, &m_inputTextLength);
 	}
+}
+
+void NKEdit::SafeRenderStart()
+{
+	UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKEdit::SafeRenderEnd()
+{
 }
 
 void NKEdit::EditStyle()

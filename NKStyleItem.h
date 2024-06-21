@@ -10,16 +10,18 @@ class NKStyleItem
 public:
 	NKStyleItem();
 	NKStyleItem(struct nk_style_item* pTarget, struct nk_style_item* pRestore);
-	NKStyleItem(const NKStyleItem& other);
+	NKStyleItem& operator=(const NKStyleItem& other);
 	virtual ~NKStyleItem();
 
-	void ItemEditor(nk_context* ctx, NuklearUI* pManager);
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
+	virtual void ItemEditor(nk_context* ctx, NuklearUI* pManager);
 protected:
 	std::string m_sImagePath;
 	int m_iOption;
 	int m_iSprIndex;
 	int m_iSprSize;
 	int m_iNineslice[4];
+	bool m_bApply;
 	struct nk_style_item* m_pTarget;
 	struct nk_style_item* m_pRestore;
 
@@ -31,6 +33,7 @@ public:
 			, m_iSprIndex
 			, m_iSprSize
 			, m_iNineslice
+			, m_bApply
 			, *m_pTarget
 		);
 	}
@@ -41,6 +44,7 @@ class NKComponent
 public:
 	NKComponent() {};
 	virtual ~NKComponent() {};
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) = 0;
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) = 0;
 public:
 	template <class Archive>

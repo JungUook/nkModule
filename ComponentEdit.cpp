@@ -27,16 +27,19 @@ ComponentEdit::ComponentEdit(nk_style_edit* pTarget, nk_style_edit* pRestore)
 	m_pScrollbar = new ComponentScrollbar(&pTarget->scrollbar, &pRestore->scrollbar);
 }
 
-ComponentEdit::ComponentEdit(const ComponentEdit& other)
+ComponentEdit& ComponentEdit::operator=(const ComponentEdit& other)
 {
-	m_pTarget = m_pTarget;
-	m_pRestore = m_pRestore;
+	if (this != &other) {
+		*m_pTarget = *m_pTarget;
+		*m_pRestore = *m_pRestore;
 
-	m_pNormal = new NKStyleItem(*other.m_pNormal);
-	m_pHover = new NKStyleItem(*other.m_pHover);
-	m_pActive = new NKStyleItem(*other.m_pActive);
+		*m_pNormal = *other.m_pNormal;
+		*m_pHover = *other.m_pHover;
+		*m_pActive = *other.m_pActive;
 
-	m_pScrollbar = new ComponentScrollbar(*other.m_pScrollbar);
+		*m_pScrollbar = *other.m_pScrollbar;
+	}
+	return *this;
 }
 
 ComponentEdit::~ComponentEdit()
@@ -52,6 +55,15 @@ ComponentEdit::~ComponentEdit()
 	m_pActive = nullptr;
 
 	m_pScrollbar = nullptr;
+}
+
+void ComponentEdit::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pNormal->UpdateComponent(ctx, pManager);
+	m_pHover->UpdateComponent(ctx, pManager);
+	m_pActive->UpdateComponent(ctx, pManager);
+
+	m_pScrollbar->UpdateComponent(ctx, pManager);
 }
 
 void ComponentEdit::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager)

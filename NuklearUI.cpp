@@ -55,6 +55,18 @@ void NuklearUI::CreateUI(const char* classname, NKBase* parent)
 	}
 }
 
+void NuklearUI::CopyUI(NKBase* pBase, NKBase* parent)
+{
+	NKBase* ptr = CopyObject(pBase);
+
+	if (parent) {
+		parent->AddChild(ptr, false);
+	}
+	else {
+		Add(ptr, false);
+	}
+}
+
 NKBase* NuklearUI::RegistUI(const char* classname, NKBase* pBase)
 {
 	if (pBase->GetType() == eWINDOW)
@@ -80,28 +92,11 @@ struct nk_vec2* NuklearUI::GetPivot()
 }
 void NuklearUI::SetPrimary(NKBase* pBase)
 {
-	while (true)
-	{
-		std::map<unsigned int, NKBase*>::iterator it = m_mapModuleID.find(++m_primaryIDCheck);
-		if (it != m_mapModuleID.end()) {
-			continue;
-		}
-		else
-		{
-			--m_primaryIDCheck;
-			break;
-		}
-	}
-
-	pBase->SetPrimaryID(m_primaryIDCheck);
-	if (m_primaryIDCheck == 4294967295)
-	{
-		m_primaryIDCheck = 1;
-	}
+	pBase->SetPrimaryID(reinterpret_cast<intptr_t>(pBase));
 	pBase->SetNuklearIndex(m_vecModule.size());
 
 	char primaryName[256] = { 0, };
-	sprintf_s(primaryName, "%s%ld", pBase->GetPrimaryName(), m_primaryIDCheck++);
+	sprintf_s(primaryName, "%s%ld", pBase->GetPrimaryName(), reinterpret_cast<intptr_t>(pBase));
 	pBase->SetPrimaryName(primaryName);
 }
 bool NuklearUI::SetPrimaryname(NKBase* pBase, const char* name)
@@ -116,13 +111,13 @@ bool NuklearUI::SetPrimaryname(NKBase* pBase, const char* name)
 	}
 	return bSuccess;
 }
-void NuklearUI::Add(NKBase* type)
+void NuklearUI::Add(NKBase* type, bool bStyle)
 {
 	NKBase* base = type;
 	
 	if (base->GetType() == eWINDOW)
 	{
-		base->Initialize(this);
+		base->Initialize(this, bStyle);
 		m_vecObject.push_back(base);
 	}
 
@@ -664,6 +659,25 @@ void NuklearUI::LoadFile(const std::string& filename)
 	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
 		LoadNode(*it);
 	}
+
+	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
+		NKBase* pBase = *it;
+		ResetPrimaryID(pBase);
+	}
+
+	for (auto it = m_vecObject.begin(); it != m_vecObject.end(); ++it) {
+		NKBase* pBase = *it;
+		pBase->ResetWindowID(pBase);
+	}
+
+	for (auto it = m_vecObject.begin(); it != m_vecObject.end(); ++it) {
+		NKBase* pBase = *it;
+		auto list = pBase->GetChildList();
+		for (auto child = list->begin(); child != list->end(); ++child) {
+			NKBase* pChild = *child;
+			pChild->ResetParentID(pBase);
+		}
+	}
 }
 
 void NuklearUI::LoadNode(NKBase* pBase)
@@ -676,5 +690,16 @@ void NuklearUI::LoadNode(NKBase* pBase)
 			NKBase* parent = found->second;
 			parent->RegistChild(pBase);
 		}
+	}
+}
+
+void NuklearUI::ResetPrimaryID(NKBase* pBase)
+{
+	auto found = m_mapModuleID.find(pBase->GetPrimaryID());
+
+	if (found != m_mapModuleID.end()) {
+		m_mapModuleID.erase(found);
+		unsigned int id = reinterpret_cast<intptr_t>(pBase);
+		pBase->SetPrimaryID(id);
 	}
 }

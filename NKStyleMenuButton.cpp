@@ -12,15 +12,21 @@ NKStyleMenuButton::NKStyleMenuButton(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentButton(&style->button, &ctx->style.menu_button);
 }
 
-NKStyleMenuButton::NKStyleMenuButton(const NKStyleMenuButton& other)
+NKStyleMenuButton::NKStyleMenuButton(const NKStyleMenuButton& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentButton(*other.m_pComponent);
+	m_pComponent = new ComponentButton(&style->button, &ctx->style.menu_button);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleMenuButton::~NKStyleMenuButton()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleMenuButton::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleMenuButton::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

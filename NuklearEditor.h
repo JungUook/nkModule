@@ -7,7 +7,8 @@
 class NKBase;
 class NuklearUI;
 
-enum { eNODE, eREMOVE, eCOPY, eFILE, eFUNCTION, eVARIABLE };
+enum { eNODE, eFILE, eFUNCTION, eVARIABLE };
+enum { eSELECT, eREMOVE, eCOPY };
 class NuklearEditor
 {
 public:
@@ -49,6 +50,7 @@ private:
 	std::vector<CustomData>* m_vecFunction;
 
 	int m_option;
+	int m_nodeOption;
 	NKBase* m_selectedNode;
 	NKBase* m_deletedNode;
 

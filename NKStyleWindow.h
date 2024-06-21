@@ -7,9 +7,10 @@ class NKStyleWindow
 public:
 	NKStyleWindow();
 	NKStyleWindow(nk_context* ctx, nk_style* style);
-	NKStyleWindow(const NKStyleWindow& other);
+	NKStyleWindow(const NKStyleWindow& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleWindow();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 protected:
 	NKStyleItem* m_pFixedBackground;

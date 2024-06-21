@@ -21,6 +21,7 @@ NuklearEditor::NuklearEditor()
 	m_mapSpr = nullptr;
 
 	m_option = 0;
+	m_nodeOption = 0;
 	m_selectedNode = nullptr;
 	m_deletedNode = nullptr;
 	m_vecVariable = nullptr;
@@ -52,83 +53,73 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 {
 	if (nk_begin(ctx, "debug", debugRect, NK_WINDOW_TITLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_MOVABLE))
 	{
-		nk_layout_row_dynamic(ctx, 50.f, 2);
-		if (nk_button_label(ctx, "New"))
-		{
-			NKWindow* pWin = new NKWindow(ctx, m_pManager);
-			m_pManager->Add(pWin);
+		if (nk_tree_push(ctx, NK_TREE_TAB, "System", NK_MINIMIZED)) {
+
+			nk_layout_row_dynamic(ctx, 50.f, 4);
+			if (nk_button_label(ctx, "New"))
+			{
+				NKWindow* pWin = new NKWindow(ctx, m_pManager);
+				m_pManager->Add(pWin);
+			}
+			if (nk_button_label(ctx, "Refresh"))
+			{
+				Clear();
+			}
+			if (nk_button_label(ctx, "Save")) {
+				char path[MAX_PATH];
+				HMODULE hModule = GetModuleHandle(NULL);
+				if (hModule != NULL) {
+					// 현재 실행 파일의 경로를 얻습니다.
+					GetModuleFileNameA(hModule, path, MAX_PATH);
+				}
+				else {
+					std::cerr << "Failed to get module handle." << std::endl;
+					return;
+				}
+				std::string basePath(path);
+				basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+				std::string dataPath = basePath + "\\data";
+				if (!CreateDirectoryIfNotExists(dataPath)) {
+					std::cerr << "Failed to create directory: " << dataPath << std::endl;
+					return;
+				}
+				std::string filePath = dataPath + "\\nkmod.json";
+
+				m_pManager->SaveFile(filePath);
+			}
+			if (nk_button_label(ctx, "Load")) {
+				Clear();
+				char path[MAX_PATH];
+				HMODULE hModule = GetModuleHandle(NULL);
+				if (hModule != NULL) {
+					// 현재 실행 파일의 경로를 얻습니다.
+					GetModuleFileNameA(hModule, path, MAX_PATH);
+				}
+				else {
+					std::cerr << "Failed to get module handle." << std::endl;
+					return;
+				}
+				std::string basePath(path);
+				basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+				std::string dataPath = basePath + "\\data";
+				if (!CreateDirectoryIfNotExists(dataPath)) {
+					std::cerr << "Failed to create directory: " << dataPath << std::endl;
+					return;
+				}
+				std::string filePath = dataPath + "\\nkmod.json";
+
+				m_pManager->LoadFile(filePath);
+			}
+
+			nk_layout_row_dynamic(ctx, 30, 4);
+			if (nk_option_label(ctx, "node", m_option == eNODE)) m_option = eNODE;
+			if (nk_option_label(ctx, "file", m_option == eFILE)) m_option = eFILE;
+			if (nk_option_label(ctx, "function", m_option == eFUNCTION)) m_option = eFUNCTION;
+			if (nk_option_label(ctx, "variable", m_option == eVARIABLE)) m_option = eVARIABLE;
+
+			nk_tree_pop(ctx);
 		}
-		if (nk_button_label(ctx, "Refresh"))
-		{
-			Clear();
-		}
 
-		if (nk_button_label(ctx, "Save")){
-			char path[MAX_PATH];
-			HMODULE hModule = GetModuleHandle(NULL);
-			if (hModule != NULL) {
-				// 현재 실행 파일의 경로를 얻습니다.
-				GetModuleFileNameA(hModule, path, MAX_PATH);
-			}
-			else {
-				std::cerr << "Failed to get module handle." << std::endl;
-				return;
-			}
-			std::string basePath(path);
-			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-			std::string dataPath = basePath + "\\data";
-			if (!CreateDirectoryIfNotExists(dataPath)) {
-				std::cerr << "Failed to create directory: " << dataPath << std::endl;
-				return;
-			}
-			std::string filePath = dataPath + "\\nkmod.json";
-
-			m_pManager->SaveFile(filePath);
-		}
-		if (nk_button_label(ctx, "Load")){
-			Clear();
-			char path[MAX_PATH];
-			HMODULE hModule = GetModuleHandle(NULL);
-			if (hModule != NULL) {
-				// 현재 실행 파일의 경로를 얻습니다.
-				GetModuleFileNameA(hModule, path, MAX_PATH);
-			}
-			else {
-				std::cerr << "Failed to get module handle." << std::endl;
-				return;
-			}
-			std::string basePath(path);
-			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-			std::string dataPath = basePath + "\\data";
-			if (!CreateDirectoryIfNotExists(dataPath)) {
-				std::cerr << "Failed to create directory: " << dataPath << std::endl;
-				return;
-			}
-			std::string filePath = dataPath + "\\nkmod.json";
-
-			m_pManager->LoadFile(filePath);
-		}
-
-		//if (nk_contextual_begin(ctx, 0, nk_vec2(100, 220), nk_window_get_bounds(ctx))) {
-		//	const char* grid_option[] = { "Show Grid", "Hide Grid" };
-		//	nk_layout_row_dynamic(ctx, 25, 1);
-		//	if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED))
-		//	{
-		//	}
-		//	if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_CENTERED))
-		//	{
-
-		//	}
-		//	nk_contextual_end(ctx);
-		//}
-
-		nk_layout_row_dynamic(ctx, 30, 4);
-		if (nk_option_label(ctx, "node", m_option == eNODE)) m_option = eNODE;
-		if (nk_option_label(ctx, "copy", m_option == eCOPY)) m_option = eCOPY;
-		if (nk_option_label(ctx, "remove", m_option == eREMOVE)) m_option = eREMOVE;
-		if (nk_option_label(ctx, "file", m_option == eFILE)) m_option = eFILE;
-		if (nk_option_label(ctx, "function", m_option == eFUNCTION)) m_option = eFUNCTION;
-		if (nk_option_label(ctx, "variable", m_option == eVARIABLE)) m_option = eVARIABLE;
 
 		static int groupLeft = 150;
 
@@ -144,6 +135,13 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 				FileLayout(ctx);
 			} break;
 			default: {
+				nk_layout_row_dynamic(ctx, 30, 1);
+				nk_label(ctx, "Current Node", NK_TEXT_LEFT);
+				nk_layout_row_dynamic(ctx, 30, 3);
+				if (nk_option_label(ctx, "select", m_nodeOption == eSELECT)) m_nodeOption = eSELECT;
+				if (nk_option_label(ctx, "copy", m_nodeOption == eCOPY)) m_nodeOption = eCOPY;
+				if (nk_option_label(ctx, "remove", m_nodeOption == eREMOVE)) m_nodeOption = eREMOVE;
+
 				nk_layout_row_dynamic(ctx, 22, 1);
 				nk_property_int(ctx, "#Left:", 150, &groupLeft, (int)debugRect.w - 100, 1, 1.f);
 
@@ -178,6 +176,17 @@ void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
 
 void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 {
+	if (nk_contextual_begin(ctx, 0, nk_vec2(200, 220), nk_window_get_bounds(ctx))) {
+		const char* grid_option[] = { "New Window"};
+		nk_layout_row_dynamic(ctx, 25, 1);
+		if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_CENTERED))
+		{
+			NKWindow* pWin = new NKWindow(ctx, m_pManager);
+			m_pManager->Add(pWin);
+		}
+		nk_contextual_end(ctx);
+	}
+
 	if (nk_group_begin(ctx, "Node", NK_WINDOW_TITLE)) {
 		for (size_t i = 0; i < m_vecObject->size(); ++i)
 		{
@@ -198,15 +207,13 @@ void NuklearEditor::NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkT
 {
 	if (nk_tree_push_id(ctx, nkType, pBase->GetBaseName(), nkState, reinterpret_cast<intptr_t>(pBase)))
 	{
-		nk_widget_bounds(ctx);
-
 		nk_bool bHover = nk_widget_is_hovered(ctx);
 		if(bHover)
 			nk_tooltip(ctx, pBase->GetBaseName());
 
-		switch (m_option)
+		switch (m_nodeOption)
 		{
-		case eNODE:
+		case eSELECT:
 			if (nk_button_label(ctx, "Select")) {
 				SelectNode(pBase);
 			}
@@ -223,10 +230,6 @@ void NuklearEditor::NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkT
 			break;
 		default:
 			break;
-		}
-		if (m_option == eNODE) {
-		}
-		else if (m_option == eREMOVE) {
 		}
 
 		if (pBase) {
@@ -251,7 +254,13 @@ void NuklearEditor::SelectNode(NKBase* pBase)
 
 void NuklearEditor::CopyNode(NKBase* pBase)
 {
-	
+	eTypeUI type = pBase->GetType();
+	NKBase* parent = nullptr;
+	if (type != eWINDOW) {
+		parent = pBase->GetParent();
+	}
+
+	m_pManager->CopyUI(pBase, parent);
 }
 
 void NuklearEditor::DeleteNode(NKBase* pBase)
@@ -296,7 +305,7 @@ void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 
 void NuklearEditor::FileLayout(nk_context* ctx)
 {
-	nk_layout_row_dynamic(ctx, 22, 1);
+	nk_layout_row_dynamic(ctx, 44, 1);
 	if (nk_button_label(ctx, "Open")) {
 		m_pManager->OpenFileDialog();
 	}
@@ -316,6 +325,11 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 
 	static char selectedFilename[260] = { 0, };
 	float ratio[2] = { 0.8f, 0.2f };
+
+	if (m_mapSpr->size() == 0) {
+		memset(selectedFilename, 0, sizeof(selectedFilename));
+	}
+
 	nk_layout_row_dynamic(ctx, 500, 1);
 	if (nk_group_begin(ctx, "File List", NK_WINDOW_TITLE)) {
 		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);

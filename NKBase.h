@@ -15,10 +15,12 @@ public:
 	NKBase(const NKBase& other);
 	virtual ~NKBase();
 
+	
+
 	//기본함수
 public:
-	virtual void Initialize(NuklearUI* pManager);
-	virtual void Initialize(NKBase* pParent);
+	virtual void Initialize(NuklearUI* pManager, bool bStyle = true);
+	virtual void Initialize(NKBase* pParent, bool bStyle = true);
 	virtual void Update(nk_context* ctx);
 	virtual void Layout(nk_context* ctx);
 	virtual void SafeRenderStart();
@@ -38,7 +40,7 @@ public:
 	virtual void SetParent(NKBase* nkBase);
 	virtual NKBase* GetParent();
 	virtual std::list<NKBase*>* GetChildList();
-	virtual void AddChild(NKBase* nkBase);
+	virtual void AddChild(NKBase* nkBase, bool bStyle = true);
 	virtual void LAddChild(luabridge::LuaRef ref);
 	virtual void RemoveChildDisConnect(NKBase* nkBase);
 	virtual void RemoveChild(NKBase* nkBase);
@@ -46,7 +48,9 @@ public:
 
 	//virtual void Load(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void RegistInit(NKBase* pParent);
-	virtual void RegistChild(NKBase* nkBase);
+	virtual void RegistChild(NKBase* pBase);
+	virtual void ResetWindowID(NKBase* pBase);
+	virtual void ResetParentID(NKBase* pBase);
 
 	//각 객체의 기본값
 public:

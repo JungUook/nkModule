@@ -49,24 +49,24 @@ NKSuperStyleObject::NKSuperStyleObject(nk_context* ctx, NuklearUI* pManager)
 
 NKSuperStyleObject::NKSuperStyleObject(const NKSuperStyleObject& other)
 	: NKBase(other)
-	, NKStyleButton(other)
-	, NKStyleChart(other)
-	, NKStyleCheckbox(other)
-	, NKStyleCombo(other)
-	, NKStyleContextualButton(other)
-	, NKStyleEdit(other)
-	, NKStyleHeader(other)
-	, NKStyleMenuButton(other)
-	, NKStyleOption(other)
-	, NKStyleProgress(other)
-	, NKStyleProperty(other)
-	, NKStyleScrollbarH(other)
-	, NKStyleScrollbarV(other)
-	, NKStyleSelectedable(other)
-	, NKStyleSlider(other)
-	, NKStyleTab(other)
-	, NKStyleText(other)
-	, NKStyleWindow(other)
+	, NKStyleButton(other, m_ctx, &m_style)
+	, NKStyleChart(other, m_ctx, &m_style)
+	, NKStyleCheckbox(other, m_ctx, &m_style)
+	, NKStyleCombo(other, m_ctx, &m_style)
+	, NKStyleContextualButton(other, m_ctx, &m_style)
+	, NKStyleEdit(other, m_ctx, &m_style)
+	, NKStyleHeader(other, m_ctx, &m_style)
+	, NKStyleMenuButton(other, m_ctx, &m_style)
+	, NKStyleOption(other, m_ctx, &m_style)
+	, NKStyleProgress(other, m_ctx, &m_style)
+	, NKStyleProperty(other, m_ctx, &m_style)
+	, NKStyleScrollbarH(other, m_ctx, &m_style)
+	, NKStyleScrollbarV(other, m_ctx, &m_style)
+	, NKStyleSelectedable(other, m_ctx, &m_style)
+	, NKStyleSlider(other, m_ctx, &m_style)
+	, NKStyleTab(other, m_ctx, &m_style)
+	, NKStyleText(other, m_ctx, &m_style)
+	, NKStyleWindow(other, m_ctx, &m_style)
 {
 }
 
@@ -80,6 +80,15 @@ void NKSuperStyleObject::Layout(nk_context* ctx)
 	{
 		(*it)->Update(ctx);
 	}
+}
+
+void NKSuperStyleObject::SafeRenderStart()
+{
+	UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKSuperStyleObject::SafeRenderEnd()
+{
 }
 
 void NKSuperStyleObject::EditInfo()
@@ -96,6 +105,28 @@ void NKSuperStyleObject::EditStyle()
 {
 	NKBase::EditStyle();
 	EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKSuperStyleObject::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleButton::UpdateComponent(ctx, pManager);
+	NKStyleChart::UpdateComponent(ctx, pManager);
+	NKStyleCheckbox::UpdateComponent(ctx, pManager);
+	NKStyleCombo::UpdateComponent(ctx, pManager);
+	NKStyleContextualButton::UpdateComponent(ctx, pManager);
+	NKStyleEdit::UpdateComponent(ctx, pManager);
+	NKStyleHeader::UpdateComponent(ctx, pManager);
+	NKStyleMenuButton::UpdateComponent(ctx, pManager);
+	NKStyleOption::UpdateComponent(ctx, pManager);
+	NKStyleProgress::UpdateComponent(ctx, pManager);
+	NKStyleProperty::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarH::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarV::UpdateComponent(ctx, pManager);
+	NKStyleSelectedable::UpdateComponent(ctx, pManager);
+	NKStyleSlider::UpdateComponent(ctx, pManager);
+	NKStyleTab::UpdateComponent(ctx, pManager);
+	NKStyleText::UpdateComponent(ctx, pManager);
+	NKStyleWindow::UpdateComponent(ctx, pManager);
 }
 
 void NKSuperStyleObject::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

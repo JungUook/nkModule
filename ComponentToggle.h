@@ -7,9 +7,10 @@ class ComponentToggle : public NKComponent
 public:
 	ComponentToggle();
 	ComponentToggle(struct nk_style_toggle* pTarget, struct nk_style_toggle* pRestore);
-	ComponentToggle(const ComponentToggle& other);
+	ComponentToggle& operator=(const ComponentToggle& other);
 	virtual ~ComponentToggle();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 
 protected:

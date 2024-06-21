@@ -20,6 +20,7 @@ public:
 	virtual void SafeRenderEnd() override;
 	virtual void EditInfo() override;
 	virtual void EditStyle() override;
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 
 public:

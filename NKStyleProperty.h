@@ -8,9 +8,10 @@ class NKStyleProperty
 public:
 	NKStyleProperty();
 	NKStyleProperty(nk_context* ctx, nk_style* style);
-	NKStyleProperty(const NKStyleProperty& other);
+	NKStyleProperty(const NKStyleProperty& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleProperty();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

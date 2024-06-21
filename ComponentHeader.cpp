@@ -29,17 +29,20 @@ ComponentHeader::ComponentHeader(nk_style_window_header* pTarget, nk_style_windo
 	m_pMinimizeButton = new ComponentButton(&pTarget->minimize_button, &pRestore->minimize_button);
 }
 
-ComponentHeader::ComponentHeader(const ComponentHeader& other)
+ComponentHeader& ComponentHeader::operator=(const ComponentHeader& other)
 {
-	m_pTarget = other.m_pTarget;
-	m_pRestore = other.m_pRestore;
+	if (this != &other) {
+		*m_pTarget = *other.m_pTarget;
+		*m_pRestore = *other.m_pRestore;
 
-	m_pNormal = new NKStyleItem(*other.m_pNormal);
-	m_pHover = new NKStyleItem(*other.m_pHover);
-	m_pActive = new NKStyleItem(*other.m_pActive);
+		*m_pNormal = *other.m_pNormal;
+		*m_pHover = *other.m_pHover;
+		*m_pActive = *other.m_pActive;
 
-	m_pCloseButton = new ComponentButton(*other.m_pCloseButton);
-	m_pMinimizeButton = new ComponentButton(*other.m_pMinimizeButton);
+		*m_pCloseButton = *other.m_pCloseButton;
+		*m_pMinimizeButton = *other.m_pMinimizeButton;
+	}
+	return *this;
 }
 
 ComponentHeader::~ComponentHeader()
@@ -57,6 +60,16 @@ ComponentHeader::~ComponentHeader()
 
 	m_pCloseButton = nullptr;
 	m_pMinimizeButton = nullptr;
+}
+
+void ComponentHeader::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pNormal->UpdateComponent(ctx, pManager);
+	m_pHover->UpdateComponent(ctx, pManager);
+	m_pActive->UpdateComponent(ctx, pManager);
+
+	m_pCloseButton->UpdateComponent(ctx, pManager);
+	m_pMinimizeButton->UpdateComponent(ctx, pManager);
 }
 
 void ComponentHeader::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager)

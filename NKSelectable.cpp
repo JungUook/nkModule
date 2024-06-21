@@ -15,7 +15,7 @@ NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, p
     memcpy_s(m_cContent, sizeof(m_cContent), "Selectable", sizeof("Selectable"));
 }
 
-NKSelectable::NKSelectable(const NKSelectable& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleSelectedable(other)
+NKSelectable::NKSelectable(const NKSelectable& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleSelectedable(other, m_ctx, &m_style)
 {
     m_type = other.m_type;
     m_selected = other.m_selected;
@@ -25,9 +25,20 @@ NKSelectable::~NKSelectable() {}
 
 void NKSelectable::Layout(nk_context* ctx)
 {
+    UpdateComponent(ctx, m_pManager);
+
     if (nk_selectable_label(ctx, m_cContent, NK_TEXT_CENTERED, &m_selected)) {
         CallEvent(m_pManager);
     }
+}
+
+void NKSelectable::SafeRenderStart()
+{
+    UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKSelectable::SafeRenderEnd()
+{
 }
 
 void NKSelectable::EditInfo()

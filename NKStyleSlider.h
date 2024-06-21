@@ -8,9 +8,10 @@ class NKStyleSlider
 public:
 	NKStyleSlider();
 	NKStyleSlider(nk_context* ctx, nk_style* style);
-	NKStyleSlider(const NKStyleSlider& other);
+	NKStyleSlider(const NKStyleSlider& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleSlider();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

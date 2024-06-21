@@ -12,15 +12,21 @@ NKStyleCombo::NKStyleCombo(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentCombo(&style->combo, &ctx->style.combo);
 }
 
-NKStyleCombo::NKStyleCombo(const NKStyleCombo& other)
+NKStyleCombo::NKStyleCombo(const NKStyleCombo& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentCombo(*other.m_pComponent);
+	m_pComponent = new ComponentCombo(&style->combo, &ctx->style.combo);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleCombo::~NKStyleCombo()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleCombo::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleCombo::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

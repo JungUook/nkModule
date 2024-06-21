@@ -19,12 +19,17 @@ NKStyleText::NKStyleText(nk_context* ctx, nk_style* style)
 
 }
 
-NKStyleText::NKStyleText(const NKStyleText& other)
+NKStyleText::NKStyleText(const NKStyleText& other, nk_context* ctx, nk_style* style)
 {
-	color = other.color;
-	padding = other.padding;
-	color_factor = other.color_factor;
-	disabled_factor = other.disabled_factor;
+	color = &style->text.color;
+	padding = &style->text.padding;
+	color_factor = &style->text.color_factor;
+	disabled_factor = &style->text.disabled_factor;
+
+	*color = *other.color;
+	*padding = *other.padding;
+	*color_factor = *other.color_factor;
+	*disabled_factor = *other.disabled_factor;
 }
 
 NKStyleText::~NKStyleText()
@@ -33,6 +38,10 @@ NKStyleText::~NKStyleText()
 	padding			 = nullptr;
 	color_factor	 = nullptr;
 	disabled_factor	 = nullptr;
+}
+
+void NKStyleText::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
 }
 
 void NKStyleText::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

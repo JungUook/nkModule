@@ -8,9 +8,10 @@ class NKStyleEdit
 public:
 	NKStyleEdit();
 	NKStyleEdit(nk_context* ctx, nk_style* style);
-	NKStyleEdit(const NKStyleEdit& other);
+	NKStyleEdit(const NKStyleEdit& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleEdit();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

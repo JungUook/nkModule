@@ -8,9 +8,10 @@ class NKStyleScrollbarH
 public:
 	NKStyleScrollbarH();
 	NKStyleScrollbarH(nk_context* ctx, nk_style* style);
-	NKStyleScrollbarH(const NKStyleScrollbarH& other);
+	NKStyleScrollbarH(const NKStyleScrollbarH& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleScrollbarH();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

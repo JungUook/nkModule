@@ -15,7 +15,7 @@ NKTree::NKTree(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NK
     m_state = NK_MINIMIZED;
 }
 
-NKTree::NKTree(const NKTree& other) : NKBase(other), NKBaseLabel(other), NKStyleTab(other)
+NKTree::NKTree(const NKTree& other) : NKBase(other), NKBaseLabel(other), NKStyleTab(other, m_ctx, &m_style)
 {
     m_treeType = other.m_treeType;
     m_type = other.m_type;
@@ -26,6 +26,8 @@ NKTree::~NKTree() {}
 
 void NKTree::Layout(nk_context* ctx)
 {
+    UpdateComponent(ctx, m_pManager);
+
     if (nk_tree_push_id(ctx, m_treeType, m_cContent, m_state, reinterpret_cast<intptr_t>(this)))
     {
         for (auto child = m_pChildList.begin(); child != m_pChildList.end(); ++child)
@@ -34,6 +36,15 @@ void NKTree::Layout(nk_context* ctx)
         }
         nk_tree_pop(ctx);
     }
+}
+
+void NKTree::SafeRenderStart()
+{
+    UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKTree::SafeRenderEnd()
+{
 }
 
 void NKTree::EditInfo()

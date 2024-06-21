@@ -18,7 +18,7 @@ NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_cTransform.h = 300.f;
 }
 
-NKGroup::NKGroup(const NKGroup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other), NKStyleWindow(other)
+NKGroup::NKGroup(const NKGroup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
 {
 	m_type			= other.m_type;
 	m_flags			= other.m_flags;
@@ -42,6 +42,7 @@ void NKGroup::Layout(nk_context* ctx)
 
 void NKGroup::SafeRenderStart()
 {
+	UpdateComponent(m_ctx, m_pManager);
 }
 
 void NKGroup::SafeRenderEnd()
@@ -65,6 +66,12 @@ void NKGroup::EditStyle()
 {
 	NKBase::EditStyle();
 	EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKGroup::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleHeader::UpdateComponent(ctx, pManager);
+	NKStyleWindow::UpdateComponent(ctx, pManager);
 }
 
 void NKGroup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

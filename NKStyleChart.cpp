@@ -33,19 +33,30 @@ NKStyleChart::NKStyleChart(nk_context* ctx, nk_style* style)
 	show_markers	= &style->chart.show_markers;
 }
 
-NKStyleChart::NKStyleChart(const NKStyleChart& other)
+NKStyleChart::NKStyleChart(const NKStyleChart& other, nk_context* ctx, nk_style* style)
 {
-	m_pBackground = new NKStyleItem(*other.m_pBackground);
+	m_pBackground = new NKStyleItem(&style->chart.background, &ctx->style.chart.background);
+	*m_pBackground = *other.m_pBackground;
 
-	border_color = other.border_color;
-	selected_color = other.selected_color;
-	color = other.color;
-	border = other.border;
-	rounding = other.rounding;
-	padding = other.padding;
-	color_factor = other.color_factor;
-	disabled_factor = other.disabled_factor;
-	show_markers = other.show_markers;
+	border_color = &style->chart.border_color;
+	selected_color = &style->chart.selected_color;
+	color = &style->chart.color;
+	border = &style->chart.border;
+	rounding = &style->chart.rounding;
+	padding = &style->chart.padding;
+	color_factor = &style->chart.color_factor;
+	disabled_factor = &style->chart.disabled_factor;
+	show_markers = &style->chart.show_markers;
+
+	*border_color = *other.border_color;
+	*selected_color = *other.selected_color;
+	*color = *other.color;
+	*border = *other.border;
+	*rounding = *other.rounding;
+	*padding = *other.padding;
+	*color_factor = *other.color_factor;
+	*disabled_factor = *other.disabled_factor;
+	*show_markers = *other.show_markers;
 }
 
 NKStyleChart::~NKStyleChart()
@@ -63,6 +74,11 @@ NKStyleChart::~NKStyleChart()
 	color_factor    = nullptr;
 	disabled_factor = nullptr;
 	show_markers    = nullptr;
+}
+
+void NKStyleChart::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pBackground->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleChart::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

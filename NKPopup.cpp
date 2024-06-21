@@ -20,7 +20,7 @@ NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_cTransform.h = 100.f;
 }
 
-NKPopup::NKPopup(const NKPopup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other), NKStyleWindow(other)
+NKPopup::NKPopup(const NKPopup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_popupType = other.m_popupType;
@@ -43,6 +43,15 @@ void NKPopup::Layout(nk_context* ctx)
 	}
 }
 
+void NKPopup::SafeRenderStart()
+{
+	UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKPopup::SafeRenderEnd()
+{
+}
+
 void NKPopup::EditInfo()
 {
 	EditInfoWindowProperty(m_ctx, m_flags);
@@ -60,6 +69,12 @@ void NKPopup::EditStyle()
 {
 	NKBase::EditStyle();
 	EditComponentStyle(m_ctx, m_pManager);
+}
+
+void NKPopup::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleHeader::UpdateComponent(ctx, pManager);
+	NKStyleWindow::UpdateComponent(ctx, pManager);
 }
 
 void NKPopup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

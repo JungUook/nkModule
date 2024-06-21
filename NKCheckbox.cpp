@@ -13,7 +13,7 @@ NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pMana
     m_checked = 0;
 }
 
-NKCheckbox::NKCheckbox(const NKCheckbox& other) : NKBase(other), NKBaseLabel(other), NKStyleCheckbox(other)
+NKCheckbox::NKCheckbox(const NKCheckbox& other) : NKBase(other), NKBaseLabel(other), NKStyleCheckbox(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_checked = other.m_checked;
@@ -23,7 +23,18 @@ NKCheckbox::~NKCheckbox() {}
 
 void NKCheckbox::Layout(nk_context* ctx)
 {
+    UpdateComponent(ctx, m_pManager);
+
     nk_checkbox_label(ctx, m_cContent, &m_checked);
+}
+
+void NKCheckbox::SafeRenderStart()
+{
+    UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKCheckbox::SafeRenderEnd()
+{
 }
 
 void NKCheckbox::EditInfo()

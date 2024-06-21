@@ -15,7 +15,7 @@ NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_cTransform.h = 40.f;
 }
 
-NKButton::NKButton(const NKButton& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleButton(other)
+NKButton::NKButton(const NKButton& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleButton(other, m_ctx, &m_style)
 {
 	m_type = eBUTTON;
 }
@@ -30,6 +30,15 @@ void NKButton::Layout(nk_context* ctx)
 	{
 		CallEvent(m_pManager);
 	}
+}
+
+void NKButton::SafeRenderStart()
+{
+	UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKButton::SafeRenderEnd()
+{
 }
 
 void NKButton::EditInfo()

@@ -9,9 +9,10 @@ class ComponentCombo : public NKComponent
 public:
 	ComponentCombo();
 	ComponentCombo(struct nk_style_combo* pTarget, struct nk_style_combo* pRestore);
-	ComponentCombo(const ComponentCombo& other);
+	ComponentCombo& operator=(const ComponentCombo& other);
 	virtual ~ComponentCombo();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 
 protected:

@@ -49,6 +49,15 @@ void NKComboItem::Layout(nk_context* ctx)
 	}
 }
 
+void NKComboItem::SafeRenderStart()
+{
+	//UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKComboItem::SafeRenderEnd()
+{
+}
+
 void NKComboItem::EditInfo()
 {
 	EditLabel(m_ctx, m_pManager);

@@ -32,19 +32,30 @@ NKStyleWindow::NKStyleWindow(nk_context* ctx, nk_style* style)
 	padding				= &style->window.padding;
 }
 
-NKStyleWindow::NKStyleWindow(const NKStyleWindow& other)
+NKStyleWindow::NKStyleWindow(const NKStyleWindow& other, nk_context* ctx, nk_style* style)
 {
-	m_pFixedBackground = new NKStyleItem(*other.m_pFixedBackground);
-	m_pScaler = new NKStyleItem(*other.m_pScaler);
+	m_pFixedBackground = new NKStyleItem(&style->window.fixed_background, &ctx->style.window.fixed_background);
+	m_pScaler = new NKStyleItem(&style->window.scaler, &ctx->style.window.scaler);
+	*m_pFixedBackground = *other.m_pFixedBackground;
+	*m_pScaler = *other.m_pScaler;
 
-	m_pBackground = other.m_pBackground;
-	border = other.border;
-	border_color = other.border_color;
-	rounding = other.rounding;
-	spacing = other.spacing;
-	scrollbar_size = other.scrollbar_size;
-	min_size = other.min_size;
-	padding = other.padding;
+	m_pBackground = &style->window.background;
+	border = &style->window.border;
+	border_color = &style->window.border_color;
+	rounding = &style->window.rounding;
+	spacing = &style->window.spacing;
+	scrollbar_size = &style->window.scrollbar_size;
+	min_size = &style->window.min_size;
+	padding = &style->window.padding;
+
+	*m_pBackground = *other.m_pBackground;
+	*border = *other.border;
+	*border_color = *other.border_color;
+	*rounding = *other.rounding;
+	*spacing = *other.spacing;
+	*scrollbar_size = *other.scrollbar_size;
+	*min_size = *other.min_size;
+	*padding = *other.padding;
 }
 
 NKStyleWindow::~NKStyleWindow()
@@ -56,6 +67,12 @@ NKStyleWindow::~NKStyleWindow()
 	m_pScaler = nullptr;
 
 	m_pBackground = nullptr;
+}
+
+void NKStyleWindow::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pFixedBackground->UpdateComponent(ctx, pManager);
+	m_pScaler->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleWindow::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

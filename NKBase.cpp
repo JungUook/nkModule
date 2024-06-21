@@ -32,37 +32,60 @@ NKBase::NKBase(const NKBase& other) : NKProperty(other)
 	m_ctx = other.m_ctx;
 	m_bActive = other.m_bActive;
 	m_bEditActive = other.m_bEditActive;
-	m_pWindow = other.m_pWindow;
+	if (other.m_type == eWINDOW) {
+		m_pWindow = this;
+		m_iWindowPrimaryID = reinterpret_cast<intptr_t>(this);
+	}
+	else {
+		m_pWindow = other.m_pWindow;
+		m_iWindowPrimaryID = m_pWindow->m_iPrimaryID;
+	}
 	m_pParent = other.m_pParent;
+	m_iParentPrimaryID = other.m_iParentPrimaryID;
 	m_iNKIndex = other.m_iNKIndex;
 	m_flags = other.m_flags;
+
+	for (auto it = other.m_pChildList.begin(); it != other.m_pChildList.end(); ++it) {
+		NKBase* base = *it;
+		m_pManager->CopyUI(base, this);
+	}
 }
 
 NKBase::~NKBase()
 {
 }
 
-void NKBase::Initialize(NuklearUI* pManager) 
+void NKBase::Initialize(NuklearUI* pManager, bool bStyle)
 {
 	CHECK_PTR(pManager);
-	InitializeStyle(m_ctx, pManager);
+	if (bStyle) {
+		InitializeStyle(m_ctx, pManager);
+	}
 	if (m_type == eWINDOW) {
 		m_pWindow = this;
+		m_iWindowPrimaryID = reinterpret_cast<intptr_t>(this);
 	}
 	else {
 		m_pWindow = nullptr;
+		m_iWindowPrimaryID = 0;
 	}
 	NKProperty::Initialize();
 }
 
-void NKBase::Initialize(NKBase* pParent)
+void NKBase::Initialize(NKBase* pParent, bool bStyle)
 {
 	CHECK_PTR(pParent);
 	m_pParent = pParent;
 	m_iParentPrimaryID = pParent->GetPrimaryID();
 	m_pWindow = m_pParent->m_pWindow;
+	m_iWindowPrimaryID = m_pWindow->m_iPrimaryID;
 	m_pManager = m_pParent->m_pManager;
-	InitializeStyle(m_pParent->m_font, m_ctx->style, m_pParent->m_pParentStyle);
+	if (bStyle) {
+		InitializeStyle(m_pParent->m_font, m_ctx->style, m_pParent->m_pParentStyle);
+	}
+	else {
+		InitializeStyle(m_pParent->m_font, m_style, m_pParent->m_pParentStyle);
+	}
 	NKProperty::Initialize();
 }
 
@@ -162,10 +185,10 @@ std::list<NKBase*>* NKBase::GetChildList()
 	return &m_pChildList;
 }
 
-void NKBase::AddChild(NKBase* nkBase)
+void NKBase::AddChild(NKBase* nkBase, bool bStyle)
 {
 	CHECK_PTR(nkBase);
-	nkBase->Initialize(this);
+	nkBase->Initialize(this, bStyle);
 	m_pManager->Add(nkBase);
 	m_pChildList.push_back(nkBase);
 }
@@ -201,34 +224,54 @@ void NKBase::LRemoveChild(luabridge::LuaRef ref)
 	RemoveChild(nkBase);
 }
 
-//void NKBase::Load(nk_context* ctx, NuklearUI* pManager)
-//{
-//	NKBaseStyle::Load(ctx, pManager);
-//	m_ctx = ctx;
-//	m_pManager = pManager;
-//	if (m_type == eWINDOW) {
-//		m_pWindow = this;
-//	}
-//	else {
-//		m_pWindow = nullptr;
-//	}
-//}
-
 void NKBase::RegistInit(NKBase* pParent)
 {
 	CHECK_PTR(pParent);
 	m_pParent = pParent;
 	m_iParentPrimaryID = pParent->GetPrimaryID();
-	m_pWindow = m_pParent->m_pWindow;
 	m_pManager = m_pParent->m_pManager;
 	m_pParentStyle = m_pParent->m_pParentStyle != nullptr ? m_pParent->m_pParentStyle : &this->m_style;
+
+	auto windows = m_pManager->GetNodes();
+
+	for (auto it = windows->begin(); it != windows->end(); ++it) {
+		NKBase* pWin = *it;
+
+		if (pWin->GetPrimaryID() == m_iWindowPrimaryID) {
+			m_pWindow = pWin;
+			m_iWindowPrimaryID = pWin->GetPrimaryID();
+		}
+	}
 }
 
-void NKBase::RegistChild(NKBase* nkBase)
+void NKBase::RegistChild(NKBase* pBase)
 {
-	CHECK_PTR(nkBase);
-	nkBase->RegistInit(this);
-	m_pChildList.push_back(nkBase);
+	CHECK_PTR(pBase);
+	pBase->RegistInit(this);
+	m_pChildList.push_back(pBase);
+}
+
+void NKBase::ResetWindowID(NKBase* pBase)
+{
+	m_pWindow = pBase->m_pWindow;
+	m_iWindowPrimaryID = m_pWindow->m_iPrimaryID;
+
+	
+	for (auto it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+		NKBase* ptr = *it;
+		ptr->ResetWindowID(pBase);
+	}
+}
+
+void NKBase::ResetParentID(NKBase* pBase)
+{
+	m_pParent = pBase;
+	m_iParentPrimaryID = m_pParent->m_iPrimaryID;
+
+	for (auto it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+		NKBase* ptr = *it;
+		ptr->ResetParentID(this);
+	}
 }
 
 

@@ -12,15 +12,21 @@ NKStyleTab::NKStyleTab(nk_context* ctx, nk_style* style)
 	m_pComponent = new ComponentTab(&style->tab, &ctx->style.tab);
 }
 
-NKStyleTab::NKStyleTab(const NKStyleTab& other)
+NKStyleTab::NKStyleTab(const NKStyleTab& other, nk_context* ctx, nk_style* style)
 {
-	m_pComponent = new ComponentTab(*other.m_pComponent);
+	m_pComponent = new ComponentTab(&style->tab, &ctx->style.tab);
+	*m_pComponent = *other.m_pComponent;
 }
 
 NKStyleTab::~NKStyleTab()
 {
 	delete m_pComponent;
 	m_pComponent = nullptr;
+}
+
+void NKStyleTab::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pComponent->UpdateComponent(ctx, pManager);
 }
 
 void NKStyleTab::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)

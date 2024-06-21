@@ -23,14 +23,17 @@ ComponentButton::ComponentButton(nk_style_button* pTarget, nk_style_button* pRes
 	m_pActive = new NKStyleItem(&pTarget->active, &pRestore->active);
 }
 
-ComponentButton::ComponentButton(const ComponentButton& other)
+ComponentButton& ComponentButton::operator=(const ComponentButton& other)
 {
-	m_pTarget = other.m_pTarget;
-	m_pRestore = other.m_pRestore;
+	if (this != &other) {
+		*m_pTarget = *other.m_pTarget;
+		*m_pRestore = *other.m_pRestore;
 
-	m_pNormal = new NKStyleItem(*other.m_pNormal);
-	m_pHover = new NKStyleItem(*other.m_pHover);
-	m_pActive = new NKStyleItem(*other.m_pActive);
+		*m_pNormal = *other.m_pNormal;
+		*m_pHover = *other.m_pHover;
+		*m_pActive = *other.m_pActive;
+	}
+	return *this;
 }
 
 ComponentButton::~ComponentButton()
@@ -42,6 +45,13 @@ ComponentButton::~ComponentButton()
 	m_pNormal = nullptr;
 	m_pHover = nullptr;
 	m_pActive = nullptr;
+}
+
+void ComponentButton::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pNormal->UpdateComponent(ctx, pManager);
+	m_pHover->UpdateComponent(ctx, pManager);
+	m_pActive->UpdateComponent(ctx, pManager);
 }
 
 void ComponentButton::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager)

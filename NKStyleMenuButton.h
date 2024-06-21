@@ -7,9 +7,10 @@ class NKStyleMenuButton
 public:
 	NKStyleMenuButton();
 	NKStyleMenuButton(nk_context* ctx, nk_style* style);
-	NKStyleMenuButton(const NKStyleMenuButton& other);
+	NKStyleMenuButton(const NKStyleMenuButton& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleMenuButton();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

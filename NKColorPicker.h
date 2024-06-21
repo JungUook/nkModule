@@ -11,7 +11,9 @@ public:
 	
 
 public:
-    void Layout(nk_context* ctx) override;
+	virtual void Layout(nk_context* ctx) override;
+	virtual void SafeRenderStart() override;
+	virtual void SafeRenderEnd() override;
     void SetColor(struct nk_colorf color);
     struct nk_colorf GetColor() const;
 

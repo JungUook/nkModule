@@ -155,12 +155,13 @@ public:
 	void Register_UI();
 	std::vector<NKBase*>* GetNodes();
 	void CreateUI(const char* classname, NKBase* parent = nullptr);
+	void CopyUI(NKBase* pBase, NKBase* parent = nullptr);
 	NKBase* RegistUI(const char* classname, NKBase* pBase);
 	struct nk_vec2* GetPivot();
 	struct nk_rect* GetViewport();
 	void SetPrimary(NKBase* pBase);
 	bool SetPrimaryname(NKBase* pBase, const char* name);
-	void Add(NKBase* type);
+	void Add(NKBase* type, bool bStyle = true);
 	struct nk_image* SearchImage(int SID);
 
 	void Remove(unsigned int id);
@@ -179,7 +180,6 @@ private:
 
 private:
 	Factory m_factory;
-	unsigned int m_primaryIDCheck;
 
 	std::vector<NKBase*> m_vecObject;
 	std::vector<NKBase*> m_vecModule;
@@ -242,11 +242,12 @@ private:
 	char m_filePath[256];
 #endif // _NKDEBUG
 
-	//boost
+	//cereal
 public:
 	void SaveFile(const std::string& filename);
 
 	void LoadFile(const std::string& filename);
 	void LoadNode(NKBase* pBase);
+	void ResetPrimaryID(NKBase* pBase);
 };
 #endif //NuklearUI_h__

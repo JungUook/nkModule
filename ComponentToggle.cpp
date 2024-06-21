@@ -29,18 +29,20 @@ ComponentToggle::ComponentToggle(nk_style_toggle* pTarget, nk_style_toggle* pRes
 	m_pCursorHover	= new NKStyleItem(&pTarget->cursor_hover, &pRestore->cursor_hover);
 }
 
-ComponentToggle::ComponentToggle(const ComponentToggle& other)
+ComponentToggle& ComponentToggle::operator=(const ComponentToggle& other)
 {
-	m_pTarget		= other.m_pTarget;
-	m_pRestore		= other.m_pRestore;
-					  
-	m_pNormal		= new NKStyleItem(*other.m_pNormal);
-	m_pHover		= new NKStyleItem(*other.m_pHover);
-	m_pActive		= new NKStyleItem(*other.m_pActive);
-					  
-	m_pCursorNormal	= new NKStyleItem(*other.m_pCursorNormal);
-	m_pCursorHover	= new NKStyleItem(*other.m_pCursorHover);
+	if (this != &other) {
+		*m_pTarget = *other.m_pTarget;
+		*m_pRestore = *other.m_pRestore;
 
+		*m_pNormal = *other.m_pNormal;
+		*m_pHover = *other.m_pHover;
+		*m_pActive = *other.m_pActive;
+
+		*m_pCursorNormal = *other.m_pCursorNormal;
+		*m_pCursorHover = *other.m_pCursorHover;
+	}
+	return *this;
 }
 
 ComponentToggle::~ComponentToggle()
@@ -58,6 +60,16 @@ ComponentToggle::~ComponentToggle()
 
 	m_pCursorNormal = nullptr;
 	m_pCursorHover = nullptr;
+}
+
+void ComponentToggle::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pNormal->UpdateComponent(ctx,pManager);
+	m_pHover->UpdateComponent(ctx,pManager);
+	m_pActive->UpdateComponent(ctx,pManager);
+
+	m_pCursorNormal->UpdateComponent(ctx,pManager);
+	m_pCursorHover->UpdateComponent(ctx, pManager);
 }
 
 void ComponentToggle::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager)

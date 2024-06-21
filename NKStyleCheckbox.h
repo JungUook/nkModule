@@ -8,9 +8,10 @@ class NKStyleCheckbox
 public:
 	NKStyleCheckbox();
 	NKStyleCheckbox(nk_context* ctx, nk_style* style);
-	NKStyleCheckbox(const NKStyleCheckbox& other);
+	NKStyleCheckbox(const NKStyleCheckbox& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleCheckbox();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

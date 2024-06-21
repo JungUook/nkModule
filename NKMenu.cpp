@@ -11,7 +11,7 @@ NKMenu::NKMenu(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NK
     m_type = eMENU;
 }
 
-NKMenu::NKMenu(const NKMenu& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleMenuButton(other)
+NKMenu::NKMenu(const NKMenu& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleMenuButton(other, m_ctx, &m_style)
 {
     m_type = eMENU;
     m_items = other.m_items;
@@ -21,6 +21,8 @@ NKMenu::~NKMenu() {}
 
 void NKMenu::Layout(nk_context* ctx)
 {
+    UpdateComponent(ctx, m_pManager);
+
     if (nk_menu_begin_label(ctx, m_cContent, NK_TEXT_LEFT, nk_vec2(120, 200)))
     {
         nk_layout_row_dynamic(ctx, 25, 1);
@@ -35,6 +37,15 @@ void NKMenu::Layout(nk_context* ctx)
         }
         nk_menu_end(ctx);
     }
+}
+
+void NKMenu::SafeRenderStart()
+{
+    UpdateComponent(m_ctx, m_pManager);
+}
+
+void NKMenu::SafeRenderEnd()
+{
 }
 
 void NKMenu::EditInfo()

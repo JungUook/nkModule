@@ -14,6 +14,8 @@ public:
 
 public:
     virtual void Layout(nk_context* ctx) override;
+    virtual void SafeRenderStart() override;
+    virtual void SafeRenderEnd() override;
     virtual void EditStyle() override;
     void AddValue(float value);
     void Clear();

@@ -27,16 +27,19 @@ ComponentCombo::ComponentCombo(nk_style_combo* pTarget, nk_style_combo* pRestore
 	m_pButton = new ComponentButton(&pTarget->button, &pRestore->button);
 }
 
-ComponentCombo::ComponentCombo(const ComponentCombo& other)
+ComponentCombo& ComponentCombo::operator=(const ComponentCombo& other)
 {
-	m_pTarget = other.m_pTarget;
-	m_pRestore = other.m_pRestore;
+	if (this != &other) {
+		*m_pTarget = *other.m_pTarget;
+		*m_pRestore = *other.m_pRestore;
 
-	m_pNormal = new NKStyleItem(*other.m_pNormal);
-	m_pHover = new NKStyleItem(*other.m_pHover);
-	m_pActive = new NKStyleItem(*other.m_pActive);
+		*m_pNormal = *other.m_pNormal;
+		*m_pHover = *other.m_pHover;
+		*m_pActive = *other.m_pActive;
 
-	m_pButton = new ComponentButton(*other.m_pButton);
+		*m_pButton = *other.m_pButton;
+	}
+	return *this;
 }
 
 ComponentCombo::~ComponentCombo()
@@ -45,9 +48,22 @@ ComponentCombo::~ComponentCombo()
 	delete m_pHover;
 	delete m_pActive;
 
+	delete m_pButton;
+
 	m_pNormal = nullptr;
 	m_pHover = nullptr;
 	m_pActive = nullptr;
+
+	m_pButton = nullptr;
+}
+
+void ComponentCombo::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pNormal->UpdateComponent(ctx, pManager);
+	m_pHover->UpdateComponent(ctx, pManager);
+	m_pActive->UpdateComponent(ctx, pManager);
+
+	m_pButton->UpdateComponent(ctx, pManager);
 }
 
 void ComponentCombo::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager)

@@ -8,9 +8,10 @@ class NKStyleProgress
 public:
 	NKStyleProgress();
 	NKStyleProgress(nk_context* ctx, nk_style* style);
-	NKStyleProgress(const NKStyleProgress& other);
+	NKStyleProgress(const NKStyleProgress& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleProgress();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

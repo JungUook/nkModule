@@ -8,9 +8,10 @@ class NKStyleHeader
 public:
 	NKStyleHeader();
 	NKStyleHeader(nk_context* ctx, nk_style* style);
-	NKStyleHeader(const NKStyleHeader& other);
+	NKStyleHeader(const NKStyleHeader& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleHeader();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

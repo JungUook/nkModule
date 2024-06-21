@@ -8,9 +8,10 @@ class NKStyleTab
 public:
 	NKStyleTab();
 	NKStyleTab(nk_context* ctx, nk_style* style);
-	NKStyleTab(const NKStyleTab& other);
+	NKStyleTab(const NKStyleTab& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleTab();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

@@ -7,9 +7,10 @@ class NKStyleText
 public:
 	NKStyleText();
 	NKStyleText(nk_context* ctx, nk_style* style);
-	NKStyleText(const NKStyleText& other);
+	NKStyleText(const NKStyleText& other, nk_context* ctx, nk_style* style);
 	virtual ~NKStyleText();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager);
 
 protected:

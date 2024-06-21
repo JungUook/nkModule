@@ -14,6 +14,8 @@ public:
 
 public:
     virtual void Layout(nk_context* ctx) override;
+    virtual void SafeRenderStart() override;
+    virtual void SafeRenderEnd() override;
     virtual void EditStyle() override;
 
     void SetRange(float min, float max);

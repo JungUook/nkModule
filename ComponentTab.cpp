@@ -29,18 +29,20 @@ ComponentTab::ComponentTab(nk_style_tab* pTarget, nk_style_tab* pRestore)
 	m_pNodeMinimizeButton = new ComponentButton(&pTarget->node_minimize_button, &pRestore->node_minimize_button);
 }
 
-ComponentTab::ComponentTab(const ComponentTab& other)
+ComponentTab& ComponentTab::operator=(const ComponentTab& other)
 {
-	m_pTarget = other.m_pTarget;
-	m_pRestore = other.m_pRestore;
+	if (this != &other) {
+		*m_pTarget = *other.m_pTarget;
+		*m_pRestore = *other.m_pRestore;
 
-	m_pBackground 		  = new NKStyleItem(*other.m_pBackground);
+		*m_pBackground = *other.m_pBackground;
 
-	m_pTabMaximizeButton  = new ComponentButton(*other.m_pTabMaximizeButton);
-	m_pTabMinimizeButton  = new ComponentButton(*other.m_pTabMinimizeButton);
-	m_pNodeMaximizeButton = new ComponentButton(*other.m_pNodeMaximizeButton);
-	m_pNodeMinimizeButton = new ComponentButton(*other.m_pNodeMinimizeButton);
-
+		*m_pTabMaximizeButton = *other.m_pTabMaximizeButton;
+		*m_pTabMinimizeButton = *other.m_pTabMinimizeButton;
+		*m_pNodeMaximizeButton = *other.m_pNodeMaximizeButton;
+		*m_pNodeMinimizeButton = *other.m_pNodeMinimizeButton;
+	}
+	return *this;
 }
 
 ComponentTab::~ComponentTab()
@@ -59,6 +61,16 @@ ComponentTab::~ComponentTab()
 	m_pNodeMaximizeButton = nullptr;
 	m_pNodeMinimizeButton = nullptr;
 
+}
+
+void ComponentTab::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	m_pBackground->UpdateComponent(ctx, pManager);
+
+	m_pTabMaximizeButton->UpdateComponent(ctx, pManager);
+	m_pTabMinimizeButton->UpdateComponent(ctx, pManager);
+	m_pNodeMaximizeButton->UpdateComponent(ctx, pManager);
+	m_pNodeMinimizeButton->UpdateComponent(ctx, pManager);
 }
 
 void ComponentTab::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager)

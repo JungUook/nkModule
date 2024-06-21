@@ -8,9 +8,10 @@ class ComponentHeader : public NKComponent
 public:
 	ComponentHeader();
 	ComponentHeader(struct nk_style_window_header* pTarget, struct nk_style_window_header* pRestore);
-	ComponentHeader(const ComponentHeader& other);
+	ComponentHeader& operator=(const ComponentHeader& other);
 	virtual ~ComponentHeader();
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 
 protected:
