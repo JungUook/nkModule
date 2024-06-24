@@ -1,0 +1,344 @@
+#include "pch.h"
+#include "NuklearUI.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#include <shlobj.h>
+
+#ifdef _DX7
+void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang)
+{
+	CHAR path[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, path))) {
+		std::cout << "System font path: " << path << std::endl;
+	}
+
+	m_ctx = m_dx7.nk_d3d7_init(pdd, pdevice);
+
+	struct nk_font_atlas* atlas;
+	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, lang);
+
+	m_original_height = 24.0f;
+	m_font = m_dx7.d3d7.font;
+
+	m_bMouseHovering = false;
+	m_bEditActive = false;
+
+	m_lua = luaL_newstate();
+	luaL_openlibs(m_lua);
+	RegisterBase();
+}
+void NuklearUI::Render(IDirect3DDevice7* pdevice)
+{
+	m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
+
+	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
+	{
+		(*iter)->SafeRenderEnd();
+	}
+	ReleaseRenderData();
+}
+int NuklearUI::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (this == nullptr) {
+		return 0;
+	}
+
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+
+	case WM_SIZE:
+		if (m_dx7.d3d7.device)
+		{
+			UINT width = LOWORD(lparam);
+			UINT height = HIWORD(lparam);
+			if (width != 0 && height != 0)
+			{
+				m_dx7.nk_d3d7_resize(width, height);
+			}
+		}
+		break;
+	}
+
+
+	return m_dx7.nk_d3d7_handle_event(wnd, msg, wparam, lparam);
+}
+
+bool NuklearUI::LoadSpriteData(IDirectDrawSurface7* sprite, int width, int height, int sliceSizeX, int sliceSizeY, int countX, int countY)
+{
+	int index = 0;
+	if (sliceSizeX && sliceSizeY && countX && countY)
+	{
+		for (int y = 0; y < countY; ++y)
+		{
+			for (int x = 0; x < countX; ++x)
+			{
+				uint16_t region[4] = { 0, };
+				region[0] = sliceSizeX * x;
+				region[1] = sliceSizeY * y;
+				region[2] = sliceSizeX;
+				region[3] = sliceSizeY;
+				AddImage(index++, sprite, width, height, region);
+			}
+		}
+	}
+	else
+	{
+		AddImage(index, sprite);
+	}
+
+	return true;
+}
+bool NuklearUI::ReadImageFile(const char* filename, IDirectDrawSurface7** pTexture)
+{
+	int width, height, channels;
+	unsigned char* data = stbi_load(filename, &width, &height, &channels, 4); // 4는 RGBA로 로드하라는 의미
+	if (!data)
+		return false;
+
+	// 텍스처 생성
+	DDSURFACEDESC2 ddsd;
+	ZeroMemory(&ddsd, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
+	ddsd.dwWidth = width;
+	ddsd.dwHeight = height;
+	ddsd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
+	ddsd.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_ALPHAPIXELS;
+	ddsd.ddpfPixelFormat.dwRGBBitCount = 32;
+	ddsd.ddpfPixelFormat.dwRBitMask = 0x00FF0000;
+	ddsd.ddpfPixelFormat.dwGBitMask = 0x0000FF00;
+	ddsd.ddpfPixelFormat.dwBBitMask = 0x000000FF;
+	ddsd.ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
+
+	HRESULT hr = m_dx7.d3d7.dd->CreateSurface(&ddsd, pTexture, NULL);
+	if (FAILED(hr)) {
+		stbi_image_free(data);
+		return false;
+	}
+
+	// 텍스처에 이미지 데이터 복사
+	DDSURFACEDESC2 lockedSurface;
+	ZeroMemory(&lockedSurface, sizeof(lockedSurface));
+	lockedSurface.dwSize = sizeof(lockedSurface);
+	if (FAILED((*pTexture)->Lock(NULL, &lockedSurface, 0, NULL))) {
+		stbi_image_free(data);
+		return false;
+	}
+
+	BYTE* dest = (BYTE*)lockedSurface.lpSurface;
+	for (int y = 0; y < height; y++) {
+		memcpy(dest + y * lockedSurface.lPitch, data + y * width * 4, width * 4);
+	}
+	(*pTexture)->Unlock(NULL);
+
+	stbi_image_free(data);
+	return true;
+}
+nk_flags NuklearUI::IMEInputSystem(char* buffer, int max, int* len, nk_flags flag, nk_plugin_filter filter)
+{
+	nk_flags result = nk_edit_string_zero_terminated(m_ctx, flag, buffer, max, filter);
+
+	if (result & NK_EDIT_ACTIVE) {
+		IMEInputSystem(buffer, len);
+	}
+	return result;
+}
+void NuklearUI::IMEInputSystem(char* memory, int* len)
+{
+	if (m_dx7.d3d7.ctx.text_edit.bComposition) {
+		nk_hash hash;
+		struct nk_text_edit* edit;
+		struct nk_window* win;
+		win = m_dx7.d3d7.ctx.current;
+		hash = win->edit.seq;
+		edit = &m_dx7.d3d7.ctx.text_edit;
+
+		if (edit->cursor <= 0) {
+			return;
+		}
+
+		edit->select_start = edit->cursor - 1;
+		edit->select_end = edit->cursor;
+
+		win->edit.sel_start = edit->select_start;
+		win->edit.sel_end = edit->select_end;
+	}
+}
+
+void NuklearUI::AddImage(int SID, IDirectDrawSurface7* texture)
+{
+	struct nk_image img;
+	memset(&img, 0, sizeof(img));
+	img.handle = nk_handle_ptr(texture);
+
+	std::pair<int, struct nk_image> pairData = std::make_pair(SID, img);
+	m_mapImage.insert(pairData);
+}
+
+void NuklearUI::AddImage(int SID, IDirectDrawSurface7* texture, uint16_t width, uint16_t height, uint16_t region[])
+{
+	struct nk_image img;
+	memset(&img, 0, sizeof(img));
+	img.handle = nk_handle_ptr(texture);
+
+	img.w = width;
+	img.h = height;
+
+	img.region[0] = region[0];
+	img.region[1] = region[1];
+	img.region[2] = region[2];
+	img.region[3] = region[3];
+
+	std::pair<int, struct nk_image> pairData = std::make_pair(SID, img);
+	m_mapImage.insert(pairData);
+}
+
+void NuklearUI::Register_spr(sprLoader* pSpr)
+{
+	m_sprLoader = pSpr;
+}
+
+void NuklearUI::OpenFileDialog()
+{
+	OPENFILENAMEW ofn;
+	const size_t buffer_size = 65536; // 충분히 큰 버퍼 크기
+	wchar_t* szFile = new wchar_t[buffer_size];
+	ZeroMemory(szFile, buffer_size * sizeof(wchar_t));
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = buffer_size;
+	ofn.lpstrFilter = L"All Files\0*.*\0SPR Files\0*.spr;*.Spr;*.SPR\0";
+	ofn.nFilterIndex = 2; // 기본 선택을 SPR Files로 설정
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER;
+
+	if (GetOpenFileNameW(&ofn) == TRUE) {
+		wchar_t* p = szFile;
+		std::wstring directory = p;
+		p += directory.length() + 1;
+
+		while (*p) {
+			std::wstring filePath = directory + L"\\" + p;
+			std::filesystem::path path(filePath);
+			std::wstring extension = path.extension().wstring();
+			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
+			if (extension == L".spr") {
+				int size_needed = WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, NULL, 0, NULL, NULL);
+				char* result = new char[size_needed];
+				WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, result, size_needed, NULL, NULL);
+				LoadSprFile(result);
+				delete[] result;
+			}
+			p += wcslen(p) + 1;
+		}
+
+		// If only one file is selected, GetOpenFileNameW does not add the directory separately
+		if (directory.length() > 0 && *p == '\0') {
+			std::filesystem::path path(directory);
+			std::wstring extension = path.extension().wstring();
+			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
+			if (extension == L".spr") {
+				int size_needed = WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, NULL, 0, NULL, NULL);
+				char* result = new char[size_needed];
+				WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, result, size_needed, NULL, NULL);
+				LoadSprFile(result);
+				delete[] result;
+			}
+		}
+	}
+
+	delete[] szFile; // 동적으로 할당한 메모리 해제
+}
+void NuklearUI::LoadSprFile(const char* filename)
+{
+	sprData* pData = m_sprLoader->LoadSprite(filename);
+	m_mapSpr.insert(std::make_pair(filename, pData));
+}
+void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal)
+{
+	auto it = m_mapSpr.find(filename);
+	if (it != m_mapSpr.end()) {
+		sprData* pSpr = (*it).second;
+		bool bSuccess = RegisterRenderData(pSpr, bImmortal);
+		if (!bSuccess) {
+			throw;
+		}
+		int totalSprites = pSpr->GetSpr()->GetXCount() * pSpr->GetSpr()->GetYCount();
+
+		if (index >= 0 && index < totalSprites) {
+
+			int x = index % pSpr->GetSpr()->GetXCount();
+			int y = index % pSpr->GetSpr()->GetYCount();
+
+			struct nk_image img;
+			memset(&img, 0, sizeof(img));
+			img.handle = nk_handle_ptr(pSpr->GetSurface());
+
+			img.w = pSpr->GetSpr()->GetHres();
+			img.h = pSpr->GetSpr()->GetVres();
+
+			img.region[0] = pSpr->GetSpr()->GetXSize() * x;
+			img.region[1] = pSpr->GetSpr()->GetYSize() * y;
+			img.region[2] = pSpr->GetSpr()->GetXSize();
+			img.region[3] = pSpr->GetSpr()->GetYSize();
+
+			outimg = img;
+		}
+	}
+}
+void NuklearUI::GetImage(const char* filename, struct nk_image& outimg, bool bImmortal)
+{
+	auto it = m_mapSpr.find(filename);
+	if (it != m_mapSpr.end()) {
+		sprData* pSpr = (*it).second;
+		bool bSuccess = RegisterRenderData(pSpr, bImmortal);
+		if (!bSuccess) {
+			throw;
+		}
+		struct nk_image img;
+		memset(&img, 0, sizeof(img));
+		img.handle = nk_handle_ptr(pSpr->GetSurface());
+		outimg = img;
+	}
+}
+std::map<std::string, sprData*>* NuklearUI::GetSprMap()
+{
+	return &m_mapSpr;
+}
+bool NuklearUI::RegisterRenderData(sprData* pData, bool bImmortal)
+{
+	if (pData->GetSurface() == nullptr) {
+		pData->LoadTexture(m_dx7.d3d7.dd);
+		if (bImmortal) {
+			m_vecImmortalRenderData.push_back(pData);
+		}
+		else {
+			m_vecRenderData.push_back(pData);
+		}
+	}
+
+	if (pData->GetSurface()) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+void NuklearUI::ReleaseRenderData()
+{
+	for (auto it = m_vecRenderData.begin(); it != m_vecRenderData.end();) {
+		sprData* pData = *it;
+		pData->Release();
+		it = m_vecRenderData.erase(it);
+	}
+}
+#endif

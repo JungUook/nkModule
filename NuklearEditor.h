@@ -2,8 +2,6 @@
 #ifndef NuklearEditor_h__
 #define NuklearEditor_h__
 
-#include "NuklearUI.h"
-
 class NKBase;
 class NuklearUI;
 
@@ -56,6 +54,14 @@ private:
 
 	char m_popup_content[256];
 	bool m_show_popup;
+
+
+	//subWindow
+public:
+	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd);
+	void Render();
+
+	nk_context* m_ctx;
 };
 
 

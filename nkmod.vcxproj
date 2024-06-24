@@ -461,6 +461,7 @@
     <ClInclude Include="ComponentTab.h" />
     <ClInclude Include="ComponentToggle.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="DX7Renderer.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="NKBase.h" />
     <ClInclude Include="NKBaseLabel.h" />
@@ -530,6 +531,7 @@
     <ClCompile Include="ComponentTab.cpp" />
     <ClCompile Include="ComponentToggle.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="DX7Renderer.cpp" />
     <ClCompile Include="NKBase.cpp" />
     <ClCompile Include="NKBaseLabel.cpp" />
     <ClCompile Include="NKBaseStyle.cpp" />
@@ -581,7 +583,8 @@
     <ClCompile Include="NKWindow.cpp" />
     <ClCompile Include="NuklearEditor.cpp" />
     <ClCompile Include="NuklearUI.cpp" />
-    <ClCompile Include="NuklearUI_Implementation.cpp" />
+    <ClCompile Include="NuklearUI_DX7.cpp" />
+    <ClCompile Include="NuklearUI_DX9.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DX7_Debug|x64'">Create</PrecompiledHeader>

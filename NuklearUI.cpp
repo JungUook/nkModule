@@ -8,6 +8,158 @@
 #include <cereal/types/polymorphic.hpp>
 
 #include "UiLibrary.h"
+#include "NuklearEditor.h"
+
+NuklearEditor g_editor;
+
+NuklearUI::NuklearUI()
+{
+	m_ctx = nullptr;
+	m_font = nullptr;
+	m_bMouseHovering = false;
+	m_bEditActive = false;
+	m_original_height = 0;
+	m_pivot = nk_vec2(0, 0);
+	m_viewRect = nk_rect(0, 0, 0, 0);
+	Register_UI();
+#ifdef _NKDEBUG
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction);
+#endif // _NKDEBUG
+
+	m_lua = nullptr;
+}
+
+NuklearUI::~NuklearUI()
+{
+	m_ctx = nullptr;
+	m_font = nullptr;
+	m_bMouseHovering = false;
+	m_bEditActive = false;
+
+	m_lua = nullptr;
+}
+
+void NuklearUI::Release()
+{
+	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end();)
+	{
+		NKBase* pNKBase = *iter;
+
+		if (pNKBase)
+		{
+			unsigned int id = pNKBase->GetPrimaryID();
+			const char* name = pNKBase->GetPrimaryName();
+			m_mapModuleID.erase(id);
+			m_mapModuleName.erase(name);
+
+			pNKBase->Release();
+			delete pNKBase;
+			pNKBase = NULL;
+		}
+		iter = m_vecModule.erase(iter);
+	}
+
+	lua_close(m_lua);
+}
+
+void NuklearUI::NKInputBegin()
+{
+	if (m_ctx)
+		nk_input_begin(m_ctx);
+}
+
+void NuklearUI::NKInputEnd()
+{
+	if (m_ctx)
+		nk_input_end(m_ctx);
+}
+
+void NuklearUI::Update()
+{
+	m_bMouseHovering = false;
+	m_bEditActive = false;
+
+#ifdef _NKDEBUG
+	DebugLoadLuaFile(m_filePath);
+	RunFunction("Modify");
+#endif // _NKDEBUG
+
+	for (std::vector<NKBase*>::iterator iter = m_vecObject.begin(); iter != m_vecObject.end(); ++iter)
+	{
+		(*iter)->SafeRenderStart();
+		(*iter)->Update(m_ctx);
+
+		if ((*iter)->IsHovering())
+			m_bMouseHovering = true;
+		if ((*iter)->IsEditActive())
+			m_bEditActive = true;
+	}
+
+#ifdef _NKDEBUG
+	DebugLayout();
+#endif // _NKDEBUG
+}
+
+void NuklearUI::DebugLayout()
+{
+	static float debugRectWidth = 500.f;
+
+#ifdef _DX9
+	static float debugRectHeight = d3d9.viewport.Height - 50.f;
+	static float debugRectPosX = d3d9.viewport.Width - debugRectWidth;
+	static float debugRectPosY = 0;
+	static struct nk_rect debugRect = nk_rect(d3d9.viewport.Width - debugRectWidth, debugRectPosY, debugRectWidth, debugRectHeight);
+#elif _DX7
+
+	D3DVIEWPORT7 viewport;
+	m_dx7.d3d7.device->GetViewport(&viewport);
+
+	static float debugRectHeight = viewport.dwHeight - 50.f;
+	static float debugRectPosX = viewport.dwWidth - debugRectWidth;
+	static float debugRectPosY = 0;
+	static struct nk_rect debugRect = nk_rect(viewport.dwWidth - debugRectWidth, debugRectPosY, debugRectWidth, debugRectHeight);
+#endif
+
+	g_editor.EditorLayout(m_ctx, debugRect);
+}
+
+void NuklearUI::ErrorPopup(const char* content)
+{
+	g_editor.OpenErrorPopup(content);
+}
+
+struct nk_image* NuklearUI::SearchImage(int SID)
+{
+	auto found = m_mapImage.find(SID);
+
+	if (found != m_mapImage.end())
+	{
+		return &found->second;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+struct nk_rect* NuklearUI::GetViewport()
+{
+#ifdef _DX9
+	m_viewRect = nk_rect(0, 0, d3d9.viewport.Width, d3d9.viewport.Height);
+
+#elif _DX7
+	D3DVIEWPORT7 viewport;
+	m_dx7.d3d7.device->GetViewport(&viewport);
+	m_viewRect = nk_rect(0, 0, (float)viewport.dwWidth, (float)viewport.dwHeight);
+#endif // _DX9
+
+	return &m_viewRect;
+}
+
+BOOL NuklearUI::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
+{
+	return g_editor.InitSubWindow(hInstance, hMainWnd);
+}
 
 void NuklearUI::Register_UI()
 {

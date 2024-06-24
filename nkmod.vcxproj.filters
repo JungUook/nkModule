@@ -240,6 +240,9 @@
     <ClInclude Include="NKProperty.h">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClInclude>
+    <ClInclude Include="DX7Renderer.h">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -437,7 +440,13 @@
     <ClCompile Include="NKProperty.cpp">
       <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClCompile>
-    <ClCompile Include="NuklearUI_Implementation.cpp">
+    <ClCompile Include="NuklearUI_DX9.cpp">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClCompile>
+    <ClCompile Include="NuklearUI_DX7.cpp">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClCompile>
+    <ClCompile Include="DX7Renderer.cpp">
       <Filter>소스 파일\Nuklear</Filter>
     </ClCompile>
   </ItemGroup>

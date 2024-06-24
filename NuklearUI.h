@@ -2,16 +2,9 @@
 #ifndef NuklearUI_h__
 #define NuklearUI_h__
 
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_DEFAULT_FONT
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_STANDARD_VARARGS_h__
-#define NK_INCLUDE_DEFAULT_ALLOCATOR_h__
-#define NK_BUTTON_TRIGGER_ON_RELEASE
-#include <nuklear.h>
 #include "LuaLibrary.h"
 #include "LuaBridge/LuaBridge.h"
+#include "DX7Renderer.h"
 
 #include <vector>
 #include <map>
@@ -97,14 +90,6 @@ struct CustomData {
 class NuklearUI
 {
 public:
-	enum eLang {
-		KOR = 0,
-		JPN = 1,
-		TWA = 2,
-		CHI = 3
-	};
-
-public:
 	NuklearUI();
 	~NuklearUI();
 
@@ -142,6 +127,11 @@ public:
 	void IMEInputSystem(char* memory, int* len);
 
 private:
+
+#ifdef _DX7
+	DX7Renderer m_dx7;
+#endif
+
 	struct nk_context* m_ctx;
 	struct nk_font* m_font;
 	float m_original_height;
@@ -249,5 +239,11 @@ public:
 	void LoadFile(const std::string& filename);
 	void LoadNode(NKBase* pBase);
 	void ResetPrimaryID(NKBase* pBase);
+
+
+
+	//SubWindow
+public:
+	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd);
 };
 #endif //NuklearUI_h__
