@@ -195,6 +195,8 @@
     <TargetName>$(ProjectName)_d</TargetName>
     <IncludePath>$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
+    <IntDir>$(ProjectDir)..\..\..\BinTemp\GZ_SDK_2010\$(PlatformName)\$(ConfigurationName)\$(ProjectName)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Configuration)_$(PlatformName)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DX7_Debug|Win32'">
     <TargetName>$(ProjectName)_d</TargetName>
@@ -238,10 +240,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NKMOD_EXPORTS;FVF_XYZRHW#1;_DX7#1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NKMOD_EXPORTS;FVF_XYZRHW#1;_DX7#1;_NKDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -249,6 +252,17 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>nuklearui_d.lib;ddraw.lib;dxguid.lib;Lua54_d.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>del "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\lib\x86\$(TargetFileName)"
+rmdir /s /q "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\Include"
+exit 0</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>xcopy  "$(TargetPath)"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\lib\x86\"   /e /h /k /i /y
+xcopy  "$(OutputPath)$(TargetName).lib"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\lib\x86\"   /e /h /k /i /y
+xcopy  "$(OutputPath)$(TargetName).pdb"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\lib\x86\"   /e /h /k /i /y
+xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\Include\"   /e /h /k /i /y /exclude:xcopy_exclude_buildevent.txt</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DX7_Debug|Win32'">
     <ClCompile>
