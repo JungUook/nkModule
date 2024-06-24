@@ -1,6 +1,7 @@
 #include "pch.h"
-#include "NuklearEditor.h"
 #include "UiLibrary.h"
+#include "NuklearEditor.h"
+#include "NuklearUI.h"
 
 #include <iostream>
 #include <vector>
@@ -511,4 +512,55 @@ void NuklearEditor::Clear()
 	m_vecFunction->clear();
 
 	m_pManager->RunFunction("Init");
+}
+
+static LRESULT CALLBACK
+WindowProc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	}
+
+
+	return DefWindowProcW(wnd, msg, wparam, lparam);
+}
+
+BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
+{
+	WNDCLASSW wc;
+	RECT rect = { 0, 0, 512, 960 };
+	DWORD style = WS_OVERLAPPEDWINDOW;
+	DWORD exstyle = WS_EX_APPWINDOW;
+	HWND wnd;
+	int running = 1;
+
+	/* Win32 */
+	memset(&wc, 0, sizeof(wc));
+	wc.style = CS_DBLCLKS;
+	wc.lpfnWndProc = WindowProc;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.lpszClassName = L"NuklearWindowClass2";
+	RegisterClassW(&wc);
+
+	AdjustWindowRectEx(&rect, style, FALSE, exstyle);
+
+	wnd = CreateWindowExW(exstyle, wc.lpszClassName, L"Nuklear Direct3D 7 Demo2",
+		style | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT,
+		rect.right - rect.left, rect.bottom - rect.top,
+		hMainWnd, NULL, wc.hInstance, NULL);
+
+	ShowWindow(hMainWnd, true);
+	ShowWindow(wnd, true);
+
+	return TRUE;
+}
+
+void NuklearEditor::Render()
+{
+
 }

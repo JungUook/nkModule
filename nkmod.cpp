@@ -31,6 +31,10 @@ void RegistHWND(HWND wnd)
     hwnd = wnd;
 }
 
+BOOL InitSubWindow(HINSTANCE hInstance) {
+    return g_nuklear->InitSubWindow(hInstance, hwnd);
+}
+
 #ifdef _DX9
 void CreateD3D9Device(HWND wnd)
 {
@@ -267,7 +271,17 @@ void Render(IDirect3DDevice9* device)
 #elif _DX7
 void Render(void* device)
 {
-    g_nuklear->Render((IDirect3DDevice7*)device);
+    IDirect3DDevice7* pDevice = (IDirect3DDevice7*)device;
+
+    HRESULT hr;
+
+    hr = IDirect3DDevice7_BeginScene(pDevice);
+    assert(SUCCEEDED(hr));
+
+    g_nuklear->Render(pDevice);
+
+    hr = IDirect3DDevice7_EndScene(pDevice);
+    assert(SUCCEEDED(hr));
 }
 #endif
 

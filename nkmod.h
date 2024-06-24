@@ -19,6 +19,7 @@
 
 extern "C" {
 	NKMOD_API void RegistHWND(HWND wnd);
+	NKMOD_API BOOL InitSubWindow(HINSTANCE hInstance);
 #ifdef _DX9
 	NKMOD_API void CreateD3D9Device(HWND wnd);
 	NKMOD_API void Initialize(IDirect3DDevice9* device, int width, int height, int lang);
