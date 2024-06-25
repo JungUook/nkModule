@@ -36,19 +36,19 @@ void NKChart::Layout(nk_context* ctx)
     nk_chart_end(ctx);
 }
 
-void NKChart::SafeRenderStart()
+void NKChart::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKChart::SafeRenderEnd()
+void NKChart::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKChart::EditStyle()
+void NKChart::EditStyle(nk_context* ctx)
 {
-    NKBase::EditStyle();
-    EditComponentStyle(m_ctx, m_pManager);
+    NKBase::EditStyle(ctx);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKChart::AddValue(float value)

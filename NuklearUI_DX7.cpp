@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "NuklearUI.h"
-
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-#include <shlobj.h>
 
 #ifdef _DX7
 void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang)
@@ -34,9 +32,11 @@ void NuklearUI::Render(IDirect3DDevice7* pdevice)
 
 	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
 	{
-		(*iter)->SafeRenderEnd();
+		(*iter)->SafeRenderEnd(m_ctx);
 	}
 	ReleaseRenderData();
+
+	EditorRender();
 }
 int NuklearUI::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {

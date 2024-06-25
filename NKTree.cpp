@@ -38,31 +38,31 @@ void NKTree::Layout(nk_context* ctx)
     }
 }
 
-void NKTree::SafeRenderStart()
+void NKTree::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKTree::SafeRenderEnd()
+void NKTree::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKTree::EditInfo()
+void NKTree::EditInfo(nk_context* ctx)
 {
-    EditLabel(m_ctx, m_pManager);
+    EditLabel(ctx, m_pManager);
 
-    if (nk_tree_push(m_ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
-        if (nk_button_label(m_ctx, "Tree"))
+    if (nk_tree_push(ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
+        if (nk_button_label(ctx, "Tree"))
         {
             CreateUI("NKTree");
         }
-        nk_tree_pop(m_ctx);
+        nk_tree_pop(ctx);
     }
 }
 
-void NKTree::EditStyle()
+void NKTree::EditStyle(nk_context* ctx)
 {
-    EditComponentStyle(m_ctx, m_pManager);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKTree::SetState(nk_collapse_states state)

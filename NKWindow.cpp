@@ -57,36 +57,36 @@ void NKWindow::Layout(nk_context* ctx)
 	nk_end(ctx);
 }
 
-void NKWindow::SafeRenderStart()
+void NKWindow::SafeRenderStart(nk_context* ctx)
 {
-	UpdateComponent(m_ctx, m_pManager);
+	UpdateComponent(ctx, m_pManager);
 }
 
-void NKWindow::SafeRenderEnd()
+void NKWindow::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKWindow::EditInfo()
+void NKWindow::EditInfo(nk_context* ctx)
 {
-	EditInfoWindowProperty(m_ctx, m_flags);
+	EditInfoWindowProperty(ctx, m_flags);
 
-	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
-		if (nk_button_label(m_ctx, "Space"))
+	if (nk_tree_push(ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
+		if (nk_button_label(ctx, "Space"))
 		{
 			CreateUI("NKSpace");
 		}
-		if (nk_button_label(m_ctx, "SuperStyle"))
+		if (nk_button_label(ctx, "SuperStyle"))
 		{
 			CreateUI("NKSuperStyleObject");
 		}
-		nk_tree_pop(m_ctx);
+		nk_tree_pop(ctx);
 	}
 }
 
-void NKWindow::EditStyle()
+void NKWindow::EditStyle(nk_context* ctx)
 {
-	NKBase::EditStyle();
-	EditComponentStyle(m_ctx, m_pManager);
+	NKBase::EditStyle(ctx);
+	EditComponentStyle(ctx, m_pManager);
 }
 
 void NKWindow::UpdateComponent(nk_context* ctx, NuklearUI* pManager)

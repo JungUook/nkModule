@@ -20,12 +20,12 @@ void NKColorPicker::Layout(nk_context* ctx)
     nk_color_pick(ctx, &m_color, NK_RGBA);
 }
 
-void NKColorPicker::SafeRenderStart()
+void NKColorPicker::SafeRenderStart(nk_context* ctx)
 {
-    //UpdateComponent(m_ctx, m_pManager);
+    //UpdateComponent(ctx, m_pManager);
 }
 
-void NKColorPicker::SafeRenderEnd()
+void NKColorPicker::SafeRenderEnd(nk_context* ctx)
 {
 }
 

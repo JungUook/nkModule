@@ -34,18 +34,18 @@ void NKSlider::Layout(nk_context* ctx)
     nk_slider_float(ctx, m_min, &m_value, m_max, 0.01f);
 }
 
-void NKSlider::SafeRenderStart()
+void NKSlider::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKSlider::SafeRenderEnd()
+void NKSlider::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKSlider::EditStyle()
+void NKSlider::EditStyle(nk_context* ctx)
 {
-    EditComponentStyle(m_ctx, m_pManager);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKSlider::SetRange(float min, float max)

@@ -40,32 +40,32 @@ void NKGroup::Layout(nk_context* ctx)
 	}
 }
 
-void NKGroup::SafeRenderStart()
+void NKGroup::SafeRenderStart(nk_context* ctx)
 {
-	UpdateComponent(m_ctx, m_pManager);
+	UpdateComponent(ctx, m_pManager);
 }
 
-void NKGroup::SafeRenderEnd()
+void NKGroup::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKGroup::EditInfo()
+void NKGroup::EditInfo(nk_context* ctx)
 {
-	EditInfoWindowProperty(m_ctx, m_flags);
+	EditInfoWindowProperty(ctx, m_flags);
 
-	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
-		if (nk_button_label(m_ctx, "Space"))
+	if (nk_tree_push(ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
+		if (nk_button_label(ctx, "Space"))
 		{
 			CreateUI("NKSpace");
 		}
-		nk_tree_pop(m_ctx);
+		nk_tree_pop(ctx);
 	}
 }
 
-void NKGroup::EditStyle()
+void NKGroup::EditStyle(nk_context* ctx)
 {
-	NKBase::EditStyle();
-	EditComponentStyle(m_ctx, m_pManager);
+	NKBase::EditStyle(ctx);
+	EditComponentStyle(ctx, m_pManager);
 }
 
 void NKGroup::UpdateComponent(nk_context* ctx, NuklearUI* pManager)

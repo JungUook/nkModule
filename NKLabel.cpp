@@ -33,22 +33,22 @@ void NKLabel::Layout(nk_context* ctx)
 	nk_label(ctx, m_cContent, m_flags);
 }
 
-void NKLabel::SafeRenderStart()
+void NKLabel::SafeRenderStart(nk_context* ctx)
 {
-	UpdateComponent(m_ctx, m_pManager);
+	UpdateComponent(ctx, m_pManager);
 }
 
-void NKLabel::SafeRenderEnd()
+void NKLabel::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKLabel::EditInfo()
+void NKLabel::EditInfo(nk_context* ctx)
 {
-	EditLabel(m_ctx, m_pManager);
+	EditLabel(ctx, m_pManager);
 }
 
-void NKLabel::EditStyle()
+void NKLabel::EditStyle(nk_context* ctx)
 {
-	NKBase::EditStyle();
-	EditComponentStyle(m_ctx, m_pManager);
+	NKBase::EditStyle(ctx);
+	EditComponentStyle(ctx, m_pManager);
 }

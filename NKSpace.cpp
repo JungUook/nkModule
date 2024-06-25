@@ -56,101 +56,101 @@ void NKSpace::Layout(nk_context* ctx)
 	}
 }
 
-void NKSpace::SafeRenderStart()
+void NKSpace::SafeRenderStart(nk_context* ctx)
 {
-	//UpdateComponent(m_ctx, m_pManager);
+	//UpdateComponent(ctx, m_pManager);
 }
 
-void NKSpace::SafeRenderEnd()
+void NKSpace::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKSpace::EditInfo()
+void NKSpace::EditInfo(nk_context* ctx)
 {
-	nk_layout_row_dynamic(m_ctx, 22, 1);
+	nk_layout_row_dynamic(ctx, 22, 1);
 
-	nk_label(m_ctx, "Space_Type", NK_TEXT_LEFT);
-	if (nk_option_label(m_ctx, "STATIC", m_layoutFormat == NK_STATIC)) m_layoutFormat = NK_STATIC;
-	if (nk_option_label(m_ctx, "DYNAMIC", m_layoutFormat == NK_DYNAMIC)) m_layoutFormat = NK_DYNAMIC;
+	nk_label(ctx, "Space_Type", NK_TEXT_LEFT);
+	if (nk_option_label(ctx, "STATIC", m_layoutFormat == NK_STATIC)) m_layoutFormat = NK_STATIC;
+	if (nk_option_label(ctx, "DYNAMIC", m_layoutFormat == NK_DYNAMIC)) m_layoutFormat = NK_DYNAMIC;
 
 	if (m_layoutFormat == NK_DYNAMIC)
 	{
-		nk_label(m_ctx, "Widget_Count", NK_TEXT_LEFT);
-		nk_property_int(m_ctx, "#Count:", 1, &m_dynamicCount, 16, 1, 1);
+		nk_label(ctx, "Widget_Count", NK_TEXT_LEFT);
+		nk_property_int(ctx, "#Count:", 1, &m_dynamicCount, 16, 1, 1);
 	}
 
 
-	nk_layout_row_dynamic(m_ctx, 22, 1);
-	nk_label(m_ctx, "Create_UI", NK_TEXT_LEFT);
-	if (nk_button_label(m_ctx, "Group"))
+	nk_layout_row_dynamic(ctx, 22, 1);
+	nk_label(ctx, "Create_UI", NK_TEXT_LEFT);
+	if (nk_button_label(ctx, "Group"))
 	{
 		CreateUI("NKGroup");
 	}
-	if (nk_button_label(m_ctx, "Popup"))
+	if (nk_button_label(ctx, "Popup"))
 	{
 		CreateUI("NKPopup");
 	}
-	if (nk_button_label(m_ctx, "Combo"))
+	if (nk_button_label(ctx, "Combo"))
 	{
 		CreateUI("NKCombo");
 	}
-	if (nk_button_label(m_ctx, "Button"))
+	if (nk_button_label(ctx, "Button"))
 	{
 		CreateUI("NKButton");
 	}
-	if (nk_button_label(m_ctx, "InputBox"))
+	if (nk_button_label(ctx, "InputBox"))
 	{
 		CreateUI("NKEdit");
 	}
-	if (nk_button_label(m_ctx, "Image"))
+	if (nk_button_label(ctx, "Image"))
 	{
 		CreateUI("NKImage");
 	}
-	if (nk_button_label(m_ctx, "Label"))
+	if (nk_button_label(ctx, "Label"))
 	{
 		CreateUI("NKLabel");
 	}
-	if (nk_button_label(m_ctx, "CheckBox"))
+	if (nk_button_label(ctx, "CheckBox"))
 	{
 		CreateUI("NKCheckbox");
 	}
-	if (nk_button_label(m_ctx, "Slider"))
+	if (nk_button_label(ctx, "Slider"))
 	{
 		CreateUI("NKSlider");
 	}
-	if (nk_button_label(m_ctx, "Progress"))
+	if (nk_button_label(ctx, "Progress"))
 	{
 		CreateUI("NKProgress");
 	}
-	if (nk_button_label(m_ctx, "Selectable"))
+	if (nk_button_label(ctx, "Selectable"))
 	{
 		CreateUI("NKSelectable");
 	}
-	if (nk_button_label(m_ctx, "Tree"))
+	if (nk_button_label(ctx, "Tree"))
 	{
 		CreateUI("NKTree");
 	}
-	if (nk_button_label(m_ctx, "Chart"))
+	if (nk_button_label(ctx, "Chart"))
 	{
 		CreateUI("NKChart");
 	}
-	if (nk_button_label(m_ctx, "Tooltip"))
+	if (nk_button_label(ctx, "Tooltip"))
 	{
 		CreateUI("NKTooltip");
 	}
-	if (nk_button_label(m_ctx, "Menu"))
+	if (nk_button_label(ctx, "Menu"))
 	{
 		CreateUI("NKMenu");
 	}
-	if (nk_button_label(m_ctx, "ColorPicker"))
+	if (nk_button_label(ctx, "ColorPicker"))
 	{
 		CreateUI("NKColorPicker");
 	}
 }
 
-void NKSpace::EditStyle()
+void NKSpace::EditStyle(nk_context* ctx)
 {
-	nk_label(m_ctx, "None", NK_TEXT_LEFT);
+	nk_label(ctx, "None", NK_TEXT_LEFT);
 }
 
 void NKSpace::SetLayout(int type)

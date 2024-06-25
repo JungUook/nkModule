@@ -32,23 +32,23 @@ void NKSelectable::Layout(nk_context* ctx)
     }
 }
 
-void NKSelectable::SafeRenderStart()
+void NKSelectable::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKSelectable::SafeRenderEnd()
+void NKSelectable::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKSelectable::EditInfo()
+void NKSelectable::EditInfo(nk_context* ctx)
 {
-    EditLabel(m_ctx, m_pManager);
+    EditLabel(ctx, m_pManager);
 }
 
-void NKSelectable::EditStyle()
+void NKSelectable::EditStyle(nk_context* ctx)
 {
-    EditComponentStyle(m_ctx, m_pManager);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKSelectable::SetLabel(const char* text)

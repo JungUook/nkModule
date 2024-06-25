@@ -39,21 +39,21 @@ void NKMenu::Layout(nk_context* ctx)
     }
 }
 
-void NKMenu::SafeRenderStart()
+void NKMenu::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKMenu::SafeRenderEnd()
+void NKMenu::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKMenu::EditInfo()
+void NKMenu::EditInfo(nk_context* ctx)
 {
-    EditLabel(m_ctx, m_pManager);
+    EditLabel(ctx, m_pManager);
 
-    nk_layout_row_dynamic(m_ctx, 33, 1);
-    if (nk_button_label(m_ctx, "Add")) {
+    nk_layout_row_dynamic(ctx, 33, 1);
+    if (nk_button_label(ctx, "Add")) {
         MenuItem label;
         strcpy_s(label.name, "Item");
         strcpy_s(label.data.name, "None");
@@ -62,35 +62,35 @@ void NKMenu::EditInfo()
         m_items.push_back(label);
     }
 
-    nk_layout_row_dynamic(m_ctx, 500, 1);
-    if (nk_group_begin(m_ctx, "Menu Item List", NK_WINDOW_TITLE)) {
+    nk_layout_row_dynamic(ctx, 500, 1);
+    if (nk_group_begin(ctx, "Menu Item List", NK_WINDOW_TITLE)) {
         for (auto it = m_items.begin(); it != m_items.end(); ++it)
         {
             MenuItem& item = *it;
-            if (nk_tree_push_id(m_ctx, NK_TREE_TAB, it->name, NK_MINIMIZED, reinterpret_cast<intptr_t>(&item))) {
+            if (nk_tree_push_id(ctx, NK_TREE_TAB, it->name, NK_MINIMIZED, reinterpret_cast<intptr_t>(&item))) {
                 float tree_layout[2] = { 0.f, };
                 tree_layout[0] = 0.3f;
                 tree_layout[1] = 0.7f;
-                nk_layout_row(m_ctx, NK_DYNAMIC, 55, 2, tree_layout);
+                nk_layout_row(ctx, NK_DYNAMIC, 55, 2, tree_layout);
 
-                nk_label(m_ctx, "name: ", NK_TEXT_LEFT);
+                nk_label(ctx, "name: ", NK_TEXT_LEFT);
                 m_pManager->IMEInputSystem(item.name, sizeof(item.name), &item.nameLen);
 
-                nk_label(m_ctx, "funcname: ", NK_TEXT_LEFT);
+                nk_label(ctx, "funcname: ", NK_TEXT_LEFT);
                 m_pManager->IMEInputSystem(item.data.name, sizeof(item.data.name), &item.data.nameLen);
 
-                nk_label(m_ctx, "table: ", NK_TEXT_LEFT);
+                nk_label(ctx, "table: ", NK_TEXT_LEFT);
                 m_pManager->IMEInputSystem(item.data.tableName, sizeof(item.data.tableName), &item.data.tableLen);
 
-                nk_tree_pop(m_ctx);
+                nk_tree_pop(ctx);
             }
         }
-        nk_group_end(m_ctx);
+        nk_group_end(ctx);
     }
 }
 
-void NKMenu::EditStyle()
+void NKMenu::EditStyle(nk_context* ctx)
 {
-    NKBase::EditStyle();
-    EditComponentStyle(m_ctx, m_pManager);
+    NKBase::EditStyle(ctx);
+    EditComponentStyle(ctx, m_pManager);
 }

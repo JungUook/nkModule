@@ -52,36 +52,36 @@ void NKImage::Layout(nk_context* ctx)
 	}
 }
 
-void NKImage::SafeRenderStart()
+void NKImage::SafeRenderStart(nk_context* ctx)
 {
-	//UpdateComponent(m_ctx, m_pManager);
+	//UpdateComponent(ctx, m_pManager);
 }
 
-void NKImage::SafeRenderEnd()
+void NKImage::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKImage::EditInfo()
+void NKImage::EditInfo(nk_context* ctx)
 {
 	auto mapSpr = m_pManager->GetSprMap();
 	int size = mapSpr->size();
 
 	if (m_sprSize > 0)
 	{
-		nk_layout_row_dynamic(m_ctx, 22, 1);
-		nk_property_int(m_ctx, "#Index:", 0, &m_sprIndex, m_sprSize - 1, 1, 1);
+		nk_layout_row_dynamic(ctx, 22, 1);
+		nk_property_int(ctx, "#Index:", 0, &m_sprIndex, m_sprSize - 1, 1, 1);
 	}
 
-	nk_layout_row_dynamic(m_ctx, 22, 2);
-	nk_label(m_ctx, "Selected:", NK_TEXT_LEFT);
+	nk_layout_row_dynamic(ctx, 22, 2);
+	nk_label(ctx, "Selected:", NK_TEXT_LEFT);
 	std::filesystem::path filePath(m_imagePath.c_str());
-	nk_label(m_ctx, filePath.filename().string().c_str(), NK_TEXT_RIGHT);
-	if (nk_button_label(m_ctx, "apply"))
+	nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_RIGHT);
+	if (nk_button_label(ctx, "apply"))
 	{
 		struct nk_image img;
 		m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img, true);
 	}
-	if (nk_button_label(m_ctx, "clear"))
+	if (nk_button_label(ctx, "clear"))
 	{
 		m_imagePath = "None";
 		m_sprIndex = 0;
@@ -90,18 +90,18 @@ void NKImage::EditInfo()
 
 	if (size > 0)
 	{
-		nk_layout_row_dynamic(m_ctx, 300, 1);
-		if (nk_group_begin(m_ctx, "SPR List", NK_WINDOW_TITLE)) {
+		nk_layout_row_dynamic(ctx, 300, 1);
+		if (nk_group_begin(ctx, "SPR List", NK_WINDOW_TITLE)) {
 
 			float ratio[2] = { 0.8f, 0.2f };
-			nk_layout_row(m_ctx, NK_DYNAMIC, 22, 2, ratio);
+			nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
 			int selected = 0;
 
 			for (auto it = mapSpr->begin(); it != mapSpr->end(); ++it) {
 				std::filesystem::path filePath((*it).first.c_str());
-				nk_label(m_ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
+				nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
 
-				if (nk_button_label(m_ctx, "Load")) {
+				if (nk_button_label(ctx, "Load")) {
 					m_imagePath = (*it).first;
 					m_sprSize = ((*it).second)->GetSpr()->GetXCount() * ((*it).second)->GetSpr()->GetYCount();
 					if (m_sprSize <= m_sprIndex) {
@@ -109,7 +109,7 @@ void NKImage::EditInfo()
 					}
 				}
 			}
-			nk_group_end(m_ctx);
+			nk_group_end(ctx);
 		}
 	}
 }

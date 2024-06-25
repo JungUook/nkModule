@@ -68,47 +68,47 @@ void NKCombo::Layout(nk_context* ctx)
 	}
 }
 
-void NKCombo::SafeRenderStart()
+void NKCombo::SafeRenderStart(nk_context* ctx)
 {
-	UpdateComponent(m_ctx, m_pManager);
+	UpdateComponent(ctx, m_pManager);
 }
 
-void NKCombo::SafeRenderEnd()
+void NKCombo::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKCombo::EditInfo()
+void NKCombo::EditInfo(nk_context* ctx)
 {
-	nk_layout_row_dynamic(m_ctx, 22, 1);
-	nk_label(m_ctx, "Create_UI", NK_TEXT_LEFT);
-	if (nk_button_label(m_ctx, "ComboItem"))
+	nk_layout_row_dynamic(ctx, 22, 1);
+	nk_label(ctx, "Create_UI", NK_TEXT_LEFT);
+	if (nk_button_label(ctx, "ComboItem"))
 	{
 		CreateUI("NKComboItem");
 	}
 
-	nk_label(m_ctx, "alignment", NK_TEXT_LEFT);
-	nk_layout_row_dynamic(m_ctx, 22, 3);
-	if (nk_option_label(m_ctx, "left", m_labelAlignment == NK_TEXT_LEFT)) m_labelAlignment = NK_TEXT_LEFT;
-	if (nk_option_label(m_ctx, "center", m_labelAlignment == NK_TEXT_CENTERED)) m_labelAlignment = NK_TEXT_CENTERED;
-	if (nk_option_label(m_ctx, "right", m_labelAlignment == NK_TEXT_RIGHT)) m_labelAlignment = NK_TEXT_RIGHT;
+	nk_label(ctx, "alignment", NK_TEXT_LEFT);
+	nk_layout_row_dynamic(ctx, 22, 3);
+	if (nk_option_label(ctx, "left", m_labelAlignment == NK_TEXT_LEFT)) m_labelAlignment = NK_TEXT_LEFT;
+	if (nk_option_label(ctx, "center", m_labelAlignment == NK_TEXT_CENTERED)) m_labelAlignment = NK_TEXT_CENTERED;
+	if (nk_option_label(ctx, "right", m_labelAlignment == NK_TEXT_RIGHT)) m_labelAlignment = NK_TEXT_RIGHT;
 
-	PropertyVector2(m_ctx, "Label Size", m_labelSize, .0f, 500.f, 0.01f, 0.01f);
+	PropertyVector2(ctx, "Label Size", m_labelSize, .0f, 500.f, 0.01f, 0.01f);
 
-	if (nk_tree_push(m_ctx, NK_TREE_NODE, "Combo Item List", NK_MINIMIZED)) {
+	if (nk_tree_push(ctx, NK_TREE_NODE, "Combo Item List", NK_MINIMIZED)) {
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
 			if ((*it)->GetType() == eCOMBO_ITEM)
 			{
 				NKComboItem* pItem = (NKComboItem*)(*it);
-				pItem->EditInfo();
+				pItem->EditInfo(ctx);
 			}
 		}
-		nk_tree_pop(m_ctx);
+		nk_tree_pop(ctx);
 	}	
 }
 
-void NKCombo::EditStyle()
+void NKCombo::EditStyle(nk_context* ctx)
 {
-	EditComponentStyle(m_ctx, m_pManager);
+	EditComponentStyle(ctx, m_pManager);
 }
 
 void NKCombo::SetComboName(const char* name)

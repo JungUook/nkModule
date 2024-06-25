@@ -32,22 +32,22 @@ void NKButton::Layout(nk_context* ctx)
 	}
 }
 
-void NKButton::SafeRenderStart()
+void NKButton::SafeRenderStart(nk_context* ctx)
 {
-	UpdateComponent(m_ctx, m_pManager);
+	UpdateComponent(ctx, m_pManager);
 }
 
-void NKButton::SafeRenderEnd()
+void NKButton::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKButton::EditInfo()
+void NKButton::EditInfo(nk_context* ctx)
 {
-	EditLabel(m_ctx, m_pManager);
+	EditLabel(ctx, m_pManager);
 }
 
-void NKButton::EditStyle()
+void NKButton::EditStyle(nk_context* ctx)
 {
-	NKBase::EditStyle();
-	EditComponentStyle(m_ctx, m_pManager);
+	NKBase::EditStyle(ctx);
+	EditComponentStyle(ctx, m_pManager);
 }

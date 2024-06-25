@@ -10,6 +10,8 @@
 #include <string>
 #include <windows.h>
 
+NuklearEditor* g_Editor;
+
 NuklearEditor::NuklearEditor()
 {
 	m_pManager = nullptr;
@@ -28,11 +30,22 @@ NuklearEditor::NuklearEditor()
 	m_vecVariable = nullptr;
 	m_vecFunction = nullptr;
 	m_show_popup = 0;
+
+	m_ctx = nullptr;
+
+	pDD = nullptr;
+	pDDSPrimary = nullptr;
+	pDDSBackBuffer = nullptr;
+	pClipper = nullptr;
+	pD3D = nullptr;
+	pD3DDevice = nullptr;
 	memset(m_popup_content, 0, sizeof(m_popup_content));
+	g_Editor = this;
 }
 
 NuklearEditor::~NuklearEditor()
 {
+	g_Editor = nullptr;
 }
 
 void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction)
@@ -50,9 +63,10 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 	m_vecFunction = vfunction;
 }
 
-void NuklearEditor::EditorLayout(nk_context* ctx, struct nk_rect debugRect)
+void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 {
-	if (nk_begin(ctx, "debug", debugRect, NK_WINDOW_TITLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_MOVABLE))
+	nk_context* ctx = m_ctx;
+	if (nk_begin(ctx, "debug", debugRect, 0))
 	{
 		if (nk_tree_push(ctx, NK_TREE_TAB, "System", NK_MINIMIZED)) {
 
@@ -298,7 +312,7 @@ void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 				nk_label(ctx, viewportStr, NK_TEXT_RIGHT);
 				nk_tree_pop(ctx);
 			}
-			m_selectedNode->LayoutEditor();
+			m_selectedNode->LayoutEditor(ctx);
 		}
 		nk_group_end(ctx);
 	}
@@ -523,9 +537,33 @@ WindowProc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 	}
-
+	g_Editor->HandleEvent(wnd, msg, wparam, lparam);
 
 	return DefWindowProcW(wnd, msg, wparam, lparam);
+}
+
+int NuklearEditor::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+
+	case WM_SIZE:
+		if (m_dx7.d3d7.device)
+		{
+			UINT width = LOWORD(lparam);
+			UINT height = HIWORD(lparam);
+			if (width != 0 && height != 0)
+			{
+				m_dx7.nk_d3d7_resize(width, height);
+			}
+		}
+		break;
+	}
+
+	return m_dx7.nk_d3d7_handle_event(wnd, msg, wparam, lparam);
 }
 
 BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
@@ -534,7 +572,7 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 	RECT rect = { 0, 0, 512, 960 };
 	DWORD style = WS_OVERLAPPEDWINDOW;
 	DWORD exstyle = WS_EX_APPWINDOW;
-	HWND wnd;
+	
 	int running = 1;
 
 	/* Win32 */
@@ -549,7 +587,7 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 
 	AdjustWindowRectEx(&rect, style, FALSE, exstyle);
 
-	wnd = CreateWindowExW(exstyle, wc.lpszClassName, L"Nuklear Direct3D 7 Demo2",
+	wnd = CreateWindowExW(exstyle, wc.lpszClassName, L"UI Editor",
 		style | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT,
 		rect.right - rect.left, rect.bottom - rect.top,
 		hMainWnd, NULL, wc.hInstance, NULL);
@@ -557,10 +595,98 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 	ShowWindow(hMainWnd, true);
 	ShowWindow(wnd, true);
 
+	CHAR path[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, path))) {
+		std::cout << "System font path: " << path << std::endl;
+	}
+
+	HRESULT hr;
+	hr = DirectDrawCreateEx(NULL, (void**)&pDD, IID_IDirectDraw7, NULL);
+	if (FAILED(hr)) return FALSE;
+
+	hr = pDD->SetCooperativeLevel(wnd, DDSCL_NORMAL);
+	if (FAILED(hr)) return FALSE;
+
+	memset(&ddsd, 0, sizeof(ddsd));
+	ddsd.dwSize = sizeof(ddsd);
+	ddsd.dwFlags = DDSD_CAPS;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+	hr = pDD->CreateSurface(&ddsd, &pDDSPrimary, NULL);
+	if (FAILED(hr)) return FALSE;
+
+	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
+	ddsd.dwWidth = 512;
+	ddsd.dwHeight = 960;
+
+	hr = pDD->CreateSurface(&ddsd, &pDDSBackBuffer, NULL);
+	if (FAILED(hr)) return FALSE;
+
+	hr = pDD->CreateClipper(0, &pClipper, NULL);
+	if (FAILED(hr)) return FALSE;
+	hr = pClipper->SetHWnd(0, wnd);
+	if (FAILED(hr)) return FALSE;
+	hr = pDDSPrimary->SetClipper(pClipper);
+	if (FAILED(hr)) return FALSE;
+
+	hr = pDD->QueryInterface(IID_IDirect3D7, (void**)&pD3D);
+	if (FAILED(hr)) return FALSE;
+
+	hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
+	if (FAILED(hr)) return FALSE;
+
+	D3DVIEWPORT7 vp;
+	vp.dwX = 0;  // X 오프셋을 0으로 설정
+	vp.dwY = 0;  // Y 오프셋을 0으로 설정
+	vp.dwWidth = 512;
+	vp.dwHeight = 960;
+	vp.dvMinZ = 0.0f;
+	vp.dvMaxZ = 1.0f;
+	pD3DDevice->SetViewport(&vp);
+
+	m_ctx = m_dx7.nk_d3d7_init(pDD, pD3DDevice);
+
+	struct nk_font_atlas* atlas;
+	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, 0);
+
+
 	return TRUE;
 }
 
 void NuklearEditor::Render()
 {
+	HRESULT hr;
+	hr = IDirect3DDevice7_Clear(pD3DDevice, 1, NULL, D3DCLEAR_TARGET, D3DRGBA(0, 0, 0, 1), 1.0f, 0);
+	assert(SUCCEEDED(hr));
 
+	hr = IDirect3DDevice7_BeginScene(pD3DDevice);
+	assert(SUCCEEDED(hr));
+	m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
+	hr = IDirect3DDevice7_EndScene(pD3DDevice);
+	assert(SUCCEEDED(hr));
+
+
+	int xindent = 0;
+	int yindent = 0;
+
+	RECT rect;
+	GetClientRect(wnd, &rect);
+
+	if (ClientToScreen(wnd, (POINT*)&rect) == FALSE) return;
+	if (ClientToScreen(wnd, (POINT*)&rect + 1) == FALSE) return;
+
+	rect.left += xindent;
+	rect.top += yindent;
+
+	rect.right = rect.left + 512;
+	rect.bottom = rect.top + 960;
+
+	RECT srcrect = rect;
+	srcrect.right -= srcrect.left;
+	srcrect.left = 0;
+	srcrect.bottom -= srcrect.top;
+	srcrect.top = 0;
+
+	pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
+	assert(SUCCEEDED(hr));
 }

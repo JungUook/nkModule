@@ -15,10 +15,10 @@ public:
 
 public:
     virtual void Layout(nk_context* ctx) override;
-    virtual void SafeRenderStart() override;
-    virtual void SafeRenderEnd() override;
-    virtual void EditInfo() override;
-    virtual void EditStyle() override;
+    virtual void SafeRenderStart(nk_context* ctx) override;
+    virtual void SafeRenderEnd(nk_context* ctx) override;
+    virtual void EditInfo(nk_context* ctx) override;
+    virtual void EditStyle(nk_context* ctx) override;
 
     void SetState(nk_collapse_states state);
     nk_collapse_states GetState() const;

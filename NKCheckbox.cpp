@@ -28,23 +28,23 @@ void NKCheckbox::Layout(nk_context* ctx)
     nk_checkbox_label(ctx, m_cContent, &m_checked);
 }
 
-void NKCheckbox::SafeRenderStart()
+void NKCheckbox::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKCheckbox::SafeRenderEnd()
+void NKCheckbox::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKCheckbox::EditInfo()
+void NKCheckbox::EditInfo(nk_context* ctx)
 {
-    EditLabel(m_ctx, m_pManager);
+    EditLabel(ctx, m_pManager);
 }
 
-void NKCheckbox::EditStyle()
+void NKCheckbox::EditStyle(nk_context* ctx)
 {
-    EditComponentStyle(m_ctx, m_pManager);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKCheckbox::SetChecked(bool checked)

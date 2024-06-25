@@ -28,18 +28,18 @@ void NKProgress::Layout(nk_context* ctx)
     nk_progress(ctx, &m_progress, 100, NK_MODIFIABLE);
 }
 
-void NKProgress::SafeRenderStart()
+void NKProgress::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKProgress::SafeRenderEnd()
+void NKProgress::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKProgress::EditStyle()
+void NKProgress::EditStyle(nk_context* ctx)
 {
-    EditComponentStyle(m_ctx, m_pManager);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKProgress::SetProgress(nk_size progress)

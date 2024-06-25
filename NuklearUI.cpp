@@ -66,12 +66,17 @@ void NuklearUI::NKInputBegin()
 {
 	if (m_ctx)
 		nk_input_begin(m_ctx);
+
+	if (g_editor.m_ctx)
+		nk_input_begin(g_editor.m_ctx);
 }
 
 void NuklearUI::NKInputEnd()
 {
 	if (m_ctx)
 		nk_input_end(m_ctx);
+	if (g_editor.m_ctx)
+		nk_input_end(g_editor.m_ctx);
 }
 
 void NuklearUI::Update()
@@ -86,7 +91,7 @@ void NuklearUI::Update()
 
 	for (std::vector<NKBase*>::iterator iter = m_vecObject.begin(); iter != m_vecObject.end(); ++iter)
 	{
-		(*iter)->SafeRenderStart();
+		(*iter)->SafeRenderStart(m_ctx);
 		(*iter)->Update(m_ctx);
 
 		if ((*iter)->IsHovering())
@@ -114,13 +119,16 @@ void NuklearUI::DebugLayout()
 	D3DVIEWPORT7 viewport;
 	m_dx7.d3d7.device->GetViewport(&viewport);
 
-	static float debugRectHeight = viewport.dwHeight - 50.f;
+	//static float debugRectHeight = viewport.dwHeight - 50.f;
+	static float debugRectHeight = 950.f;
 	static float debugRectPosX = viewport.dwWidth - debugRectWidth;
 	static float debugRectPosY = 0;
-	static struct nk_rect debugRect = nk_rect(viewport.dwWidth - debugRectWidth, debugRectPosY, debugRectWidth, debugRectHeight);
+	//static struct nk_rect debugRect = nk_rect(viewport.dwWidth - debugRectWidth, debugRectPosY, debugRectWidth, debugRectHeight);
+	static struct nk_rect debugRect = nk_rect(0, debugRectPosY, debugRectWidth, debugRectHeight);
+
 #endif
 
-	g_editor.EditorLayout(m_ctx, debugRect);
+	g_editor.EditorLayout(debugRect);
 }
 
 void NuklearUI::ErrorPopup(const char* content)
@@ -159,6 +167,11 @@ struct nk_rect* NuklearUI::GetViewport()
 BOOL NuklearUI::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 {
 	return g_editor.InitSubWindow(hInstance, hMainWnd);
+}
+
+void NuklearUI::EditorRender()
+{
+	g_editor.Render();
 }
 
 void NuklearUI::Register_UI()

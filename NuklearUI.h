@@ -245,5 +245,6 @@ public:
 	//SubWindow
 public:
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd);
+	void EditorRender();
 };
 #endif //NuklearUI_h__

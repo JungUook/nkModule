@@ -21,4 +21,6 @@
 #define NK_BUTTON_TRIGGER_ON_RELEASE
 #include <nuklear.h>
 
+#include <stb_image.h>
+#include <shlobj.h>
 #endif //PCH_H

@@ -28,18 +28,18 @@ void NKScrollbar::Layout(nk_context* ctx)
     nk_slider_float(ctx, 0.0f, &m_scroll, 1.0f, 0.01f);
 }
 
-void NKScrollbar::SafeRenderStart()
+void NKScrollbar::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKScrollbar::SafeRenderEnd()
+void NKScrollbar::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKScrollbar::EditStyle()
+void NKScrollbar::EditStyle(nk_context* ctx)
 {
-    EditComponentStyle(m_ctx, m_pManager);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKScrollbar::UpdateComponent(nk_context* ctx, NuklearUI* pManager)

@@ -15,7 +15,7 @@ public:
 
 public:
 	void EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction);
-	void EditorLayout(nk_context* ctx, struct nk_rect debugRect);
+	void EditorLayout(struct nk_rect debugRect);
 
 	void NodeLayout(nk_context* ctx, int width);
 	void NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkType, nk_collapse_states nkState);
@@ -58,10 +58,23 @@ private:
 
 	//subWindow
 public:
+	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd);
 	void Render();
 
 	nk_context* m_ctx;
+#ifdef _DX7
+	DX7Renderer m_dx7;
+
+	HWND wnd;
+	LPDIRECTDRAW7 pDD;
+	LPDIRECTDRAWSURFACE7 pDDSPrimary;
+	LPDIRECTDRAWSURFACE7 pDDSBackBuffer;
+	LPDIRECTDRAWCLIPPER pClipper;
+	LPDIRECT3D7 pD3D;
+	LPDIRECT3DDEVICE7 pD3DDevice;
+	DDSURFACEDESC2 ddsd;
+#endif
 };
 
 

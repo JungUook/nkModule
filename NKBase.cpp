@@ -107,11 +107,11 @@ void NKBase::Layout(nk_context* ctx)
 {
 }
 
-void NKBase::SafeRenderStart()
+void NKBase::SafeRenderStart(nk_context* ctx)
 {
 }
 
-void NKBase::SafeRenderEnd()
+void NKBase::SafeRenderEnd(nk_context* ctx)
 {
 }
 
@@ -291,49 +291,49 @@ void NKBase::SetNuklearIndex(int index)
 	m_iNKIndex = index;
 }
 
-void NKBase::LayoutEditor()
+void NKBase::LayoutEditor(nk_context* ctx)
 {
-	if (nk_tree_push(m_ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
-		nk_layout_row_dynamic(m_ctx, 44, 1);
-		nk_label(m_ctx, "Window Name", NK_TEXT_LEFT);
-		nk_flags result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cprimaryEditName, &m_cprimaryEditName_len, 64, nk_filter_default);
+	if (nk_tree_push(ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
+		nk_layout_row_dynamic(ctx, 44, 1);
+		nk_label(ctx, "Window Name", NK_TEXT_LEFT);
+		nk_flags result = nk_edit_string(ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cprimaryEditName, &m_cprimaryEditName_len, 64, nk_filter_default);
 
 		if (result & NK_EDIT_COMMITED)
 		{
 			EditPrimaryName(m_cprimaryEditName);
 		}
 
-		nk_label(m_ctx, "Node Name", NK_TEXT_LEFT);
-		result = nk_edit_string(m_ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cBaseEditName, &m_cBaseEditName_len, 64, nk_filter_default);
+		nk_label(ctx, "Node Name", NK_TEXT_LEFT);
+		result = nk_edit_string(ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cBaseEditName, &m_cBaseEditName_len, 64, nk_filter_default);
 
 		if (result & NK_EDIT_COMMITED)
 		{
 			SetBaseName(m_cBaseEditName);
 		}
 
-		FollowParentStyle(m_ctx, m_pParent);
+		FollowParentStyle(ctx, m_pParent);
 
-		nk_tree_pop(m_ctx);		
+		nk_tree_pop(ctx);		
 	}
 
-	PropertyTransform(m_ctx, m_pParent, m_pManager);
+	PropertyTransform(ctx, m_pParent, m_pManager);
 
-	if (nk_tree_push(m_ctx, NK_TREE_TAB, getClassName().c_str(), NK_MINIMIZED)) {
-		EditInfo();
-		nk_tree_pop(m_ctx);
+	if (nk_tree_push(ctx, NK_TREE_TAB, getClassName().c_str(), NK_MINIMIZED)) {
+		EditInfo(ctx);
+		nk_tree_pop(ctx);
 	}
 
-	if (nk_tree_push(m_ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
-		EditStyle();
-		nk_tree_pop(m_ctx);
+	if (nk_tree_push(ctx, NK_TREE_TAB, "Style", NK_MINIMIZED)) {
+		EditStyle(ctx);
+		nk_tree_pop(ctx);
 	}
 }
 
-void NKBase::EditInfo()
+void NKBase::EditInfo(nk_context* ctx)
 {
 }
 
-void NKBase::EditStyle()
+void NKBase::EditStyle(nk_context* ctx)
 {
 }
 

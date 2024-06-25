@@ -82,29 +82,29 @@ void NKSuperStyleObject::Layout(nk_context* ctx)
 	}
 }
 
-void NKSuperStyleObject::SafeRenderStart()
+void NKSuperStyleObject::SafeRenderStart(nk_context* ctx)
 {
 	UpdateComponent(m_ctx, m_pManager);
 }
 
-void NKSuperStyleObject::SafeRenderEnd()
+void NKSuperStyleObject::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKSuperStyleObject::EditInfo()
+void NKSuperStyleObject::EditInfo(nk_context* ctx)
 {
-	nk_layout_row_dynamic(m_ctx, 22, 1);
-	nk_label(m_ctx, "Create_UI", NK_TEXT_LEFT);
-	if (nk_button_label(m_ctx, "Space"))
+	nk_layout_row_dynamic(ctx, 22, 1);
+	nk_label(ctx, "Create_UI", NK_TEXT_LEFT);
+	if (nk_button_label(ctx, "Space"))
 	{
 		CreateUI("NKSpace");
 	}
 }
 
-void NKSuperStyleObject::EditStyle()
+void NKSuperStyleObject::EditStyle(nk_context* ctx)
 {
-	NKBase::EditStyle();
-	EditComponentStyle(m_ctx, m_pManager);
+	NKBase::EditStyle(ctx);
+	EditComponentStyle(ctx, m_pManager);
 }
 
 void NKSuperStyleObject::UpdateComponent(nk_context* ctx, NuklearUI* pManager)

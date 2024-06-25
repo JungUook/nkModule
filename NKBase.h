@@ -23,8 +23,8 @@ public:
 	virtual void Initialize(NKBase* pParent, bool bStyle = true);
 	virtual void Update(nk_context* ctx);
 	virtual void Layout(nk_context* ctx);
-	virtual void SafeRenderStart();
-	virtual void SafeRenderEnd();
+	virtual void SafeRenderStart(nk_context* ctx);
+	virtual void SafeRenderEnd(nk_context* ctx);
 	virtual void Release();
 
 	virtual nk_bool CheckMouseHover(nk_context* ctx);
@@ -61,9 +61,9 @@ public:
 
 	// ui 편집용 함수
 public:
-	virtual void LayoutEditor();
-	virtual void EditInfo();
-	virtual void EditStyle();
+	virtual void LayoutEditor(nk_context* ctx);
+	virtual void EditInfo(nk_context* ctx);
+	virtual void EditStyle(nk_context* ctx);
 	virtual void EditPrimaryName(const char* name);
 	virtual void CreateUI(const char* classname);
 protected:

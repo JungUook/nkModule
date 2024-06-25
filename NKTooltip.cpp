@@ -35,27 +35,27 @@ void NKTooltip::Layout(nk_context* ctx)
     }
 }
 
-void NKTooltip::SafeRenderStart()
+void NKTooltip::SafeRenderStart(nk_context* ctx)
 {
-    UpdateComponent(m_ctx, m_pManager);
+    UpdateComponent(ctx, m_pManager);
 }
 
-void NKTooltip::SafeRenderEnd()
+void NKTooltip::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKTooltip::EditInfo()
+void NKTooltip::EditInfo(nk_context* ctx)
 {
-    EditLabel(m_ctx, m_pManager);
+    EditLabel(ctx, m_pManager);
 
-    FoundObject(m_ctx, m_pManager);
-    SearchObject(m_ctx, m_pManager);
+    FoundObject(ctx, m_pManager);
+    SearchObject(ctx, m_pManager);
 }
 
-void NKTooltip::EditStyle()
+void NKTooltip::EditStyle(nk_context* ctx)
 {
-    NKBase::EditStyle();
-    EditComponentStyle(m_ctx, m_pManager);
+    NKBase::EditStyle(ctx);
+    EditComponentStyle(ctx, m_pManager);
 }
 
 void NKTooltip::UpdateComponent(nk_context* ctx, NuklearUI* pManager)

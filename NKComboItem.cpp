@@ -49,18 +49,18 @@ void NKComboItem::Layout(nk_context* ctx)
 	}
 }
 
-void NKComboItem::SafeRenderStart()
+void NKComboItem::SafeRenderStart(nk_context* ctx)
 {
-	//UpdateComponent(m_ctx, m_pManager);
+	//UpdateComponent(ctx, m_pManager);
 }
 
-void NKComboItem::SafeRenderEnd()
+void NKComboItem::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKComboItem::EditInfo()
+void NKComboItem::EditInfo(nk_context* ctx)
 {
-	EditLabel(m_ctx, m_pManager);
+	EditLabel(ctx, m_pManager);
 }
 
 void NKComboItem::SetLabelNumber(int number)

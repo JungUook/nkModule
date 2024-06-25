@@ -48,19 +48,19 @@ void NKEdit::Layout(nk_context* ctx)
 	}
 }
 
-void NKEdit::SafeRenderStart()
+void NKEdit::SafeRenderStart(nk_context* ctx)
 {
-	UpdateComponent(m_ctx, m_pManager);
+	UpdateComponent(ctx, m_pManager);
 }
 
-void NKEdit::SafeRenderEnd()
+void NKEdit::SafeRenderEnd(nk_context* ctx)
 {
 }
 
-void NKEdit::EditStyle()
+void NKEdit::EditStyle(nk_context* ctx)
 {
-	NKBase::EditStyle();
-	EditComponentStyle(m_ctx, m_pManager);
+	NKBase::EditStyle(ctx);
+	EditComponentStyle(ctx, m_pManager);
 }
 
 void NKEdit::Clear()
