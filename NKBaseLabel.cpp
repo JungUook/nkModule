@@ -27,7 +27,7 @@ nk_flags NKBaseLabel::EditLabel(nk_context* ctx, NuklearUI* pManager)
 	ratio[1] = 0.7f;
 	nk_layout_row(ctx, NK_DYNAMIC, 44, 2, ratio);
 	nk_label(ctx, "Text: ", NK_TEXT_LEFT);
-	nk_flags result = pManager->IMEInputSystem(m_cEditLabel, sizeof(m_cEditLabel), &m_iEditLabelLen);
+	nk_flags result = pManager->IMEInputSystem(ctx, m_cEditLabel, sizeof(m_cEditLabel), &m_iEditLabelLen);
 	if (result & NK_EDIT_COMMITED) {
 		SetLabel(m_cEditLabel);
 	}

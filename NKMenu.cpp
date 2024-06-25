@@ -74,13 +74,13 @@ void NKMenu::EditInfo(nk_context* ctx)
                 nk_layout_row(ctx, NK_DYNAMIC, 55, 2, tree_layout);
 
                 nk_label(ctx, "name: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(item.name, sizeof(item.name), &item.nameLen);
+                m_pManager->IMEInputSystem(ctx, item.name, sizeof(item.name), &item.nameLen);
 
                 nk_label(ctx, "funcname: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(item.data.name, sizeof(item.data.name), &item.data.nameLen);
+                m_pManager->IMEInputSystem(ctx, item.data.name, sizeof(item.data.name), &item.data.nameLen);
 
                 nk_label(ctx, "table: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(item.data.tableName, sizeof(item.data.tableName), &item.data.tableLen);
+                m_pManager->IMEInputSystem(ctx, item.data.tableName, sizeof(item.data.tableName), &item.data.tableLen);
 
                 nk_tree_pop(ctx);
             }

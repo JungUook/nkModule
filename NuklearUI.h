@@ -123,8 +123,8 @@ public:
 	struct nk_font* GetFont() { return m_font; }
 	float GetOriginalFontSize() { return m_original_height; }
 
-	nk_flags IMEInputSystem(char* buffer, int max, int* len, nk_flags flag = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, nk_plugin_filter filter = nk_filter_default);
-	void IMEInputSystem(char* memory, int* len);
+	nk_flags IMEInputSystem(nk_context* ctx, char* buffer, int max, int* len, nk_flags flag = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, nk_plugin_filter filter = nk_filter_default);
+	void IMEInputSystem(nk_context* ctx, char* memory, int* len);
 
 private:
 

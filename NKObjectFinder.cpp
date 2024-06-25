@@ -33,7 +33,7 @@ void NKObjectFinder::FoundObject(nk_context* ctx, NuklearUI* pManager)
 {
 	float ratio[2] = { 0.7f, 0.3f };
 	nk_layout_row(ctx, NK_DYNAMIC, 40, 2, ratio);
-	nk_flags searchResult = pManager->IMEInputSystem(m_cSearchObject, sizeof(m_cSearchObject), &m_iSearchObjectLen);
+	nk_flags searchResult = pManager->IMEInputSystem(ctx, m_cSearchObject, sizeof(m_cSearchObject), &m_iSearchObjectLen);
 	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 
 	}

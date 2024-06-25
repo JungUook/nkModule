@@ -296,15 +296,14 @@ void NKBase::LayoutEditor(nk_context* ctx)
 	if (nk_tree_push(ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
 		nk_layout_row_dynamic(ctx, 44, 1);
 		nk_label(ctx, "Window Name", NK_TEXT_LEFT);
-		nk_flags result = nk_edit_string(ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cprimaryEditName, &m_cprimaryEditName_len, 64, nk_filter_default);
-
+		nk_flags result = m_pManager->IMEInputSystem(ctx, m_cprimaryEditName, sizeof(m_cprimaryEditName), &m_cprimaryEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{
 			EditPrimaryName(m_cprimaryEditName);
 		}
 
 		nk_label(ctx, "Node Name", NK_TEXT_LEFT);
-		result = nk_edit_string(ctx, NK_EDIT_SIMPLE | NK_EDIT_SIG_ENTER, m_cBaseEditName, &m_cBaseEditName_len, 64, nk_filter_default);
+		result = m_pManager->IMEInputSystem(ctx, m_cBaseEditName, sizeof(m_cBaseEditName), &m_cBaseEditName_len);
 
 		if (result & NK_EDIT_COMMITED)
 		{

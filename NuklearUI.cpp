@@ -136,6 +136,37 @@ void NuklearUI::ErrorPopup(const char* content)
 	g_editor.OpenErrorPopup(content);
 }
 
+nk_flags NuklearUI::IMEInputSystem(nk_context* ctx, char* buffer, int max, int* len, nk_flags flag, nk_plugin_filter filter)
+{
+	nk_flags result = nk_edit_string_zero_terminated(ctx, flag, buffer, max, filter);
+
+	if (result & NK_EDIT_ACTIVE) {
+		IMEInputSystem(ctx, buffer, len);
+	}
+	return result;
+}
+void NuklearUI::IMEInputSystem(nk_context* ctx, char* memory, int* len)
+{
+	if (ctx->text_edit.bComposition) {
+		nk_hash hash;
+		struct nk_text_edit* edit;
+		struct nk_window* win;
+		win = ctx->current;
+		hash = win->edit.seq;
+		edit = &ctx->text_edit;
+
+		if (edit->cursor <= 0) {
+			return;
+		}
+
+		edit->select_start = edit->cursor - 1;
+		edit->select_end = edit->cursor;
+
+		win->edit.sel_start = edit->select_start;
+		win->edit.sel_end = edit->select_end;
+	}
+}
+
 struct nk_image* NuklearUI::SearchImage(int SID)
 {
 	auto found = m_mapImage.find(SID);

@@ -332,7 +332,7 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
 	static char SearchFunction[256] = { 0, };
 	static int SearchFunction_Len = 0;
-	nk_flags searchResult = m_pManager->IMEInputSystem(SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
+	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
 
 	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 
@@ -405,7 +405,7 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
 	static char SearchFunction[256] = { 0, };
 	static int SearchFunction_Len = 0;
-	nk_flags searchResult = m_pManager->IMEInputSystem(SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
+	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
 
 	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 
@@ -454,10 +454,10 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 				tree_layout[1] = 0.7f;
 				nk_layout_row(ctx, NK_DYNAMIC, 55, 2, tree_layout);
 				nk_label(ctx, "name: ", NK_TEXT_LEFT);
-				m_pManager->IMEInputSystem(d.name, sizeof(d.name), &d.nameLen);
+				m_pManager->IMEInputSystem(ctx, d.name, sizeof(d.name), &d.nameLen);
 
 				nk_label(ctx, "table: ", NK_TEXT_LEFT);
-				m_pManager->IMEInputSystem(d.tableName, sizeof(d.tableName), &d.tableLen);
+				m_pManager->IMEInputSystem(ctx, d.tableName, sizeof(d.tableName), &d.tableLen);
 
 				if (nk_button_label(ctx, "remove")) {
 					it = vCustom->erase(it);
@@ -537,8 +537,8 @@ WindowProc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 	}
-	g_Editor->HandleEvent(wnd, msg, wparam, lparam);
-
+	if (g_Editor->HandleEvent(wnd, msg, wparam, lparam))
+		return 0;
 	return DefWindowProcW(wnd, msg, wparam, lparam);
 }
 

@@ -137,7 +137,7 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 			static char SearchFunction[256] = { 0, };
 			static int SearchFunction_Len = 0;
 			nk_layout_row(ctx, NK_DYNAMIC, 40, 2, ratio);
-			nk_flags searchResult = pManager->IMEInputSystem(SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
+			nk_flags searchResult = pManager->IMEInputSystem(ctx, SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
 
 			if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
 

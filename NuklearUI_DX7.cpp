@@ -139,36 +139,6 @@ bool NuklearUI::ReadImageFile(const char* filename, IDirectDrawSurface7** pTextu
 	stbi_image_free(data);
 	return true;
 }
-nk_flags NuklearUI::IMEInputSystem(char* buffer, int max, int* len, nk_flags flag, nk_plugin_filter filter)
-{
-	nk_flags result = nk_edit_string_zero_terminated(m_ctx, flag, buffer, max, filter);
-
-	if (result & NK_EDIT_ACTIVE) {
-		IMEInputSystem(buffer, len);
-	}
-	return result;
-}
-void NuklearUI::IMEInputSystem(char* memory, int* len)
-{
-	if (m_dx7.d3d7.ctx.text_edit.bComposition) {
-		nk_hash hash;
-		struct nk_text_edit* edit;
-		struct nk_window* win;
-		win = m_dx7.d3d7.ctx.current;
-		hash = win->edit.seq;
-		edit = &m_dx7.d3d7.ctx.text_edit;
-
-		if (edit->cursor <= 0) {
-			return;
-		}
-
-		edit->select_start = edit->cursor - 1;
-		edit->select_end = edit->cursor;
-
-		win->edit.sel_start = edit->select_start;
-		win->edit.sel_end = edit->select_end;
-	}
-}
 
 void NuklearUI::AddImage(int SID, IDirectDrawSurface7* texture)
 {

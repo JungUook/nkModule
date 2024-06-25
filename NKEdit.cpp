@@ -40,7 +40,7 @@ NKEdit::~NKEdit()
 
 void NKEdit::Layout(nk_context* ctx)
 {
-	nk_flags nkFlag = m_pManager->IMEInputSystem(m_inputText, sizeof(m_inputText), &m_inputTextLength, m_flags, m_filter);
+	nk_flags nkFlag = m_pManager->IMEInputSystem(ctx, m_inputText, sizeof(m_inputText), &m_inputTextLength, m_flags, m_filter);
 
 	if (nkFlag & NK_EDIT_COMMITED)
 	{
