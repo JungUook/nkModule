@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _NKDEBUG
+
 #ifndef NuklearEditor_h__
 #define NuklearEditor_h__
 
@@ -79,3 +82,5 @@ public:
 
 
 #endif //NuklearEditor_h__
+
+#endif //_NKDEBUG

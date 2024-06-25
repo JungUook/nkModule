@@ -10,6 +10,7 @@
 #include <string>
 #include <windows.h>
 
+#ifdef _NKDEBUG
 NuklearEditor* g_Editor;
 
 NuklearEditor::NuklearEditor()
@@ -602,10 +603,10 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 
 	HRESULT hr;
 	hr = DirectDrawCreateEx(NULL, (void**)&pDD, IID_IDirectDraw7, NULL);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 
 	hr = pDD->SetCooperativeLevel(wnd, DDSCL_NORMAL);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 
 	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
@@ -615,25 +616,25 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 	if (FAILED(hr)) return FALSE;
 
 	ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
-	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_3DDEVICE;
+	ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
 	ddsd.dwWidth = 512;
 	ddsd.dwHeight = 960;
 
 	hr = pDD->CreateSurface(&ddsd, &pDDSBackBuffer, NULL);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 
 	hr = pDD->CreateClipper(0, &pClipper, NULL);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 	hr = pClipper->SetHWnd(0, wnd);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 	hr = pDDSPrimary->SetClipper(pClipper);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 
 	hr = pDD->QueryInterface(IID_IDirect3D7, (void**)&pD3D);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 
 	hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
-	if (FAILED(hr)) return FALSE;
+	assert(SUCCEEDED(hr));
 
 	D3DVIEWPORT7 vp;
 	vp.dwX = 0;  // X 오프셋을 0으로 설정
@@ -649,22 +650,12 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 	struct nk_font_atlas* atlas;
 	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, 0);
 
-
 	return TRUE;
 }
 
 void NuklearEditor::Render()
 {
 	HRESULT hr;
-	hr = IDirect3DDevice7_Clear(pD3DDevice, 1, NULL, D3DCLEAR_TARGET, D3DRGBA(0, 0, 0, 1), 1.0f, 0);
-	assert(SUCCEEDED(hr));
-
-	hr = IDirect3DDevice7_BeginScene(pD3DDevice);
-	assert(SUCCEEDED(hr));
-	m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
-	hr = IDirect3DDevice7_EndScene(pD3DDevice);
-	assert(SUCCEEDED(hr));
-
 
 	int xindent = 0;
 	int yindent = 0;
@@ -685,8 +676,21 @@ void NuklearEditor::Render()
 	srcrect.right -= srcrect.left;
 	srcrect.left = 0;
 	srcrect.bottom -= srcrect.top;
+
+	hr = IDirect3DDevice7_Clear(pD3DDevice, 1, NULL, D3DCLEAR_TARGET, D3DRGBA(0, 0, 0, 1), 1.0f, 0);
+	assert(SUCCEEDED(hr));
+
+	hr = IDirect3DDevice7_BeginScene(pD3DDevice);
+	assert(SUCCEEDED(hr));
+	m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
+	hr = IDirect3DDevice7_EndScene(pD3DDevice);
+	assert(SUCCEEDED(hr));
+
+
 	srcrect.top = 0;
 
-	pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
+	hr = pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
 	assert(SUCCEEDED(hr));
 }
+
+#endif

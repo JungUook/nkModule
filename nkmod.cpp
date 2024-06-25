@@ -31,9 +31,11 @@ void RegistHWND(HWND wnd)
     hwnd = wnd;
 }
 
+#ifdef _NKDEBUG
 BOOL InitSubWindow(HINSTANCE hInstance) {
     return g_nuklear->InitSubWindow(hInstance, hwnd);
 }
+#endif
 
 #ifdef _DX9
 void CreateD3D9Device(HWND wnd)

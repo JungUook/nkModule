@@ -15,8 +15,6 @@ void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int wid
 
 	struct nk_font_atlas* atlas;
 	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, lang);
-
-	m_original_height = 24.0f;
 	m_font = m_dx7.d3d7.font;
 
 	m_bMouseHovering = false;
@@ -30,13 +28,17 @@ void NuklearUI::Render(IDirect3DDevice7* pdevice)
 {
 	m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
 
+#ifdef _NKDEBUG
+	EditorRender();
+#endif // _NKDEBUG
+
 	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
 	{
 		(*iter)->SafeRenderEnd(m_ctx);
 	}
 	ReleaseRenderData();
 
-	EditorRender();
+
 }
 int NuklearUI::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -247,7 +249,7 @@ void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outi
 		if (index >= 0 && index < totalSprites) {
 
 			int x = index % pSpr->GetSpr()->GetXCount();
-			int y = index % pSpr->GetSpr()->GetYCount();
+			int y = index / pSpr->GetSpr()->GetYCount();
 
 			struct nk_image img;
 			memset(&img, 0, sizeof(img));

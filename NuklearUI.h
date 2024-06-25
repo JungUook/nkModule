@@ -103,8 +103,10 @@ public:
 	void NKInputBegin();
 	void NKInputEnd();
 	void Update();
+#ifdef _NKDEBUG
 	void DebugLayout();
 	void ErrorPopup(const char* content);
+#endif
 #ifdef _DX9
 	void Render(IDirect3DDevice9* device);
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam, D3DPRESENT_PARAMETERS* present);
@@ -121,7 +123,7 @@ public:
 	bool IsEditActive() { return m_bEditActive; }
 	struct nk_context* GetContext() { return m_ctx; }
 	struct nk_font* GetFont() { return m_font; }
-	float GetOriginalFontSize() { return m_original_height; }
+	float GetOriginalFontSize() { return m_dx7.d3d7.original_height; }
 
 	nk_flags IMEInputSystem(nk_context* ctx, char* buffer, int max, int* len, nk_flags flag = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, nk_plugin_filter filter = nk_filter_default);
 	void IMEInputSystem(nk_context* ctx, char* memory, int* len);
@@ -134,7 +136,6 @@ private:
 
 	struct nk_context* m_ctx;
 	struct nk_font* m_font;
-	float m_original_height;
 
 	bool m_bMouseHovering;
 	bool m_bEditActive;
@@ -244,7 +245,10 @@ public:
 
 	//SubWindow
 public:
+
+#ifdef _NKDEBUG
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd);
 	void EditorRender();
+#endif
 };
 #endif //NuklearUI_h__

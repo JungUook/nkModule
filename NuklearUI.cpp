@@ -10,7 +10,9 @@
 #include "UiLibrary.h"
 #include "NuklearEditor.h"
 
+#ifdef _NKDEBUG
 NuklearEditor g_editor;
+#endif
 
 NuklearUI::NuklearUI()
 {
@@ -18,7 +20,6 @@ NuklearUI::NuklearUI()
 	m_font = nullptr;
 	m_bMouseHovering = false;
 	m_bEditActive = false;
-	m_original_height = 0;
 	m_pivot = nk_vec2(0, 0);
 	m_viewRect = nk_rect(0, 0, 0, 0);
 	Register_UI();
@@ -67,16 +68,21 @@ void NuklearUI::NKInputBegin()
 	if (m_ctx)
 		nk_input_begin(m_ctx);
 
+#ifdef _NKDEBUG
 	if (g_editor.m_ctx)
 		nk_input_begin(g_editor.m_ctx);
+#endif
 }
 
 void NuklearUI::NKInputEnd()
 {
 	if (m_ctx)
 		nk_input_end(m_ctx);
+
+#ifdef _NKDEBUG
 	if (g_editor.m_ctx)
 		nk_input_end(g_editor.m_ctx);
+#endif
 }
 
 void NuklearUI::Update()
@@ -105,6 +111,7 @@ void NuklearUI::Update()
 #endif // _NKDEBUG
 }
 
+#ifdef _NKDEBUG
 void NuklearUI::DebugLayout()
 {
 	static float debugRectWidth = 500.f;
@@ -127,7 +134,6 @@ void NuklearUI::DebugLayout()
 	static struct nk_rect debugRect = nk_rect(0, debugRectPosY, debugRectWidth, debugRectHeight);
 
 #endif
-
 	g_editor.EditorLayout(debugRect);
 }
 
@@ -135,6 +141,7 @@ void NuklearUI::ErrorPopup(const char* content)
 {
 	g_editor.OpenErrorPopup(content);
 }
+#endif
 
 nk_flags NuklearUI::IMEInputSystem(nk_context* ctx, char* buffer, int max, int* len, nk_flags flag, nk_plugin_filter filter)
 {
@@ -195,6 +202,7 @@ struct nk_rect* NuklearUI::GetViewport()
 	return &m_viewRect;
 }
 
+#ifdef _NKDEBUG
 BOOL NuklearUI::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 {
 	return g_editor.InitSubWindow(hInstance, hMainWnd);
@@ -204,7 +212,7 @@ void NuklearUI::EditorRender()
 {
 	g_editor.Render();
 }
-
+#endif
 void NuklearUI::Register_UI()
 {
 	REGISTER_CHILD(NKWindow);
