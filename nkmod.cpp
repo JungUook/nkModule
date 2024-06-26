@@ -262,18 +262,23 @@ void NKInputEnd()
     g_nuklear->NKInputEnd();
 }
 
-void Update()
+void NKUpdate()
 {
     g_nuklear->Update();
 }
 
+void NKFrameSkip()
+{
+    g_nuklear->FrameSkip();
+}
+
 #ifdef _DX9
-void Render(IDirect3DDevice9* device)
+void NKRender(IDirect3DDevice9* device)
 {
     g_nuklear->Render(device);
 }
 #elif _DX7
-BOOL Render(void* device)
+BOOL NKRender(void* device)
 {
     IDirect3DDevice7* pDevice = (IDirect3DDevice7*)device;
 

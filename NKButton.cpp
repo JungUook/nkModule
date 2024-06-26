@@ -13,6 +13,7 @@ NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_cTransform.y = 0.f;
 	m_cTransform.w = 150.f;
 	m_cTransform.h = 40.f;
+	SetLabel("Button");
 }
 
 NKButton::NKButton(const NKButton& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleButton(other, m_ctx, &m_style)

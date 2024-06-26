@@ -11,6 +11,7 @@ NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pMana
 {
     m_type = eCHECKBOX;
     m_checked = 0;
+    SetLabel("Checkbox");
 }
 
 NKCheckbox::NKCheckbox(const NKCheckbox& other) : NKBase(other), NKBaseLabel(other), NKStyleCheckbox(other, m_ctx, &m_style)

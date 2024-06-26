@@ -115,6 +115,19 @@ void NuklearUI::Update()
 #endif // _NKDEBUG
 }
 
+void NuklearUI::FrameSkip()
+{
+	if (m_ctx) {
+		nk_clear(&m_dx7.d3d7.ctx);
+		nk_buffer_clear(&m_dx7.d3d7.cmds);
+	}
+
+	if (g_editor.m_ctx) {
+		nk_clear(&g_editor.m_dx7.d3d7.ctx);
+		nk_buffer_clear(&g_editor.m_dx7.d3d7.cmds);
+	}
+}
+
 #ifdef _NKDEBUG
 void NuklearUI::DebugLayout()
 {
@@ -339,6 +352,11 @@ void NuklearUI::Add(NKBase* type, bool bStyle)
 	if (bFinder) {
 		m_mapOF.insert(std::make_pair(base->GetPrimaryID(), bFinder));
 	}
+}
+
+void NuklearUI::Move(unsigned int id)
+{
+
 }
 
 void NuklearUI::Remove(unsigned int id)

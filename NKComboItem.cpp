@@ -19,6 +19,7 @@ NKComboItem::NKComboItem(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pMa
 	m_cTransform.y = 0.f;
 	m_cTransform.w = 100;
 	m_cTransform.h = 22.f;
+	SetLabel("ComboItem");
 }
 
 NKComboItem::NKComboItem(const NKComboItem& other) : NKBase(other), NKHandler(other), NKBaseLabel(other)

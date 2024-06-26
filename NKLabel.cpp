@@ -16,6 +16,7 @@ NKLabel::NKLabel(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_cTransform.y = 50.f;
 	m_cTransform.w = 150.f;
 	m_cTransform.h = 60.f;
+	SetLabel("Label");
 }
 
 NKLabel::NKLabel(const NKLabel& other) : NKBase(other), NKBaseLabel(other), NKStyleText(other, m_ctx, &m_style)

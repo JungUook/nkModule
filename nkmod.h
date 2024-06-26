@@ -37,11 +37,12 @@ extern "C" {
 	NKMOD_API void Release();
 	NKMOD_API void NKInputBegin();
 	NKMOD_API void NKInputEnd();
-	NKMOD_API void Update();
+	NKMOD_API void NKUpdate();
+	NKMOD_API void NKFrameSkip();
 #ifdef _DX9
-	NKMOD_API void Render(IDirect3DDevice9* device);
+	NKMOD_API void NKRender(IDirect3DDevice9* device);
 #elif _DX7
-	NKMOD_API BOOL Render(void* device);
+	NKMOD_API BOOL NKRender(void* device);
 #endif
 	NKMOD_API int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	NKMOD_API BOOL IsHovering();

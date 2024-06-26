@@ -103,6 +103,7 @@ public:
 	void NKInputBegin();
 	void NKInputEnd();
 	void Update();
+	void FrameSkip();
 #ifdef _NKDEBUG
 	void DebugLayout();
 	void ErrorPopup(const char* content);
@@ -154,6 +155,8 @@ public:
 	bool SetPrimaryname(NKBase* pBase, const char* name);
 	void Add(NKBase* type, bool bStyle = true);
 	struct nk_image* SearchImage(int SID);
+
+	void Move(unsigned int id);
 
 	void Remove(unsigned int id);
 	void Remove(const char* name);

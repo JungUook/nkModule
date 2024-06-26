@@ -5,14 +5,13 @@ NKSelectable::NKSelectable() : NKBase(), NKHandler(), NKBaseLabel(), NKStyleSele
 {
     m_type = eSELECTABLE;
     m_selected = 0;
-    memcpy_s(m_cContent, sizeof(m_cContent), "Selectable", sizeof("Selectable"));
 }
 
 NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleSelectedable(ctx, &m_style)
 {
     m_type = eSELECTABLE;
     m_selected = 0;
-    memcpy_s(m_cContent, sizeof(m_cContent), "Selectable", sizeof("Selectable"));
+    SetLabel("Selectable");
 }
 
 NKSelectable::NKSelectable(const NKSelectable& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleSelectedable(other, m_ctx, &m_style)
