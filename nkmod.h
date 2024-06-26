@@ -44,6 +44,7 @@ extern "C" {
 	NKMOD_API void Render(void* device);
 #endif
 	NKMOD_API int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	NKMOD_API BOOL IsHovering();
 #ifdef _DX9
 	NKMOD_API IDirect3DDevice9* GetDevice();
 	NKMOD_API IDirect3DDevice9Ex* GetDeviceEx();

@@ -296,6 +296,11 @@ int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 #endif
 }
 
+BOOL IsHovering()
+{
+    return g_nuklear->IsMouseHovering();
+}
+
 #ifdef _DX9
 IDirect3DDevice9* GetDevice()
 {
