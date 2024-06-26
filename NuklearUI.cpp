@@ -118,13 +118,11 @@ void NuklearUI::Update()
 void NuklearUI::FrameSkip()
 {
 	if (m_ctx) {
-		nk_clear(&m_dx7.d3d7.ctx);
-		nk_buffer_clear(&m_dx7.d3d7.cmds);
+		m_dx7.nk_d3d7_render_skip();
 	}
 
 	if (g_editor.m_ctx) {
-		nk_clear(&g_editor.m_dx7.d3d7.ctx);
-		nk_buffer_clear(&g_editor.m_dx7.d3d7.cmds);
+		g_editor.m_dx7.nk_d3d7_render_skip();
 	}
 
 	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)

@@ -68,6 +68,7 @@ public:
 	void nk_d3d7_font_stash_end(void);
 	int nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	void nk_d3d7_render(enum nk_anti_aliasing antialiasing);
+	void nk_d3d7_render_skip();
 	void nk_d3d7_release(void);
 	void nk_d3d7_resize(int width, int height);
 	void nk_d3d7_shutdown(void);

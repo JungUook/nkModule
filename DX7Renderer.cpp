@@ -527,6 +527,57 @@ void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 	nk_d3d7_create_state_restore();
 }
 
+void DX7Renderer::nk_d3d7_render_skip()
+{
+	struct nk_buffer vbuf, ebuf;
+	const struct nk_draw_command* cmd;
+	const nk_draw_index* offset = NULL;
+	struct nk_convert_config config;
+	struct nk_d3d7_vertex* vertices;
+	int vertex_count;
+
+	static const struct nk_draw_vertex_layout_element vertex_layout[] = {
+		{NK_VERTEX_POSITION, NK_FORMAT_FLOAT, NK_OFFSETOF(struct nk_d3d7_vertex, x)},
+		{NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, NK_OFFSETOF(struct nk_d3d7_vertex, col)},
+		{NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, NK_OFFSETOF(struct nk_d3d7_vertex, u)},
+		{NK_VERTEX_LAYOUT_END}
+	};
+
+	memset(&config, 0, sizeof(config));
+	config.vertex_layout = vertex_layout;
+	config.vertex_size = sizeof(struct nk_d3d7_vertex);
+	config.vertex_alignment = NK_ALIGNOF(struct nk_d3d7_vertex);
+	config.global_alpha = 1.0f;
+	config.shape_AA = NK_ANTI_ALIASING_ON;
+	config.line_AA = NK_ANTI_ALIASING_ON;
+	config.circle_segment_count = 22;
+	config.curve_segment_count = 22;
+	config.arc_segment_count = 22;
+	config.tex_null = d3d7.tex_null;
+
+	nk_buffer_init_default(&vbuf);
+	nk_buffer_init_default(&ebuf);
+	nk_convert(&d3d7.ctx, &d3d7.cmds, &vbuf, &ebuf, &config);
+
+	vertex_count = (int)(vbuf.needed / sizeof(struct nk_d3d7_vertex));
+	offset = (const nk_draw_index*)nk_buffer_memory_const(&ebuf);
+
+	vertices = (struct nk_d3d7_vertex*)nk_buffer_memory_const(&vbuf);
+	for (int i = 0; i < vertex_count; ++i) {
+		struct nk_d3d7_vertex vertex = vertices[i];
+		vertices[i].x += 0.5f;
+		vertices[i].y += 0.5f;
+		vertices[i].z = 0.0f;
+		vertices[i].rhw = 1.0f;
+	}
+
+	nk_buffer_free(&vbuf);
+	nk_buffer_free(&ebuf);
+
+	nk_clear(&d3d7.ctx);
+	nk_buffer_clear(&d3d7.cmds);
+}
+
 void DX7Renderer::nk_d3d7_release(void)
 {
 	if (d3d7.font_texture)
