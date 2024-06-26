@@ -313,4 +313,13 @@ void NuklearUI::ReleaseRenderData()
 		it = m_vecRenderData.erase(it);
 	}
 }
+void NuklearUI::SetDirectX7(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang)
+{
+	nk_free(m_ctx);
+
+	m_dx7.d3d7.dd = pdd;
+	m_dx7.d3d7.device = pdevice;
+
+	Initialize(pdd, pdevice, width, height, lang);
+}
 #endif

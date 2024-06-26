@@ -66,11 +66,15 @@ void NuklearUI::Release()
 void NuklearUI::NKInputBegin()
 {
 	if (m_ctx)
+	{
 		nk_input_begin(m_ctx);
+	}
 
 #ifdef _NKDEBUG
 	if (g_editor.m_ctx)
+	{
 		nk_input_begin(g_editor.m_ctx);
+	}
 #endif
 }
 

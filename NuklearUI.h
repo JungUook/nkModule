@@ -194,6 +194,7 @@ public:
 
 	bool RegisterRenderData(sprData* pData, bool bImmortal = false);
 	void ReleaseRenderData();
+	void SetDirectX7(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang);
 
 private:
 	sprLoader* m_sprLoader;
@@ -245,7 +246,6 @@ public:
 
 	//SubWindow
 public:
-
 #ifdef _NKDEBUG
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd);
 	void EditorRender();

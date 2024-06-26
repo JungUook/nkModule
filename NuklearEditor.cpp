@@ -686,11 +686,58 @@ void NuklearEditor::Render()
 	hr = IDirect3DDevice7_EndScene(pD3DDevice);
 	assert(SUCCEEDED(hr));
 
-
 	srcrect.top = 0;
 
 	hr = pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
 	assert(SUCCEEDED(hr));
+
+	if (FAILED(hr)) {
+		hr = pDDSPrimary->IsLost();
+		if (hr == DDERR_SURFACELOST) {
+			hr = pDDSPrimary->Restore();
+			if (FAILED(hr)) {
+				printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+				return;
+			}
+		}
+
+		hr = pDDSBackBuffer->IsLost();
+		if (hr == DDERR_SURFACELOST) {
+			hr = pDDSBackBuffer->Restore();
+			if (FAILED(hr)) {
+				printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+				return;
+			}
+
+			pD3DDevice->Release();
+
+			pD3DDevice = nullptr;
+
+			hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
+			assert(SUCCEEDED(hr));
+
+			D3DVIEWPORT7 vp;
+			vp.dwX = 0;  // X 오프셋을 0으로 설정
+			vp.dwY = 0;  // Y 오프셋을 0으로 설정
+			vp.dwWidth = 512;
+			vp.dwHeight = 960;
+			vp.dvMinZ = 0.0f;
+			vp.dvMaxZ = 1.0f;
+			pD3DDevice->SetViewport(&vp);
+
+			nk_free(m_ctx);
+
+			m_ctx = m_dx7.nk_d3d7_init(pDD, pD3DDevice);
+
+			CHAR path[MAX_PATH];
+			if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, path))) {
+				std::cout << "System font path: " << path << std::endl;
+			}
+
+			struct nk_font_atlas* atlas;
+			m_dx7.nk_d3d7_font_stash_begin(&atlas, path, 0);
+		}
+	}
 }
 
 #endif

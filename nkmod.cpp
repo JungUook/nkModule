@@ -21,6 +21,7 @@ LPDIRECT3D7 g_pD3D = nullptr;
 LPDIRECT3DDEVICE7 g_pD3DDevice = nullptr;
 DDSURFACEDESC2 g_ddsd;
 sprLoader* g_sprLoader = nullptr;
+int g_lang = 0;
 #endif
 
 NuklearUI* g_nuklear = nullptr;
@@ -203,6 +204,7 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
     IDirect3DDevice7* pdevice = (IDirect3DDevice7*)pvDevice;
     g_nuklear = new NuklearUI();
     g_sprLoader = new sprLoader();
+    g_lang = lang;
     if (pdd && pdevice) {
         g_nuklear->Initialize(pdd, pdevice, width, height, lang);
         g_sprLoader->Init(pdd);
@@ -271,11 +273,12 @@ void Render(IDirect3DDevice9* device)
     g_nuklear->Render(device);
 }
 #elif _DX7
-void Render(void* device)
+BOOL Render(void* device)
 {
     IDirect3DDevice7* pDevice = (IDirect3DDevice7*)device;
 
     HRESULT hr;
+    BOOL bResult = TRUE;
 
     hr = IDirect3DDevice7_BeginScene(pDevice);
     assert(SUCCEEDED(hr));
@@ -284,6 +287,47 @@ void Render(void* device)
 
     hr = IDirect3DDevice7_EndScene(pDevice);
     assert(SUCCEEDED(hr));
+
+    if (FAILED(hr)) {
+        bResult = FALSE;
+        
+        hr = g_pDDSPrimary->IsLost();
+        if (hr == DDERR_SURFACELOST) {
+            hr = g_pDDSPrimary->Restore();
+            if (FAILED(hr)) {
+                printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+            }
+        }
+
+        hr = g_pDDSBackBuffer->IsLost();
+        if (hr == DDERR_SURFACELOST) {
+            hr = g_pDDSBackBuffer->Restore();
+            if (FAILED(hr)) {
+                printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+            }
+
+            g_pD3DDevice->Release();
+            g_pD3DDevice = nullptr;
+
+            hr = g_pD3D->CreateDevice(IID_IDirect3DHALDevice, g_pDDSBackBuffer, &g_pD3DDevice);
+            if (FAILED(hr)) {
+                printf("Failed g_pD3D->CreateDevice: 0x%08lx\n", hr);
+            }
+
+            D3DVIEWPORT7 vp;
+            vp.dwX = 0;  // X 오프셋을 0으로 설정
+            vp.dwY = 0;  // Y 오프셋을 0으로 설정
+            vp.dwWidth = g_ddsd.dwWidth;
+            vp.dwHeight = g_ddsd.dwHeight;
+            vp.dvMinZ = 0.0f;
+            vp.dvMaxZ = 1.0f;
+            g_pD3DDevice->SetViewport(&vp);
+
+            g_nuklear->SetDirectX7(g_pDD, g_pD3DDevice, g_ddsd.dwWidth, g_ddsd.dwHeight, g_lang);
+        }
+    }
+
+    return bResult;
 }
 #endif
 
