@@ -249,7 +249,7 @@ void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outi
 		if (index >= 0 && index < totalSprites) {
 
 			int x = index % pSpr->GetSpr()->GetXCount();
-			int y = index / pSpr->GetSpr()->GetYCount();
+			int y = index / pSpr->GetSpr()->GetXCount();
 
 			struct nk_image img;
 			memset(&img, 0, sizeof(img));

@@ -41,7 +41,7 @@ public:
     int siVRes;
     int siTotalLength;
 
-    int* Reserved;
+    int Reserved[8];
 
     int siFontNum;
     cltTSprImgInfo clImgInfo[MAX_IMG_PER_TSPR];
@@ -56,14 +56,7 @@ public:
         siVRes = 0;
         siTotalLength = 0;
         siFontNum = 0;
-        Reserved = new int[8];
-    }
-    ~cltTSprHeader()
-    {
-        if (Reserved) {
-            delete[] Reserved;
-            Reserved = nullptr;
-        }
+        memset(Reserved, 0, sizeof(Reserved));
     }
 };
 
@@ -72,11 +65,11 @@ class cltTSpr
 public:
     cltTSprHeader clHeader;
     unsigned char* Image;
-    unsigned short* pal;
+    unsigned short pal[256];
 
     cltTSpr() { 
         Image = nullptr;
-        pal = new unsigned short[256];
+        memset(pal, 0, sizeof(pal));
     }
     ~cltTSpr()
     {
@@ -84,11 +77,6 @@ public:
         {
             delete[] Image;
             Image = nullptr;
-        }
-        if (pal)
-        {
-            delete[] pal;
-            pal = nullptr;
         }
     }
 
@@ -129,7 +117,7 @@ public:
         return true;
     }
 
-    const bool SaveSpr(const char* szfilepath)
+    bool SaveSpr(const char* szfilepath)
     {
         FILE* fp;
         errno_t err = fopen_s(&fp, szfilepath, "wb"); // 쓰기 + 이진 모드
