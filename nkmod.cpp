@@ -22,6 +22,7 @@ LPDIRECT3DDEVICE7 g_pD3DDevice = nullptr;
 DDSURFACEDESC2 g_ddsd;
 sprLoader* g_sprLoader = nullptr;
 int g_lang = 0;
+int g_renderCnt = 0;
 #endif
 
 NuklearUI* g_nuklear = nullptr;
@@ -254,6 +255,7 @@ void Release()
 
 void NKInputBegin()
 {
+    NKFrameSkip();
     g_nuklear->NKInputBegin();
 }
 
@@ -269,7 +271,12 @@ void NKUpdate()
 
 void NKFrameSkip()
 {
-    g_nuklear->FrameSkip();
+    if (g_renderCnt > 0) {
+        g_renderCnt = 0;
+    }
+    else {
+        g_nuklear->FrameSkip();
+    }
 }
 
 #ifdef _DX9
@@ -331,6 +338,8 @@ BOOL NKRender(void* device)
             g_nuklear->SetDirectX7(g_pDD, g_pD3DDevice, g_ddsd.dwWidth, g_ddsd.dwHeight, g_lang);
         }
     }
+
+    ++g_renderCnt;
 
     return bResult;
 }
