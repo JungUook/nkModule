@@ -52,7 +52,7 @@ void NKObjectFinder::FoundObject(nk_context* ctx, NuklearUI* pManager)
 NKBase* NKObjectFinder::SearchObject(nk_context* ctx, NuklearUI* pManager)
 {
 	nk_layout_row_dynamic(ctx, 500, 1);
-	if (nk_group_begin(ctx, "SPR List", NK_WINDOW_TITLE)) {
+	if (nk_group_begin(ctx, "Node List", NK_WINDOW_TITLE)) {
 		float ratio[2] = { 0.8f, 0.2f };
 		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
 
@@ -98,6 +98,9 @@ NKBase* NKObjectFinder::SearchObject(nk_context* ctx, NuklearUI* pManager)
 
 void NKObjectFinder::LostObjectEvent(unsigned int id)
 {
+	if (m_pResultObject == nullptr) {
+		return;
+	}
 	if (m_pResultObject->GetPrimaryID() == id) {
 		m_pResultObject = nullptr;
 		memset(m_cSearchObject, 0, sizeof(m_cSearchObject));

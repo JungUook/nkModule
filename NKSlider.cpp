@@ -15,6 +15,10 @@ NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
     m_min = 0.0f;
     m_max = 1.0f;
     m_value = 0.0f;
+    m_cTransform.x = 0.f;
+    m_cTransform.y = 0.f;
+    m_cTransform.w = 150.f;
+    m_cTransform.h = 40.f;
 }
 
 NKSlider::NKSlider(const NKSlider& other) : NKBase(other), NKStyleSlider(other, m_ctx, &m_style)
@@ -41,6 +45,16 @@ void NKSlider::SafeRenderStart(nk_context* ctx)
 
 void NKSlider::SafeRenderEnd(nk_context* ctx)
 {
+}
+
+void NKSlider::EditInfo(nk_context* ctx)
+{
+    nk_layout_row_dynamic(ctx, 44, 1);
+    nk_slider_float(ctx, m_min, &m_value, m_max, 0.01f);
+    nk_property_float(ctx, "#Value", m_min, &m_value, m_max, 1, 0.01f);
+
+    nk_property_float(ctx, "#min", -10000.f, &m_min, 100000.f, 1.f, 0.01f);
+    nk_property_float(ctx, "#max", m_min, &m_max, 200000.f, 1.f, 0.01f);
 }
 
 void NKSlider::EditStyle(nk_context* ctx)

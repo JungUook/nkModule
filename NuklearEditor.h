@@ -9,7 +9,7 @@ class NKBase;
 class NuklearUI;
 
 enum { eNODE, eFILE, eFUNCTION, eVARIABLE };
-enum { eSELECT, eREMOVE, eCOPY };
+enum { eSELECT, eREMOVE, eCOPY, eMOVE };
 class NuklearEditor
 {
 public:
@@ -25,6 +25,8 @@ public:
 	void SelectNode(NKBase* pBase);
 	void CopyNode(NKBase* pBase);
 	void DeleteNode(NKBase* pBase);
+	void MoveRegistNode(NKBase* pBase);
+	void MoveNode(NKBase* pTarget);
 
 	void InfoLayout(nk_context* ctx, int width);
 
@@ -50,15 +52,17 @@ private:
 	std::vector<CustomData>* m_vecVariable;
 	std::vector<CustomData>* m_vecFunction;
 
-	int m_option;
-	int m_nodeOption;
-	NKBase* m_selectedNode;
-	NKBase* m_deletedNode;
+	int m_iOption;
+	int m_iNodeOption;
 
-	char m_popup_content[256];
-	bool m_show_popup;
+	NKBase* m_pSelectedNode;
+	NKBase* m_pDeletedNode;
+	NKBase* m_pMoveNode;
 
+	char m_cPopup_content[256];
+	bool m_bShow_popup;
 
+	bool m_bMovingNode;
 	//subWindow
 public:
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);

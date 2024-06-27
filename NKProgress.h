@@ -16,6 +16,7 @@ public:
     virtual void Layout(nk_context* ctx) override;
     virtual void SafeRenderStart(nk_context* ctx) override;
     virtual void SafeRenderEnd(nk_context* ctx) override;
+    virtual void EditInfo(nk_context* ctx) override;
     virtual void EditStyle(nk_context* ctx) override;
     void SetProgress(nk_size progress);
     nk_size GetProgress() const;

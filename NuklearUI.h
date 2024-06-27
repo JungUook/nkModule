@@ -156,7 +156,7 @@ public:
 	void Add(NKBase* type, bool bStyle = true);
 	struct nk_image* SearchImage(int SID);
 
-	void Move(unsigned int id);
+	void Move(unsigned int child, unsigned int parent);
 
 	void Remove(unsigned int id);
 	void Remove(const char* name);

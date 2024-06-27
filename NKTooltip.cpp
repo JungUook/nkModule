@@ -10,6 +10,10 @@ NKTooltip::NKTooltip(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManage
 {
     m_type = eTOOLTIP;
     SetLabel("Tooltip");
+    m_cTransform.x = 0.f;
+    m_cTransform.y = 0.f;
+    m_cTransform.w = 150.f;
+    m_cTransform.h = 40.f;
 }
 
 NKTooltip::NKTooltip(const NKTooltip& other) : NKBase(other), NKBaseLabel(other), NKObjectFinder(other), NKStyleWindow(other, m_ctx, &m_style), NKStyleText(other, m_ctx, &m_style)

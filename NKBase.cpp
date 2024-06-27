@@ -94,16 +94,25 @@ void NKBase::Update(nk_context* ctx)
 	if (m_bActive)
 	{
 		nk_style original = ctx->style;
-
 		ctx->style = m_pParent != nullptr && m_followParentStyle ? *m_pParentStyle : m_style;
+		LayoutBegin(ctx);
 
 		Layout(ctx);
 
+		LayoutEnd(ctx);
 		ctx->style = original;
 	}
 }
 
+void NKBase::LayoutBegin(nk_context* ctx)
+{
+}
+
 void NKBase::Layout(nk_context* ctx)
+{
+}
+
+void NKBase::LayoutEnd(nk_context* ctx)
 {
 }
 
@@ -274,6 +283,50 @@ void NKBase::ResetParentID(NKBase* pBase)
 	}
 }
 
+void NKBase::MoveForward()
+{
+	std::list<NKBase*>* lst = m_pParent->GetChildList();
+
+	auto it = std::find(lst->begin(), lst->end(), this);
+	if (it != lst->end() && it != lst->begin()) {
+		auto prev_it = std::prev(it);
+		std::iter_swap(it, prev_it);
+	}
+}
+
+void NKBase::MoveBackward()
+{
+	std::list<NKBase*>* lst = m_pParent->GetChildList();
+
+	auto it = std::find(lst->begin(), lst->end(), this);
+	if (it != lst->end()) {
+		auto next_it = std::next(it);
+		if (next_it != lst->end()) {
+			std::iter_swap(it, next_it);
+		}
+	}
+}
+
+void NKBase::MoveFront()
+{
+	std::list<NKBase*>* lst = m_pParent->GetChildList();
+
+	auto it = std::find(lst->begin(), lst->end(), this);
+	if (it != lst->end() && it != lst->begin()) {
+		lst->splice(lst->begin(), *lst, it);
+	}
+}
+
+void NKBase::MoveBack()
+{
+	std::list<NKBase*>* lst = m_pParent->GetChildList();
+
+	auto it = std::find(lst->begin(), lst->end(), this);
+	if (it != lst->end() && it != std::prev(lst->end())) {
+		lst->splice(lst->end(), *lst, it);
+	}
+}
+
 
 int NKBase::GetNuklearIndex()
 {
@@ -291,11 +344,15 @@ void NKBase::SetNuklearIndex(int index)
 	m_iNKIndex = index;
 }
 
-void NKBase::LayoutEditor(nk_context* ctx)
+void NKBase::ActiveEditor(nk_context* ctx)
 {
 	nk_layout_row_dynamic(ctx, 22, 1);
 	nk_checkbox_label(ctx, "Active", &m_bActive);
+	FollowParentStyle(ctx, m_pParent);
+}
 
+void NKBase::LayoutEditor(nk_context* ctx)
+{
 	if (nk_tree_push(ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
 		nk_layout_row_dynamic(ctx, 44, 1);
 		nk_label(ctx, "Window Name", NK_TEXT_LEFT);
@@ -313,9 +370,23 @@ void NKBase::LayoutEditor(nk_context* ctx)
 			SetBaseName(m_cBaseEditName);
 		}
 
-		FollowParentStyle(ctx, m_pParent);
+		if (m_pParent != nullptr) {
+			nk_layout_row_dynamic(ctx, 44, 2);
+			if (nk_button_label(ctx, "Up")) {
+				MoveForward();
+			}
+			if (nk_button_label(ctx, "Down")) {
+				MoveBackward();
+			}
+			if (nk_button_label(ctx, "Top")) {
+				MoveFront();
+			}
+			if (nk_button_label(ctx, "Bottom")) {
+				MoveBack();
+			}
+		}	
 
-		nk_tree_pop(ctx);		
+		nk_tree_pop(ctx);
 	}
 
 	PropertyTransform(ctx, m_pParent, m_pManager);

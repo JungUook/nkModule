@@ -361,9 +361,27 @@ void NuklearUI::Add(NKBase* type, bool bStyle)
 	}
 }
 
-void NuklearUI::Move(unsigned int id)
+void NuklearUI::Move(unsigned int child, unsigned int parent)
 {
+	NKBase* pChild = nullptr;
+	NKBase* pParent = nullptr;
 
+	std::map<unsigned int, NKBase*>::iterator it_c = m_mapModuleID.find(child);
+	if (it_c != m_mapModuleID.end()) {
+		pChild = it_c->second;
+	}
+
+	std::map<unsigned int, NKBase*>::iterator it_p = m_mapModuleID.find(parent);
+	if (it_p != m_mapModuleID.end()) {
+		pParent = it_p->second;
+	}
+
+	if (pChild == nullptr || pParent == nullptr || pChild->GetParent() == nullptr) {
+		return;
+	}
+
+	pChild->GetParent()->RemoveChildDisConnect(pChild);
+	pParent->RegistChild(pChild);
 }
 
 void NuklearUI::Remove(unsigned int id)

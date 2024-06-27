@@ -22,7 +22,9 @@ public:
 	virtual void Initialize(NuklearUI* pManager, bool bStyle = true);
 	virtual void Initialize(NKBase* pParent, bool bStyle = true);
 	virtual void Update(nk_context* ctx);
+	virtual void LayoutBegin(nk_context* ctx);
 	virtual void Layout(nk_context* ctx);
+	virtual void LayoutEnd(nk_context* ctx);
 	virtual void SafeRenderStart(nk_context* ctx);
 	virtual void SafeRenderEnd(nk_context* ctx);
 	virtual void Release();
@@ -52,6 +54,11 @@ public:
 	virtual void ResetWindowID(NKBase* pBase);
 	virtual void ResetParentID(NKBase* pBase);
 
+	virtual void MoveForward();
+	virtual void MoveBackward();
+	virtual void MoveFront();
+	virtual void MoveBack();
+
 	//각 객체의 기본값
 public:
 	virtual int GetNuklearIndex();
@@ -61,6 +68,7 @@ public:
 
 	// ui 편집용 함수
 public:
+	virtual void ActiveEditor(nk_context* ctx);
 	virtual void LayoutEditor(nk_context* ctx);
 	virtual void EditInfo(nk_context* ctx);
 	virtual void EditStyle(nk_context* ctx);

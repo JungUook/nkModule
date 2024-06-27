@@ -10,7 +10,7 @@ NKGroup::NKGroup() : NKBase(), NKBaseWindow(), NKStyleHeader(), NKStyleWindow()
 NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type			= eGROUP;
-	m_flags			= 0;
+	m_flags			= NK_WINDOW_TITLE;
 
 	m_cTransform.x = 50.f;
 	m_cTransform.y = 50.f;

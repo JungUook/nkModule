@@ -7,6 +7,7 @@ class NKColorPicker : public NKBase
 public:
 	NKColorPicker();
     NKColorPicker(nk_context* ctx, NuklearUI* pManager);
+	NKColorPicker(const NKColorPicker& other);
 	virtual ~NKColorPicker();
 	
 

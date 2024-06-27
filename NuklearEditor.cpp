@@ -24,13 +24,15 @@ NuklearEditor::NuklearEditor()
 	m_mapImage = nullptr;
 	m_mapSpr = nullptr;
 
-	m_option = 0;
-	m_nodeOption = 0;
-	m_selectedNode = nullptr;
-	m_deletedNode = nullptr;
+	m_iOption = 0;
+	m_iNodeOption = 0;
+	m_pSelectedNode = nullptr;
+	m_pDeletedNode = nullptr;
+	m_pMoveNode = nullptr;
 	m_vecVariable = nullptr;
 	m_vecFunction = nullptr;
-	m_show_popup = 0;
+	m_bShow_popup = 0;
+	m_bMovingNode = false;
 
 	m_ctx = nullptr;
 
@@ -40,7 +42,7 @@ NuklearEditor::NuklearEditor()
 	pClipper = nullptr;
 	pD3D = nullptr;
 	pD3DDevice = nullptr;
-	memset(m_popup_content, 0, sizeof(m_popup_content));
+	memset(m_cPopup_content, 0, sizeof(m_cPopup_content));
 	g_Editor = this;
 }
 
@@ -51,8 +53,8 @@ NuklearEditor::~NuklearEditor()
 
 void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction)
 {
-	m_selectedNode = nullptr;
-	m_deletedNode = nullptr;
+	m_pSelectedNode = nullptr;
+	m_pDeletedNode = nullptr;
 	m_pManager = manager;
 	m_vecObject = obj;
 	m_vecModule = module;
@@ -69,6 +71,14 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 	nk_context* ctx = m_ctx;
 	if (nk_begin(ctx, "debug", debugRect, 0))
 	{
+		if (m_bMovingNode) {
+			nk_tooltip_begin(ctx, 300.f);
+			nk_layout_row_dynamic(ctx, 30.f, 2);
+			nk_label(ctx, "MoveNode:", NK_TEXT_LEFT);
+			nk_label(ctx, m_pMoveNode->GetPrimaryName(), NK_TEXT_RIGHT);
+			nk_tooltip_end(ctx);
+		}
+
 		if (nk_tree_push(ctx, NK_TREE_TAB, "System", NK_MINIMIZED)) {
 
 			nk_layout_row_dynamic(ctx, 50.f, 4);
@@ -128,10 +138,10 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 			}
 
 			nk_layout_row_dynamic(ctx, 30, 4);
-			if (nk_option_label(ctx, "node", m_option == eNODE)) m_option = eNODE;
-			if (nk_option_label(ctx, "file", m_option == eFILE)) m_option = eFILE;
-			if (nk_option_label(ctx, "function", m_option == eFUNCTION)) m_option = eFUNCTION;
-			if (nk_option_label(ctx, "variable", m_option == eVARIABLE)) m_option = eVARIABLE;
+			if (nk_option_label(ctx, "node", m_iOption == eNODE)) m_iOption = eNODE;
+			if (nk_option_label(ctx, "file", m_iOption == eFILE)) m_iOption = eFILE;
+			if (nk_option_label(ctx, "function", m_iOption == eFUNCTION)) m_iOption = eFUNCTION;
+			if (nk_option_label(ctx, "variable", m_iOption == eVARIABLE)) m_iOption = eVARIABLE;
 
 			nk_tree_pop(ctx);
 		}
@@ -139,7 +149,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 
 		static int groupLeft = 150;
 
-		switch (m_option)
+		switch (m_iOption)
 		{
 			case eFUNCTION: {
 				CustomDataLayout(ctx, "Function", m_vecFunction);
@@ -151,16 +161,17 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 				FileLayout(ctx);
 			} break;
 			default: {
-				nk_layout_row_dynamic(ctx, 30, 1);
-				nk_label(ctx, "Current Node", NK_TEXT_LEFT);
-				nk_layout_row_dynamic(ctx, 30, 3);
-				if (nk_option_label(ctx, "select", m_nodeOption == eSELECT)) m_nodeOption = eSELECT;
-				if (nk_option_label(ctx, "copy", m_nodeOption == eCOPY)) m_nodeOption = eCOPY;
-				if (nk_option_label(ctx, "remove", m_nodeOption == eREMOVE)) m_nodeOption = eREMOVE;
+				if (nk_tree_push(ctx, NK_TREE_TAB, "Current Node", NK_MINIMIZED)) {
+					nk_layout_row_dynamic(ctx, 30, 4);
+					if (nk_option_label(ctx, "select", m_iNodeOption == eSELECT)) m_iNodeOption = eSELECT;
+					if (nk_option_label(ctx, "copy", m_iNodeOption == eCOPY)) m_iNodeOption = eCOPY;
+					if (nk_option_label(ctx, "remove", m_iNodeOption == eREMOVE)) m_iNodeOption = eREMOVE;
+					if (nk_option_label(ctx, "move", m_iNodeOption == eMOVE)) m_iNodeOption = eMOVE;
 
-				nk_layout_row_dynamic(ctx, 22, 1);
-				nk_property_int(ctx, "#Left:", 150, &groupLeft, (int)debugRect.w - 100, 1, 1.f);
-
+					nk_layout_row_dynamic(ctx, 22, 1);
+					nk_property_int(ctx, "#Left:", 150, &groupLeft, (int)debugRect.w - 100, 1, 1.f);
+					nk_tree_pop(ctx);
+				}
 				float row_layout[2] = { 0.f };
 				row_layout[0] = (float)groupLeft;
 				row_layout[1] = debugRect.w - 25.f - (float)groupLeft;
@@ -172,15 +183,15 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 		}
 
 
-		if (m_show_popup) {
+		if (m_bShow_popup) {
 			if (nk_popup_begin(ctx, NK_POPUP_STATIC, "Error", NK_WINDOW_TITLE, nk_rect(debugRect.w / 2.f - 400.f / 2, debugRect.h / 2.f - 100.f / 2.f, 400.f, 200.f)))	{
 				
 				nk_layout_row_dynamic(ctx, 100, 1);
-				nk_label_wrap(ctx, m_popup_content);
+				nk_label_wrap(ctx, m_cPopup_content);
 
 				nk_layout_row_dynamic(ctx, 20, 1);
 				if (nk_button_label(ctx, "Close Popup")) {
-					m_show_popup = 0;
+					m_bShow_popup = 0;
 					nk_popup_close(ctx);
 				}
 				nk_popup_end(ctx);
@@ -213,9 +224,9 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 		nk_group_end(ctx);
 	}
 
-	if (m_deletedNode) {
-		m_pManager->Remove(m_deletedNode);
-		m_deletedNode = nullptr;
+	if (m_pDeletedNode) {
+		m_pManager->Remove(m_pDeletedNode);
+		m_pDeletedNode = nullptr;
 	}
 }
 
@@ -227,7 +238,7 @@ void NuklearEditor::NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkT
 		if(bHover)
 			nk_tooltip(ctx, pBase->GetBaseName());
 
-		switch (m_nodeOption)
+		switch (m_iNodeOption)
 		{
 		case eSELECT:
 			if (nk_button_label(ctx, "Select")) {
@@ -244,6 +255,18 @@ void NuklearEditor::NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkT
 				CopyNode(pBase);
 			}
 			break;
+		case eMOVE:
+
+			if (m_bMovingNode) {
+				if (nk_button_label(ctx, "Target")) {
+					MoveNode(pBase);
+				}
+			}
+			else {
+				if (nk_button_label(ctx, "Move")) {
+					MoveRegistNode(pBase);
+				}
+			}
 		default:
 			break;
 		}
@@ -265,7 +288,9 @@ void NuklearEditor::NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkT
 
 void NuklearEditor::SelectNode(NKBase* pBase)
 {
-	m_selectedNode = pBase;
+	m_pSelectedNode = pBase;
+	m_pDeletedNode = nullptr;
+	m_pMoveNode = nullptr;
 }
 
 void NuklearEditor::CopyNode(NKBase* pBase)
@@ -281,16 +306,36 @@ void NuklearEditor::CopyNode(NKBase* pBase)
 
 void NuklearEditor::DeleteNode(NKBase* pBase)
 {
-	m_selectedNode = nullptr;
-	m_deletedNode = pBase;
+	m_pSelectedNode = nullptr;
+	m_pDeletedNode = pBase;
+	m_pMoveNode = nullptr;
+}
+
+void NuklearEditor::MoveRegistNode(NKBase* pBase)
+{
+	m_pSelectedNode = nullptr;
+	m_pDeletedNode = nullptr;
+	m_pMoveNode = pBase;
+	m_bMovingNode = true;
+}
+
+void NuklearEditor::MoveNode(NKBase* pTarget)
+{
+	m_pSelectedNode = nullptr;
+	m_pDeletedNode = nullptr;
+	m_bMovingNode = false;
+
+	m_pManager->Move(m_pMoveNode->GetPrimaryID(), pTarget->GetPrimaryID());
+	m_pMoveNode = nullptr;
 }
 
 void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 {
-	const char* ObjectInfo = m_selectedNode ? m_selectedNode->GetBaseName() : "ObjectInfo";
+	const char* ObjectInfo = m_pSelectedNode ? m_pSelectedNode->GetBaseName() : "ObjectInfo";
 	if (nk_group_begin(ctx, ObjectInfo, NK_WINDOW_TITLE)) {
 
-		if (m_selectedNode) {
+		if (m_pSelectedNode) {
+			m_pSelectedNode->ActiveEditor(ctx);
 			if (nk_tree_push(ctx, NK_TREE_TAB, "ViewportInfo", NK_MINIMIZED)) {
 
 				nk_label(ctx, "Pivot", NK_TEXT_LEFT);
@@ -313,7 +358,7 @@ void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 				nk_label(ctx, viewportStr, NK_TEXT_RIGHT);
 				nk_tree_pop(ctx);
 			}
-			m_selectedNode->LayoutEditor(ctx);
+			m_pSelectedNode->LayoutEditor(ctx);
 		}
 		nk_group_end(ctx);
 	}
@@ -479,9 +524,9 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 
 void NuklearEditor::OpenErrorPopup(const char* content)
 {
-	memset(m_popup_content, 0, sizeof(m_popup_content));
-	strcpy_s(m_popup_content, content);
-	m_show_popup = 1;
+	memset(m_cPopup_content, 0, sizeof(m_cPopup_content));
+	strcpy_s(m_cPopup_content, content);
+	m_bShow_popup = 1;
 }
 
 bool NuklearEditor::CreateDirectoryIfNotExists(const std::string& path)
@@ -520,7 +565,7 @@ void NuklearEditor::Clear()
 	m_vecModule->clear();
 	m_mapModuleID->clear();
 	m_mapModuleName->clear();
-	m_selectedNode = nullptr;
+	m_pSelectedNode = nullptr;
 
 	m_mapSpr->clear();
 	m_vecVariable->clear();

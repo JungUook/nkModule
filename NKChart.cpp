@@ -13,6 +13,10 @@ NKChart::NKChart(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
     m_type = eCHART;
     m_min = 0.0f;
     m_max = 1.0f;
+    m_cTransform.x = 0.f;
+    m_cTransform.y = 0.f;
+    m_cTransform.w = 150.f;
+    m_cTransform.h = 150.f;
 }
 
 NKChart::NKChart(const NKChart& other) : NKBase(other), NKStyleChart(other, m_ctx, &m_style)

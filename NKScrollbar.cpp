@@ -11,6 +11,10 @@ NKScrollbar::NKScrollbar(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pMa
 {
     m_type = eSCROLLBAR;
     m_scroll = 0.0f;
+    m_cTransform.x = 0.f;
+    m_cTransform.y = 0.f;
+    m_cTransform.w = 150.f;
+    m_cTransform.h = 40.f;
 }
 
 NKScrollbar::NKScrollbar(const NKScrollbar& other) : NKBase(other), NKStyleScrollbarH(other, m_ctx, &m_style), NKStyleScrollbarV(other, m_ctx, &m_style)

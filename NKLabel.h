@@ -14,11 +14,17 @@ public:
 	
 
 public:
+	virtual void LayoutBegin(nk_context* ctx) override;
 	virtual void Layout(nk_context* ctx) override;
+	virtual void LayoutEnd(nk_context* ctx) override;
 	virtual void SafeRenderStart(nk_context* ctx) override;
 	virtual void SafeRenderEnd(nk_context* ctx) override;
 	virtual void EditInfo(nk_context* ctx) override;
 	virtual void EditStyle(nk_context* ctx) override;
+
+public:
+	float m_fScale;
+	nk_bool m_bWrap;
 
 public:
     template <class Archive>
@@ -26,6 +32,8 @@ public:
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKStyleText>(this)
+			, m_fScale
+			, m_bWrap
         );
     }
 };
