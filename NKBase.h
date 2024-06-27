@@ -72,7 +72,7 @@ protected:
 
 	int m_iNKIndex;
 	nk_flags m_flags;
-	bool m_bActive;
+	nk_bool m_bActive;
 	bool m_bEditActive;
 
 	NKBase* m_pWindow;

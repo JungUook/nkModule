@@ -293,6 +293,9 @@ void NKBase::SetNuklearIndex(int index)
 
 void NKBase::LayoutEditor(nk_context* ctx)
 {
+	nk_layout_row_dynamic(ctx, 22, 1);
+	nk_checkbox_label(ctx, "Active", &m_bActive);
+
 	if (nk_tree_push(ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
 		nk_layout_row_dynamic(ctx, 44, 1);
 		nk_label(ctx, "Window Name", NK_TEXT_LEFT);

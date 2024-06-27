@@ -98,10 +98,13 @@ void NuklearUI::Update()
 	DebugLoadLuaFile(m_filePath);
 	RunFunction("Modify");
 #endif // _NKDEBUG
+	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
+	{
+		(*iter)->SafeRenderStart(m_ctx);
+	}
 
 	for (std::vector<NKBase*>::iterator iter = m_vecObject.begin(); iter != m_vecObject.end(); ++iter)
 	{
-		(*iter)->SafeRenderStart(m_ctx);
 		(*iter)->Update(m_ctx);
 
 		if ((*iter)->IsHovering())
