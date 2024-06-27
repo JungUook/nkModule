@@ -871,10 +871,14 @@ void NuklearUI::LoadFile(const std::string& filename)
 
 	archive(CEREAL_NVP(vSprData));
 
+
+	wchar_t originalDir[MAX_PATH] = { 0, };
+	GetCurrentDirectoryW(MAX_PATH, originalDir);
 	for (size_t i = 0; i < vSprData.size(); ++i) {
 		std::string str = vSprData.at(i);
 		LoadSprFile(str.c_str());
 	}
+	SetCurrentDirectoryW(originalDir);
 
 	archive(CEREAL_NVP(m_vecVariable));
 	archive(CEREAL_NVP(m_vecFunction));
