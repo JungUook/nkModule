@@ -177,6 +177,9 @@ void NuklearUI::Register_spr(sprLoader* pSpr)
 
 void NuklearUI::OpenFileDialog()
 {
+	wchar_t originalDir[MAX_PATH] = { 0, };
+	GetCurrentDirectoryW(MAX_PATH, originalDir);
+
 	OPENFILENAMEW ofn;
 	const size_t buffer_size = 65536; // 충분히 큰 버퍼 크기
 	wchar_t* szFile = new wchar_t[buffer_size];
@@ -229,6 +232,8 @@ void NuklearUI::OpenFileDialog()
 	}
 
 	delete[] szFile; // 동적으로 할당한 메모리 해제
+
+	SetCurrentDirectoryW(originalDir);
 }
 void NuklearUI::LoadSprFile(const char* filename)
 {
