@@ -93,14 +93,21 @@ void NKBase::Update(nk_context* ctx)
 {
 	if (m_bActive)
 	{
-		nk_style original = ctx->style;
-		ctx->style = m_pParent != nullptr && m_followParentStyle ? *m_pParentStyle : m_style;
+		//nk_style original = ctx->style;
+		//ctx->style = m_pParent != nullptr && m_followParentStyle ? *m_pParentStyle : m_style;
+		FollowParentStyle(ctx, m_pParent);
+
+		nk_style original;
+		StyleUpdateStart(ctx, original, m_pParent);
+
 		LayoutBegin(ctx);
 
 		Layout(ctx);
 
 		LayoutEnd(ctx);
-		ctx->style = original;
+
+		//ctx->style = original;
+		StyleUpdateEnd(ctx, original);
 	}
 }
 
@@ -348,7 +355,10 @@ void NKBase::ActiveEditor(nk_context* ctx)
 {
 	nk_layout_row_dynamic(ctx, 22, 1);
 	nk_checkbox_label(ctx, "Active", &m_bActive);
-	FollowParentStyle(ctx, m_pParent);
+
+
+	nk_layout_row_dynamic(ctx, 22, 1);
+	nk_checkbox_label(ctx, "follow_parent_style", &m_followParentStyle);
 }
 
 void NKBase::LayoutEditor(nk_context* ctx)
@@ -420,4 +430,14 @@ void NKBase::EditPrimaryName(const char* name)
 void NKBase::CreateUI(const char* classname)
 {
 	m_pManager->CreateUI(classname, this);
+}
+
+void NKBase::FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent)
+{
+	NKBaseStyle::FollowParentStyle(ctx, pParent);
+
+	for (auto it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+		NKBase* pChild = *it;
+		pChild->FollowParentStyle(ctx, this);
+	}
 }

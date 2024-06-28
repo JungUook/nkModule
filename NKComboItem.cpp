@@ -33,6 +33,11 @@ NKComboItem::~NKComboItem()
 {
 }
 
+void NKComboItem::LayoutBegin(nk_context* ctx)
+{
+	CustomFontSizeBegin(ctx, m_font);
+}
+
 void NKComboItem::Layout(nk_context* ctx)
 {
 	NKCombo* parent = (NKCombo*)m_pParent;
@@ -48,6 +53,11 @@ void NKComboItem::Layout(nk_context* ctx)
 	else {
 
 	}
+}
+
+void NKComboItem::LayoutEnd(nk_context* ctx)
+{
+	CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKComboItem::SafeRenderStart(nk_context* ctx)

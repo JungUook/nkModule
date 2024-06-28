@@ -74,6 +74,8 @@ public:
 	virtual void EditStyle(nk_context* ctx);
 	virtual void EditPrimaryName(const char* name);
 	virtual void CreateUI(const char* classname);
+
+	virtual void FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent) override;
 protected:
 	NuklearUI* m_pManager;
 	nk_context* m_ctx;

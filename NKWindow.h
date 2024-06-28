@@ -15,7 +15,6 @@ public:
 	
 
 public:
-	virtual void Update(nk_context* ctx) override;
 	virtual void Layout(nk_context* ctx) override;
 	virtual void SafeRenderStart(nk_context* ctx) override;
 	virtual void SafeRenderEnd(nk_context* ctx) override;

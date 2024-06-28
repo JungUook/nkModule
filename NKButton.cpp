@@ -25,12 +25,22 @@ NKButton::~NKButton()
 {
 }
 
+void NKButton::LayoutBegin(nk_context* ctx)
+{
+	CustomFontSizeBegin(ctx, m_font);
+}
+
 void NKButton::Layout(nk_context* ctx)
 {
 	if (nk_button_label(ctx, m_cContent))
 	{
 		CallEvent(m_pManager);
 	}
+}
+
+void NKButton::LayoutEnd(nk_context* ctx)
+{
+	CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKButton::SafeRenderStart(nk_context* ctx)

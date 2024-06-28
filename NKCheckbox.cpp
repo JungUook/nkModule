@@ -26,11 +26,21 @@ NKCheckbox::NKCheckbox(const NKCheckbox& other) : NKBase(other), NKBaseLabel(oth
 
 NKCheckbox::~NKCheckbox() {}
 
+void NKCheckbox::LayoutBegin(nk_context* ctx)
+{
+    CustomFontSizeBegin(ctx, m_font);
+}
+
 void NKCheckbox::Layout(nk_context* ctx)
 {
     UpdateComponent(ctx, m_pManager);
 
     nk_checkbox_label(ctx, m_cContent, &m_checked);
+}
+
+void NKCheckbox::LayoutEnd(nk_context* ctx)
+{
+    CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKCheckbox::SafeRenderStart(nk_context* ctx)

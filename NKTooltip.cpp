@@ -23,6 +23,11 @@ NKTooltip::NKTooltip(const NKTooltip& other) : NKBase(other), NKBaseLabel(other)
 
 NKTooltip::~NKTooltip() {}
 
+void NKTooltip::LayoutBegin(nk_context* ctx)
+{
+    CustomFontSizeBegin(ctx, m_font);
+}
+
 void NKTooltip::Layout(nk_context* ctx)
 {
     if (m_pResultObject == nullptr) return;
@@ -38,6 +43,11 @@ void NKTooltip::Layout(nk_context* ctx)
 
         nk_tooltip_end(ctx);
     }
+}
+
+void NKTooltip::LayoutEnd(nk_context* ctx)
+{
+    CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKTooltip::SafeRenderStart(nk_context* ctx)

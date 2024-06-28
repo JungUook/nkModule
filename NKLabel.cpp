@@ -5,7 +5,6 @@ NKLabel::NKLabel() : NKBase(), NKBaseLabel(), NKStyleText()
 {
 	m_type = eLABEL;
 	m_flags = NK_TEXT_CENTERED;
-	m_fScale = 1.f;
 	m_bWrap = nk_false;
 }
 
@@ -19,7 +18,6 @@ NKLabel::NKLabel(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_cTransform.w = 150.f;
 	m_cTransform.h = 60.f;
 	SetLabel("Label");
-	m_fScale = 1.f;
 	m_bWrap = nk_false;
 }
 
@@ -27,7 +25,6 @@ NKLabel::NKLabel(const NKLabel& other) : NKBase(other), NKBaseLabel(other), NKSt
 {
 	m_type = other.m_type;
 	m_flags = other.m_flags;
-	m_fScale = other.m_fScale;
 	m_bWrap = other.m_bWrap;
 }
 
@@ -37,8 +34,7 @@ NKLabel::~NKLabel()
 
 void NKLabel::LayoutBegin(nk_context* ctx)
 {
-	m_font->handle.height *= m_fScale;
-	nk_style_set_font(ctx, &m_font->handle);
+	CustomFontSizeBegin(ctx, m_font);
 }
 
 void NKLabel::Layout(nk_context* ctx)
@@ -49,13 +45,11 @@ void NKLabel::Layout(nk_context* ctx)
 	else {
 		nk_label(ctx, m_cContent, m_flags);
 	}
-
 }
 
 void NKLabel::LayoutEnd(nk_context* ctx)
 {
-	m_font->handle.height = m_pManager->GetOriginalFontSize();
-	nk_style_set_font(ctx, &m_font->handle);
+	CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKLabel::SafeRenderStart(nk_context* ctx)
@@ -80,9 +74,6 @@ void NKLabel::EditInfo(nk_context* ctx)
 		if (nk_option_label(ctx, "Right", m_flags == NK_TEXT_RIGHT)) m_flags = NK_TEXT_RIGHT;
 	}
 
-	nk_layout_row_dynamic(ctx, 44, 1);
-	nk_slider_float(ctx, 0.1f, &m_fScale, 2.f, 0.01f);
-	nk_property_float(ctx, "#Size", 0.1f, &m_fScale, 2.f, 0.1f, 0.01f);
 }
 
 void NKLabel::EditStyle(nk_context* ctx)

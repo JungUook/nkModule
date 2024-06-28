@@ -26,6 +26,11 @@ NKSelectable::NKSelectable(const NKSelectable& other) : NKBase(other), NKHandler
 
 NKSelectable::~NKSelectable() {}
 
+void NKSelectable::LayoutBegin(nk_context* ctx)
+{
+    CustomFontSizeBegin(ctx, m_font);
+}
+
 void NKSelectable::Layout(nk_context* ctx)
 {
     UpdateComponent(ctx, m_pManager);
@@ -33,6 +38,11 @@ void NKSelectable::Layout(nk_context* ctx)
     if (nk_selectable_label(ctx, m_cContent, NK_TEXT_CENTERED, &m_selected)) {
         CallEvent(m_pManager);
     }
+}
+
+void NKSelectable::LayoutEnd(nk_context* ctx)
+{
+    CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKSelectable::SafeRenderStart(nk_context* ctx)

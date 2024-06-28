@@ -34,7 +34,9 @@ public:
     
 
 public:
+    virtual void LayoutBegin(nk_context* ctx) override;
     virtual void Layout(nk_context* ctx) override;
+    virtual void LayoutEnd(nk_context* ctx) override;
     virtual void SafeRenderStart(nk_context* ctx) override;
     virtual void SafeRenderEnd(nk_context* ctx) override;
     virtual void EditInfo(nk_context* ctx) override;

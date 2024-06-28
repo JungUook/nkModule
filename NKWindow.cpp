@@ -28,20 +28,6 @@ NKWindow::~NKWindow()
 {
 }
 
-void NKWindow::Update(nk_context* ctx)
-{
-	if (m_bActive)
-	{
-		nk_style original = ctx->style;
-
-		ctx->style = m_pParent != nullptr && m_followParentStyle ? *m_pParentStyle : m_style;
-
-		Layout(ctx);
-
-		ctx->style = original;
-	}
-}
-
 void NKWindow::Layout(nk_context* ctx)
 {
 	if (nk_begin(ctx, m_cprimaryName, m_cTransform, m_flags))

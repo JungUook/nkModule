@@ -87,9 +87,6 @@ void NKBaseStyle::SetBackground(NuklearUI* pManager, int SID)
 
 void NKBaseStyle::FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent)
 {
-	nk_layout_row_dynamic(ctx, 22, 1);
-	nk_checkbox_label(ctx, "follow_parent_style", &m_followParentStyle);
-
 	if (m_followParentStyle) {
 		if (pParent != nullptr) {
 

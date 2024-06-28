@@ -24,6 +24,11 @@ NKMenu::NKMenu(const NKMenu& other) : NKBase(other), NKHandler(other), NKBaseLab
 
 NKMenu::~NKMenu() {}
 
+void NKMenu::LayoutBegin(nk_context* ctx)
+{
+    CustomFontSizeBegin(ctx, m_font);
+}
+
 void NKMenu::Layout(nk_context* ctx)
 {
     UpdateComponent(ctx, m_pManager);
@@ -42,6 +47,11 @@ void NKMenu::Layout(nk_context* ctx)
         }
         nk_menu_end(ctx);
     }
+}
+
+void NKMenu::LayoutEnd(nk_context* ctx)
+{
+    CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKMenu::SafeRenderStart(nk_context* ctx)

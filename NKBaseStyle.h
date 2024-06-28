@@ -31,7 +31,7 @@ public:
 
 	//ui 편집용 함수
 protected:
-	void FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent);
+	virtual void FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent);
 
 protected:
 	nk_style m_style;

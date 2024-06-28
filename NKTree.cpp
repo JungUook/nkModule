@@ -29,6 +29,11 @@ NKTree::NKTree(const NKTree& other) : NKBase(other), NKBaseLabel(other), NKStyle
 
 NKTree::~NKTree() {}
 
+void NKTree::LayoutBegin(nk_context* ctx)
+{
+    CustomFontSizeBegin(ctx, m_font);
+}
+
 void NKTree::Layout(nk_context* ctx)
 {
     UpdateComponent(ctx, m_pManager);
@@ -41,6 +46,11 @@ void NKTree::Layout(nk_context* ctx)
         }
         nk_tree_pop(ctx);
     }
+}
+
+void NKTree::LayoutEnd(nk_context* ctx)
+{
+    CustomFontSizeEnd(ctx, m_pManager, m_font);
 }
 
 void NKTree::SafeRenderStart(nk_context* ctx)

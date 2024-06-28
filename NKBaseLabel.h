@@ -13,7 +13,11 @@ public:
 
 	virtual nk_flags EditLabel(nk_context* ctx, NuklearUI* pManager);
 	virtual void SetLabel(const char* text);
+
+	virtual void CustomFontSizeBegin(nk_context* ctx, nk_font* font);
+	virtual void CustomFontSizeEnd(nk_context* ctx, NuklearUI* pManager, nk_font* font);
 protected:
+	float m_fScale;
 	char m_cEditLabel[256];
 	int m_iEditLabelLen;
 	char m_cContent[256];
@@ -21,7 +25,8 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
-		ar(m_cEditLabel
+		ar(m_fScale
+			, m_cEditLabel
 			, m_iEditLabelLen
 			, m_cContent
 		);

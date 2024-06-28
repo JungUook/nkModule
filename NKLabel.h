@@ -23,7 +23,6 @@ public:
 	virtual void EditStyle(nk_context* ctx) override;
 
 public:
-	float m_fScale;
 	nk_bool m_bWrap;
 
 public:
@@ -32,7 +31,6 @@ public:
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKStyleText>(this)
-			, m_fScale
 			, m_bWrap
         );
     }
