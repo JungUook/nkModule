@@ -235,19 +235,21 @@ void NuklearUI::OpenFileDialog()
 
 	SetCurrentDirectoryW(originalDir);
 }
+
 void NuklearUI::LoadSprFile(const char* filename)
 {
 	sprData* pData = m_sprLoader->LoadSprite(filename);
 	m_mapSpr.insert(std::make_pair(filename, pData));
 }
-void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal)
+
+bool NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal)
 {
 	auto it = m_mapSpr.find(filename);
 	if (it != m_mapSpr.end()) {
 		sprData* pSpr = (*it).second;
 		bool bSuccess = RegisterRenderData(pSpr, bImmortal);
 		if (!bSuccess) {
-			throw;
+			return false;
 		}
 		int totalSprites = pSpr->GetSpr()->GetXCount() * pSpr->GetSpr()->GetYCount();
 
@@ -269,10 +271,17 @@ void NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outi
 			img.region[3] = pSpr->GetSpr()->GetYSize();
 
 			outimg = img;
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
+	else {
+		return false;
+	}
 }
-void NuklearUI::GetImage(const char* filename, struct nk_image& outimg, bool bImmortal)
+bool NuklearUI::GetImage(const char* filename, struct nk_image& outimg, bool bImmortal)
 {
 	auto it = m_mapSpr.find(filename);
 	if (it != m_mapSpr.end()) {
@@ -285,6 +294,11 @@ void NuklearUI::GetImage(const char* filename, struct nk_image& outimg, bool bIm
 		memset(&img, 0, sizeof(img));
 		img.handle = nk_handle_ptr(pSpr->GetSurface());
 		outimg = img;
+
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 std::map<std::string, sprData*>* NuklearUI::GetSprMap()

@@ -24,7 +24,7 @@ NuklearUI::NuklearUI()
 	m_viewRect = nk_rect(0, 0, 0, 0);
 	Register_UI();
 #ifdef _NKDEBUG
-	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction);
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction, &m_vecPrefab);
 #endif // _NKDEBUG
 
 	m_lua = nullptr;
@@ -224,6 +224,153 @@ struct nk_rect* NuklearUI::GetViewport()
 #endif // _DX9
 
 	return &m_viewRect;
+}
+
+void NuklearUI::OpenPrefabDialog()
+{
+	wchar_t originalDir[MAX_PATH] = { 0, };
+	GetCurrentDirectoryW(MAX_PATH, originalDir);
+
+	OPENFILENAMEW ofn;
+	const size_t buffer_size = 65536; // 충분히 큰 버퍼 크기
+	wchar_t* szFile = new wchar_t[buffer_size];
+	ZeroMemory(szFile, buffer_size * sizeof(wchar_t));
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = buffer_size;
+	ofn.lpstrFilter = L"All Files\0*.*\0Prefab Files\0*.json\0";
+	ofn.nFilterIndex = 2; // 기본 선택을 SPR Files로 설정
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER;
+
+	if (GetOpenFileNameW(&ofn) == TRUE) {
+		wchar_t* p = szFile;
+		std::wstring directory = p;
+		p += directory.length() + 1;
+
+		while (*p) {
+			std::wstring filePath = directory + L"\\" + p;
+			std::filesystem::path path(filePath);
+			std::wstring extension = path.extension().wstring();
+			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
+			if (extension == L".json") {
+				int size_needed = WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, NULL, 0, NULL, NULL);
+				char* result = new char[size_needed];
+				WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, result, size_needed, NULL, NULL);
+				m_vecPrefab.push_back(result);
+				delete[] result;
+			}
+			p += wcslen(p) + 1;
+		}
+
+		// If only one file is selected, GetOpenFileNameW does not add the directory separately
+		if (directory.length() > 0 && *p == '\0') {
+			std::filesystem::path path(directory);
+			std::wstring extension = path.extension().wstring();
+			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
+			if (extension == L".json") {
+				int size_needed = WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, NULL, 0, NULL, NULL);
+				char* result = new char[size_needed];
+				WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, result, size_needed, NULL, NULL);
+				m_vecPrefab.push_back(result);
+				delete[] result;
+			}
+		}
+	}
+
+	delete[] szFile; // 동적으로 할당한 메모리 해제
+
+	SetCurrentDirectoryW(originalDir);
+}
+
+void NuklearUI::SavePrefab(const std::string& filename, NKBase* prefab)
+{
+	std::vector<NKBase*> vPrefab;
+	std::vector<std::string> vStr;
+
+	prefab->GetPrefab(vPrefab);
+	size_t size = vPrefab.size();
+
+	for (size_t i = 0; i < size; ++i) {
+		std::string str = vPrefab.at(i)->getClassName();
+		vStr.push_back(str);
+	}
+
+	std::ofstream os(filename + ".json");
+	cereal::JSONOutputArchive archive(os);
+
+	archive(CEREAL_NVP(size));
+	archive(CEREAL_NVP(vStr));
+
+
+	for (size_t i = 0; i < size; ++i) {
+		NKBase* ptr = vPrefab.at(i);
+		SaveSwitch(ptr, archive);
+	}
+
+	m_vecPrefab.push_back(filename + ".json");
+}
+
+void NuklearUI::LoadPrefab(const std::string& filename, NKBase* parent)
+{
+	size_t size;
+	std::vector<NKBase*> vPrefab;
+	std::vector<std::string> vStr;
+
+	std::ifstream is(filename);
+	cereal::JSONInputArchive archive(is);
+
+	archive(CEREAL_NVP(size));
+	archive(CEREAL_NVP(vStr));
+
+	for (size_t i = 0; i < size; ++i) {
+		NKBase* ptr = m_factory.create(vStr.at(i), m_ctx, this);
+		ptr->Initialize(this);
+		LoadSwitch(ptr, archive, i);
+		RegistUI(vStr.at(i).c_str(), ptr);
+		vPrefab.push_back(ptr);
+	}
+
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		LoadNode(*it);
+	}
+
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		NKBase* pBase = *it;
+		ResetPrimaryID(pBase);
+	}
+
+	{
+		NKBase* pBase  = nullptr;
+		pBase = vPrefab.at(0);
+
+		if (parent == nullptr) {
+			pBase->ResetWindowID(pBase);
+
+			if (pBase->GetType() != eWINDOW) {
+
+				NKWindow* pWin = new NKWindow(m_ctx, this);
+				Add(pWin);
+				pWin->RegistChild(pBase);
+			}
+		}
+		else {
+			pBase->ResetWindowID(parent);
+			if (pBase->GetType() != eWINDOW) {
+				parent->RegistChild(pBase);
+			}
+		}
+
+		auto list = pBase->GetChildList();
+		for (auto child = list->begin(); child != list->end(); ++child) {
+			NKBase* pChild = *child;
+			pChild->ResetParentID(pBase);
+		}
+	}
 }
 
 #ifdef _NKDEBUG
@@ -845,7 +992,6 @@ void NuklearUI::SaveFile(const std::string& filename)
 	std::vector<std::string> vSprData;
 	size_t size = m_vecModule.size();
 	std::vector<std::string> vStr;
-	std::vector<std::shared_ptr<NKBase>> vec;
 
 	for (auto it = m_mapSpr.begin(); it != m_mapSpr.end(); ++it) {
 		std::string str = it->first;
@@ -866,6 +1012,7 @@ void NuklearUI::SaveFile(const std::string& filename)
 
 	archive(CEREAL_NVP(m_vecVariable));
 	archive(CEREAL_NVP(m_vecFunction));
+	archive(CEREAL_NVP(m_vecPrefab));
 
 	archive(CEREAL_NVP(size));
 	archive(CEREAL_NVP(vStr));
@@ -873,7 +1020,7 @@ void NuklearUI::SaveFile(const std::string& filename)
 
 	for (size_t i = 0; i < size; ++i) {
 		NKBase* ptr = m_vecModule.at(i);
-		SaveSwitch(vec, ptr, archive);
+		SaveSwitch(ptr, archive);
 	}
 }
 
@@ -882,7 +1029,6 @@ void NuklearUI::LoadFile(const std::string& filename)
 	std::vector<std::string> vSprData;
 	size_t size;
 	std::vector<std::string> vStr;
-	std::vector<std::shared_ptr<NKBase>> vec;
 
 	std::ifstream is(filename);
 	cereal::JSONInputArchive archive(is);
@@ -900,6 +1046,7 @@ void NuklearUI::LoadFile(const std::string& filename)
 
 	archive(CEREAL_NVP(m_vecVariable));
 	archive(CEREAL_NVP(m_vecFunction));
+	archive(CEREAL_NVP(m_vecPrefab));
 
 	archive(CEREAL_NVP(size));
 	archive(CEREAL_NVP(vStr));
@@ -907,7 +1054,7 @@ void NuklearUI::LoadFile(const std::string& filename)
 	for (size_t i = 0; i < size; ++i) {
 		NKBase* ptr = m_factory.create(vStr.at(i), m_ctx, this);
 		ptr->Initialize(this);
-		LoadSwitch(vec, ptr, archive, i);
+		LoadSwitch(ptr, archive, i);
 		RegistUI(vStr.at(i).c_str(), ptr);
 	}
 

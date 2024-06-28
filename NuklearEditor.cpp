@@ -26,6 +26,7 @@ NuklearEditor::NuklearEditor()
 
 	m_iOption = 0;
 	m_iNodeOption = 0;
+	m_iLuaOption = 0;
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
 	m_pMoveNode = nullptr;
@@ -51,7 +52,7 @@ NuklearEditor::~NuklearEditor()
 	g_Editor = nullptr;
 }
 
-void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction)
+void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction, std::vector<std::string>* vPrefab)
 {
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
@@ -64,6 +65,7 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 	m_mapSpr = spr;
 	m_vecVariable = vvariable;
 	m_vecFunction = vfunction;
+	m_vecPrefab = vPrefab;
 }
 
 void NuklearEditor::EditorLayout(struct nk_rect debugRect)
@@ -140,9 +142,9 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 			nk_layout_row_dynamic(ctx, 30, 4);
 			if (nk_option_label(ctx, "node", m_iOption == eNODE)) m_iOption = eNODE;
 			if (nk_option_label(ctx, "file", m_iOption == eFILE)) m_iOption = eFILE;
-			if (nk_option_label(ctx, "function", m_iOption == eFUNCTION)) m_iOption = eFUNCTION;
-			if (nk_option_label(ctx, "variable", m_iOption == eVARIABLE)) m_iOption = eVARIABLE;
-
+			if (nk_option_label(ctx, "lua", m_iOption == eLUA)) m_iOption = eLUA;
+			if (nk_option_label(ctx, "prefab", m_iOption == ePREFAB)) m_iOption = ePREFAB;
+			
 			nk_tree_pop(ctx);
 		}
 
@@ -151,14 +153,18 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 
 		switch (m_iOption)
 		{
-			case eFUNCTION: {
-				CustomDataLayout(ctx, "Function", m_vecFunction);
-			} break;
-			case eVARIABLE: {
-				CustomDataLayout(ctx, "Variable", m_vecVariable);
+			case eLUA: {
+				nk_layout_row_dynamic(ctx, 30, 3);
+				nk_label(ctx, "Lua Data:", NK_TEXT_LEFT);
+				if (nk_option_label(ctx, "function", m_iLuaOption == eFUNCTION)) m_iLuaOption = eFUNCTION;
+				if (nk_option_label(ctx, "variable", m_iLuaOption == eVARIABLE)) m_iLuaOption = eVARIABLE;
+				LuaDataLayout(ctx);
 			} break;
 			case eFILE: {
 				FileLayout(ctx);
+			} break;
+			case ePREFAB: {
+				PrefabLayout(ctx);
 			} break;
 			default: {
 				if (nk_tree_push(ctx, NK_TREE_TAB, "Current Node", NK_MINIMIZED)) {
@@ -203,13 +209,17 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 
 void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 {
-	if (nk_contextual_begin(ctx, 0, nk_vec2(200, 220), nk_window_get_bounds(ctx))) {
-		const char* grid_option[] = { "New Window"};
+	if (nk_contextual_begin(ctx, 0, nk_vec2(180, 220), nk_window_get_bounds(ctx))) {
+		const char* grid_option[] = { "New Window", "Save Prefab"};
 		nk_layout_row_dynamic(ctx, 25, 1);
-		if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_CENTERED))
+		if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_LEFT))
 		{
 			NKWindow* pWin = new NKWindow(ctx, m_pManager);
 			m_pManager->Add(pWin);
+		}
+		if (m_pSelectedNode != nullptr && nk_contextual_item_label(ctx, grid_option[1], NK_TEXT_LEFT))
+		{
+			m_pManager->SavePrefab(m_pSelectedNode->GetPrimaryName(), m_pSelectedNode);
 		}
 		nk_contextual_end(ctx);
 	}
@@ -359,6 +369,12 @@ void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 				nk_tree_pop(ctx);
 			}
 			m_pSelectedNode->LayoutEditor(ctx);
+			if (nk_tree_push(ctx, NK_TREE_TAB, "Prefab", NK_MINIMIZED)) {
+
+				PrefabLayout(ctx);
+
+				nk_tree_pop(ctx);
+			}
 		}
 		nk_group_end(ctx);
 	}
@@ -443,6 +459,16 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 	}
 }
 
+void NuklearEditor::LuaDataLayout(nk_context* ctx)
+{
+	if (m_iLuaOption == eFUNCTION) {
+		CustomDataLayout(ctx, "Function", m_vecFunction);
+	}
+	else if (m_iLuaOption = eVARIABLE) {
+		CustomDataLayout(ctx, "Variable", m_vecVariable);
+	}
+}
+
 void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std::vector<CustomData>* vCustom)
 {
 	float row_layout[2] = { 0.f };
@@ -522,6 +548,73 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 	}
 }
 
+void NuklearEditor::PrefabLayout(nk_context* ctx)
+{
+	nk_layout_row_dynamic(ctx, 44, 1);
+	if (nk_button_label(ctx, "Open")) {
+		m_pManager->OpenPrefabDialog();
+	}
+
+	float row_layout[2] = { 0.f };
+	row_layout[0] = 0.7f;
+	row_layout[1] = 0.3f;
+	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
+	static char SearchFunction[256] = { 0, };
+	static int SearchFunction_Len = 0;
+	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
+
+	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
+
+	}
+
+	static char selectedFilename[260] = { 0, };
+	float ratio[2] = { 0.8f, 0.2f };
+
+	if (m_vecPrefab->size() == 0) {
+		memset(selectedFilename, 0, sizeof(selectedFilename));
+	}
+
+	nk_layout_row_dynamic(ctx, 500, 1);
+	if (nk_group_begin(ctx, "Prefab List", NK_WINDOW_TITLE)) {
+		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
+		for (std::vector<std::string>::iterator it = m_vecPrefab->begin(); it != m_vecPrefab->end(); ++it) {
+			std::filesystem::path filePath((*it).c_str());
+
+			bool bSearch = false;
+			bool bSearchResult = true;
+			if (strlen(SearchFunction) > 0) {
+				bSearch = true;
+			}
+
+			if (bSearch) {
+				std::wstring word = NuklearUI::utf8ToWstring(filePath.filename().string().c_str());
+				std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+
+				// word를 소문자로 변환
+				std::transform(word.begin(), word.end(), word.begin(), towlower);
+				// filter를 소문자로 변환
+				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
+
+				bSearchResult = word.find(filter) != std::wstring::npos;
+			}
+
+			if (!bSearchResult) {
+				continue;
+			}
+
+			nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
+
+			if (nk_button_label(ctx, "Make")) {
+				memset(selectedFilename, 0, sizeof(selectedFilename));
+				strcpy_s(selectedFilename, (*it).c_str());
+
+				m_pManager->LoadPrefab(selectedFilename, m_pSelectedNode);
+			}
+		}
+		nk_group_end(ctx);
+	}
+}
+
 void NuklearEditor::OpenErrorPopup(const char* content)
 {
 	memset(m_cPopup_content, 0, sizeof(m_cPopup_content));
@@ -570,6 +663,7 @@ void NuklearEditor::Clear()
 	m_mapSpr->clear();
 	m_vecVariable->clear();
 	m_vecFunction->clear();
+	m_vecPrefab->clear();
 
 	m_pManager->RunFunction("Init");
 }

@@ -76,6 +76,7 @@ public:
 	virtual void CreateUI(const char* classname);
 
 	virtual void FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent) override;
+	virtual void GetPrefab(std::vector<NKBase*>& vecSave);
 protected:
 	NuklearUI* m_pManager;
 	nk_context* m_ctx;

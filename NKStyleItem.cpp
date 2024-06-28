@@ -58,12 +58,30 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 
 	if (m_iOption == 1) {
 		struct nk_image img;
-		pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+		bool bResult = pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+
+		if (!bResult) {
+			pManager->ErrorPopup("Image URL not linked to the editor.");
+			m_sImagePath = "None";
+			m_iOption = 0;
+			(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+			return;
+		}
+
 		(*m_pTarget) = nk_style_item_image(img);
 	}
 	else if (m_iOption == 2) {
 		struct nk_image img;
-		pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+		bool bResult = pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+
+		if (!bResult) {
+			pManager->ErrorPopup("Image URL not linked to the editor.");
+			m_sImagePath = "None";
+			m_iOption = 0;
+			(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+			return;
+		}
+
 		struct nk_nine_slice nineslice {};
 		nineslice.img = img;
 		nineslice.l = (nk_ushort)m_iNineslice[0];

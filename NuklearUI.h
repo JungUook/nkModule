@@ -191,8 +191,8 @@ public:
 	void Register_spr(sprLoader* pSpr);
 	void OpenFileDialog();
 	void LoadSprFile(const char* filename);
-	void GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal = false);
-	void GetImage(const char* filename, struct nk_image& outimg, bool bImmortal = false);
+	bool GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal = false);
+	bool GetImage(const char* filename, struct nk_image& outimg, bool bImmortal = false);
 	std::map<std::string, sprData*>* GetSprMap();
 
 	bool RegisterRenderData(sprData* pData, bool bImmortal = false);
@@ -240,12 +240,17 @@ private:
 	//cereal
 public:
 	void SaveFile(const std::string& filename);
-
 	void LoadFile(const std::string& filename);
 	void LoadNode(NKBase* pBase);
 	void ResetPrimaryID(NKBase* pBase);
 
-
+	//Prefab
+public:
+	void OpenPrefabDialog();
+	void SavePrefab(const std::string& filename, NKBase* prefab);
+	void LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
+private:
+	std::vector<std::string> m_vecPrefab;
 
 	//SubWindow
 public:

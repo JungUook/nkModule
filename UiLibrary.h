@@ -217,7 +217,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(NKStyleText, NKSuperStyleObject);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(NKStyleWindow, NKSuperStyleObject);
 
 
-static void SaveSwitch(std::vector<std::shared_ptr<NKBase>>& vec, NKBase* ptr, cereal::JSONOutputArchive& archive) {
+static void SaveSwitch(NKBase* ptr, cereal::JSONOutputArchive& archive) {
 	eTypeUI eType = ptr->GetType();
 	switch (eType)
 	{
@@ -352,7 +352,7 @@ static void SaveSwitch(std::vector<std::shared_ptr<NKBase>>& vec, NKBase* ptr, c
 	}
 }
 
-static void LoadSwitch(std::vector<std::shared_ptr<NKBase>>& vec, NKBase* ptr, cereal::JSONInputArchive& archive, size_t i) {
+static void LoadSwitch(NKBase* ptr, cereal::JSONInputArchive& archive, size_t i) {
 	eTypeUI type = ptr->GetType();
 
 	switch (type)

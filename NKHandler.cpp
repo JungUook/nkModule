@@ -62,18 +62,18 @@ void NKHandler::CallEvent(NuklearUI* pManager, nk_edit_events edit_event, char* 
 				table["NK_EDIT_ACTIVE"] = inputText;
 				break;
 			}
-			case NK_EDIT_INACTIVE: {
-				//table["NK_EDIT_INACTIVE"] = m_inputText;
-				break;
-			}
-			case NK_EDIT_ACTIVATED: {
-				//table["NK_EDIT_ACTIVATED"] = m_inputText;
-				break;
-			}
-			case NK_EDIT_DEACTIVATED: {
-				//table["NK_EDIT_DEACTIVATED"] = m_inputText;
-				break;
-			}
+			//case NK_EDIT_INACTIVE: {
+			//	table["NK_EDIT_INACTIVE"] = inputText;
+			//	break;
+			//}
+			//case NK_EDIT_ACTIVATED: {
+			//	table["NK_EDIT_ACTIVATED"] = inputText;
+			//	break;
+			//}
+			//case NK_EDIT_DEACTIVATED: {
+			//	table["NK_EDIT_DEACTIVATED"] = inputText;
+			//	break;
+			//}
 			case NK_EDIT_COMMITED: {
 				std::string inputText(inputText, *inputTextLength);
 				table["NK_EDIT_COMMITED"] = inputText;

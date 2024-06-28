@@ -8,7 +8,8 @@
 class NKBase;
 class NuklearUI;
 
-enum { eNODE, eFILE, eFUNCTION, eVARIABLE };
+enum { eNODE, eFILE, eLUA, ePREFAB };
+enum { eFUNCTION, eVARIABLE };
 enum { eSELECT, eREMOVE, eCOPY, eMOVE };
 class NuklearEditor
 {
@@ -17,7 +18,7 @@ public:
 	~NuklearEditor();
 
 public:
-	void EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction);
+	void EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction, std::vector<std::string>* vPrefab);
 	void EditorLayout(struct nk_rect debugRect);
 
 	void NodeLayout(nk_context* ctx, int width);
@@ -32,7 +33,10 @@ public:
 
 	void FileLayout(nk_context* ctx);
 
+	void LuaDataLayout(nk_context* ctx);
 	void CustomDataLayout(nk_context* ctx, const char* dataName, std::vector<CustomData>* vCustom);
+
+	void PrefabLayout(nk_context* ctx);
 
 	void OpenErrorPopup(const char* content);
 
@@ -52,7 +56,10 @@ private:
 	std::vector<CustomData>* m_vecVariable;
 	std::vector<CustomData>* m_vecFunction;
 
+	std::vector<std::string>* m_vecPrefab;
+
 	int m_iOption;
+	int m_iLuaOption;
 	int m_iNodeOption;
 
 	NKBase* m_pSelectedNode;

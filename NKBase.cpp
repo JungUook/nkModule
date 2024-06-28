@@ -441,3 +441,13 @@ void NKBase::FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent)
 		pChild->FollowParentStyle(ctx, this);
 	}
 }
+
+void NKBase::GetPrefab(std::vector<NKBase*>& vecSave)
+{
+	vecSave.push_back(this);
+
+	for (auto it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+		NKBase* pChild = *it;
+		pChild->GetPrefab(vecSave);
+	}
+}
