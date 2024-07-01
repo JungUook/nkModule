@@ -243,6 +243,12 @@
     <ClInclude Include="DX7Renderer.h">
       <Filter>소스 파일\Nuklear</Filter>
     </ClInclude>
+    <ClInclude Include="NKLuaInterface.h">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClInclude>
+    <ClInclude Include="NKCereal.h">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -447,6 +453,12 @@
       <Filter>소스 파일\Nuklear</Filter>
     </ClCompile>
     <ClCompile Include="DX7Renderer.cpp">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClCompile>
+    <ClCompile Include="NKLuaInterface.cpp">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClCompile>
+    <ClCompile Include="NKCereal.cpp">
       <Filter>소스 파일\Nuklear</Filter>
     </ClCompile>
   </ItemGroup>

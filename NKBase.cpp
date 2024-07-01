@@ -4,6 +4,7 @@
 
 NKBase::NKBase() : NKProperty()
 , m_pManager(nullptr)
+, m_pLuaManager(nullptr)
 , m_ctx(nullptr)
 , m_flags(0)
 , m_bActive(true)
@@ -17,6 +18,7 @@ NKBase::NKBase() : NKProperty()
 NKBase::NKBase(nk_context* ctx, NuklearUI* pManager) : NKProperty()
 {
 	m_pManager = pManager;
+	m_pLuaManager = &pManager->m_luaInterface;
 	m_ctx = ctx;
 	m_bActive = true;
 	m_bEditActive = false;
@@ -29,6 +31,7 @@ NKBase::NKBase(nk_context* ctx, NuklearUI* pManager) : NKProperty()
 NKBase::NKBase(const NKBase& other) : NKProperty(other)
 {
 	m_pManager = other.m_pManager;
+	m_pLuaManager = &other.m_pManager->m_luaInterface;
 	m_ctx = other.m_ctx;
 	m_bActive = other.m_bActive;
 	m_bEditActive = other.m_bEditActive;
@@ -80,6 +83,7 @@ void NKBase::Initialize(NKBase* pParent, bool bStyle)
 	m_pWindow = m_pParent->m_pWindow;
 	m_iWindowPrimaryID = m_pWindow->m_iPrimaryID;
 	m_pManager = m_pParent->m_pManager;
+	m_pLuaManager = &m_pManager->m_luaInterface;
 	if (bStyle) {
 		InitializeStyle(m_pParent->m_font, m_ctx->style, m_pParent->m_pParentStyle);
 	}

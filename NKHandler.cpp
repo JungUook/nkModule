@@ -31,7 +31,7 @@ void NKHandler::RegistFunction(const char* functionName, const char* argsName)
 	}
 }
 
-void NKHandler::CallEvent(NuklearUI* pManager)
+void NKHandler::CallEvent(NKLuaInterface* pManager)
 {
 	if (m_functionName != nullptr && strlen(m_functionName) > 0)
 	{
@@ -47,7 +47,7 @@ void NKHandler::CallEvent(NuklearUI* pManager)
 	}
 }
 
-void NKHandler::CallEvent(NuklearUI* pManager, nk_edit_events edit_event, char* inputText, int* inputTextLength)
+void NKHandler::CallEvent(NKLuaInterface* pManager, nk_edit_events edit_event, char* inputText, int* inputTextLength)
 {
 	if (m_functionName != nullptr && strlen(m_functionName) > 0)
 	{
@@ -90,6 +90,10 @@ void NKHandler::CallEvent(NuklearUI* pManager, nk_edit_events edit_event, char* 
 			pManager->RunFunction(m_functionName);
 		}
 	}
+}
+
+void NKHandler::CallbackEvent(NKLuaInterface* pManager)
+{
 }
 
 void NKHandler::EditInfoData(nk_context* ctx)

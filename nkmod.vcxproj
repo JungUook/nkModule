@@ -485,6 +485,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClInclude Include="NKBaseStyle.h" />
     <ClInclude Include="NKBaseWindow.h" />
     <ClInclude Include="NKButton.h" />
+    <ClInclude Include="NKCereal.h" />
     <ClInclude Include="NKChart.h" />
     <ClInclude Include="NKCheckbox.h" />
     <ClInclude Include="NKColorPicker.h" />
@@ -495,6 +496,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClInclude Include="NKHandler.h" />
     <ClInclude Include="NKImage.h" />
     <ClInclude Include="NKLabel.h" />
+    <ClInclude Include="NKLuaInterface.h" />
     <ClInclude Include="NKMenu.h" />
     <ClInclude Include="nkmod.h" />
     <ClInclude Include="NKObjectFinder.h" />
@@ -554,6 +556,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClCompile Include="NKBaseStyle.cpp" />
     <ClCompile Include="NKBaseWindow.cpp" />
     <ClCompile Include="NKButton.cpp" />
+    <ClCompile Include="NKCereal.cpp" />
     <ClCompile Include="NKChart.cpp" />
     <ClCompile Include="NKCheckbox.cpp" />
     <ClCompile Include="NKColorPicker.cpp" />
@@ -564,6 +567,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClCompile Include="NKHandler.cpp" />
     <ClCompile Include="NKImage.cpp" />
     <ClCompile Include="NKLabel.cpp" />
+    <ClCompile Include="NKLuaInterface.cpp" />
     <ClCompile Include="NKMenu.cpp" />
     <ClCompile Include="nkmod.cpp" />
     <ClCompile Include="NKObjectFinder.cpp" />

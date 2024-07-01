@@ -1,12 +1,5 @@
 #include "pch.h"
 #include "NuklearUI.h"
-
-#include <cereal/types/vector.hpp>
-#include <cereal/types/array.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/polymorphic.hpp>
-
 #include "UiLibrary.h"
 #include "NuklearEditor.h"
 
@@ -14,7 +7,14 @@
 NuklearEditor g_editor;
 #endif
 
-NuklearUI::NuklearUI()
+NuklearUI::NuklearUI():
+	m_vecVariable(m_luaInterface.m_vecVariable),
+	m_vecFunction(m_luaInterface.m_vecFunction),
+	m_vecObject(m_cereal.m_vecObject),
+	m_vecModule(m_cereal.m_vecModule),
+	m_mapModuleID(m_cereal.m_mapModuleID),
+	m_mapModuleName(m_cereal.m_mapModuleName),
+	m_mapSpr(m_cereal.m_mapSpr)
 {
 	m_ctx = nullptr;
 	m_font = nullptr;
@@ -23,11 +23,11 @@ NuklearUI::NuklearUI()
 	m_pivot = nk_vec2(0, 0);
 	m_viewRect = nk_rect(0, 0, 0, 0);
 	Register_UI();
-#ifdef _NKDEBUG
-	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction, &m_vecPrefab);
-#endif // _NKDEBUG
+	m_cereal.m_pManager = this;
 
-	m_lua = nullptr;
+#ifdef _NKDEBUG
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction, &m_cereal.m_vecPrefab);
+#endif // _NKDEBUG
 }
 
 NuklearUI::~NuklearUI()
@@ -36,8 +36,6 @@ NuklearUI::~NuklearUI()
 	m_font = nullptr;
 	m_bMouseHovering = false;
 	m_bEditActive = false;
-
-	m_lua = nullptr;
 }
 
 void NuklearUI::Release()
@@ -59,8 +57,7 @@ void NuklearUI::Release()
 		}
 		iter = m_vecModule.erase(iter);
 	}
-
-	lua_close(m_lua);
+	m_luaInterface.Release();
 }
 
 void NuklearUI::NKInputBegin()
@@ -95,9 +92,11 @@ void NuklearUI::Update()
 	m_bEditActive = false;
 
 #ifdef _NKDEBUG
-	DebugLoadLuaFile(m_filePath);
-	RunFunction("Modify");
+	//m_luaInterface.DebugLoadLuaFile(m_luaInterface.m_filePath);
+	m_luaInterface.RunFunction("Modify");
 #endif // _NKDEBUG
+	m_luaInterface.RunFunction("Update");
+
 	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
 	{
 		(*iter)->SafeRenderStart(m_ctx);
@@ -226,153 +225,6 @@ struct nk_rect* NuklearUI::GetViewport()
 	return &m_viewRect;
 }
 
-void NuklearUI::OpenPrefabDialog()
-{
-	wchar_t originalDir[MAX_PATH] = { 0, };
-	GetCurrentDirectoryW(MAX_PATH, originalDir);
-
-	OPENFILENAMEW ofn;
-	const size_t buffer_size = 65536; // ÃæºÐÈ÷ Å« ¹öÆÛ Å©±â
-	wchar_t* szFile = new wchar_t[buffer_size];
-	ZeroMemory(szFile, buffer_size * sizeof(wchar_t));
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.hwndOwner = NULL;
-	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = buffer_size;
-	ofn.lpstrFilter = L"All Files\0*.*\0Prefab Files\0*.json\0";
-	ofn.nFilterIndex = 2; // ±âº» ¼±ÅÃÀ» SPR Files·Î ¼³Á¤
-	ofn.lpstrFileTitle = NULL;
-	ofn.nMaxFileTitle = 0;
-	ofn.lpstrInitialDir = NULL;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER;
-
-	if (GetOpenFileNameW(&ofn) == TRUE) {
-		wchar_t* p = szFile;
-		std::wstring directory = p;
-		p += directory.length() + 1;
-
-		while (*p) {
-			std::wstring filePath = directory + L"\\" + p;
-			std::filesystem::path path(filePath);
-			std::wstring extension = path.extension().wstring();
-			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
-			if (extension == L".json") {
-				int size_needed = WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, NULL, 0, NULL, NULL);
-				char* result = new char[size_needed];
-				WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, result, size_needed, NULL, NULL);
-				m_vecPrefab.push_back(result);
-				delete[] result;
-			}
-			p += wcslen(p) + 1;
-		}
-
-		// If only one file is selected, GetOpenFileNameW does not add the directory separately
-		if (directory.length() > 0 && *p == '\0') {
-			std::filesystem::path path(directory);
-			std::wstring extension = path.extension().wstring();
-			std::transform(extension.begin(), extension.end(), extension.begin(), towlower);
-			if (extension == L".json") {
-				int size_needed = WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, NULL, 0, NULL, NULL);
-				char* result = new char[size_needed];
-				WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, result, size_needed, NULL, NULL);
-				m_vecPrefab.push_back(result);
-				delete[] result;
-			}
-		}
-	}
-
-	delete[] szFile; // µ¿ÀûÀ¸·Î ÇÒ´çÇÑ ¸Þ¸ð¸® ÇØÁ¦
-
-	SetCurrentDirectoryW(originalDir);
-}
-
-void NuklearUI::SavePrefab(const std::string& filename, NKBase* prefab)
-{
-	std::vector<NKBase*> vPrefab;
-	std::vector<std::string> vStr;
-
-	prefab->GetPrefab(vPrefab);
-	size_t size = vPrefab.size();
-
-	for (size_t i = 0; i < size; ++i) {
-		std::string str = vPrefab.at(i)->getClassName();
-		vStr.push_back(str);
-	}
-
-	std::ofstream os(filename + ".json");
-	cereal::JSONOutputArchive archive(os);
-
-	archive(CEREAL_NVP(size));
-	archive(CEREAL_NVP(vStr));
-
-
-	for (size_t i = 0; i < size; ++i) {
-		NKBase* ptr = vPrefab.at(i);
-		SaveSwitch(ptr, archive);
-	}
-
-	m_vecPrefab.push_back(filename + ".json");
-}
-
-void NuklearUI::LoadPrefab(const std::string& filename, NKBase* parent)
-{
-	size_t size;
-	std::vector<NKBase*> vPrefab;
-	std::vector<std::string> vStr;
-
-	std::ifstream is(filename);
-	cereal::JSONInputArchive archive(is);
-
-	archive(CEREAL_NVP(size));
-	archive(CEREAL_NVP(vStr));
-
-	for (size_t i = 0; i < size; ++i) {
-		NKBase* ptr = m_factory.create(vStr.at(i), m_ctx, this);
-		ptr->Initialize(this);
-		LoadSwitch(ptr, archive, i);
-		RegistUI(vStr.at(i).c_str(), ptr);
-		vPrefab.push_back(ptr);
-	}
-
-	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
-		LoadNode(*it);
-	}
-
-	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
-		NKBase* pBase = *it;
-		ResetPrimaryID(pBase);
-	}
-
-	{
-		NKBase* pBase  = nullptr;
-		pBase = vPrefab.at(0);
-
-		if (parent == nullptr) {
-			pBase->ResetWindowID(pBase);
-
-			if (pBase->GetType() != eWINDOW) {
-
-				NKWindow* pWin = new NKWindow(m_ctx, this);
-				Add(pWin);
-				pWin->RegistChild(pBase);
-			}
-		}
-		else {
-			pBase->ResetWindowID(parent);
-			if (pBase->GetType() != eWINDOW) {
-				parent->RegistChild(pBase);
-			}
-		}
-
-		auto list = pBase->GetChildList();
-		for (auto child = list->begin(); child != list->end(); ++child) {
-			NKBase* pChild = *child;
-			pChild->ResetParentID(pBase);
-		}
-	}
-}
-
 #ifdef _NKDEBUG
 BOOL NuklearUI::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 {
@@ -412,6 +264,11 @@ std::vector<NKBase*>* NuklearUI::GetNodes()
 {
 	return &m_vecModule;
 }
+NKBase* NuklearUI::SimpleCreateUI(const char* classname)
+{
+	NKBase* pBase = m_factory.create(classname, m_ctx, this);
+	return pBase;
+}
 void NuklearUI::CreateUI(const char* classname, NKBase* parent)
 {
 	NKBase* pBase = m_factory.create(classname, m_ctx, this);
@@ -449,9 +306,21 @@ NKBase* NuklearUI::RegistUI(const char* classname, NKBase* pBase)
 		m_vecObject.push_back(pBase);
 	}
 
+	pBase->SetNuklearIndex(m_vecModule.size());
 	m_vecModule.push_back(pBase);
 	m_mapModuleID.insert(std::make_pair(pBase->GetPrimaryID(), pBase));
-	m_mapModuleName.insert(std::make_pair(pBase->GetPrimaryName(), pBase));
+
+
+	auto found = m_mapModuleName.find(pBase->GetPrimaryName());
+	if (found != m_mapModuleName.end()) {
+		char primaryName[256] = { 0, };
+		sprintf_s(primaryName, "%s%ld", pBase->getClassName().c_str(), reinterpret_cast<intptr_t>(pBase));
+		pBase->SetPrimaryName(primaryName);
+	}
+	else {
+		m_mapModuleName.insert(std::make_pair(pBase->GetPrimaryName(), pBase));
+	}
+
 
 	auto bFinder = dynamic_cast<NKObjectFinder*>(pBase);
 	if (bFinder) {
@@ -766,327 +635,11 @@ void NuklearUI::Remove(int idx)
 	}
 }
 
-void NuklearUI::LoadLuaFile(const char* filePath)
-{
-#ifdef _NKDEBUG
-	memset(m_filePath, 0, sizeof(m_filePath));
-	strcpy_s(m_filePath, filePath);
-	if (luaL_dofile(m_lua, m_filePath) != LUA_OK) {
-		std::cerr << lua_tostring(m_lua, -1) << std::endl;
-	}
-#else
-	if (luaL_dofile(m_lua, filePath) != LUA_OK) {
-		std::cerr << lua_tostring(m_lua, -1) << std::endl;
-	}
-#endif // _NKDEBUG
-
-	RunFunction("Init");
-}
-
-luabridge::LuaRef NuklearUI::GetLuaTable(const char* tableName)
-{
-	return luabridge::getGlobal(m_lua, tableName);
-}
-
-bool NuklearUI::RunFunction(const char* functionName)
-{
-	lua_getglobal(m_lua, functionName);
-	if (lua_pcall(m_lua, 0, 0, 0) != 0) {
-		fprintf(stderr, "%s ÇÔ¼ö È£Ãâ ½ÇÆÐ: %s\n", functionName, lua_tostring(m_lua, -1));
-		lua_pop(m_lua, 1);
-		return false;
-	}
-	return true;
-}
-
-bool NuklearUI::RunFunctionArgs(const char* functionName, const luabridge::LuaRef& args)
-{
-	luabridge::LuaRef func = luabridge::getGlobal(m_lua, functionName);
-	try {
-		if (func.isFunction()) {
-			func(args);  // ÀÎ¼ö¸¦ »ç¿ëÇÏ¿© ÇÔ¼ö È£Ãâ
-		}
-	}
-	catch (const luabridge::LuaException& e) {
-#ifdef _NKDEBUG
-		std::cerr << "LuaException: " << e.what() << std::endl;
-#endif // _NKDEBUG
-		return false;
-	}
-	return true;
-}
-
-void NuklearUI::AddVariable(CustomData& var)
-{
-	m_vecVariable.push_back(var);
-	std::sort(m_vecVariable.begin(), m_vecVariable.end(), customCompare);
-}
-
-void NuklearUI::AddFunction(CustomData& func)
-{
-	m_vecFunction.push_back(func);
-	std::sort(m_vecFunction.begin(), m_vecFunction.end(), customCompare);
-}
-
-std::wstring NuklearUI::utf8ToWstring(const char* str)
-{
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
-	std::wstring wstrTo(size_needed - 1, 0); // -1 to exclude the null terminator
-	MultiByteToWideChar(CP_UTF8, 0, str, -1, &wstrTo[0], size_needed);
-	return wstrTo;
-}
-
-bool NuklearUI::customCompare(const CustomData aData, const CustomData bData)
-{
-	const wchar_t kFirstHangulConsonant = L'°¡'; // Unicode value for '°¡'
-	const wchar_t kLastHangulConsonant = L'ÆR'; // Unicode value for 'ÆR'
-
-	std::wstring a = utf8ToWstring(aData.name);
-	std::wstring b = utf8ToWstring(bData.name);
-
-	std::locale loc("ko_KR.UTF-8");
-
-	// µÎ ¹®ÀÚ¿­ÀÌ ¿µ¾î·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ¾ËÆÄºª ¼ø¼­·Î Á¤·Ä
-	if (std::isalpha(a[0], loc) && std::isalpha(b[0], loc)) {
-		return a < b;
-	}
-
-	// µÎ ¹®ÀÚ¿­ÀÌ ÇÑ±Û·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ÀÚ¸ð ¼ø¼­·Î Á¤·Ä
-	if (a[0] >= kFirstHangulConsonant && a[0] <= kLastHangulConsonant &&
-		b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant) {
-		return a < b;
-	}
-
-	// ¿µ¾î¿Í ÇÑ±ÛÀÌ ¼¯¿© ÀÖ´Â °æ¿ì ¿µ¾î¸¦ ¸ÕÀú, ÇÑ±ÛÀ» ³ªÁß¿¡ Á¤·Ä
-	if (std::isalpha(a[0], loc) && (b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant)) {
-		return true;
-	}
-	if ((a[0] >= kFirstHangulConsonant && a[0] <= kLastHangulConsonant) && std::isalpha(b[0], loc)) {
-		return false;
-	}
-
-	// ±× ¿ÜÀÇ °æ¿ì¿¡´Â ±âº» ºñ±³
-	return a < b;
-}
-
-#ifdef _NKDEBUG
-void NuklearUI::DebugLoadLuaFile(const char* filePath)
-{
-	if (luaL_dofile(m_lua, filePath) != LUA_OK) {
-		std::cerr << lua_tostring(m_lua, -1) << std::endl;
-	}
-}
-#endif // _NKDEBUG
-void NuklearUI::RegisterBase()
-{
-	//luabridge::getGlobalNamespace(m_lua)
-	//	.beginClass<NuklearUI>("NuklearUI")
-	//	.addFunction("Add", &NuklearUI::Add)
-	//	.endClass();
-
-	//luabridge::push(m_lua, this);
-	//lua_setglobal(m_lua, "system");
-
-	//luabridge::getGlobalNamespace(m_lua)
-	//	.beginClass<NKBase>("NKBase")
-	//	.addFunction("SetActive", &NKBase::SetActive)
-	//	.addFunction("AddChild", &NKBase::LAddChild)
-	//	.addFunction("RemoveChild", &NKBase::LRemoveChild)
-	//	.addFunction("SetPrimaryName", &NKBase::SetPrimaryName)
-	//	.endClass()
-	//	.deriveClass<NKWindow, NKBase>("NKWindow")
-	//	.endClass()
-	//	.deriveClass<NKSpace, NKBase>("NKSpace")
-	//	.addFunction("SetLayout", &NKSpace::SetLayout)
-	//	.addFunction("SetCols", &NKSpace::SetCols)
-	//	.endClass()
-	//	.deriveClass<NKGroup, NKBase>("NKGroup")
-	//	.endClass()
-	//	.deriveClass<NKPopup, NKBase>("NKPopup")
-	//	.endClass()
-	//	.deriveClass<NKCombo, NKBase>("NKCombo")
-	//	.addFunction("SetComboName", &NKCombo::SetComboName)
-	//	.addFunction("SetLabelSize", &NKCombo::SetLabelSize)
-	//	.endClass()
-	//	.deriveClass<NKComboItem, NKBase>("NKComboItem")
-	//	.addFunction("RegistFunction", &NKComboItem::RegistFunction)
-	//	.endClass()
-	//	.deriveClass<NKButton, NKBase>("NKButton")
-	//	.addFunction("RegistFunction", &NKButton::RegistFunction)
-	//	.endClass()
-	//	.deriveClass<NKEdit, NKBase>("NKEdit")
-	//	.addFunction("Clear", &NKEdit::Clear)
-	//	.addFunction("RegistFunction", &NKEdit::RegistFunction)
-	//	.endClass()
-	//	.deriveClass<NKImage, NKBase>("NKImage")
-	//	.endClass()
-	//	.deriveClass<NKLabel, NKBase>("NKLabel")
-	//	.endClass()
-	//	.deriveClass<NKCheckbox, NKBase>("NKCheckbox")
-	//	.addFunction("SetLabel", &NKCheckbox::SetLabel)
-	//	.addFunction("SetChecked", &NKCheckbox::SetChecked)
-	//	.addFunction("IsChecked", &NKCheckbox::IsChecked)
-	//	.endClass()
-	//	.deriveClass<NKSlider, NKBase>("NKSlider")
-	//	.addFunction("SetRange", &NKSlider::SetRange)
-	//	.addFunction("SetValue", &NKSlider::SetValue)
-	//	.addFunction("GetValue", &NKSlider::GetValue)
-	//	.endClass()
-	//	.deriveClass<NKProgress, NKBase>("NKProgress")
-	//	.addFunction("SetProgress", &NKProgress::SetProgress)
-	//	.addFunction("GetProgress", &NKProgress::GetProgress)
-	//	.endClass()
-	//	.deriveClass<NKSelectable, NKBase>("NKSelectable")
-	//	.addFunction("SetLabel", &NKSelectable::SetLabel)
-	//	.addFunction("SetSelected", &NKSelectable::SetSelected)
-	//	.addFunction("IsSelected", &NKSelectable::IsSelected)
-	//	.endClass()
-	//	.deriveClass<NKTree, NKBase>("NKTree")
-	//	.addFunction("SetLabel", &NKTree::SetLabel)
-	//	.addFunction("SetState", &NKTree::SetState)
-	//	.addFunction("GetState", &NKTree::GetState)
-	//	.endClass()
-	//	.deriveClass<NKChart, NKBase>("NKChart")
-	//	.addFunction("AddValue", &NKChart::AddValue)
-	//	.addFunction("Clear", &NKChart::Clear)
-	//	.endClass()
-	//	.deriveClass<NKColorPicker, NKBase>("NKColorPicker")
-	//	.addFunction("SetColor", &NKColorPicker::SetColor)
-	//	.addFunction("GetColor", &NKColorPicker::GetColor)
-	//	.endClass()
-	//	.deriveClass<NKTooltip, NKBase>("NKTooltip")
-	//	.endClass()
-	//	.deriveClass<NKMenu, NKBase>("NKMenu")
-	//	.addFunction("SetLabel", &NKMenu::SetLabel)
-	//	.endClass()
-	//	.deriveClass<NKScrollbar, NKBase>("NKScrollbar")
-	//	.addFunction("SetScroll", &NKScrollbar::SetScroll)
-	//	.addFunction("GetScroll", &NKScrollbar::GetScroll)
-	//	.endClass()
-	//	.beginClass<ObjMaker>("ObjMaker")
-	//	.addStaticFunction("createWindow", &ObjMaker::create<NKWindow>)
-	//	.addStaticFunction("createSpace", &ObjMaker::create<NKSpace>)
-	//	.addStaticFunction("createGroup", &ObjMaker::create<NKGroup>)
-	//	.addStaticFunction("createPopup", &ObjMaker::create<NKPopup>)
-	//	.addStaticFunction("createCombo", &ObjMaker::create<NKCombo>)
-	//	.addStaticFunction("createComboItem", &ObjMaker::create<NKComboItem>)
-	//	.addStaticFunction("createButton", &ObjMaker::create<NKButton>)
-	//	.addStaticFunction("createEdit", &ObjMaker::create<NKEdit>)
-	//	.addStaticFunction("createImage", &ObjMaker::create<NKImage>)
-	//	.addStaticFunction("createLabel", &ObjMaker::create<NKLabel>)
-	//	.addStaticFunction("createCheckbox", &ObjMaker::create<NKCheckbox>)
-	//	.addStaticFunction("createSlider", &ObjMaker::create<NKSlider>)
-	//	.addStaticFunction("createProgress", &ObjMaker::create<NKProgress>)
-	//	.addStaticFunction("createSelectable", &ObjMaker::create<NKSelectable>)
-	//	.addStaticFunction("createTree", &ObjMaker::create<NKTree>)
-	//	.addStaticFunction("createChart", &ObjMaker::create<NKChart>)
-	//	.addStaticFunction("createColorPicker", &ObjMaker::create<NKColorPicker>)
-	//	.addStaticFunction("createTooltip", &ObjMaker::create<NKTooltip>)
-	//	.addStaticFunction("createMenu", &ObjMaker::create<NKMenu>)
-	//	.addStaticFunction("createScrollbar", &ObjMaker::create<NKScrollbar>)
-	//	.endClass();
-}
-
-void NuklearUI::SaveFile(const std::string& filename)
-{
-	std::vector<std::string> vSprData;
-	size_t size = m_vecModule.size();
-	std::vector<std::string> vStr;
-
-	for (auto it = m_mapSpr.begin(); it != m_mapSpr.end(); ++it) {
-		std::string str = it->first;
-		vSprData.push_back(str.c_str());
-	}
-
-
-	for (size_t i = 0; i < size; ++i) {
-		std::string str = m_vecModule.at(i)->getClassName();
-		vStr.push_back(str);
-	}
-
-	std::ofstream os(filename);
-	cereal::JSONOutputArchive archive(os);
-
-
-	archive(CEREAL_NVP(vSprData));
-
-	archive(CEREAL_NVP(m_vecVariable));
-	archive(CEREAL_NVP(m_vecFunction));
-	archive(CEREAL_NVP(m_vecPrefab));
-
-	archive(CEREAL_NVP(size));
-	archive(CEREAL_NVP(vStr));
-
-
-	for (size_t i = 0; i < size; ++i) {
-		NKBase* ptr = m_vecModule.at(i);
-		SaveSwitch(ptr, archive);
-	}
-}
-
-void NuklearUI::LoadFile(const std::string& filename)
-{
-	std::vector<std::string> vSprData;
-	size_t size;
-	std::vector<std::string> vStr;
-
-	std::ifstream is(filename);
-	cereal::JSONInputArchive archive(is);
-
-	archive(CEREAL_NVP(vSprData));
-
-
-	wchar_t originalDir[MAX_PATH] = { 0, };
-	GetCurrentDirectoryW(MAX_PATH, originalDir);
-	for (size_t i = 0; i < vSprData.size(); ++i) {
-		std::string str = vSprData.at(i);
-		LoadSprFile(str.c_str());
-	}
-	SetCurrentDirectoryW(originalDir);
-
-	archive(CEREAL_NVP(m_vecVariable));
-	archive(CEREAL_NVP(m_vecFunction));
-	archive(CEREAL_NVP(m_vecPrefab));
-
-	archive(CEREAL_NVP(size));
-	archive(CEREAL_NVP(vStr));
-
-	for (size_t i = 0; i < size; ++i) {
-		NKBase* ptr = m_factory.create(vStr.at(i), m_ctx, this);
-		ptr->Initialize(this);
-		LoadSwitch(ptr, archive, i);
-		RegistUI(vStr.at(i).c_str(), ptr);
-	}
-
-	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
-		LoadNode(*it);
-	}
-
-	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
-		NKBase* pBase = *it;
-		ResetPrimaryID(pBase);
-	}
-
-	for (auto it = m_vecObject.begin(); it != m_vecObject.end(); ++it) {
-		NKBase* pBase = *it;
-		pBase->ResetWindowID(pBase);
-	}
-
-	for (auto it = m_vecObject.begin(); it != m_vecObject.end(); ++it) {
-		NKBase* pBase = *it;
-		auto list = pBase->GetChildList();
-		for (auto child = list->begin(); child != list->end(); ++child) {
-			NKBase* pChild = *child;
-			pChild->ResetParentID(pBase);
-		}
-	}
-}
-
-void NuklearUI::LoadNode(NKBase* pBase)
+void NuklearUI::LoadNode(NKBase* pBase, bool bBegin)
 {
 	unsigned int ppID = pBase->GetParentPrimaryID();
 
-	if (ppID != 0) {
+	if (ppID != 0 && !bBegin) {
 		auto found = m_mapModuleID.find(ppID);
 		if (found != m_mapModuleID.end()) {
 			NKBase* parent = found->second;

@@ -20,9 +20,7 @@ void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int wid
 	m_bMouseHovering = false;
 	m_bEditActive = false;
 
-	m_lua = luaL_newstate();
-	luaL_openlibs(m_lua);
-	RegisterBase();
+	m_luaInterface.Init();
 }
 void NuklearUI::Render(IDirect3DDevice7* pdevice)
 {
@@ -37,8 +35,6 @@ void NuklearUI::Render(IDirect3DDevice7* pdevice)
 		(*iter)->SafeRenderEnd(m_ctx);
 	}
 	ReleaseRenderData();
-
-
 }
 int NuklearUI::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {

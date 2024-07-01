@@ -68,8 +68,8 @@ NKBase* NKObjectFinder::SearchObject(nk_context* ctx, NuklearUI* pManager)
 			}
 
 			if (bSearch) {
-				std::wstring word = NuklearUI::utf8ToWstring(pBase->GetBaseName());
-				std::wstring filter = NuklearUI::utf8ToWstring(m_cSearchObject);
+				std::wstring word = NKLuaInterface::utf8ToWstring(pBase->GetBaseName());
+				std::wstring filter = NKLuaInterface::utf8ToWstring(m_cSearchObject);
 
 				// word를 소문자로 변환
 				std::transform(word.begin(), word.end(), word.begin(), towlower);

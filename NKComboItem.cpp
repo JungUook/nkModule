@@ -47,7 +47,7 @@ void NKComboItem::Layout(nk_context* ctx)
 		{
 			parent->SetCurrentLabel(m_labelNumber);
 			parent->SetComboName(m_cContent);
-			CallEvent(m_pManager);
+			CallEvent(m_pLuaManager);
 		}
 	}
 	else {

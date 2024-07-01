@@ -236,7 +236,7 @@ void LoadSprFile(const char* filename)
 #endif
 void LoadLuaFile(const char* filePath)
 {
-    g_nuklear->LoadLuaFile(filePath);
+    g_nuklear->m_luaInterface.LoadLuaFile(filePath);
 }
 
 void Release()

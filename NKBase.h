@@ -79,6 +79,7 @@ public:
 	virtual void GetPrefab(std::vector<NKBase*>& vecSave);
 protected:
 	NuklearUI* m_pManager;
+	NKLuaInterface* m_pLuaManager;
 	nk_context* m_ctx;
 
 	int m_iNKIndex;

@@ -39,7 +39,10 @@ void NKWindow::Layout(nk_context* ctx)
 		m_cTransform = nk_window_get_bounds(ctx);
 		CheckMouseHover(ctx);
 		GetPosition(m_pParent, m_pManager);
-	}	
+	}
+	else {
+		m_bActive = false;
+	}
 	nk_end(ctx);
 }
 
@@ -77,8 +80,6 @@ void NKWindow::EditStyle(nk_context* ctx)
 
 nk_bool NKWindow::CheckMouseHover(nk_context* ctx)
 {
-	struct nk_rect b = nk_layout_space_rect_to_screen(ctx, m_cTransform);
-
 	if (!nk_window_is_active(ctx, m_pWindow->GetPrimaryName()) || !nk_input_is_mouse_hovering_rect(&ctx->input, m_pWindow->GetTransform())) {
 		m_bMouseHover = false;
 	}

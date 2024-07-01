@@ -32,6 +32,7 @@ NuklearEditor::NuklearEditor()
 	m_pMoveNode = nullptr;
 	m_vecVariable = nullptr;
 	m_vecFunction = nullptr;
+	m_vecPrefab = nullptr;
 	m_bShow_popup = 0;
 	m_bMovingNode = false;
 
@@ -113,7 +114,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 				}
 				std::string filePath = dataPath + "\\nkmod.json";
 
-				m_pManager->SaveFile(filePath);
+				m_pManager->m_cereal.SaveFile(*m_vecVariable, *m_vecFunction, filePath);
 			}
 			if (nk_button_label(ctx, "Load")) {
 				Clear();
@@ -136,7 +137,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 				}
 				std::string filePath = dataPath + "\\nkmod.json";
 
-				m_pManager->LoadFile(filePath);
+				m_pManager->m_cereal.LoadFile(*m_vecVariable, *m_vecFunction, filePath);
 			}
 
 			nk_layout_row_dynamic(ctx, 30, 4);
@@ -219,7 +220,26 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 		}
 		if (m_pSelectedNode != nullptr && nk_contextual_item_label(ctx, grid_option[1], NK_TEXT_LEFT))
 		{
-			m_pManager->SavePrefab(m_pSelectedNode->GetPrimaryName(), m_pSelectedNode);
+			char path[MAX_PATH];
+			HMODULE hModule = GetModuleHandle(NULL);
+			if (hModule != NULL) {
+				// 현재 실행 파일의 경로를 얻습니다.
+				GetModuleFileNameA(hModule, path, MAX_PATH);
+			}
+			else {
+				std::cerr << "Failed to get module handle." << std::endl;
+				return;
+			}
+			std::string basePath(path);
+			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+			std::string dataPath = basePath + "\\prefabs";
+			if (!CreateDirectoryIfNotExists(dataPath)) {
+				std::cerr << "Failed to create directory: " << dataPath << std::endl;
+				return;
+			}
+			std::string filePath = dataPath + "\\" + m_pSelectedNode->GetPrimaryName();
+
+			m_pManager->m_cereal.SavePrefab(filePath, m_pSelectedNode);
 		}
 		nk_contextual_end(ctx);
 	}
@@ -277,6 +297,7 @@ void NuklearEditor::NodesLayout(nk_context* ctx, NKBase* pBase, nk_tree_type nkT
 					MoveRegistNode(pBase);
 				}
 			}
+			break;
 		default:
 			break;
 		}
@@ -331,6 +352,12 @@ void NuklearEditor::MoveRegistNode(NKBase* pBase)
 
 void NuklearEditor::MoveNode(NKBase* pTarget)
 {
+	if (m_pMoveNode == pTarget) {
+		m_bMovingNode = false;
+		m_pMoveNode = nullptr;
+		return;
+	}
+
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
 	m_bMovingNode = false;
@@ -420,8 +447,8 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 			}
 
 			if (bSearch) {
-				std::wstring word = NuklearUI::utf8ToWstring(filePath.filename().string().c_str());
-				std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+				std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
+				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
 				// word를 소문자로 변환
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
@@ -493,7 +520,7 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 			sprintf_s(cfunc.tableName, "table%d", vCustom->size());
 			vCustom->push_back(cfunc);
 
-			std::sort(vCustom->begin(), vCustom->end(), NuklearUI::customCompare);
+			std::sort(vCustom->begin(), vCustom->end(), NKLuaInterface::customCompare);
 		}
 
 		for (auto it = vCustom->begin(); it != vCustom->end(); ++it) {
@@ -505,8 +532,8 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 			}
 
 			if (bSearch) {
-				std::wstring word = NuklearUI::utf8ToWstring(d.name);
-				std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+				std::wstring word = NKLuaInterface::utf8ToWstring(d.name);
+				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
 				// word를 소문자로 변환
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
@@ -552,7 +579,7 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 {
 	nk_layout_row_dynamic(ctx, 44, 1);
 	if (nk_button_label(ctx, "Open")) {
-		m_pManager->OpenPrefabDialog();
+		m_pManager->m_cereal.OpenPrefabDialog();
 	}
 
 	float row_layout[2] = { 0.f };
@@ -587,8 +614,8 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 			}
 
 			if (bSearch) {
-				std::wstring word = NuklearUI::utf8ToWstring(filePath.filename().string().c_str());
-				std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+				std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
+				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
 				// word를 소문자로 변환
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
@@ -608,7 +635,7 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 				memset(selectedFilename, 0, sizeof(selectedFilename));
 				strcpy_s(selectedFilename, (*it).c_str());
 
-				m_pManager->LoadPrefab(selectedFilename, m_pSelectedNode);
+				m_pManager->m_cereal.LoadPrefab(selectedFilename, m_pSelectedNode);
 			}
 		}
 		nk_group_end(ctx);
@@ -665,7 +692,7 @@ void NuklearEditor::Clear()
 	m_vecFunction->clear();
 	m_vecPrefab->clear();
 
-	m_pManager->RunFunction("Init");
+	m_pManager->m_luaInterface.RunFunction("Init");
 }
 
 static LRESULT CALLBACK

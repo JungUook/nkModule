@@ -42,7 +42,7 @@ void NKMenu::Layout(nk_context* ctx)
             {
                 strcpy_s(m_functionName, it->data.name);
                 strcpy_s(m_argsName, it->data.tableName);
-                CallEvent(m_pManager);
+                CallEvent(m_pLuaManager);
             }
         }
         nk_menu_end(ctx);

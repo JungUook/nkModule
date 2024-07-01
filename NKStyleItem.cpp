@@ -177,8 +177,8 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 					}
 
 					if (bSearch) {
-						std::wstring word = NuklearUI::utf8ToWstring(filePath.filename().string().c_str());
-						std::wstring filter = NuklearUI::utf8ToWstring(SearchFunction);
+						std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
+						std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
 						// word를 소문자로 변환
 						std::transform(word.begin(), word.end(), word.begin(), towlower);

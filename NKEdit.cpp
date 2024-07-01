@@ -44,7 +44,7 @@ void NKEdit::Layout(nk_context* ctx)
 
 	if (nkFlag & NK_EDIT_COMMITED)
 	{
-		CallEvent(m_pManager,NK_EDIT_COMMITED, m_inputText, &m_inputTextLength);
+		CallEvent(m_pLuaManager, NK_EDIT_COMMITED, m_inputText, &m_inputTextLength);
 	}
 }
 

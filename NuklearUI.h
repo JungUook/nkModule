@@ -2,19 +2,10 @@
 #ifndef NuklearUI_h__
 #define NuklearUI_h__
 
-#include "LuaLibrary.h"
-#include "LuaBridge/LuaBridge.h"
-#include "DX7Renderer.h"
-
-#include <vector>
-#include <map>
-#include <list>
-#include <fstream>
-#include <unordered_map>
-#include <commdlg.h>
-#include <string>
-#include <filesystem>
 #include "sprLoader.h"
+#include "NKLuaInterface.h"
+#include "NKCereal.h"
+#include "DX7Renderer.h"
 
 #ifdef _DX9
 #include <d3d9.h>
@@ -25,10 +16,6 @@
 
 #include "NKBase.h"
 #include "NKObjectFinder.h"
-
-class NKBase;
-class NuklearUI;
-class NKObjectFinder;
 
 class Factory {
 public:
@@ -62,28 +49,6 @@ public:
 	static T* create(nk_context* ctx, NuklearUI* pManager) {
 		T* obj = new T(ctx, pManager);
 		return obj;
-	}
-};
-
-struct CustomData {
-	char name[256];
-	int nameLen;
-	char tableName[256];
-	int tableLen;
-
-	std::vector<NKBase*> vUseObj;
-	CustomData(): nameLen(0), tableLen(0) {
-		memset(name, 0, sizeof(name));
-		memset(tableName, 0, sizeof(tableName));
-	}
-
-	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(name
-			, nameLen
-			, tableName
-			, tableLen
-		);
 	}
 };
 
@@ -146,6 +111,7 @@ private:
 public:
 	void Register_UI();
 	std::vector<NKBase*>* GetNodes();
+	NKBase* SimpleCreateUI(const char* classname);
 	void CreateUI(const char* classname, NKBase* parent = nullptr);
 	void CopyUI(NKBase* pBase, NKBase* parent = nullptr);
 	NKBase* RegistUI(const char* classname, NKBase* pBase);
@@ -175,10 +141,10 @@ private:
 private:
 	Factory m_factory;
 
-	std::vector<NKBase*> m_vecObject;
-	std::vector<NKBase*> m_vecModule;
-	std::map<unsigned int, NKBase*> m_mapModuleID;
-	std::map<std::string, NKBase*> m_mapModuleName;
+	std::vector<NKBase*> &m_vecObject;
+	std::vector<NKBase*> &m_vecModule;
+	std::map<unsigned int, NKBase*> &m_mapModuleID;
+	std::map<std::string, NKBase*> &m_mapModuleName;
 	std::map<int, struct nk_image> m_mapImage;
 
 	struct nk_vec2 m_pivot;
@@ -201,57 +167,22 @@ public:
 
 private:
 	sprLoader* m_sprLoader;
-	std::map<std::string, sprData*> m_mapSpr;
+	std::map<std::string, sprData*> &m_mapSpr;
 
 	std::vector<sprData*> m_vecRenderData;
 	std::vector<sprData*> m_vecImmortalRenderData;
 #endif // _DX7
 
-
-	//lua
 public:
-	void LoadLuaFile(const char* filePath);
-	luabridge::LuaRef GetLuaTable(const char* tableName);
-	bool RunFunction(const char* functionName);
-	bool RunFunctionArgs(const char* functionName, const luabridge::LuaRef& args);
-
-	void AddVariable(CustomData& var);
-	void AddFunction(CustomData& func);
-
-	static std::wstring utf8ToWstring(const char* str);
-	static bool customCompare(const CustomData aData, const CustomData bData);
-#ifdef _NKDEBUG
-	void DebugLoadLuaFile(const char* filePath);
-#endif // _NKDEBUG
-
-private:
-	void RegisterBase();
-
-private:
-	lua_State* m_lua;
-
-	std::vector<CustomData> m_vecVariable;
-	std::vector<CustomData> m_vecFunction;
-
-#ifdef _NKDEBUG
-	char m_filePath[256];
-#endif // _NKDEBUG
-
-	//cereal
-public:
-	void SaveFile(const std::string& filename);
-	void LoadFile(const std::string& filename);
-	void LoadNode(NKBase* pBase);
+	void LoadNode(NKBase* pBase, bool bBegin = false);
 	void ResetPrimaryID(NKBase* pBase);
 
-	//Prefab
 public:
-	void OpenPrefabDialog();
-	void SavePrefab(const std::string& filename, NKBase* prefab);
-	void LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
-private:
-	std::vector<std::string> m_vecPrefab;
+	NKLuaInterface m_luaInterface;
+	NKCereal m_cereal;
 
+	std::vector<CustomData>& m_vecVariable;
+	std::vector<CustomData>& m_vecFunction;
 	//SubWindow
 public:
 #ifdef _NKDEBUG

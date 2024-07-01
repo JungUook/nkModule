@@ -34,7 +34,7 @@ void NKButton::Layout(nk_context* ctx)
 {
 	if (nk_button_label(ctx, m_cContent))
 	{
-		CallEvent(m_pManager);
+		CallEvent(m_pLuaManager);
 	}
 }
 

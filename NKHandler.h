@@ -3,6 +3,7 @@
 #define NKHandler_h__
 
 class NuklearUI;
+class NKLuaInterface;
 
 class NKHandler
 {
@@ -12,8 +13,9 @@ public:
 	virtual ~NKHandler();
 
 	virtual void RegistFunction(const char* functionName, const char* argsName = nullptr);
-	virtual void CallEvent(NuklearUI* pManager);
-	virtual void CallEvent(NuklearUI* pManager, nk_edit_events edit_event, char* inputText, int* inputTextLength);
+	virtual void CallEvent(NKLuaInterface* pManager);
+	virtual void CallEvent(NKLuaInterface* pManager, nk_edit_events edit_event, char* inputText, int* inputTextLength);
+	virtual void CallbackEvent(NKLuaInterface* pManager);
 
 protected:
 	void EditInfoData(nk_context* ctx);

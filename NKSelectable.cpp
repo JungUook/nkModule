@@ -36,7 +36,7 @@ void NKSelectable::Layout(nk_context* ctx)
     UpdateComponent(ctx, m_pManager);
 
     if (nk_selectable_label(ctx, m_cContent, NK_TEXT_CENTERED, &m_selected)) {
-        CallEvent(m_pManager);
+        CallEvent(m_pLuaManager);
     }
 }
 
