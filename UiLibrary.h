@@ -318,27 +318,27 @@ static void SaveSwitch(NKBase* ptr, cereal::JSONOutputArchive& archive) {
 		break;
 	}
 	case eCOLOR_PICKER: {
-		NKTooltip* nkTooltip = static_cast<NKTooltip*>(ptr);
-		NKTooltip& nTooltip = *nkTooltip; 
-		archive(nTooltip);
+		NKColorPicker* nkColorPicker = static_cast<NKColorPicker*>(ptr);
+		NKColorPicker& nColorPicker = *nkColorPicker;
+		archive(nColorPicker);
 		break;
 	}
 	case eTOOLTIP: {
-		NKMenu* nkMenu = static_cast<NKMenu*>(ptr);
-		NKMenu& nMenu = *nkMenu; 
-		archive(nMenu);
+		NKTooltip* nkTooltip = static_cast<NKTooltip*>(ptr);
+		NKTooltip& nTooltip = *nkTooltip;
+		archive(nTooltip);
 		break;
 	}
 	case eMENU: {
-		NKScrollbar* nkScrollbar = static_cast<NKScrollbar*>(ptr);
-		NKScrollbar& nScrollbar = *nkScrollbar; 
-		archive(nScrollbar);
+		NKMenu* nkMenu = static_cast<NKMenu*>(ptr);
+		NKMenu& nMenu = *nkMenu;
+		archive(nMenu);
 		break;
 	}
 	case eSCROLLBAR: {
-		NKColorPicker* nkColorPicker = static_cast<NKColorPicker*>(ptr);
-		NKColorPicker& nColorPicker = *nkColorPicker; 
-		archive(nColorPicker);
+		NKScrollbar* nkScrollbar = static_cast<NKScrollbar*>(ptr);
+		NKScrollbar& nScrollbar = *nkScrollbar;
+		archive(nScrollbar);
 		break;
 	}
 	case eSUPERSTYLE: {
@@ -454,27 +454,27 @@ static void LoadSwitch(NKBase* ptr, cereal::JSONInputArchive& archive, size_t i)
 		break;
 	}
 	case eCOLOR_PICKER: {
+		NKColorPicker* nkColorPicker = static_cast<NKColorPicker*>(ptr);
+		NKColorPicker& cColorPicker = *nkColorPicker;
+		archive(cColorPicker);
+		break;
+	}
+	case eTOOLTIP: {
 		NKTooltip* nkTooltip = static_cast<NKTooltip*>(ptr);
 		NKTooltip& cTooltip = *nkTooltip;
 		archive(cTooltip);
 		break;
 	}
-	case eTOOLTIP: {
+	case eMENU: {
 		NKMenu* nkMenu = static_cast<NKMenu*>(ptr);
 		NKMenu& cMenu = *nkMenu;
 		archive(cMenu);
 		break;
 	}
-	case eMENU: {
+	case eSCROLLBAR: {
 		NKScrollbar* nkScrollbar = static_cast<NKScrollbar*>(ptr);
 		NKScrollbar& cScrollbar = *nkScrollbar;
 		archive(cScrollbar);
-		break;
-	}
-	case eSCROLLBAR: {
-		NKColorPicker* nkColorPicker = static_cast<NKColorPicker*>(ptr);
-		NKColorPicker& cColorPicker = *nkColorPicker;
-		archive(cColorPicker);
 		break;
 	}
 	case eSUPERSTYLE: {
@@ -573,24 +573,24 @@ static NKBase* CopyObject(NKBase* pBase) {
 		return nkChart;
 	}
 	case eCOLOR_PICKER: {
+		NKColorPicker* ptr = static_cast<NKColorPicker*>(pBase);
+		NKColorPicker* nkColorPicker = new NKColorPicker(*ptr);
+		return nkColorPicker;
+	}
+	case eTOOLTIP: {
 		NKTooltip* ptr = static_cast<NKTooltip*>(pBase);
 		NKTooltip* nkTooltip = new NKTooltip(*ptr);
 		return nkTooltip;
 	}
-	case eTOOLTIP: {
+	case eMENU: {
 		NKMenu* ptr = static_cast<NKMenu*>(pBase);
 		NKMenu* nkMenu = new NKMenu(*ptr);
 		return nkMenu;
 	}
-	case eMENU: {
+	case eSCROLLBAR: {
 		NKScrollbar* ptr = static_cast<NKScrollbar*>(pBase);
 		NKScrollbar* nkScrollbar = new NKScrollbar(*ptr);
 		return nkScrollbar;
-	}
-	case eSCROLLBAR: {
-		NKColorPicker* ptr = static_cast<NKColorPicker*>(pBase);
-		NKColorPicker* nkColorPicker = new NKColorPicker(*ptr);
-		return nkColorPicker;
 	}
 	case eSUPERSTYLE: {
 		NKSuperStyleObject* ptr = static_cast<NKSuperStyleObject*>(pBase);

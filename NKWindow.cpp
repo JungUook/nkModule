@@ -75,6 +75,19 @@ void NKWindow::EditStyle(nk_context* ctx)
 	EditComponentStyle(ctx, m_pManager);
 }
 
+nk_bool NKWindow::CheckMouseHover(nk_context* ctx)
+{
+	struct nk_rect b = nk_layout_space_rect_to_screen(ctx, m_cTransform);
+
+	if (!nk_window_is_active(ctx, m_pWindow->GetPrimaryName()) || !nk_input_is_mouse_hovering_rect(&ctx->input, m_pWindow->GetTransform())) {
+		m_bMouseHover = false;
+	}
+	else {
+		m_bMouseHover = true;
+	}
+	return m_bMouseHover;
+}
+
 void NKWindow::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 {
 	NKStyleHeader::UpdateComponent(ctx, pManager);

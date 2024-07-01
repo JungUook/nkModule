@@ -41,13 +41,27 @@ void NKImage::Layout(nk_context* ctx)
 	if (m_imagePath != "None") {
 		if (m_sprSize > 0) {
 			struct nk_image img;
-			m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img);
-			nk_image(ctx, img);
+			bool bResult = m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img);
+			if (!bResult) {
+				m_pManager->ErrorPopup("Image URL not linked to the editor.");
+				m_imagePath = "None";
+				return;
+			}
+			else {
+				nk_image(ctx, img);
+			}
 		}
 		else {
 			struct nk_image img;
-			m_pManager->GetImage(m_imagePath.c_str(), img);
-			nk_image(ctx, img);
+			bool bResult = m_pManager->GetImage(m_imagePath.c_str(), img);
+			if (!bResult) {
+				m_pManager->ErrorPopup("Image URL not linked to the editor.");
+				m_imagePath = "None";
+				return;
+			}
+			else {
+				nk_image(ctx, img);
+			}
 		}
 	}
 }
