@@ -8,8 +8,8 @@ NuklearEditor g_editor;
 #endif
 
 NuklearUI::NuklearUI():
-	m_vecVariable(m_luaInterface.m_vecVariable),
-	m_vecFunction(m_luaInterface.m_vecFunction),
+	m_mapVariable(m_luaInterface.m_mapVariable),
+	m_mapFunction(m_luaInterface.m_mapFunction),
 	m_vecObject(m_cereal.m_vecObject),
 	m_vecModule(m_cereal.m_vecModule),
 	m_mapModuleID(m_cereal.m_mapModuleID),
@@ -24,9 +24,10 @@ NuklearUI::NuklearUI():
 	m_viewRect = nk_rect(0, 0, 0, 0);
 	Register_UI();
 	m_cereal.m_pManager = this;
+	m_luaInterface.m_pManager = this;
 
 #ifdef _NKDEBUG
-	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_vecVariable, &m_vecFunction, &m_cereal.m_vecPrefab);
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_mapVariable, &m_mapFunction, &m_cereal.m_vecPrefab);
 #endif // _NKDEBUG
 }
 
@@ -299,7 +300,7 @@ void NuklearUI::CopyUI(NKBase* pBase, NKBase* parent)
 	}
 }
 
-NKBase* NuklearUI::RegistUI(const char* classname, NKBase* pBase)
+NKBase* NuklearUI::RegistUI(NKBase* pBase)
 {
 	if (pBase->GetType() == eWINDOW)
 	{
@@ -321,10 +322,15 @@ NKBase* NuklearUI::RegistUI(const char* classname, NKBase* pBase)
 		m_mapModuleName.insert(std::make_pair(pBase->GetPrimaryName(), pBase));
 	}
 
-
 	auto bFinder = dynamic_cast<NKObjectFinder*>(pBase);
 	if (bFinder) {
 		m_mapOF.insert(std::make_pair(pBase->GetPrimaryID(), bFinder));
+	}
+
+	auto bHandler = dynamic_cast<NKHandler*>(pBase);
+	if (bHandler) {
+		m_luaInterface.SubscribeFunction(bHandler->GetFunctionName(), bHandler);
+		m_luaInterface.SubscribeVariable(bHandler->GetArgsName(), bHandler);
 	}
 
 	return pBase;
@@ -645,6 +651,24 @@ void NuklearUI::LoadNode(NKBase* pBase, bool bBegin)
 			NKBase* parent = found->second;
 			parent->RegistChild(pBase);
 		}
+	}
+}
+
+void NuklearUI::LoadLinkNode(NKBase* pBase)
+{
+	auto bFinder = dynamic_cast<NKObjectFinder*>(pBase);
+	if (bFinder) {
+		unsigned int ppID = bFinder->GetLinkObjPrimaryID();
+		if (ppID != 0) {
+			auto found = m_mapModuleID.find(ppID);
+			if (found != m_mapModuleID.end()) {
+				bFinder->RegistObjectEvent(found->second);
+			}
+		}
+		else {
+			bFinder->FailRegist();
+		}
+		m_mapOF.insert(std::make_pair(pBase->GetPrimaryID(), bFinder));
 	}
 }
 

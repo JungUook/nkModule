@@ -9,17 +9,25 @@
 struct MenuItem {
     char name[256];
     int nameLen;
-    CustomData data;
+    char functionName[64];
+    int functionNameLen;
+    char argsName[64];
+    int argsNameLen;
 
-    MenuItem() : nameLen(0) {
+    MenuItem() : nameLen(0), functionNameLen(0), argsNameLen(0) {
         std::memset(name, 0, sizeof(name));
+        std::memset(functionName, 0, sizeof(functionName));
+        std::memset(argsName, 0, sizeof(argsName));
     }
 
     template <class Archive>
     void serialize(Archive& ar) {
         ar(name
             , nameLen
-            , data
+            , functionName
+            , functionNameLen
+            , argsName
+            , argsNameLen
         );
     }
 };

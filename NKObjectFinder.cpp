@@ -8,6 +8,7 @@ NKObjectFinder::NKObjectFinder()
 
 	memset(m_cSearchObject, 0, sizeof(m_cSearchObject));
 	m_iSearchObjectLen = 0;
+	m_iResultObjPrimaryID = 0;
 }
 
 NKObjectFinder::NKObjectFinder(NuklearUI* pManager)
@@ -16,6 +17,7 @@ NKObjectFinder::NKObjectFinder(NuklearUI* pManager)
 
 	memset(m_cSearchObject, 0, sizeof(m_cSearchObject));
 	m_iSearchObjectLen = 0;
+	m_iResultObjPrimaryID = 0;
 }
 
 NKObjectFinder::NKObjectFinder(const NKObjectFinder& other)
@@ -23,6 +25,7 @@ NKObjectFinder::NKObjectFinder(const NKObjectFinder& other)
 	m_pResultObject = other.m_pResultObject;
 	m_iSearchObjectLen = other.m_iSearchObjectLen;
 	strcpy_s(m_cSearchObject, other.m_cSearchObject);
+	m_iResultObjPrimaryID = other.m_iResultObjPrimaryID;
 }
 
 NKObjectFinder::~NKObjectFinder()
@@ -87,6 +90,7 @@ NKBase* NKObjectFinder::SearchObject(nk_context* ctx, NuklearUI* pManager)
 
 			if (nk_button_label(ctx, "Push")) {
 				m_pResultObject = pBase;
+				m_iResultObjPrimaryID = m_pResultObject->GetPrimaryID();
 			}
 		}
 
@@ -106,4 +110,21 @@ void NKObjectFinder::LostObjectEvent(unsigned int id)
 		memset(m_cSearchObject, 0, sizeof(m_cSearchObject));
 		m_iSearchObjectLen = 0;
 	}
+}
+
+void NKObjectFinder::FailRegist()
+{
+	m_pResultObject = nullptr;
+	m_iResultObjPrimaryID = 0;
+}
+
+void NKObjectFinder::RegistObjectEvent(NKBase* pBase)
+{
+	m_pResultObject = pBase;
+	m_iResultObjPrimaryID = m_pResultObject->GetPrimaryID();
+}
+
+unsigned int NKObjectFinder::GetLinkObjPrimaryID()
+{
+	return m_iResultObjPrimaryID;
 }

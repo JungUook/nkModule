@@ -40,8 +40,8 @@ void NKMenu::Layout(nk_context* ctx)
         {
             if (nk_menu_item_label(ctx, it->name, NK_TEXT_LEFT))
             {
-                strcpy_s(m_functionName, it->data.name);
-                strcpy_s(m_argsName, it->data.tableName);
+                strcpy_s(m_functionName, it->functionName);
+                strcpy_s(m_argsName, it->argsName);
                 CallEvent(m_pLuaManager);
             }
         }
@@ -71,8 +71,8 @@ void NKMenu::EditInfo(nk_context* ctx)
     if (nk_button_label(ctx, "Add")) {
         MenuItem label;
         strcpy_s(label.name, "Item");
-        strcpy_s(label.data.name, "None");
-        strcpy_s(label.data.tableName, "None");
+        strcpy_s(label.functionName, "None");
+        strcpy_s(label.argsName, "None");
 
         m_items.push_back(label);
     }
@@ -92,10 +92,10 @@ void NKMenu::EditInfo(nk_context* ctx)
                 m_pManager->IMEInputSystem(ctx, item.name, sizeof(item.name), &item.nameLen);
 
                 nk_label(ctx, "funcname: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(ctx, item.data.name, sizeof(item.data.name), &item.data.nameLen);
+                m_pManager->IMEInputSystem(ctx, item.functionName, sizeof(item.functionName), &item.functionNameLen);
 
                 nk_label(ctx, "table: ", NK_TEXT_LEFT);
-                m_pManager->IMEInputSystem(ctx, item.data.tableName, sizeof(item.data.tableName), &item.data.tableLen);
+                m_pManager->IMEInputSystem(ctx, item.argsName, sizeof(item.argsName), &item.argsNameLen);
 
                 nk_tree_pop(ctx);
             }

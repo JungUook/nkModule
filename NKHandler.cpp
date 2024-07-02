@@ -6,28 +6,43 @@ NKHandler::NKHandler()
 {
 	memset(m_functionName, 0, sizeof(m_functionName));
 	memset(m_argsName, 0, sizeof(m_argsName));
+	memset(m_functionName, 0, sizeof(m_functionNameEdit));
+	memset(m_argsName, 0, sizeof(m_argsNameEdit));
+	m_functionNameEditLen = 0;
+	m_argsNameEditLen = 0;
 }
 
 NKHandler::NKHandler(const NKHandler& other)
 {
 	strcpy_s(m_functionName, other.m_functionName);
 	strcpy_s(m_argsName, other.m_argsName);
+	strcpy_s(m_functionName, other.m_functionNameEdit);
+	strcpy_s(m_argsName, other.m_argsNameEdit);
+	m_functionNameEditLen = 0;
+	m_argsNameEditLen = 0;
 }
 
 NKHandler::~NKHandler()
 {
 }
 
-void NKHandler::RegistFunction(const char* functionName, const char* argsName)
+void NKHandler::RegistFunction(const char* functionName, NKLuaInterface* pInterface)
 {
 	if (functionName != nullptr && strlen(functionName) > 0)
 	{
+		pInterface->UnsubscribeFunction(functionName, this);
 		strcpy_s(m_functionName, functionName);
+		pInterface->SubscribeFunction(functionName, this);
 	}
+}
 
+void NKHandler::RegistVariable(const char* argsName, NKLuaInterface* pInterface)
+{
 	if (argsName != nullptr && strlen(argsName) > 0)
 	{
+		pInterface->UnsubscribeFunction(argsName, this);
 		strcpy_s(m_argsName, argsName);
+		pInterface->SubscribeVariable(argsName, this);
 	}
 }
 
@@ -96,7 +111,31 @@ void NKHandler::CallbackEvent(NKLuaInterface* pManager)
 {
 }
 
-void NKHandler::EditInfoData(nk_context* ctx)
+const char* NKHandler::GetFunctionName()
 {
+	return m_functionName;
+}
 
+const char* NKHandler::GetArgsName()
+{
+	return m_argsName;
+}
+
+void NKHandler::EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterface* pInterface)
+{
+	float ratio[2];
+	ratio[0] = 0.3f;
+	ratio[1] = 0.7f;
+	nk_layout_row(ctx, NK_DYNAMIC, 44, 2, ratio);
+	nk_label(ctx, "Function: ", NK_TEXT_LEFT);
+	nk_flags fresult = pManager->IMEInputSystem(ctx, m_functionNameEdit, sizeof(m_functionNameEdit), &m_functionNameEditLen);
+	if (fresult & NK_EDIT_COMMITED) {
+		RegistFunction(m_functionNameEdit, pInterface);
+	}
+
+	nk_label(ctx, "Variable: ", NK_TEXT_LEFT);
+	nk_flags vresult = pManager->IMEInputSystem(ctx, m_argsNameEdit, sizeof(m_argsNameEdit), &m_argsNameEditLen);
+	if (vresult & NK_EDIT_COMMITED) {
+		RegistVariable(m_argsNameEdit, pInterface);
+	}
 }

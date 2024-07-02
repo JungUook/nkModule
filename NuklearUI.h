@@ -114,7 +114,7 @@ public:
 	NKBase* SimpleCreateUI(const char* classname);
 	void CreateUI(const char* classname, NKBase* parent = nullptr);
 	void CopyUI(NKBase* pBase, NKBase* parent = nullptr);
-	NKBase* RegistUI(const char* classname, NKBase* pBase);
+	NKBase* RegistUI(NKBase* pBase);
 	struct nk_vec2* GetPivot();
 	struct nk_rect* GetViewport();
 	void SetPrimary(NKBase* pBase);
@@ -175,14 +175,15 @@ private:
 
 public:
 	void LoadNode(NKBase* pBase, bool bBegin = false);
+	void LoadLinkNode(NKBase* pBase);
 	void ResetPrimaryID(NKBase* pBase);
 
 public:
 	NKLuaInterface m_luaInterface;
 	NKCereal m_cereal;
 
-	std::vector<CustomData>& m_vecVariable;
-	std::vector<CustomData>& m_vecFunction;
+	std::map<std::string, CustomData>& m_mapVariable;
+	std::map<std::string, CustomData>& m_mapFunction;
 	//SubWindow
 public:
 #ifdef _NKDEBUG

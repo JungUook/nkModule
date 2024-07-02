@@ -60,6 +60,13 @@ void NKProgress::SetProgress(nk_size progress)
     m_progress = progress;
 }
 
+void NKProgress::LSetProgress(luabridge::LuaRef ref)
+{
+    CHECK_LUA_REF(ref);
+    nk_size progress = ref.cast<nk_size>();
+    SetProgress(progress);
+}
+
 nk_size NKProgress::GetProgress() const
 {
     return m_progress;

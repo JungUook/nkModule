@@ -67,6 +67,13 @@ void NKCheckbox::SetChecked(bool checked)
     m_checked = checked ? 1 : 0;
 }
 
+void NKCheckbox::LSetChecked(luabridge::LuaRef ref)
+{
+    CHECK_LUA_REF(ref);
+    bool bChecked = ref.cast<bool>();
+    SetChecked(bChecked);
+}
+
 bool NKCheckbox::IsChecked() const
 {
     return m_checked != 0;

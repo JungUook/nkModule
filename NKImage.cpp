@@ -127,3 +127,27 @@ void NKImage::EditInfo(nk_context* ctx)
 		}
 	}
 }
+
+void NKImage::SetImagePath(const char* imgPath)
+{
+	m_imagePath = imgPath;
+}
+
+void NKImage::LSetImagePath(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	std::string imgPath = ref.cast<std::string>();
+	SetImagePath(imgPath.c_str());
+}
+
+void NKImage::SetIndex(int index)
+{
+	m_sprIndex = index;
+}
+
+void NKImage::LSetIndex(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	int index = ref.cast<int>();
+	SetIndex(index);
+}

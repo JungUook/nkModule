@@ -15,26 +15,28 @@
 #include <filesystem>
 
 class NKBase;
+class NKHandler;
+class NuklearUI;
 class NKObjectFinder;
 
 struct CustomData {
 	char name[256];
-	int nameLen;
-	char tableName[256];
-	int tableLen;
+	bool bFunction;
 
-	std::vector<NKBase*> vUseObj;
-	CustomData() : nameLen(0), tableLen(0) {
+	char desc[512];
+	int descLen;
+	std::vector<NKHandler*> vUseObj;
+	CustomData() : bFunction(false), descLen(0) {
 		memset(name, 0, sizeof(name));
-		memset(tableName, 0, sizeof(tableName));
+		memset(desc, 0, sizeof(desc));
 	}
 
 	template <class Archive>
 	void serialize(Archive& ar) {
 		ar(name
-			, nameLen
-			, tableName
-			, tableLen
+			, bFunction
+			, desc
+			, descLen
 		);
 	}
 };
@@ -57,10 +59,16 @@ public:
 	bool RunFunctionArgs(const char* functionName, const luabridge::LuaRef& args);
 
 	void ResponseFunction(const char* functionName);
-	void ResponseFunction(const char* functionName, const luabridge::LuaRef& args);
+	void ResponseFunctionArgs(const char* functionName, const luabridge::LuaRef& args);
 
-	void AddVariable(CustomData& var);
-	void AddFunction(CustomData& func);
+	void SubscribeVariable(std::string key, NKHandler* handler);
+	void SubscribeFunction(std::string key, NKHandler* handler);
+
+	void UnsubscribeVariable(std::string key, NKHandler* handler);
+	void UnsubscribeFunction(std::string key, NKHandler* handler);
+
+	bool IsActiveFunction(std::string functionname);
+	bool IsActiveVariable(std::string variablename);
 
 	static std::wstring utf8ToWstring(const char* str);
 	static bool customCompare(const CustomData aData, const CustomData bData);
@@ -71,8 +79,9 @@ public:
 	void RegisterBase();
 
 public:
-	std::vector<CustomData> m_vecVariable;
-	std::vector<CustomData> m_vecFunction;
+	std::map<std::string, CustomData> m_mapVariable;
+	std::map<std::string, CustomData> m_mapFunction;
+	NuklearUI* m_pManager;
 
 private:
 	lua_State* m_lua;

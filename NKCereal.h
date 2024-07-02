@@ -2,6 +2,8 @@
 #ifndef NKCereal_h__
 #define NKCereal_h__
 
+#include "NKLuaInterface.h"
+
 #include <vector>
 #include <map>
 #include <list>
@@ -23,14 +25,15 @@ public:
 	~NKCereal();
 	//project
 public:
-	void SaveFile(std::vector<CustomData>& vVar, std::vector<CustomData>& vFunc, const std::string& filename);
-	void LoadFile(std::vector<CustomData>& vVar, std::vector<CustomData>& vFunc, const std::string& filename);
+	void SaveFile(const std::string& filename);
+	void LoadFile(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename);
 
 	//Prefab
 public:
 	void OpenPrefabDialog();
 	void SavePrefab(const std::string& filename, NKBase* prefab);
 	void LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
+	void LLoadPrefab(luabridge::LuaRef ref);
 
 private:
 	bool Contains(const std::vector<std::string>& vec, const std::string& str);

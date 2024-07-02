@@ -71,6 +71,10 @@ void NKTree::EditInfo(nk_context* ctx)
         {
             CreateUI("NKTree");
         }
+        if (nk_button_label(ctx, "Space"))
+        {
+            CreateUI("NKSpace");
+        }
         nk_tree_pop(ctx);
     }
 }
@@ -83,6 +87,13 @@ void NKTree::EditStyle(nk_context* ctx)
 void NKTree::SetState(nk_collapse_states state)
 {
     m_state = state;
+}
+
+void NKTree::LSetState(luabridge::LuaRef ref)
+{
+    CHECK_LUA_REF(ref);
+    int iState = ref.cast<int>();
+    SetState((nk_collapse_states)iState);
 }
 
 nk_collapse_states NKTree::GetState() const

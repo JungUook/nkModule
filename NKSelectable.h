@@ -27,6 +27,7 @@ public:
     virtual void SetLabel(const char* text) override;
 
     void SetSelected(bool selected);
+    void LSetSelected(luabridge::LuaRef ref);
     bool IsSelected() const;
 
 public:

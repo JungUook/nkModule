@@ -172,6 +172,13 @@ void NKBase::SetActive(bool bActive)
 	m_bActive = bActive;
 }
 
+void NKBase::LSetActive(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	bool bActive = ref.cast<bool>();
+	SetActive(bActive);
+}
+
 void NKBase::SetEdit(bool bEdit)
 {
 	m_bEditActive = bEdit;
@@ -271,8 +278,16 @@ void NKBase::RegistChild(NKBase* pBase)
 	m_pChildList.push_back(pBase);
 }
 
+void NKBase::LRegistChild(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	NKBase* nkBase = ref.cast<NKBase*>();
+	RemoveChild(nkBase);
+}
+
 void NKBase::ResetWindowID(NKBase* pBase)
 {
+	CHECK_PTR(pBase);
 	m_pWindow = pBase->m_pWindow;
 	m_iWindowPrimaryID = m_pWindow->m_iPrimaryID;
 

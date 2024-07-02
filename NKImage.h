@@ -17,6 +17,11 @@ public:
 	virtual void SafeRenderEnd(nk_context* ctx) override;
 	virtual void EditInfo(nk_context* ctx) override;
 
+	void SetImagePath(const char* imgPath);
+	void LSetImagePath(luabridge::LuaRef ref);
+	void SetIndex(int index);
+	void LSetIndex(luabridge::LuaRef ref);
+
 public:
 	std::string m_imagePath;
 	int m_sprIndex;

@@ -68,9 +68,24 @@ void NKSlider::SetRange(float min, float max)
     m_max = max;
 }
 
+void NKSlider::LSetRange(luabridge::LuaRef ref)
+{
+    CHECK_LUA_REF(ref);
+    float min = ref["min"].cast<float>();
+    float max = ref["max"].cast<float>();
+    SetRange(min, max);
+}
+
 void NKSlider::SetValue(float value)
 {
     m_value = value;
+}
+
+void NKSlider::LSetValue(luabridge::LuaRef ref)
+{
+    CHECK_LUA_REF(ref);
+    float value = ref.cast<float>();
+    SetValue(value);
 }
 
 float NKSlider::GetValue() const

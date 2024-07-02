@@ -20,7 +20,9 @@ public:
     virtual void EditStyle(nk_context* ctx) override;
 
     void SetRange(float min, float max);
+    void LSetRange(luabridge::LuaRef ref);
     void SetValue(float value);
+    void LSetValue(luabridge::LuaRef ref);
     float GetValue() const;
 
 public:

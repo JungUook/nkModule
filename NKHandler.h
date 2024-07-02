@@ -12,17 +12,28 @@ public:
 	NKHandler(const NKHandler& other);
 	virtual ~NKHandler();
 
-	virtual void RegistFunction(const char* functionName, const char* argsName = nullptr);
+	virtual void RegistFunction(const char* functionName, NKLuaInterface* pInterface);
+	virtual void RegistVariable(const char* argsName, NKLuaInterface* pInterface);
 	virtual void CallEvent(NKLuaInterface* pManager);
 	virtual void CallEvent(NKLuaInterface* pManager, nk_edit_events edit_event, char* inputText, int* inputTextLength);
 	virtual void CallbackEvent(NKLuaInterface* pManager);
 
+	const char* GetFunctionName();
+	const char* GetArgsName();
+
 protected:
-	void EditInfoData(nk_context* ctx);
+	virtual void EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterface* pInterface);
 
 public:
 	char m_functionName[64];
 	char m_argsName[64];
+
+	char m_functionNameEdit[64];
+	int m_functionNameEditLen;
+
+
+	char m_argsNameEdit[64];
+	int m_argsNameEditLen;
 
 public:
 	template <class Archive>

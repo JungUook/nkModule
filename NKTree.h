@@ -23,6 +23,7 @@ public:
     virtual void EditStyle(nk_context* ctx) override;
 
     void SetState(nk_collapse_states state);
+    void LSetState(luabridge::LuaRef ref);
     nk_collapse_states GetState() const;
 
 public:

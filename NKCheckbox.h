@@ -23,6 +23,7 @@ public:
     virtual void EditStyle(nk_context* ctx) override;
 
     void SetChecked(bool checked);
+    void LSetChecked(luabridge::LuaRef ref);
     bool IsChecked() const;
 
 public:

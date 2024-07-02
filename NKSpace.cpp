@@ -158,7 +158,21 @@ void NKSpace::SetLayout(int type)
 	m_layoutFormat = (nk_layout_format)type;
 }
 
+void NKSpace::LSetLayout(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	int type = ref.cast<int>();
+	SetLayout(type);
+}
+
 void NKSpace::SetCols(int cols)
 {
 	m_dynamicCount = cols;
+}
+
+void NKSpace::LSetCols(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	int cols = ref.cast<int>();
+	SetCols(cols);
 }

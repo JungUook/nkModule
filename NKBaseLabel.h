@@ -1,6 +1,7 @@
 #pragma once
 #ifndef NKBaseLabel_h__
 #define NKBaseLabel_h__
+#include "NKLuaInterface.h"
 
 class NuklearUI;
 
@@ -13,6 +14,7 @@ public:
 
 	virtual nk_flags EditLabel(nk_context* ctx, NuklearUI* pManager);
 	virtual void SetLabel(const char* text);
+	void LSetLabel(luabridge::LuaRef ref);
 
 	virtual void CustomFontSizeBegin(nk_context* ctx, nk_font* font);
 	virtual void CustomFontSizeEnd(nk_context* ctx, NuklearUI* pManager, nk_font* font);

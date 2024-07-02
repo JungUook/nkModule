@@ -55,6 +55,7 @@ void NKButton::SafeRenderEnd(nk_context* ctx)
 void NKButton::EditInfo(nk_context* ctx)
 {
 	EditLabel(ctx, m_pManager);
+	EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
 
 void NKButton::EditStyle(nk_context* ctx)

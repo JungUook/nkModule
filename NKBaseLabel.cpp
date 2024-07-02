@@ -45,6 +45,13 @@ void NKBaseLabel::SetLabel(const char* text)
 	strcpy_s(m_cContent, text);
 }
 
+void NKBaseLabel::LSetLabel(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	std::string text = ref.cast<std::string>();
+	SetLabel(text.c_str());
+}
+
 void NKBaseLabel::CustomFontSizeBegin(nk_context* ctx, nk_font* font)
 {
 	font->handle.height *= m_fScale;

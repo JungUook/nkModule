@@ -17,7 +17,7 @@ NKCereal::~NKCereal()
 {
 }
 
-void NKCereal::SaveFile(std::vector<CustomData>& vVar, std::vector<CustomData>& vFunc, const std::string& filename)
+void NKCereal::SaveFile(const std::string& filename)
 {
 	std::vector<std::string> vSprData;
 	size_t size = m_vecModule.size();
@@ -39,9 +39,6 @@ void NKCereal::SaveFile(std::vector<CustomData>& vVar, std::vector<CustomData>& 
 
 
 	archive(CEREAL_NVP(vSprData));
-
-	archive(CEREAL_NVP(vVar));
-	archive(CEREAL_NVP(vFunc));
 	archive(CEREAL_NVP(m_vecPrefab));
 
 	archive(CEREAL_NVP(size));
@@ -54,7 +51,7 @@ void NKCereal::SaveFile(std::vector<CustomData>& vVar, std::vector<CustomData>& 
 	}
 }
 
-void NKCereal::LoadFile(std::vector<CustomData>& vVar, std::vector<CustomData>& vFunc, const std::string& filename)
+void NKCereal::LoadFile(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename)
 {
 	std::vector<std::string> vSprData;
 	size_t size;
@@ -74,8 +71,6 @@ void NKCereal::LoadFile(std::vector<CustomData>& vVar, std::vector<CustomData>& 
 	}
 	SetCurrentDirectoryW(originalDir);
 
-	archive(CEREAL_NVP(vVar));
-	archive(CEREAL_NVP(vFunc));
 	archive(CEREAL_NVP(m_vecPrefab));
 
 	archive(CEREAL_NVP(size));
@@ -85,11 +80,15 @@ void NKCereal::LoadFile(std::vector<CustomData>& vVar, std::vector<CustomData>& 
 		NKBase* ptr = m_pManager->SimpleCreateUI(vStr.at(i).c_str());
 		ptr->Initialize(m_pManager);
 		LoadSwitch(ptr, archive, i);
-		m_pManager->RegistUI(vStr.at(i).c_str(), ptr);
+		m_pManager->RegistUI(ptr);
 	}
 
 	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
 		m_pManager->LoadNode(*it);
+	}
+
+	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
+		m_pManager->LoadLinkNode(*it);
 	}
 
 	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
@@ -234,7 +233,7 @@ void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 		NKBase* ptr = m_pManager->SimpleCreateUI(vStr.at(i).c_str());
 		ptr->Initialize(m_pManager);
 		LoadSwitch(ptr, archive, i);
-		m_pManager->RegistUI(vStr.at(i).c_str(), ptr);
+		m_pManager->RegistUI(ptr);
 		vPrefab.push_back(ptr);
 	}
 
@@ -246,6 +245,10 @@ void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 		else {
 			m_pManager->LoadNode(*it, true);
 		}
+	}
+
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		m_pManager->LoadLinkNode(*it);
 	}
 
 	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
@@ -281,6 +284,15 @@ void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 			pChild->ResetParentID(pBase);
 		}
 	}
+}
+
+void NKCereal::LLoadPrefab(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	std::string filename = ref["filename"].cast<std::string>();
+	NKBase* parent = ref["parent"].cast<NKBase*>();
+
+	LoadPrefab(filename, parent);
 }
 
 bool NKCereal::Contains(const std::vector<std::string>& vec, const std::string& str)

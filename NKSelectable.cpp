@@ -80,6 +80,13 @@ void NKSelectable::SetSelected(bool selected)
     m_selected = selected ? 1 : 0;
 }
 
+void NKSelectable::LSetSelected(luabridge::LuaRef ref)
+{
+    CHECK_LUA_REF(ref);
+    bool bSelected = ref.cast<bool>();
+    SetSelected(bSelected);
+}
+
 bool NKSelectable::IsSelected() const
 {
     return m_selected != 0;

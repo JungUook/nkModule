@@ -7,11 +7,13 @@ NKLuaInterface::NKLuaInterface()
 {
 	memset(m_filePath, 0, sizeof(m_filePath));
 	m_lua = nullptr;
+	m_pManager = nullptr;
 }
 
 NKLuaInterface::~NKLuaInterface()
 {
 	m_lua = nullptr;
+	m_pManager = nullptr;
 }
 
 void NKLuaInterface::Init()
@@ -52,7 +54,7 @@ bool NKLuaInterface::RunFunction(const char* functionName)
 {
 	lua_getglobal(m_lua, functionName);
 	if (lua_pcall(m_lua, 0, 0, 0) != 0) {
-		fprintf(stderr, "%s 함수 호출 실패: %s\n", functionName, lua_tostring(m_lua, -1));
+		fprintf(stderr, "%s function call failed: %s\n", functionName, lua_tostring(m_lua, -1));
 		lua_pop(m_lua, 1);
 		return false;
 	}
@@ -80,20 +82,100 @@ void NKLuaInterface::ResponseFunction(const char* functionName)
 {
 }
 
-void NKLuaInterface::ResponseFunction(const char* functionName, const luabridge::LuaRef& args)
+void NKLuaInterface::ResponseFunctionArgs(const char* functionName, const luabridge::LuaRef& args)
 {
 }
 
-void NKLuaInterface::AddVariable(CustomData& var)
+void NKLuaInterface::SubscribeVariable(std::string key, NKHandler* handler)
 {
-	m_vecVariable.push_back(var);
-	std::sort(m_vecVariable.begin(), m_vecVariable.end(), customCompare);
+	auto found = m_mapVariable.find(key);
+	if (found != m_mapVariable.end()) {
+		CustomData& var = found->second;
+		var.vUseObj.push_back(handler);
+	}
+	else {
+		CustomData var;
+		strcpy_s(var.name, key.c_str());
+		var.bFunction = false;
+		var.vUseObj.push_back(handler);
+		m_mapVariable.insert(std::make_pair(key, var));
+		//std::sort(m_mapVariable.begin(), m_mapVariable.end(), customCompare);
+	}
 }
 
-void NKLuaInterface::AddFunction(CustomData& func)
+void NKLuaInterface::SubscribeFunction(std::string key, NKHandler* handler)
 {
-	m_vecFunction.push_back(func);
-	std::sort(m_vecFunction.begin(), m_vecFunction.end(), customCompare);
+	auto found = m_mapFunction.find(key);
+	if (found != m_mapFunction.end()) {
+		CustomData& func = found->second;
+		func.vUseObj.push_back(handler);
+	}
+	else {
+		CustomData func;
+		strcpy_s(func.name, key.c_str());
+		func.bFunction = true;
+		func.vUseObj.push_back(handler);
+		m_mapFunction.insert(std::make_pair(key, func));
+		//std::sort(m_mapFunction.begin(), m_mapFunction.end(), customCompare);
+	}
+}
+
+void NKLuaInterface::UnsubscribeVariable(std::string key, NKHandler* handler)
+{
+	auto found = m_mapVariable.find(key);
+	if (found != m_mapVariable.end()) {
+		CustomData& var = found->second;
+
+		for (auto it = var.vUseObj.begin(); it != var.vUseObj.end();) {
+			NKHandler* ptr = *it;
+
+			if (ptr == handler) {
+				it = var.vUseObj.erase(it);
+			}
+			else {
+				++it;
+			}
+		}
+
+		if (var.vUseObj.size() <= 0) {
+			m_mapVariable.erase(key);
+		}
+	}
+}
+
+void NKLuaInterface::UnsubscribeFunction(std::string key, NKHandler* handler)
+{
+	auto found = m_mapFunction.find(key);
+	if (found != m_mapFunction.end()) {
+		CustomData& func = found->second;
+
+		for (auto it = func.vUseObj.begin(); it != func.vUseObj.end();) {
+			NKHandler* ptr = *it;
+
+			if (ptr == handler) {
+				it = func.vUseObj.erase(it);
+			}
+			else {
+				++it;
+			}
+		}
+
+		if (func.vUseObj.size() <= 0) {
+			m_mapVariable.erase(key);
+		}
+	}
+}
+
+bool NKLuaInterface::IsActiveFunction(std::string functionname)
+{
+	luabridge::LuaRef func = luabridge::getGlobal(m_lua, functionname.c_str());
+	return func.isFunction();
+}
+
+bool NKLuaInterface::IsActiveVariable(std::string variablename)
+{
+	luabridge::LuaRef var = luabridge::getGlobal(m_lua, variablename.c_str());
+	return var.isTable() || var.isNumber() || var.isString() || var.isBool();
 }
 
 std::wstring NKLuaInterface::utf8ToWstring(const char* str)
@@ -156,102 +238,120 @@ void NKLuaInterface::RegisterBase()
 	//luabridge::push(m_lua, this);
 	//lua_setglobal(m_lua, "system");
 
-	//luabridge::getGlobalNamespace(m_lua)
-	//	.beginClass<NKBase>("NKBase")
-	//	.addFunction("SetActive", &NKBase::SetActive)
-	//	.addFunction("AddChild", &NKBase::LAddChild)
-	//	.addFunction("RemoveChild", &NKBase::LRemoveChild)
-	//	.addFunction("SetPrimaryName", &NKBase::SetPrimaryName)
-	//	.endClass()
-	//	.deriveClass<NKWindow, NKBase>("NKWindow")
-	//	.endClass()
-	//	.deriveClass<NKSpace, NKBase>("NKSpace")
-	//	.addFunction("SetLayout", &NKSpace::SetLayout)
-	//	.addFunction("SetCols", &NKSpace::SetCols)
-	//	.endClass()
-	//	.deriveClass<NKGroup, NKBase>("NKGroup")
-	//	.endClass()
-	//	.deriveClass<NKPopup, NKBase>("NKPopup")
-	//	.endClass()
-	//	.deriveClass<NKCombo, NKBase>("NKCombo")
-	//	.addFunction("SetComboName", &NKCombo::SetComboName)
-	//	.addFunction("SetLabelSize", &NKCombo::SetLabelSize)
-	//	.endClass()
-	//	.deriveClass<NKComboItem, NKBase>("NKComboItem")
-	//	.addFunction("RegistFunction", &NKComboItem::RegistFunction)
-	//	.endClass()
-	//	.deriveClass<NKButton, NKBase>("NKButton")
-	//	.addFunction("RegistFunction", &NKButton::RegistFunction)
-	//	.endClass()
-	//	.deriveClass<NKEdit, NKBase>("NKEdit")
-	//	.addFunction("Clear", &NKEdit::Clear)
-	//	.addFunction("RegistFunction", &NKEdit::RegistFunction)
-	//	.endClass()
-	//	.deriveClass<NKImage, NKBase>("NKImage")
-	//	.endClass()
-	//	.deriveClass<NKLabel, NKBase>("NKLabel")
-	//	.endClass()
-	//	.deriveClass<NKCheckbox, NKBase>("NKCheckbox")
-	//	.addFunction("SetLabel", &NKCheckbox::SetLabel)
-	//	.addFunction("SetChecked", &NKCheckbox::SetChecked)
-	//	.addFunction("IsChecked", &NKCheckbox::IsChecked)
-	//	.endClass()
-	//	.deriveClass<NKSlider, NKBase>("NKSlider")
-	//	.addFunction("SetRange", &NKSlider::SetRange)
-	//	.addFunction("SetValue", &NKSlider::SetValue)
-	//	.addFunction("GetValue", &NKSlider::GetValue)
-	//	.endClass()
-	//	.deriveClass<NKProgress, NKBase>("NKProgress")
-	//	.addFunction("SetProgress", &NKProgress::SetProgress)
-	//	.addFunction("GetProgress", &NKProgress::GetProgress)
-	//	.endClass()
-	//	.deriveClass<NKSelectable, NKBase>("NKSelectable")
-	//	.addFunction("SetLabel", &NKSelectable::SetLabel)
-	//	.addFunction("SetSelected", &NKSelectable::SetSelected)
-	//	.addFunction("IsSelected", &NKSelectable::IsSelected)
-	//	.endClass()
-	//	.deriveClass<NKTree, NKBase>("NKTree")
-	//	.addFunction("SetLabel", &NKTree::SetLabel)
-	//	.addFunction("SetState", &NKTree::SetState)
-	//	.addFunction("GetState", &NKTree::GetState)
-	//	.endClass()
-	//	.deriveClass<NKChart, NKBase>("NKChart")
-	//	.addFunction("AddValue", &NKChart::AddValue)
-	//	.addFunction("Clear", &NKChart::Clear)
-	//	.endClass()
-	//	.deriveClass<NKColorPicker, NKBase>("NKColorPicker")
-	//	.addFunction("SetColor", &NKColorPicker::SetColor)
-	//	.addFunction("GetColor", &NKColorPicker::GetColor)
-	//	.endClass()
-	//	.deriveClass<NKTooltip, NKBase>("NKTooltip")
-	//	.endClass()
-	//	.deriveClass<NKMenu, NKBase>("NKMenu")
-	//	.addFunction("SetLabel", &NKMenu::SetLabel)
-	//	.endClass()
-	//	.deriveClass<NKScrollbar, NKBase>("NKScrollbar")
-	//	.addFunction("SetScroll", &NKScrollbar::SetScroll)
-	//	.addFunction("GetScroll", &NKScrollbar::GetScroll)
-	//	.endClass()
-	//	.beginClass<ObjMaker>("ObjMaker")
-	//	.addStaticFunction("createWindow", &ObjMaker::create<NKWindow>)
-	//	.addStaticFunction("createSpace", &ObjMaker::create<NKSpace>)
-	//	.addStaticFunction("createGroup", &ObjMaker::create<NKGroup>)
-	//	.addStaticFunction("createPopup", &ObjMaker::create<NKPopup>)
-	//	.addStaticFunction("createCombo", &ObjMaker::create<NKCombo>)
-	//	.addStaticFunction("createComboItem", &ObjMaker::create<NKComboItem>)
-	//	.addStaticFunction("createButton", &ObjMaker::create<NKButton>)
-	//	.addStaticFunction("createEdit", &ObjMaker::create<NKEdit>)
-	//	.addStaticFunction("createImage", &ObjMaker::create<NKImage>)
-	//	.addStaticFunction("createLabel", &ObjMaker::create<NKLabel>)
-	//	.addStaticFunction("createCheckbox", &ObjMaker::create<NKCheckbox>)
-	//	.addStaticFunction("createSlider", &ObjMaker::create<NKSlider>)
-	//	.addStaticFunction("createProgress", &ObjMaker::create<NKProgress>)
-	//	.addStaticFunction("createSelectable", &ObjMaker::create<NKSelectable>)
-	//	.addStaticFunction("createTree", &ObjMaker::create<NKTree>)
-	//	.addStaticFunction("createChart", &ObjMaker::create<NKChart>)
-	//	.addStaticFunction("createColorPicker", &ObjMaker::create<NKColorPicker>)
-	//	.addStaticFunction("createTooltip", &ObjMaker::create<NKTooltip>)
-	//	.addStaticFunction("createMenu", &ObjMaker::create<NKMenu>)
-	//	.addStaticFunction("createScrollbar", &ObjMaker::create<NKScrollbar>)
-	//	.endClass();
+	luabridge::getGlobalNamespace(m_lua)
+		.beginClass<NKLuaInterface>("NKLuaInterface")
+		.addFunction("ResFunc", &NKLuaInterface::ResponseFunction)
+		.addFunction("ResFuncArgs", &NKLuaInterface::ResponseFunctionArgs)
+		.endClass();
+	luabridge::push(m_lua, this);
+	lua_setglobal(m_lua, "interface");
+
+	luabridge::getGlobalNamespace(m_lua)
+		.beginClass<NKCereal>("NKCereal")
+		.addFunction("LoadPrefab", &NKCereal::LLoadPrefab)
+		.endClass();
+	luabridge::push(m_lua, this->m_pManager->m_cereal);
+	lua_setglobal(m_lua, "io");
+
+
+	luabridge::getGlobalNamespace(m_lua)
+		.beginClass<NKBase>("NKBase")
+		.addFunction("SetActive", &NKBase::LSetActive)
+		.addFunction("AddChild", &NKBase::LAddChild)
+		.addFunction("RemoveChild", &NKBase::LRemoveChild)
+		.endClass()
+		.deriveClass<NKWindow, NKBase>("NKWindow")
+		.endClass()
+		.deriveClass<NKSpace, NKBase>("NKSpace")
+		.addFunction("SetLayout", &NKSpace::LSetLayout)
+		.addFunction("SetCols", &NKSpace::LSetCols)
+		.endClass()
+		.deriveClass<NKGroup, NKBase>("NKGroup")
+		.endClass()
+		.deriveClass<NKPopup, NKBase>("NKPopup")
+		.endClass()
+		.deriveClass<NKCombo, NKBase>("NKCombo")
+		.addFunction("SetComboName", &NKCombo::LSetComboName)
+		.addFunction("SetLabelSize", &NKCombo::LSetLabelSize)
+		.endClass()
+		.deriveClass<NKComboItem, NKBase>("NKComboItem")
+		//.addFunction("RegistFunction", &NKComboItem::RegistFunction)
+		.endClass()
+		.deriveClass<NKButton, NKBase>("NKButton")
+		//.addFunction("RegistFunction", &NKButton::RegistFunction)
+		.endClass()
+		.deriveClass<NKEdit, NKBase>("NKEdit")
+		.addFunction("Clear", &NKEdit::Clear)
+		//.addFunction("RegistFunction", &NKEdit::RegistFunction)
+		.endClass()
+		.deriveClass<NKImage, NKBase>("NKImage")
+		.addFunction("SetImagePath", &NKImage::LSetImagePath)
+		.addFunction("SetIndex", &NKImage::LSetIndex)
+		.endClass()
+		.deriveClass<NKLabel, NKBase>("NKLabel")
+		.addFunction("SetLabel", &NKLabel::LSetLabel)
+		.endClass()
+		.deriveClass<NKCheckbox, NKBase>("NKCheckbox")
+		.addFunction("SetLabel", &NKCheckbox::LSetLabel)
+		.addFunction("SetChecked", &NKCheckbox::LSetChecked)
+		.addFunction("IsChecked", &NKCheckbox::IsChecked)
+		.endClass()
+		.deriveClass<NKSlider, NKBase>("NKSlider")
+		.addFunction("SetRange", &NKSlider::LSetRange)
+		.addFunction("SetValue", &NKSlider::LSetValue)
+		.addFunction("GetValue", &NKSlider::GetValue)
+		.endClass()
+		.deriveClass<NKProgress, NKBase>("NKProgress")
+		.addFunction("SetProgress", &NKProgress::LSetProgress)
+		.addFunction("GetProgress", &NKProgress::GetProgress)
+		.endClass()
+		.deriveClass<NKSelectable, NKBase>("NKSelectable")
+		.addFunction("SetLabel", &NKSelectable::LSetLabel)
+		.addFunction("SetSelected", &NKSelectable::LSetSelected)
+		.addFunction("IsSelected", &NKSelectable::IsSelected)
+		.endClass()
+		.deriveClass<NKTree, NKBase>("NKTree")
+		.addFunction("SetLabel", &NKTree::LSetLabel)
+		.addFunction("SetState", &NKTree::SetState)
+		.addFunction("GetState", &NKTree::GetState)
+		.endClass()
+		.deriveClass<NKChart, NKBase>("NKChart")
+		.addFunction("AddValue", &NKChart::AddValue)
+		.addFunction("Clear", &NKChart::Clear)
+		.endClass()
+		.deriveClass<NKColorPicker, NKBase>("NKColorPicker")
+		.addFunction("SetColor", &NKColorPicker::SetColor)
+		.addFunction("GetColor", &NKColorPicker::GetColor)
+		.endClass()
+		.deriveClass<NKTooltip, NKBase>("NKTooltip")
+		.endClass()
+		.deriveClass<NKMenu, NKBase>("NKMenu")
+		.addFunction("SetLabel", &NKMenu::LSetLabel)
+		.endClass()
+		.deriveClass<NKScrollbar, NKBase>("NKScrollbar")
+		.addFunction("SetScroll", &NKScrollbar::SetScroll)
+		.addFunction("GetScroll", &NKScrollbar::GetScroll)
+		.endClass()
+		.beginClass<ObjMaker>("ObjMaker")
+		.addStaticFunction("createWindow", &ObjMaker::create<NKWindow>)
+		.addStaticFunction("createSpace", &ObjMaker::create<NKSpace>)
+		.addStaticFunction("createGroup", &ObjMaker::create<NKGroup>)
+		.addStaticFunction("createPopup", &ObjMaker::create<NKPopup>)
+		.addStaticFunction("createCombo", &ObjMaker::create<NKCombo>)
+		.addStaticFunction("createComboItem", &ObjMaker::create<NKComboItem>)
+		.addStaticFunction("createButton", &ObjMaker::create<NKButton>)
+		.addStaticFunction("createEdit", &ObjMaker::create<NKEdit>)
+		.addStaticFunction("createImage", &ObjMaker::create<NKImage>)
+		.addStaticFunction("createLabel", &ObjMaker::create<NKLabel>)
+		.addStaticFunction("createCheckbox", &ObjMaker::create<NKCheckbox>)
+		.addStaticFunction("createSlider", &ObjMaker::create<NKSlider>)
+		.addStaticFunction("createProgress", &ObjMaker::create<NKProgress>)
+		.addStaticFunction("createSelectable", &ObjMaker::create<NKSelectable>)
+		.addStaticFunction("createTree", &ObjMaker::create<NKTree>)
+		.addStaticFunction("createChart", &ObjMaker::create<NKChart>)
+		.addStaticFunction("createColorPicker", &ObjMaker::create<NKColorPicker>)
+		.addStaticFunction("createTooltip", &ObjMaker::create<NKTooltip>)
+		.addStaticFunction("createMenu", &ObjMaker::create<NKMenu>)
+		.addStaticFunction("createScrollbar", &ObjMaker::create<NKScrollbar>)
+		.endClass();
 }

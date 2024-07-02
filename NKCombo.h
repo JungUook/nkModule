@@ -20,7 +20,9 @@ public:
 	virtual void EditStyle(nk_context* ctx) override;
 
 	void SetComboName(const char* name);
+	void LSetComboName(luabridge::LuaRef ref);
 	void SetLabelSize(float x, float y);
+	void LSetLabelSize(luabridge::LuaRef ref);
 	void SetCurrentLabel(int number);
 public:
 	int m_currentLabel;

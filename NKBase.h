@@ -35,6 +35,7 @@ public:
 	//제어함수
 public:
 	virtual void SetActive(bool bActive);
+	virtual void LSetActive(luabridge::LuaRef ref);
 	virtual void SetEdit(bool bEdit);
 	virtual bool IsEditActive();
 
@@ -51,6 +52,7 @@ public:
 	//virtual void Load(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void RegistInit(NKBase* pParent);
 	virtual void RegistChild(NKBase* pBase);
+	virtual void LRegistChild(luabridge::LuaRef ref);
 	virtual void ResetWindowID(NKBase* pBase);
 	virtual void ResetParentID(NKBase* pBase);
 

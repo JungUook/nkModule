@@ -18,7 +18,9 @@ public:
     virtual void SafeRenderEnd(nk_context* ctx) override;
     virtual void EditInfo(nk_context* ctx) override;
     virtual void EditStyle(nk_context* ctx) override;
+
     void SetProgress(nk_size progress);
+    void LSetProgress(luabridge::LuaRef ref);
     nk_size GetProgress() const;
 
 public:

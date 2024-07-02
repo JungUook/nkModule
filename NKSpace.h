@@ -19,7 +19,9 @@ public:
 	virtual void EditStyle(nk_context* ctx) override;
 	
 	void SetLayout(int type);
+	void LSetLayout(luabridge::LuaRef ref);
 	void SetCols(int cols);
+	void LSetCols(luabridge::LuaRef ref);
 public:
 	nk_layout_format m_layoutFormat;
 	int m_widgetCount;

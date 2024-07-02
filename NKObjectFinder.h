@@ -18,18 +18,22 @@ public:
 	NKBase* SearchObject(nk_context* ctx, NuklearUI* pManager);
 
 	void LostObjectEvent(unsigned int id);
+	void FailRegist();
+	void RegistObjectEvent(NKBase* pBase);
+	unsigned int GetLinkObjPrimaryID();
 		
 protected:
 	char m_cSearchObject[256];
 	int m_iSearchObjectLen;
 
+	unsigned int m_iResultObjPrimaryID;
 	NKBase* m_pResultObject;
 
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
-		ar(m_cSearchObject
-			, m_iSearchObjectLen
+		ar(
+			m_iResultObjPrimaryID
 		);
 	}
 };

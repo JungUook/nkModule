@@ -116,10 +116,25 @@ void NKCombo::SetComboName(const char* name)
 	strcpy_s(m_cComboLabel, name);
 }
 
+void NKCombo::LSetComboName(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	std::string name = ref.cast<std::string>();
+	SetComboName(name.c_str());
+}
+
 void NKCombo::SetLabelSize(float x, float y)
 {
 	m_labelSize.x = x;
 	m_labelSize.y = y;
+}
+
+void NKCombo::LSetLabelSize(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	float x = ref["x"].cast<float>();
+	float y = ref["y"].cast<float>();
+	SetLabelSize(x, y);
 }
 
 void NKCombo::SetCurrentLabel(int number)

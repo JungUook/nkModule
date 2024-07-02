@@ -30,8 +30,8 @@ NuklearEditor::NuklearEditor()
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
 	m_pMoveNode = nullptr;
-	m_vecVariable = nullptr;
-	m_vecFunction = nullptr;
+	m_mapVariable = nullptr;
+	m_mapFunction = nullptr;
 	m_vecPrefab = nullptr;
 	m_bShow_popup = 0;
 	m_bMovingNode = false;
@@ -53,7 +53,7 @@ NuklearEditor::~NuklearEditor()
 	g_Editor = nullptr;
 }
 
-void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::vector<CustomData>* vvariable, std::vector<CustomData>* vfunction, std::vector<std::string>* vPrefab)
+void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::map<std::string, CustomData>* mvariable, std::map<std::string, CustomData>* mfunction, std::vector<std::string>* vPrefab)
 {
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
@@ -64,8 +64,8 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 	m_mapModuleName = moduleName;
 	m_mapImage = image;
 	m_mapSpr = spr;
-	m_vecVariable = vvariable;
-	m_vecFunction = vfunction;
+	m_mapVariable = mvariable;
+	m_mapFunction = mfunction;
 	m_vecPrefab = vPrefab;
 }
 
@@ -114,7 +114,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 				}
 				std::string filePath = dataPath + "\\nkmod.json";
 
-				m_pManager->m_cereal.SaveFile(*m_vecVariable, *m_vecFunction, filePath);
+				m_pManager->m_cereal.SaveFile(filePath);
 			}
 			if (nk_button_label(ctx, "Load")) {
 				Clear();
@@ -137,7 +137,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 				}
 				std::string filePath = dataPath + "\\nkmod.json";
 
-				m_pManager->m_cereal.LoadFile(*m_vecVariable, *m_vecFunction, filePath);
+				m_pManager->m_cereal.LoadFile(*m_mapVariable, *m_mapFunction, filePath);
 			}
 
 			nk_layout_row_dynamic(ctx, 30, 4);
@@ -489,14 +489,14 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 void NuklearEditor::LuaDataLayout(nk_context* ctx)
 {
 	if (m_iLuaOption == eFUNCTION) {
-		CustomDataLayout(ctx, "Function", m_vecFunction);
+		CustomDataLayout(ctx, "Function", m_mapFunction);
 	}
 	else if (m_iLuaOption = eVARIABLE) {
-		CustomDataLayout(ctx, "Variable", m_vecVariable);
+		CustomDataLayout(ctx, "Variable", m_mapVariable);
 	}
 }
 
-void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std::vector<CustomData>* vCustom)
+void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std::map<std::string, CustomData>* mCustom)
 {
 	float row_layout[2] = { 0.f };
 	row_layout[0] = 0.7f;
@@ -514,17 +514,9 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 	if (nk_group_begin(ctx, dataName, NK_WINDOW_TITLE)) {
 
 		nk_layout_row_dynamic(ctx, 22, 1);
-		if (nk_button_label(ctx, "Add")) {
-			CustomData cfunc;
-			sprintf_s(cfunc.name, "%s%d", dataName, vCustom->size());
-			sprintf_s(cfunc.tableName, "table%d", vCustom->size());
-			vCustom->push_back(cfunc);
 
-			std::sort(vCustom->begin(), vCustom->end(), NKLuaInterface::customCompare);
-		}
-
-		for (auto it = vCustom->begin(); it != vCustom->end(); ++it) {
-			CustomData& d = *it;
+		for (auto it = mCustom->begin(); it != mCustom->end(); ++it) {
+			CustomData& d = it->second;
 			bool bSearch = false;
 			bool bSearchResult = true;
 			if (strlen(SearchFunction) > 0) {
@@ -548,23 +540,42 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 			}
 
 			if (nk_tree_push_id(ctx, NK_TREE_TAB, d.name, NK_MINIMIZED, reinterpret_cast<intptr_t>(&d))) {
-				float tree_layout[2] = { 0.f, };
-				tree_layout[0] = 0.3f;
-				tree_layout[1] = 0.7f;
-				nk_layout_row(ctx, NK_DYNAMIC, 55, 2, tree_layout);
-				nk_label(ctx, "name: ", NK_TEXT_LEFT);
-				m_pManager->IMEInputSystem(ctx, d.name, sizeof(d.name), &d.nameLen);
+				//nk_layout_row_dynamic(ctx, 33, 1);
+				//nk_label(ctx, "Desc: ", NK_TEXT_LEFT);
+				//nk_layout_row_dynamic(ctx, 100, 1);
+				//m_pManager->IMEInputSystem(ctx, d.desc, sizeof(d.desc), &d.descLen, NK_EDIT_BOX );
 
-				nk_label(ctx, "table: ", NK_TEXT_LEFT);
-				m_pManager->IMEInputSystem(ctx, d.tableName, sizeof(d.tableName), &d.tableLen);
+				//nk_label(ctx, "table: ", NK_TEXT_LEFT);
+				//m_pManager->IMEInputSystem(ctx, d.tableName, sizeof(d.tableName), &d.tableLen);
 
-				if (nk_button_label(ctx, "remove")) {
-					it = vCustom->erase(it);
-
-					if (it >= vCustom->end()) {
-
-						nk_tree_pop(ctx);
-						break;
+				nk_layout_row_dynamic(ctx, 33, 2);
+				nk_label(ctx, "Linked Function: ", NK_TEXT_LEFT);
+				if (d.bFunction) {
+					if (m_pManager->m_luaInterface.IsActiveFunction(d.name)) {
+						nk_color origin = ctx->style.text.color;
+						ctx->style.text.color = nk_color(0, 255, 0, 255);
+						nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
+						ctx->style.text.color = origin;
+					}
+					else {
+						nk_color origin = ctx->style.text.color;
+						ctx->style.text.color = nk_color(0, 0, 255, 255);
+						nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
+						ctx->style.text.color = origin;
+					}
+				}
+				else {
+					if (m_pManager->m_luaInterface.IsActiveVariable(d.name)) {
+						nk_color origin = ctx->style.text.color;
+						ctx->style.text.color = nk_color(0, 255, 0, 255);
+						nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
+						ctx->style.text.color = origin;
+					}
+					else {
+						nk_color origin = ctx->style.text.color;
+						ctx->style.text.color = nk_color(0, 0, 255, 255);
+						nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
+						ctx->style.text.color = origin;
 					}
 				}
 
@@ -688,8 +699,8 @@ void NuklearEditor::Clear()
 	m_pSelectedNode = nullptr;
 
 	m_mapSpr->clear();
-	m_vecVariable->clear();
-	m_vecFunction->clear();
+	m_mapVariable->clear();
+	m_mapFunction->clear();
 	m_vecPrefab->clear();
 
 	m_pManager->m_luaInterface.RunFunction("Init");
