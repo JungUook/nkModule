@@ -27,7 +27,7 @@ NuklearUI::NuklearUI():
 	m_luaInterface.m_pManager = this;
 
 #ifdef _NKDEBUG
-	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_mapVariable, &m_mapFunction, &m_cereal.m_vecPrefab);
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_mapVariable, &m_mapFunction, &m_cereal.m_vecPrefab, &m_cereal.m_vecLuaCode);
 #endif // _NKDEBUG
 }
 
@@ -91,12 +91,6 @@ void NuklearUI::Update()
 {
 	m_bMouseHovering = false;
 	m_bEditActive = false;
-
-#ifdef _NKDEBUG
-	//m_luaInterface.DebugLoadLuaFile(m_luaInterface.m_filePath);
-	m_luaInterface.RunFunction("Modify");
-#endif // _NKDEBUG
-	m_luaInterface.RunFunction("Update");
 
 	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
 	{

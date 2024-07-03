@@ -19,6 +19,8 @@ public:
 
 	void SetImagePath(const char* imgPath);
 	void LSetImagePath(luabridge::LuaRef ref);
+	void SetSpritePath(const char* imgPath);
+	void LSetSpritePath(luabridge::LuaRef ref);
 	void SetIndex(int index);
 	void LSetIndex(luabridge::LuaRef ref);
 

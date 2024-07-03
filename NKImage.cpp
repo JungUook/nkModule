@@ -140,6 +140,26 @@ void NKImage::LSetImagePath(luabridge::LuaRef ref)
 	SetImagePath(imgPath.c_str());
 }
 
+void NKImage::SetSpritePath(const char* imgPath)
+{
+	auto mapSpr = m_pManager->GetSprMap();
+	auto found = mapSpr->find(imgPath);
+	if (found != mapSpr->end()) {
+		m_imagePath = found->first;
+		m_sprSize = found->second->GetSpr()->GetXCount() * found->second->GetSpr()->GetYCount();
+		if (m_sprSize <= m_sprIndex) {
+			m_sprIndex = 0;
+		}
+	}
+}
+
+void NKImage::LSetSpritePath(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	std::string imgPath = ref.cast<std::string>();
+	SetSpritePath(imgPath.c_str());
+}
+
 void NKImage::SetIndex(int index)
 {
 	m_sprIndex = index;

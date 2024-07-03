@@ -385,15 +385,23 @@ void NKBase::LayoutEditor(nk_context* ctx)
 	if (nk_tree_push(ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
 		nk_layout_row_dynamic(ctx, 44, 1);
 		nk_label(ctx, "Window Name", NK_TEXT_LEFT);
+
+		nk_layout_row_dynamic(ctx, 44, 2);
+		nk_label(ctx, "Current:", NK_TEXT_LEFT);
+		nk_label(ctx, m_cprimaryName, NK_TEXT_RIGHT);
 		nk_flags result = m_pManager->IMEInputSystem(ctx, m_cprimaryEditName, sizeof(m_cprimaryEditName), &m_cprimaryEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{
 			EditPrimaryName(m_cprimaryEditName);
 		}
 
+		nk_layout_row_dynamic(ctx, 44, 1);
 		nk_label(ctx, "Node Name", NK_TEXT_LEFT);
-		result = m_pManager->IMEInputSystem(ctx, m_cBaseEditName, sizeof(m_cBaseEditName), &m_cBaseEditName_len);
 
+		nk_layout_row_dynamic(ctx, 44, 2);
+		nk_label(ctx, "Current:", NK_TEXT_LEFT);
+		nk_label(ctx, m_cBaseName, NK_TEXT_RIGHT);
+		result = m_pManager->IMEInputSystem(ctx, m_cBaseEditName, sizeof(m_cBaseEditName), &m_cBaseEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{
 			SetBaseName(m_cBaseEditName);

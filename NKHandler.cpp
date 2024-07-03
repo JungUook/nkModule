@@ -30,7 +30,7 @@ void NKHandler::RegistFunction(const char* functionName, NKLuaInterface* pInterf
 {
 	if (functionName != nullptr && strlen(functionName) > 0)
 	{
-		pInterface->UnsubscribeFunction(functionName, this);
+		pInterface->UnsubscribeFunction(m_functionName, this);
 		strcpy_s(m_functionName, functionName);
 		pInterface->SubscribeFunction(functionName, this);
 	}
@@ -40,7 +40,7 @@ void NKHandler::RegistVariable(const char* argsName, NKLuaInterface* pInterface)
 {
 	if (argsName != nullptr && strlen(argsName) > 0)
 	{
-		pInterface->UnsubscribeFunction(argsName, this);
+		pInterface->UnsubscribeFunction(m_argsName, this);
 		strcpy_s(m_argsName, argsName);
 		pInterface->SubscribeVariable(argsName, this);
 	}
@@ -133,9 +133,42 @@ void NKHandler::EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterfac
 		RegistFunction(m_functionNameEdit, pInterface);
 	}
 
+	if (strlen(m_functionName) > 0) {
+		nk_layout_row_dynamic(ctx, 33, 1);
+		if (pInterface->IsActiveFunction(m_functionName)) {
+			nk_color origin = ctx->style.text.color;
+			ctx->style.text.color = nk_color(0, 255, 0, 255);
+			nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
+			ctx->style.text.color = origin;
+		}
+		else {
+			nk_color origin = ctx->style.text.color;
+			ctx->style.text.color = nk_color(0, 0, 255, 255);
+			nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
+			ctx->style.text.color = origin;
+		}
+	}
+
+	nk_layout_row(ctx, NK_DYNAMIC, 44, 2, ratio);
 	nk_label(ctx, "Variable: ", NK_TEXT_LEFT);
 	nk_flags vresult = pManager->IMEInputSystem(ctx, m_argsNameEdit, sizeof(m_argsNameEdit), &m_argsNameEditLen);
 	if (vresult & NK_EDIT_COMMITED) {
 		RegistVariable(m_argsNameEdit, pInterface);
+	}
+
+	if (strlen(m_argsName) > 0) {
+		nk_layout_row_dynamic(ctx, 33, 1);
+		if (pInterface->IsActiveVariable(m_argsName)) {
+			nk_color origin = ctx->style.text.color;
+			ctx->style.text.color = nk_color(0, 255, 0, 255);
+			nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
+			ctx->style.text.color = origin;
+		}
+		else {
+			nk_color origin = ctx->style.text.color;
+			ctx->style.text.color = nk_color(0, 0, 255, 255);
+			nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
+			ctx->style.text.color = origin;
+		}
 	}
 }

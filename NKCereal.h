@@ -35,11 +35,16 @@ public:
 	void LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
 	void LLoadPrefab(luabridge::LuaRef ref);
 
+	void OpenLuaCodeDialog();
+
+	void OpenDialog(LPCWSTR strFilter, const wchar_t* strExtension, std::vector<std::string>& vec);
+
 private:
 	bool Contains(const std::vector<std::string>& vec, const std::string& str);
 
 public:
 	std::vector<std::string> m_vecPrefab;
+	std::vector<std::string> m_vecLuaCode;
 	NuklearUI* m_pManager;
 
 public:

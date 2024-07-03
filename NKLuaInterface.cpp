@@ -5,7 +5,6 @@
 
 NKLuaInterface::NKLuaInterface()
 {
-	memset(m_filePath, 0, sizeof(m_filePath));
 	m_lua = nullptr;
 	m_pManager = nullptr;
 }
@@ -30,19 +29,9 @@ void NKLuaInterface::Release()
 
 void NKLuaInterface::LoadLuaFile(const char* filePath)
 {
-#ifdef _NKDEBUG
-	memset(m_filePath, 0, sizeof(m_filePath));
-	strcpy_s(m_filePath, filePath);
-	if (luaL_dofile(m_lua, m_filePath) != LUA_OK) {
-		std::cerr << lua_tostring(m_lua, -1) << std::endl;
-	}
-#else
 	if (luaL_dofile(m_lua, filePath) != LUA_OK) {
 		std::cerr << lua_tostring(m_lua, -1) << std::endl;
 	}
-#endif // _NKDEBUG
-
-	RunFunction("Init");
 }
 
 luabridge::LuaRef NKLuaInterface::GetLuaTable(const char* tableName)
@@ -178,6 +167,11 @@ bool NKLuaInterface::IsActiveVariable(std::string variablename)
 	return var.isTable() || var.isNumber() || var.isString() || var.isBool();
 }
 
+luabridge::LuaRef NKLuaInterface::GetLuaTable(std::string variablename)
+{
+	return luabridge::getGlobal(m_lua, variablename.c_str());
+}
+
 std::wstring NKLuaInterface::utf8ToWstring(const char* str)
 {
 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
@@ -230,13 +224,34 @@ void NKLuaInterface::DebugLoadLuaFile(const char* filePath)
 
 void NKLuaInterface::RegisterBase()
 {
-	//luabridge::getGlobalNamespace(m_lua)
-	//	.beginClass<NuklearUI>("NuklearUI")
-	//	.addFunction("Add", &NuklearUI::Add)
-	//	.endClass();
+	luabridge::getGlobalNamespace(m_lua)
+		.beginClass<NuklearUI>("NuklearUI")
+		.addFunction("Find", &NuklearUI::Find<NKBase>)
+		.addFunction("FindWindow", &NuklearUI::Find<NKWindow>)
+		.addFunction("FindSpace", &NuklearUI::Find<NKSpace>)
+		.addFunction("FindGroup", &NuklearUI::Find<NKGroup>)
+		.addFunction("FindPopup", &NuklearUI::Find<NKPopup>)
+		.addFunction("FindCombo", &NuklearUI::Find<NKCombo>)
+		.addFunction("FindButton", &NuklearUI::Find<NKButton>)
+		.addFunction("FindEdit", &NuklearUI::Find<NKEdit>)
+		.addFunction("FindImage", &NuklearUI::Find<NKImage>)
+		.addFunction("FindLabel", &NuklearUI::Find<NKLabel>)
+		.addFunction("FindComboItem", &NuklearUI::Find<NKComboItem>)
+		.addFunction("FindCheckbox", &NuklearUI::Find<NKCheckbox>)
+		.addFunction("FindSlider", &NuklearUI::Find<NKSlider>)
+		.addFunction("FindProgress", &NuklearUI::Find<NKProgress>)
+		.addFunction("FindSelectable", &NuklearUI::Find<NKSelectable>)
+		.addFunction("FindTree", &NuklearUI::Find<NKTree>)
+		.addFunction("FindChart", &NuklearUI::Find<NKChart>)
+		.addFunction("FindTooltip", &NuklearUI::Find<NKTooltip>)
+		.addFunction("FindMenu", &NuklearUI::Find<NKMenu>)
+		.addFunction("FindScrollbar", &NuklearUI::Find<NKScrollbar>)
+		.addFunction("FindColorPicker", &NuklearUI::Find<NKColorPicker>)
+		.addFunction("FindSuperStyleObject", &NuklearUI::Find<NKSuperStyleObject>)
+		.endClass();
 
-	//luabridge::push(m_lua, this);
-	//lua_setglobal(m_lua, "system");
+	luabridge::push(m_lua, this->m_pManager);
+	lua_setglobal(m_lua, "system");
 
 	luabridge::getGlobalNamespace(m_lua)
 		.beginClass<NKLuaInterface>("NKLuaInterface")

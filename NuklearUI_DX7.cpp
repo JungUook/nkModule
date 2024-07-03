@@ -297,10 +297,12 @@ bool NuklearUI::GetImage(const char* filename, struct nk_image& outimg, bool bIm
 		return false;
 	}
 }
+
 std::map<std::string, sprData*>* NuklearUI::GetSprMap()
 {
 	return &m_mapSpr;
 }
+
 bool NuklearUI::RegisterRenderData(sprData* pData, bool bImmortal)
 {
 	if (pData->GetSurface() == nullptr) {

@@ -122,6 +122,18 @@ public:
 	void Add(NKBase* type, bool bStyle = true);
 	struct nk_image* SearchImage(int SID);
 
+	template <typename T>
+	T* Find(const char* primaryname)
+	{
+		auto found = m_mapModuleName.find(primaryname);
+		if (found != m_mapModuleName.end()) {
+			return (T*)found->second;
+		}
+		else {
+			return nullptr;
+		}
+	}
+
 	void Move(unsigned int child, unsigned int parent);
 
 	void Remove(unsigned int id);

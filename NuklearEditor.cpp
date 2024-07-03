@@ -53,7 +53,7 @@ NuklearEditor::~NuklearEditor()
 	g_Editor = nullptr;
 }
 
-void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::map<std::string, CustomData>* mvariable, std::map<std::string, CustomData>* mfunction, std::vector<std::string>* vPrefab)
+void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::map<std::string, CustomData>* mvariable, std::map<std::string, CustomData>* mfunction, std::vector<std::string>* vPrefab, std::vector<std::string>* vLua)
 {
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
@@ -67,6 +67,7 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 	m_mapVariable = mvariable;
 	m_mapFunction = mfunction;
 	m_vecPrefab = vPrefab;
+	m_vecLuaCode = vLua;
 }
 
 void NuklearEditor::EditorLayout(struct nk_rect debugRect)
@@ -155,8 +156,9 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 		switch (m_iOption)
 		{
 			case eLUA: {
-				nk_layout_row_dynamic(ctx, 30, 3);
+				nk_layout_row_dynamic(ctx, 30, 4);
 				nk_label(ctx, "Lua Data:", NK_TEXT_LEFT);
+				if (nk_option_label(ctx, "code", m_iLuaOption == eCODE)) m_iLuaOption = eCODE;
 				if (nk_option_label(ctx, "function", m_iLuaOption == eFUNCTION)) m_iLuaOption = eFUNCTION;
 				if (nk_option_label(ctx, "variable", m_iLuaOption == eVARIABLE)) m_iLuaOption = eVARIABLE;
 				LuaDataLayout(ctx);
@@ -488,11 +490,88 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 
 void NuklearEditor::LuaDataLayout(nk_context* ctx)
 {
-	if (m_iLuaOption == eFUNCTION) {
+	if (m_iLuaOption == eCODE) {
+		LuaCodeLayout(ctx);
+	}
+	else if (m_iLuaOption == eFUNCTION) {
 		CustomDataLayout(ctx, "Function", m_mapFunction);
 	}
 	else if (m_iLuaOption = eVARIABLE) {
 		CustomDataLayout(ctx, "Variable", m_mapVariable);
+	}
+}
+
+void NuklearEditor::LuaCodeLayout(nk_context* ctx)
+{
+	nk_layout_row_dynamic(ctx, 44, 2);
+	if (nk_button_label(ctx, "Open")) {
+		m_pManager->m_cereal.OpenLuaCodeDialog();
+	}
+	if (nk_button_label(ctx, "Reload")) {
+		
+		for (auto it = m_vecLuaCode->begin(); it != m_vecLuaCode->end(); ++it) {
+			std::string str = *it;
+			m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
+		}
+	}
+
+	float row_layout[2] = { 0.f };
+	row_layout[0] = 0.7f;
+	row_layout[1] = 0.3f;
+	nk_layout_row(ctx, NK_DYNAMIC, 55, 2, row_layout);
+	static char SearchFunction[256] = { 0, };
+	static int SearchFunction_Len = 0;
+	nk_flags searchResult = m_pManager->IMEInputSystem(ctx, SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
+
+	if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
+
+	}
+
+	static char selectedFilename[260] = { 0, };
+	float ratio[2] = { 0.8f, 0.2f };
+
+	if (m_vecLuaCode->size() == 0) {
+		memset(selectedFilename, 0, sizeof(selectedFilename));
+	}
+
+	nk_layout_row_dynamic(ctx, 500, 1);
+	if (nk_group_begin(ctx, "Lua Code List", NK_WINDOW_TITLE)) {
+		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
+		for (std::vector<std::string>::iterator it = m_vecLuaCode->begin(); it != m_vecLuaCode->end(); ++it) {
+			std::filesystem::path filePath((*it).c_str());
+
+			bool bSearch = false;
+			bool bSearchResult = true;
+			if (strlen(SearchFunction) > 0) {
+				bSearch = true;
+			}
+
+			if (bSearch) {
+				std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
+				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
+
+				// word를 소문자로 변환
+				std::transform(word.begin(), word.end(), word.begin(), towlower);
+				// filter를 소문자로 변환
+				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
+
+				bSearchResult = word.find(filter) != std::wstring::npos;
+			}
+
+			if (!bSearchResult) {
+				continue;
+			}
+
+			nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
+
+			if (nk_button_label(ctx, "Reload")) {
+				memset(selectedFilename, 0, sizeof(selectedFilename));
+				strcpy_s(selectedFilename, (*it).c_str());
+
+				m_pManager->m_luaInterface.LoadLuaFile(selectedFilename);
+			}
+		}
+		nk_group_end(ctx);
 	}
 }
 
@@ -570,6 +649,9 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 						ctx->style.text.color = nk_color(0, 255, 0, 255);
 						nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
 						ctx->style.text.color = origin;
+
+						luabridge::LuaRef var = m_pManager->m_luaInterface.GetLuaTable(d.name);
+						PrintTable(ctx, var);
 					}
 					else {
 						nk_color origin = ctx->style.text.color;
@@ -583,6 +665,62 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 			}
 		}
 		nk_group_end(ctx);
+	}
+}
+
+void NuklearEditor::PrintTable(nk_context* ctx, luabridge::LuaRef ref)
+{
+	nk_layout_row_dynamic(ctx, 33, 1);
+	nk_label(ctx, "Lua table contents", NK_TEXT_LEFT);
+	if (ref.isTable()) {
+		for (luabridge::Iterator iter(ref); !iter.isNil(); ++iter) {
+			luabridge::LuaRef key = iter.key();
+			luabridge::LuaRef value = iter.value();
+
+			std::string contentValue = "";
+			if (value.isNumber()) {
+				contentValue = std::format("{:.2f}", value.cast<double>());
+			}
+			else if (value.isString()) {
+				contentValue = value.cast<std::string>();
+			}
+			else if (value.isBool()) {
+				contentValue = value.cast<bool>() ? "true" : "false";
+			}
+			else {
+				contentValue = "Unknown type";
+			}
+
+			nk_layout_row_dynamic(ctx, 33, 2);
+			nk_label(ctx, "Key: ", NK_TEXT_LEFT);
+			nk_label(ctx, key.tostring().c_str(), NK_TEXT_RIGHT);
+			nk_label(ctx, "Value: ", NK_TEXT_LEFT);
+			nk_label(ctx, contentValue.c_str(), NK_TEXT_RIGHT);
+		}
+	}
+	else if (ref.isNumber()) {
+		std::string contentValue = std::format("{:.2f}", ref.cast<double>());
+		nk_layout_row_dynamic(ctx, 33, 2);
+		nk_label(ctx, "Value: ", NK_TEXT_LEFT);
+		nk_label(ctx, contentValue.c_str(), NK_TEXT_RIGHT);
+	}
+	else if (ref.isString()) {
+		std::string contentValue = ref.cast<std::string>();
+		nk_layout_row_dynamic(ctx, 33, 2);
+		nk_label(ctx, "Value: ", NK_TEXT_LEFT);
+		nk_label(ctx, contentValue.c_str(), NK_TEXT_RIGHT);
+	}
+	else if (ref.isBool()) {
+		std::string contentValue = ref.cast<bool>() ? "true" : "false";
+		nk_layout_row_dynamic(ctx, 33, 2);
+		nk_label(ctx, "Value: ", NK_TEXT_LEFT);
+		nk_label(ctx, contentValue.c_str(), NK_TEXT_RIGHT);
+	}
+	else {
+		std::string contentValue = "Unknown type";
+		nk_layout_row_dynamic(ctx, 33, 2);
+		nk_label(ctx, "Value: ", NK_TEXT_LEFT);
+		nk_label(ctx, contentValue.c_str(), NK_TEXT_RIGHT);
 	}
 }
 

@@ -70,6 +70,8 @@ public:
 	bool IsActiveFunction(std::string functionname);
 	bool IsActiveVariable(std::string variablename);
 
+	luabridge::LuaRef GetLuaTable(std::string variablename);
+
 	static std::wstring utf8ToWstring(const char* str);
 	static bool customCompare(const CustomData aData, const CustomData bData);
 #ifdef _NKDEBUG
@@ -85,10 +87,6 @@ public:
 
 private:
 	lua_State* m_lua;
-
-#ifdef _NKDEBUG
-	char m_filePath[256];
-#endif // _NKDEBUG
 };
 
 
