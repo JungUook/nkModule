@@ -41,6 +41,11 @@ struct CustomData {
 	}
 };
 
+struct BindingFunc {
+	void* binding;
+	void(*func)(void*, void*);
+};
+
 class NKLuaInterface
 {
 public:
@@ -78,6 +83,11 @@ public:
 	void DebugLoadLuaFile(const char* filePath);
 #endif // _NKDEBUG
 
+	void TriggerEvent(luabridge::LuaRef args);
+	void BindingTriggerEvent(luabridge::LuaRef args);
+
+	void* ConvertData(void* params);
+
 	void RegisterBase();
 
 public:
@@ -85,6 +95,19 @@ public:
 	std::map<std::string, CustomData> m_mapFunction;
 	NuklearUI* m_pManager;
 
+	std::map<int, std::function<void(void*)>> m_mapEventHandlers;
+	std::map<int, BindingFunc> m_mapBindingEventHandlers;
+
+	std::vector<luabridge::LuaRef> m_vecRef;
+
+	std::vector<double> m_vRef_d;
+	std::vector<std::string> m_vRef_s;
+	std::vector<int> m_vRef_b;
+
+	std::vector<void*> m_vTableRef;
+	double m_dRef;
+	std::string m_sRef;
+	bool m_bRef;
 private:
 	lua_State* m_lua;
 };

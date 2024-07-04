@@ -55,4 +55,80 @@ extern "C" {
 	NKMOD_API IDirectDrawSurface7* GetBackBuffer();
 	NKMOD_API void* GetDevice();
 #endif
+
+	NKMOD_API void AddHandler(int key, void(*func)(void*));
+	NKMOD_API void AddBindHandler(int key, void* callback, void(*func)(void*, void*));
+	NKMOD_API void RemoveHandler(int key);
+	NKMOD_API void RemoveBindHandler(int key);
+	NKMOD_API void* ConvertData(void* param);
 }
+
+
+#ifndef NKMOD_EXPORTS
+#include <functional>
+#include <vector>
+
+struct NKHandler {
+	int id;
+	std::function<void(void*)>* handler;
+};
+
+class NKInterface
+{
+public:
+	NKInterface() {};
+	~NKInterface() {};
+
+	NKInterface& operator+=(const NKHandler& other)
+	{
+		AddBindHandler(other.id, other.handler, CallBindingEvent);
+		handlers.push_back(other);
+
+		return *this;
+	}
+	NKInterface& operator-=(const NKHandler& other)
+	{
+		RemoveBindHandler(other.id);
+		delete(other.handler);
+
+		for (auto it = handlers.begin(); it != handlers.end();) {
+			NKHandler& handle = *it;
+
+			if (handle.id == other.id) {
+				it = handlers.erase(it);
+				break;
+			}
+			else {
+				++it;
+			}
+		}
+
+		return *this;
+	}
+	void executeHandlers(void* event)
+	{
+		for (auto it = handlers.begin(); it != handlers.end(); ++it) {
+			auto data = *it;
+			if (data.handler) {
+				(*data.handler)(event);
+			}
+		}
+	}
+
+	template <typename T>
+	static void InitializeHandler(int id, T* instance, void (T::* method)(void*), NKHandler& out)
+	{
+		out.id = id;
+		out.handler = new std::function<void(void*)>(std::bind(method, instance, std::placeholders::_1));
+	}
+
+	static void CallBindingEvent(void* binding, void* params)
+	{
+		std::function<void(void*)>* fp = (std::function<void(void*)>*)binding;
+		(*fp)(params);
+	}
+
+private:
+	std::vector<NKHandler> handlers;
+};
+#endif

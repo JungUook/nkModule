@@ -15,7 +15,7 @@
     }
 
 #define CHECK_LUA_REF(ref) \
-    if ((ref).isNil() || (!(ref).isUserdata() || !(ref).isTable() || !(ref).isNumber() || !(ref).isString() || !(ref).isBool())) { \
+    if ((ref).isNil()) { \
         lua_State* L = (ref).state(); \
         lua_Debug ar; \
         if (lua_getstack(L, 1, &ar) && lua_getinfo(L, "Sl", &ar)) { \

@@ -387,3 +387,31 @@ void* GetDevice()
     return (void*)g_pD3DDevice;
 }
 #endif
+
+void AddHandler(int key, void(*func)(void*))
+{
+    g_nuklear->m_luaInterface.m_mapEventHandlers.insert(std::make_pair(key, func));
+}
+
+void AddBindHandler(int key, void* callback, void(*func)(void*, void*))
+{
+    BindingFunc bf;
+    bf.binding = callback;
+    bf.func = func;
+    g_nuklear->m_luaInterface.m_mapBindingEventHandlers.insert(std::make_pair(key, bf));
+}
+
+void RemoveHandler(int key)
+{
+    g_nuklear->m_luaInterface.m_mapEventHandlers.erase(key);
+}
+
+void RemoveBindHandler(int key)
+{
+    g_nuklear->m_luaInterface.m_mapBindingEventHandlers.erase(key);
+}
+
+void* ConvertData(void* param)
+{
+    return g_nuklear->m_luaInterface.ConvertData(param);
+}

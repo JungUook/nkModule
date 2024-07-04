@@ -841,7 +841,7 @@ void NuklearEditor::Clear()
 	m_mapFunction->clear();
 	m_vecPrefab->clear();
 
-	m_pManager->m_luaInterface.RunFunction("Init");
+	//m_pManager->m_luaInterface.RunFunction("Init");
 }
 
 static LRESULT CALLBACK

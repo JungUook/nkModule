@@ -2,6 +2,8 @@
 #include "NKLuaInterface.h"
 #include "UiLibrary.h"
 #include "NuklearUI.h"
+#include <functional>
+#include <any>
 
 NKLuaInterface::NKLuaInterface()
 {
@@ -222,6 +224,101 @@ void NKLuaInterface::DebugLoadLuaFile(const char* filePath)
 }
 #endif // _NKDEBUG
 
+void NKLuaInterface::TriggerEvent(luabridge::LuaRef args)
+{
+	int key = args["key"].cast<int>();
+	luabridge::LuaRef param = args["value"];
+	auto found = m_mapEventHandlers.find(key);
+
+	if (found != m_mapEventHandlers.end()) {
+		m_vecRef.clear();
+
+		std::function<void(void*)> handler = found->second;
+		m_vecRef.push_back(param);
+		handler(&m_vecRef.at(0));
+	}
+}
+
+void NKLuaInterface::BindingTriggerEvent(luabridge::LuaRef args)
+{
+	int key = args["key"].cast<int>();
+	luabridge::LuaRef param = args["value"];
+	auto found = m_mapBindingEventHandlers.find(key);
+
+	if (found != m_mapBindingEventHandlers.end()) {
+		m_vecRef.clear();
+
+		BindingFunc& bf = found->second;
+		m_vecRef.push_back(param);
+		bf.func(bf.binding, &m_vecRef.at(0));
+	}
+}
+
+void* NKLuaInterface::ConvertData(void* params)
+{
+	luabridge::LuaRef& ref = *((luabridge::LuaRef*)params);
+
+	m_vRef_d.clear();
+	m_vRef_s.clear();
+	m_vRef_b.clear();
+	m_vTableRef.clear();
+
+
+	if (ref.isTable()) {
+		for (luabridge::Iterator iter(ref); !iter.isNil(); ++iter) {
+			luabridge::LuaRef key = iter.key();
+			luabridge::LuaRef value = iter.value();
+
+			std::string contentValue = "";
+			if (value.isNumber()) {
+				double result = value.cast<double>();
+				size_t index = m_vRef_d.size();
+				m_vRef_d.push_back(result);
+
+				double* result_ref = &m_vRef_d.at(index);
+				m_vTableRef.push_back(result_ref);
+			}
+			else if (value.isString()) {
+				std::string result = value.cast<std::string>();
+				size_t index = m_vRef_s.size();
+				m_vRef_s.push_back(result);
+
+				std::string* result_ref = &m_vRef_s.at(index);
+				m_vTableRef.push_back(result_ref);
+			}
+			else if (value.isBool()) {
+				bool result = value.cast<bool>();
+				size_t index = m_vRef_b.size();
+				m_vRef_b.push_back(result ? 1 : 0);
+
+				int* result_ref = &m_vRef_b.at(index);
+				m_vTableRef.push_back(result_ref);
+			}
+			else {
+				void* result = nullptr;
+				m_vTableRef.push_back(result);
+			}
+		}
+		return &m_vTableRef;
+	}
+	else if (ref.isNumber()) {
+		m_dRef = ref.cast<double>();
+		return &m_dRef;
+	}
+	else if (ref.isString()) {
+		m_sRef = ref.cast<std::string>();
+		return &m_sRef;
+	}
+	else if (ref.isBool()) {
+		m_bRef = ref.cast<bool>();
+		return &m_bRef;
+	}
+	else {
+		return nullptr;
+	}	
+}
+
+
 void NKLuaInterface::RegisterBase()
 {
 	luabridge::getGlobalNamespace(m_lua)
@@ -257,6 +354,7 @@ void NKLuaInterface::RegisterBase()
 		.beginClass<NKLuaInterface>("NKLuaInterface")
 		.addFunction("ResFunc", &NKLuaInterface::ResponseFunction)
 		.addFunction("ResFuncArgs", &NKLuaInterface::ResponseFunctionArgs)
+		.addFunction("TriggerEvent", &NKLuaInterface::BindingTriggerEvent)
 		.endClass();
 	luabridge::push(m_lua, this);
 	lua_setglobal(m_lua, "interface");
