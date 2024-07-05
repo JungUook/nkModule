@@ -21,9 +21,12 @@ public:
 
 	void SetComboName(const char* name);
 	void LSetComboName(luabridge::LuaRef ref);
+	bool CSetComboName(void* param);
 	void SetLabelSize(float x, float y);
 	void LSetLabelSize(luabridge::LuaRef ref);
+	bool CSetLabelSize(void* param);
 	void SetCurrentLabel(int number);
+	virtual void RegistCommand() override;
 public:
 	int m_currentLabel;
 	nk_text_alignment m_labelAlignment;

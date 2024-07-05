@@ -22,6 +22,7 @@ public:
 	virtual void EditInfo(nk_context* ctx) override;
 
 	void SetLabelNumber(int number);
+	virtual void RegistCommand() override;
 public:
 	int m_labelNumber;
 

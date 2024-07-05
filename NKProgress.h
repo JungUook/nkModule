@@ -21,8 +21,11 @@ public:
 
     void SetProgress(nk_size progress);
     void LSetProgress(luabridge::LuaRef ref);
+    bool CSetProgress(void* param);
     nk_size GetProgress() const;
+    bool CGetProgress(void* param);
 
+    virtual void RegistCommand() override;
 public:
     nk_size m_progress;
 

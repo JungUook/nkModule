@@ -2,6 +2,14 @@
 #include "NKBase.h"
 #include "NKProperty.h"
 
+std::string RemoveFirstCharacter(const std::string& func, const std::string& classname) {
+	std::string prefix = classname + "::C";
+	if (func.substr(0, prefix.size()) == prefix) {
+		return func.substr(prefix.size());
+	}
+	return func;
+}
+
 NKBase::NKBase() : NKProperty()
 , m_pManager(nullptr)
 , m_pLuaManager(nullptr)
@@ -73,6 +81,7 @@ void NKBase::Initialize(NuklearUI* pManager, bool bStyle)
 		m_iWindowPrimaryID = 0;
 	}
 	NKProperty::Initialize();
+	RegistCommand();
 }
 
 void NKBase::Initialize(NKBase* pParent, bool bStyle)
@@ -91,6 +100,7 @@ void NKBase::Initialize(NKBase* pParent, bool bStyle)
 		InitializeStyle(m_pParent->m_font, m_style, m_pParent->m_pParentStyle);
 	}
 	NKProperty::Initialize();
+	RegistCommand();
 }
 
 void NKBase::Update(nk_context* ctx)
@@ -179,6 +189,17 @@ void NKBase::LSetActive(luabridge::LuaRef ref)
 	SetActive(bActive);
 }
 
+bool NKBase::CSetActive(void* param)
+{
+	bool* bActive = static_cast<bool*>(param);
+
+	if (bActive) {
+		SetActive(*bActive);
+		return true;
+	}
+	return false;
+}
+
 void NKBase::SetEdit(bool bEdit)
 {
 	m_bEditActive = bEdit;
@@ -227,6 +248,23 @@ void NKBase::LAddChild(luabridge::LuaRef ref)
 	AddChild(nkBase);
 }
 
+bool NKBase::CAddChild(void* param)
+{
+	void** arr = static_cast<void**>(param);
+
+	if (arr) {
+		NKBase* ptr = static_cast<NKBase*>(arr[0]);
+		bool* bStyle = static_cast<bool*>(arr[1]);
+
+		if (ptr && bStyle) {
+			AddChild(ptr, *bStyle);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void NKBase::RemoveChildDisConnect(NKBase* nkBase)
 {
 	CHECK_PTR(nkBase);
@@ -251,6 +289,17 @@ void NKBase::LRemoveChild(luabridge::LuaRef ref)
 	RemoveChild(nkBase);
 }
 
+bool NKBase::CRemoveChild(void* param)
+{
+	NKBase* ptr = static_cast<NKBase*>(param);
+	if (ptr) {
+		RemoveChild(ptr);
+		return true;
+	}
+
+	return false;
+}
+
 void NKBase::RegistInit(NKBase* pParent)
 {
 	CHECK_PTR(pParent);
@@ -269,6 +318,7 @@ void NKBase::RegistInit(NKBase* pParent)
 			m_iWindowPrimaryID = pWin->GetPrimaryID();
 		}
 	}
+	RegistCommand();
 }
 
 void NKBase::RegistChild(NKBase* pBase)
@@ -353,6 +403,22 @@ void NKBase::MoveBack()
 	}
 }
 
+void NKBase::RegistCommand()
+{
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CSetActive, "NKBase");
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CAddChild, "NKBase");
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CRemoveChild, "NKBase");
+}
+
+bool NKBase::ProcessCommand(const char* command, void* param)
+{
+	auto found = m_mapFunc.find(command);
+	if (found != m_mapFunc.end()) {
+		auto func = found->second;
+		return (func)(param);
+	}
+	return false;
+}
 
 int NKBase::GetNuklearIndex()
 {

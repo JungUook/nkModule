@@ -63,7 +63,36 @@ void NKScrollbar::SetScroll(float scroll)
     m_scroll = scroll;
 }
 
+bool NKScrollbar::CSetScroll(void* param)
+{
+    float* scroll = static_cast<float*>(param);
+    if (scroll) {
+        SetScroll(*scroll);
+        return true;
+    }
+
+    return false;
+}
+
 float NKScrollbar::GetScroll() const
 {
     return m_scroll;
+}
+
+bool NKScrollbar::CGetScroll(void* param) const
+{
+    float* scroll = static_cast<float*>(param);
+    if (scroll) {
+        (*scroll) = GetScroll();
+        return true;
+    }
+
+    return false;
+}
+
+void NKScrollbar::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKScrollbar::CSetScroll, "NKScrollbar");
+    MAKE_INTERFACE(m_mapFunc, this, NKScrollbar::CGetScroll, "NKScrollbar");
 }

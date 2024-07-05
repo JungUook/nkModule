@@ -78,3 +78,8 @@ void NKComboItem::SetLabelNumber(int number)
 {
 	m_labelNumber = number;
 }
+
+void NKComboItem::RegistCommand()
+{
+	NKBase::RegistCommand();
+}

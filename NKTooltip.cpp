@@ -84,3 +84,8 @@ void NKTooltip::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
     NKStyleWindow::EditComponentStyle(ctx, pManager);
     NKStyleText::EditComponentStyle(ctx, pManager);
 }
+
+void NKTooltip::RegistCommand()
+{
+    NKBase::RegistCommand();
+}

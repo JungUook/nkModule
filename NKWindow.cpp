@@ -100,3 +100,8 @@ void NKWindow::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 	NKStyleHeader::EditComponentStyle(ctx, pManager);
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
+
+void NKWindow::RegistCommand()
+{
+	NKBase::RegistCommand();
+}

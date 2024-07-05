@@ -22,6 +22,7 @@ public:
 	virtual void EditInfo(nk_context* ctx) override;
 	virtual void EditStyle(nk_context* ctx) override;
 
+	virtual void RegistCommand() override;
 public:
 	nk_bool m_bWrap;
 

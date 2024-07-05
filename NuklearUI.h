@@ -122,6 +122,8 @@ public:
 	void Add(NKBase* type, bool bStyle = true);
 	struct nk_image* SearchImage(int SID);
 
+	bool NKCommand(const char* primaryName, const char* command, void* param);
+
 	template <typename T>
 	T* Find(const char* primaryname)
 	{

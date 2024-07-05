@@ -76,6 +76,11 @@ void NKSlider::LSetRange(luabridge::LuaRef ref)
     SetRange(min, max);
 }
 
+bool NKSlider::CSetRange(void* param)
+{
+    return false;
+}
+
 void NKSlider::SetValue(float value)
 {
     m_value = value;
@@ -88,7 +93,31 @@ void NKSlider::LSetValue(luabridge::LuaRef ref)
     SetValue(value);
 }
 
+bool NKSlider::CSetValue(void* param)
+{
+    return false;
+}
+
 float NKSlider::GetValue() const
 {
     return m_value;
+}
+
+bool NKSlider::CGetValue(void* param) const
+{
+    float* value = static_cast<float*>(param);
+
+    if (value) {
+        (*value) = m_value;
+        return true;
+    }
+    return false;
+}
+
+void NKSlider::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CSetRange, "NKSlider");
+    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CSetValue, "NKSlider");
+    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CGetValue, "NKSlider");
 }

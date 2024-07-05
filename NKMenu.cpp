@@ -109,3 +109,9 @@ void NKMenu::EditStyle(nk_context* ctx)
     NKBase::EditStyle(ctx);
     EditComponentStyle(ctx, m_pManager);
 }
+
+void NKMenu::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKMenu::CSetLabel, "NKMenu");
+}

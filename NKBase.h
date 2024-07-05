@@ -4,6 +4,10 @@
 #include "NuklearUI.h"
 #include "NKProperty.h"
 
+std::string RemoveFirstCharacter(const std::string& func, const std::string& classname);
+#define MAKE_INTERFACE(map, instance, func, classname) \
+	map[RemoveFirstCharacter(#func, classname)] = std::function<bool(void*)>(std::bind(&func, this, std::placeholders::_1))
+
 class NuklearUI;
 class NKProperty;
 
@@ -36,6 +40,7 @@ public:
 public:
 	virtual void SetActive(bool bActive);
 	virtual void LSetActive(luabridge::LuaRef ref);
+	virtual bool CSetActive(void* param);
 	virtual void SetEdit(bool bEdit);
 	virtual bool IsEditActive();
 
@@ -45,9 +50,11 @@ public:
 	virtual std::list<NKBase*>* GetChildList();
 	virtual void AddChild(NKBase* nkBase, bool bStyle = true);
 	virtual void LAddChild(luabridge::LuaRef ref);
+	virtual bool CAddChild(void* param);
 	virtual void RemoveChildDisConnect(NKBase* nkBase);
 	virtual void RemoveChild(NKBase* nkBase);
 	virtual void LRemoveChild(luabridge::LuaRef ref);
+	virtual bool CRemoveChild(void* param);
 
 	//virtual void Load(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void RegistInit(NKBase* pParent);
@@ -60,6 +67,9 @@ public:
 	virtual void MoveBackward();
 	virtual void MoveFront();
 	virtual void MoveBack();
+
+	virtual void RegistCommand();
+	virtual bool ProcessCommand(const char* command, void* param);
 
 	//각 객체의 기본값
 public:
@@ -92,6 +102,8 @@ protected:
 	NKBase* m_pWindow;
 	NKBase* m_pParent;
 	std::list<NKBase*> m_pChildList;
+
+	std::map<std::string, std::function<bool(void*)>> m_mapFunc;
 
 public:
 	template <class Archive>

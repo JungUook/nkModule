@@ -206,6 +206,20 @@ struct nk_image* NuklearUI::SearchImage(int SID)
 	}
 }
 
+bool NuklearUI::NKCommand(const char* primaryName, const char* command, void* param)
+{
+	auto found = m_mapModuleName.find(primaryName);
+
+	if (found != m_mapModuleName.end()) {
+		NKBase* ptr = found->second;
+
+		return ptr->ProcessCommand(command, param);
+	}
+	else {
+		return false;
+	}
+}
+
 struct nk_rect* NuklearUI::GetViewport()
 {
 #ifdef _DX9

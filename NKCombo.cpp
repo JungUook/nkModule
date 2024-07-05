@@ -123,6 +123,17 @@ void NKCombo::LSetComboName(luabridge::LuaRef ref)
 	SetComboName(name.c_str());
 }
 
+bool NKCombo::CSetComboName(void* param)
+{
+	const char** name = static_cast<const char**>(param);
+
+	if (name) {
+		SetComboName(*name);
+		return true;
+	}
+	return false;
+}
+
 void NKCombo::SetLabelSize(float x, float y)
 {
 	m_labelSize.x = x;
@@ -137,7 +148,34 @@ void NKCombo::LSetLabelSize(luabridge::LuaRef ref)
 	SetLabelSize(x, y);
 }
 
+bool NKCombo::CSetLabelSize(void* param)
+{
+	void** arr = static_cast<void**>(param);
+
+	if (arr) {
+		float* x = static_cast<float*>(arr[0]);
+		float* y = static_cast<float*>(arr[1]);
+
+		if (x && y) {
+			SetLabelSize(*x, *y);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	return false;
+}
+
 void NKCombo::SetCurrentLabel(int number)
 {
 	m_currentLabel = number;
+}
+
+void NKCombo::RegistCommand()
+{
+	NKBase::RegistCommand();
+	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetComboName, "NKCombo");
+	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetLabelSize, "NKCombo");
 }

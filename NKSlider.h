@@ -21,10 +21,14 @@ public:
 
     void SetRange(float min, float max);
     void LSetRange(luabridge::LuaRef ref);
+    bool CSetRange(void* param);
     void SetValue(float value);
     void LSetValue(luabridge::LuaRef ref);
+    bool CSetValue(void* param);
     float GetValue() const;
+    bool CGetValue(void* param) const;
 
+    virtual void RegistCommand() override;
 public:
     float m_min;
     float m_max;

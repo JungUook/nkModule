@@ -19,7 +19,9 @@ public:
 	virtual void SafeRenderEnd(nk_context* ctx) override;
 	virtual void EditStyle(nk_context* ctx) override;
 	void Clear();
+	bool CClear(void* param);
 
+	virtual void RegistCommand() override;
 public:
 	char m_inputText[256];
 	int m_inputTextLength;

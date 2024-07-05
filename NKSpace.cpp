@@ -165,6 +165,17 @@ void NKSpace::LSetLayout(luabridge::LuaRef ref)
 	SetLayout(type);
 }
 
+bool NKSpace::CSetLayout(void* param)
+{
+	int* type = static_cast<int*>(param);
+
+	if (type) {
+		SetLayout(*type);
+		return true;
+	}
+	return false;
+}
+
 void NKSpace::SetCols(int cols)
 {
 	m_dynamicCount = cols;
@@ -175,4 +186,23 @@ void NKSpace::LSetCols(luabridge::LuaRef ref)
 	CHECK_LUA_REF(ref);
 	int cols = ref.cast<int>();
 	SetCols(cols);
+}
+
+bool NKSpace::CSetCols(void* param)
+{
+	int* cols = static_cast<int*>(param);
+
+	if (cols) {
+		SetCols(*cols);
+		return true;
+	}
+	return false;
+}
+
+void NKSpace::RegistCommand()
+{
+	NKBase::RegistCommand();
+
+	MAKE_INTERFACE(m_mapFunc, this, NKSpace::CSetLayout, "NKSpace");
+	MAKE_INTERFACE(m_mapFunc, this, NKSpace::CSetCols, "NKSpace");
 }

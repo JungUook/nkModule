@@ -68,3 +68,15 @@ void NKEdit::Clear()
 	memset(m_inputText, 0, sizeof(m_inputText));
 	m_inputTextLength = 0;
 }
+
+bool NKEdit::CClear(void* param)
+{
+	Clear();
+	return true;
+}
+
+void NKEdit::RegistCommand()
+{
+	NKBase::RegistCommand();
+	MAKE_INTERFACE(m_mapFunc, this, NKEdit::CClear, "NKEdit");
+}

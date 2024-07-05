@@ -415,3 +415,8 @@ void* ConvertData(void* param)
 {
     return g_nuklear->m_luaInterface.ConvertData(param);
 }
+
+bool NKCommand(const char* primaryName, const char* command, void* param)
+{
+    return g_nuklear->NKCommand(primaryName, command, param);
+}

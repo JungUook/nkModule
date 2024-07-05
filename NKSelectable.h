@@ -28,8 +28,11 @@ public:
 
     void SetSelected(bool selected);
     void LSetSelected(luabridge::LuaRef ref);
+    bool CSetSelected(void* param);
     bool IsSelected() const;
+    bool CIsSelected(void* param) const;
 
+    virtual void RegistCommand() override;
 public:
     int m_selected;
 

@@ -67,7 +67,46 @@ void NKProgress::LSetProgress(luabridge::LuaRef ref)
     SetProgress(progress);
 }
 
+bool NKProgress::CSetProgress(void* param)
+{
+#ifdef _WIN64
+    unsigned __int64* progress = static_cast<unsigned __int64*>(param);
+#else
+    unsigned int* progress = static_cast<unsigned int*>(param);;
+#endif
+
+    if (progress) {
+        SetProgress(*progress);
+        return true;
+    }
+
+    return false;
+}
+
 nk_size NKProgress::GetProgress() const
 {
     return m_progress;
+}
+
+bool NKProgress::CGetProgress(void* param)
+{
+#ifdef _WIN64
+    unsigned __int64* progress = static_cast<unsigned __int64*>(param);
+#else
+    unsigned int* progress = static_cast<unsigned int*>(param);;
+#endif
+
+    if (progress) {
+        (*progress) = GetProgress();
+        return true;
+    }
+
+    return false;
+}
+
+void NKProgress::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKProgress::CSetProgress, "NKProgress");
+    MAKE_INTERFACE(m_mapFunc, this, NKProgress::CGetProgress, "NKProgress");
 }

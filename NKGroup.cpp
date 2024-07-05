@@ -79,3 +79,8 @@ void NKGroup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 	NKStyleHeader::EditComponentStyle(ctx, pManager);
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
+
+void NKGroup::RegistCommand()
+{
+	NKBase::RegistCommand();
+}

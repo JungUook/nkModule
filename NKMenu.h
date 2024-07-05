@@ -49,6 +49,8 @@ public:
     virtual void SafeRenderEnd(nk_context* ctx) override;
     virtual void EditInfo(nk_context* ctx) override;
     virtual void EditStyle(nk_context* ctx) override;
+
+    virtual void RegistCommand() override;
 public:
     std::vector<MenuItem> m_items;
 

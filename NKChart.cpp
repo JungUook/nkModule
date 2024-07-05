@@ -60,7 +60,31 @@ void NKChart::AddValue(float value)
     m_values.push_back(value);
 }
 
+bool NKChart::CAddValue(void* param)
+{
+    float* value = static_cast<float*>(param);
+    if (value) {
+        AddValue(*value);
+        return true;
+    }
+
+    return false;
+}
+
 void NKChart::Clear()
 {
     m_values.clear();
+}
+
+bool NKChart::CClear(void* param)
+{
+    Clear();
+    return true;
+}
+
+void NKChart::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKChart::CAddValue, "NKChart");
+    MAKE_INTERFACE(m_mapFunc, this, NKChart::CClear, "NKChart");
 }

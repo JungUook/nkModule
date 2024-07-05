@@ -15,6 +15,7 @@ public:
 	virtual nk_flags EditLabel(nk_context* ctx, NuklearUI* pManager);
 	virtual void SetLabel(const char* text);
 	void LSetLabel(luabridge::LuaRef ref);
+	bool CSetLabel(void* param);
 
 	virtual void CustomFontSizeBegin(nk_context* ctx, nk_font* font);
 	virtual void CustomFontSizeEnd(nk_context* ctx, NuklearUI* pManager, nk_font* font);

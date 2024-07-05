@@ -150,3 +150,8 @@ void NKSuperStyleObject::EditComponentStyle(nk_context* ctx, NuklearUI* pManager
 	NKStyleText::EditComponentStyle(ctx, pManager);
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
+
+void NKSuperStyleObject::RegistCommand()
+{
+	NKBase::RegistCommand();
+}

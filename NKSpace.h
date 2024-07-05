@@ -20,8 +20,12 @@ public:
 	
 	void SetLayout(int type);
 	void LSetLayout(luabridge::LuaRef ref);
+	bool CSetLayout(void* param);
 	void SetCols(int cols);
 	void LSetCols(luabridge::LuaRef ref);
+	bool CSetCols(void* param);
+
+	virtual void RegistCommand() override;
 public:
 	nk_layout_format m_layoutFormat;
 	int m_widgetCount;

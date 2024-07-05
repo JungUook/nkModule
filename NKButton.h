@@ -23,6 +23,7 @@ public:
 	virtual void EditInfo(nk_context* ctx) override;
 	virtual void EditStyle(nk_context* ctx) override;
 
+	virtual void RegistCommand() override;
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {

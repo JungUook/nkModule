@@ -140,6 +140,17 @@ void NKImage::LSetImagePath(luabridge::LuaRef ref)
 	SetImagePath(imgPath.c_str());
 }
 
+bool NKImage::CSetImagePath(void* param)
+{
+	const char** imgPath = static_cast<const char**>(param);
+
+	if (imgPath) {
+		SetImagePath(*imgPath);
+		return true;
+	}
+	return false;
+}
+
 void NKImage::SetSpritePath(const char* imgPath)
 {
 	auto mapSpr = m_pManager->GetSprMap();
@@ -170,4 +181,22 @@ void NKImage::LSetIndex(luabridge::LuaRef ref)
 	CHECK_LUA_REF(ref);
 	int index = ref.cast<int>();
 	SetIndex(index);
+}
+
+bool NKImage::CSetIndex(void* param)
+{
+	int* index = static_cast<int*>(param);
+
+	if (index) {
+		SetIndex(*index);
+		return true;
+	}
+	return false;
+}
+
+void NKImage::RegistCommand()
+{
+	NKBase::RegistCommand();
+	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetImagePath, "NKImage");
+	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetIndex, "NKImage");
 }

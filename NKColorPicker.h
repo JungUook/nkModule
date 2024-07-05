@@ -16,8 +16,11 @@ public:
 	virtual void SafeRenderStart(nk_context* ctx) override;
 	virtual void SafeRenderEnd(nk_context* ctx) override;
     void SetColor(struct nk_colorf color);
+	bool CSetColor(void* param);
     struct nk_colorf GetColor() const;
+	bool CGetColor(void* param) const;
 
+	virtual void RegistCommand() override;
 public:
     struct nk_colorf m_color;
 

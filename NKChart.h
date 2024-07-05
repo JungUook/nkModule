@@ -18,8 +18,11 @@ public:
     virtual void SafeRenderEnd(nk_context* ctx) override;
     virtual void EditStyle(nk_context* ctx) override;
     void AddValue(float value);
+    bool CAddValue(void* param);
     void Clear();
+    bool CClear(void* param);
 
+    virtual void RegistCommand() override;
 public:
     std::vector<float> m_values;
     float m_min;

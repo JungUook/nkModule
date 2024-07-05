@@ -44,7 +44,50 @@ void NKColorPicker::SetColor(struct nk_colorf color)
     m_color = color;
 }
 
+bool NKColorPicker::CSetColor(void* param)
+{
+    void** arr = static_cast<void**>(param);
+
+    if (arr) {
+        float* fArr = static_cast<float*>(*arr);
+
+        if (fArr) {
+            m_color.r = fArr[0];
+            m_color.g = fArr[1];
+            m_color.b = fArr[2];
+            m_color.a = fArr[3];
+            return true;
+        }
+    }
+
+    return false;
+}
+
 struct nk_colorf NKColorPicker::GetColor() const
 {
     return m_color;
+}
+
+bool NKColorPicker::CGetColor(void* param) const
+{
+    void** arr = static_cast<void**>(param);
+    if (arr) {
+        float* fArr = static_cast<float*>(*arr);
+
+        if (fArr) {
+            fArr[0] = m_color.r;
+            fArr[1] = m_color.g;
+            fArr[2] = m_color.b;
+            fArr[3] = m_color.a;
+            return true;
+        }
+    }
+    return false;
+}
+
+void NKColorPicker::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKColorPicker::CSetColor, "NKColorPicker");
+    MAKE_INTERFACE(m_mapFunc, this, NKColorPicker::CGetColor, "NKColorPicker");
 }

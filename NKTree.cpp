@@ -96,7 +96,35 @@ void NKTree::LSetState(luabridge::LuaRef ref)
     SetState((nk_collapse_states)iState);
 }
 
+bool NKTree::CSetState(void* param)
+{
+    int* state = static_cast<int*>(param);
+    if (state) {
+        SetState((nk_collapse_states)*state);
+        return true;
+    }
+    return false;
+}
+
 nk_collapse_states NKTree::GetState() const
 {
     return m_state;
+}
+
+bool NKTree::CGetState(void* param) const
+{
+    int* state = static_cast<int*>(param);
+    if (state) {
+        (*state) = GetState();
+        return true;
+    }
+    return false;
+}
+
+void NKTree::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKTree::CSetLabel, "NKTree");
+    MAKE_INTERFACE(m_mapFunc, this, NKTree::CSetState, "NKTree");
+    MAKE_INTERFACE(m_mapFunc, this, NKTree::CGetState, "NKTree");
 }

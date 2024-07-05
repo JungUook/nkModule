@@ -74,7 +74,37 @@ void NKCheckbox::LSetChecked(luabridge::LuaRef ref)
     SetChecked(bChecked);
 }
 
+bool NKCheckbox::CSetChecked(void* param)
+{
+    bool* checked = static_cast<bool*>(param);
+
+    if (checked) {
+        SetChecked(*checked);
+        return true;
+    }
+    return false;
+}
+
 bool NKCheckbox::IsChecked() const
 {
     return m_checked != 0;
+}
+
+bool NKCheckbox::CIsChecked(void* param) const
+{
+    bool* checked = static_cast<bool*>(param);
+
+    if (checked) {
+        (*checked) = IsChecked();
+        return true;
+    }
+    return false;
+}
+
+void NKCheckbox::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CSetLabel, "NKCheckbox");
+    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CSetChecked, "NKCheckbox");
+    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CIsChecked, "NKCheckbox");
 }

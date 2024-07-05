@@ -26,6 +26,7 @@ public:
     virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
     virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 
+    virtual void RegistCommand() override;
 public:
     template <class Archive>
     void serialize(Archive& ar) {

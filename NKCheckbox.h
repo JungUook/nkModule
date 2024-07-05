@@ -24,8 +24,11 @@ public:
 
     void SetChecked(bool checked);
     void LSetChecked(luabridge::LuaRef ref);
+    bool CSetChecked(void* param);
     bool IsChecked() const;
+    bool CIsChecked(void* param) const;
 
+    virtual void RegistCommand() override;
 public:
     int m_checked;
 

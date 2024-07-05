@@ -22,8 +22,11 @@ public:
     virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 
     void SetScroll(float scroll);
+    bool CSetScroll(void* param);
     float GetScroll() const;
+    bool CGetScroll(void* param) const;
 
+    virtual void RegistCommand() override;
 public:
     float m_scroll;
 

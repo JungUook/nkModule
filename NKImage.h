@@ -19,11 +19,14 @@ public:
 
 	void SetImagePath(const char* imgPath);
 	void LSetImagePath(luabridge::LuaRef ref);
+	bool CSetImagePath(void* param);
 	void SetSpritePath(const char* imgPath);
 	void LSetSpritePath(luabridge::LuaRef ref);
 	void SetIndex(int index);
 	void LSetIndex(luabridge::LuaRef ref);
+	bool CSetIndex(void* param);
 
+	virtual void RegistCommand() override;
 public:
 	std::string m_imagePath;
 	int m_sprIndex;

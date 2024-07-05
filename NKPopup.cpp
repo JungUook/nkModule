@@ -82,3 +82,8 @@ void NKPopup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 	NKStyleHeader::EditComponentStyle(ctx, pManager);
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
+
+void NKPopup::RegistCommand()
+{
+	NKBase::RegistCommand();
+}

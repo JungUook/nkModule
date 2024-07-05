@@ -63,3 +63,8 @@ void NKButton::EditStyle(nk_context* ctx)
 	NKBase::EditStyle(ctx);
 	EditComponentStyle(ctx, m_pManager);
 }
+
+void NKButton::RegistCommand()
+{
+	NKBase::RegistCommand();
+}

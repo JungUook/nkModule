@@ -87,7 +87,38 @@ void NKSelectable::LSetSelected(luabridge::LuaRef ref)
     SetSelected(bSelected);
 }
 
+bool NKSelectable::CSetSelected(void* param)
+{
+    bool* selected = static_cast<bool*>(param);
+
+    if (selected) {
+        SetSelected(*selected);
+        return true;
+    }
+
+    return false;
+}
+
 bool NKSelectable::IsSelected() const
 {
     return m_selected != 0;
+}
+
+bool NKSelectable::CIsSelected(void* param) const
+{
+    bool* selected = static_cast<bool*>(param);
+    if (selected) {
+        (*selected) = IsSelected();
+        return true;
+    }
+
+    return false;
+}
+
+void NKSelectable::RegistCommand()
+{
+    NKBase::RegistCommand();
+    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CSetLabel, "NKSelectable");
+    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CSetSelected, "NKSelectable");
+    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CIsSelected, "NKSelectable");
 }
