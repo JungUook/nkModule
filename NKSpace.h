@@ -25,7 +25,7 @@ public:
 	void LSetCols(luabridge::LuaRef ref);
 	bool CSetCols(void* param);
 
-	virtual void RegistCommand() override;
+	virtual void RegistCommand(const char* classname) override;
 public:
 	nk_layout_format m_layoutFormat;
 	int m_widgetCount;

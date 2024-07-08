@@ -79,7 +79,7 @@ void NKComboItem::SetLabelNumber(int number)
 	m_labelNumber = number;
 }
 
-void NKComboItem::RegistCommand()
+void NKComboItem::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
+	NKBase::RegistCommand(classname);
 }

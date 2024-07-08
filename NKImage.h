@@ -26,7 +26,7 @@ public:
 	void LSetIndex(luabridge::LuaRef ref);
 	bool CSetIndex(void* param);
 
-	virtual void RegistCommand() override;
+	virtual void RegistCommand(const char* classname) override;
 public:
 	std::string m_imagePath;
 	int m_sprIndex;

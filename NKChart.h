@@ -22,7 +22,7 @@ public:
     void Clear();
     bool CClear(void* param);
 
-    virtual void RegistCommand() override;
+    virtual void RegistCommand(const char* classname) override;
 public:
     std::vector<float> m_values;
     float m_min;

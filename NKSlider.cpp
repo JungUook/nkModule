@@ -114,10 +114,10 @@ bool NKSlider::CGetValue(void* param) const
     return false;
 }
 
-void NKSlider::RegistCommand()
+void NKSlider::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CSetRange, "NKSlider");
-    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CSetValue, "NKSlider");
-    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CGetValue, "NKSlider");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CSetRange, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CSetValue, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKSlider::CGetValue, classname);
 }

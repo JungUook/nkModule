@@ -25,7 +25,7 @@ public:
     nk_size GetProgress() const;
     bool CGetProgress(void* param);
 
-    virtual void RegistCommand() override;
+    virtual void RegistCommand(const char* classname) override;
 public:
     nk_size m_progress;
 

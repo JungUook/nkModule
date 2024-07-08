@@ -28,6 +28,12 @@ NKWindow::~NKWindow()
 {
 }
 
+void NKWindow::LayoutBegin(nk_context* ctx)
+{
+	m_font->handle.height *= m_fScale;
+	nk_style_set_font(ctx, &m_font->handle);
+}
+
 void NKWindow::Layout(nk_context* ctx)
 {
 	if (nk_begin(ctx, m_cprimaryName, m_cTransform, m_flags))
@@ -44,6 +50,12 @@ void NKWindow::Layout(nk_context* ctx)
 		m_bActive = false;
 	}
 	nk_end(ctx);
+}
+
+void NKWindow::LayoutEnd(nk_context* ctx)
+{
+	m_font->handle.height = m_pManager->GetOriginalFontSize();
+	nk_style_set_font(ctx, &m_font->handle);
 }
 
 void NKWindow::SafeRenderStart(nk_context* ctx)
@@ -101,7 +113,7 @@ void NKWindow::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
 
-void NKWindow::RegistCommand()
+void NKWindow::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
+	NKBase::RegistCommand(classname);
 }

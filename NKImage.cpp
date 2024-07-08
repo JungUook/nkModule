@@ -194,9 +194,9 @@ bool NKImage::CSetIndex(void* param)
 	return false;
 }
 
-void NKImage::RegistCommand()
+void NKImage::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
-	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetImagePath, "NKImage");
-	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetIndex, "NKImage");
+	NKBase::RegistCommand(classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetImagePath, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetIndex, classname);
 }

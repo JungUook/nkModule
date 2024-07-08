@@ -26,7 +26,7 @@ public:
     float GetScroll() const;
     bool CGetScroll(void* param) const;
 
-    virtual void RegistCommand() override;
+    virtual void RegistCommand(const char* classname) override;
 public:
     float m_scroll;
 

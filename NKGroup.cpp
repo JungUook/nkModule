@@ -80,7 +80,7 @@ void NKGroup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
 
-void NKGroup::RegistCommand()
+void NKGroup::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
+	NKBase::RegistCommand(classname);
 }

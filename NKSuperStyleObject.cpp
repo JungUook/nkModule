@@ -151,7 +151,7 @@ void NKSuperStyleObject::EditComponentStyle(nk_context* ctx, NuklearUI* pManager
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
 
-void NKSuperStyleObject::RegistCommand()
+void NKSuperStyleObject::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
+	NKBase::RegistCommand(classname);
 }

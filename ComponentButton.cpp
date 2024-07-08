@@ -10,7 +10,7 @@ ComponentButton::ComponentButton()
 	m_pNormal  = nullptr;
 	m_pHover   = nullptr;
 	m_pActive  = nullptr;
-
+	m_bDisabled = false;
 }
 
 ComponentButton::ComponentButton(nk_style_button* pTarget, nk_style_button* pRestore)
@@ -21,6 +21,7 @@ ComponentButton::ComponentButton(nk_style_button* pTarget, nk_style_button* pRes
 	m_pNormal = new NKStyleItem(&pTarget->normal, &pRestore->normal);
 	m_pHover = new NKStyleItem(&pTarget->hover, &pRestore->hover);
 	m_pActive = new NKStyleItem(&pTarget->active, &pRestore->active);
+	m_bDisabled = false;
 }
 
 ComponentButton& ComponentButton::operator=(const ComponentButton& other)
@@ -32,6 +33,7 @@ ComponentButton& ComponentButton::operator=(const ComponentButton& other)
 		*m_pNormal = *other.m_pNormal;
 		*m_pHover = *other.m_pHover;
 		*m_pActive = *other.m_pActive;
+		m_bDisabled = other.m_bDisabled;
 	}
 	return *this;
 }
@@ -70,6 +72,10 @@ void ComponentButton::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManage
 		}
 		if (nk_tree_push_id(ctx, NK_TREE_NODE, "active", NK_MINIMIZED, reinterpret_cast<intptr_t>(this) + tree_index_in++)) {
 			m_pActive->ItemEditor(ctx, pManager);
+			nk_tree_pop(ctx);
+		}
+		if (nk_tree_push_id(ctx, NK_TREE_NODE, "disabled", NK_MINIMIZED, reinterpret_cast<intptr_t>(this) + tree_index_in++)) {
+			EditDisablePath(ctx, pManager);
 			nk_tree_pop(ctx);
 		}
 		if (nk_tree_push_id(ctx, NK_TREE_NODE, "color_factor", NK_MINIMIZED, reinterpret_cast<intptr_t>(this) + tree_index_in++)) {
@@ -132,5 +138,87 @@ void ComponentButton::CustomComponentsEditor(nk_context* ctx, NuklearUI* pManage
 		nk_label(ctx, "disabled_factor", NK_TEXT_LEFT);
 		nk_property_float(ctx, "#value:", 0.f, &m_pTarget->disabled_factor, 1.f, 0.01f, 0.01f);
 		nk_tree_pop(ctx);
+	}
+}
+
+void ComponentButton::DisableButton(bool bDisabled)
+{
+	m_bDisabled = bDisabled;
+
+	m_pNormal->DisableButton(m_bDisabled);
+	m_pHover->DisableButton(m_bDisabled);
+	m_pActive->DisableButton(m_bDisabled);
+}
+
+void ComponentButton::EditDisablePath(nk_context* ctx, NuklearUI* pManager)
+{
+	auto mapSpr = pManager->GetSprMap();
+	int size = mapSpr->size();
+
+
+	nk_layout_row_dynamic(ctx, 22, 2);
+	nk_label(ctx, "Selected:", NK_TEXT_LEFT);
+	std::filesystem::path filePath(m_sDisablePath.c_str());
+	nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_RIGHT);
+	if (nk_button_label(ctx, "apply"))
+	{
+		m_pNormal->EditDisablePath(m_sDisablePath.c_str());
+		m_pHover->EditDisablePath(m_sDisablePath.c_str());
+		m_pActive->EditDisablePath(m_sDisablePath.c_str());
+	}
+
+	if (size > 0)
+	{
+		static char selectedFilename[260] = { 0, };
+		float ratio[2] = { 0.7f, 0.3f };
+		static char SearchFunction[256] = { 0, };
+		static int SearchFunction_Len = 0;
+		nk_layout_row(ctx, NK_DYNAMIC, 40, 2, ratio);
+		nk_flags searchResult = pManager->IMEInputSystem(ctx, SearchFunction, sizeof(SearchFunction), &SearchFunction_Len);
+
+		if (nk_button_label(ctx, "Search") | searchResult & NK_EDIT_COMMITED) {
+
+		}
+
+		nk_layout_row_dynamic(ctx, 300, 1);
+		if (nk_group_begin(ctx, "SPR List", NK_WINDOW_TITLE)) {
+
+			float ratio[2] = { 0.8f, 0.2f };
+			nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
+
+			for (auto it = mapSpr->begin(); it != mapSpr->end(); ++it) {
+				std::filesystem::path filePath((*it).first.c_str());
+
+				bool bSearch = false;
+				bool bSearchResult = true;
+				if (strlen(SearchFunction) > 0) {
+					bSearch = true;
+				}
+
+				if (bSearch) {
+					std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
+					std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
+
+					// word를 소문자로 변환
+					std::transform(word.begin(), word.end(), word.begin(), towlower);
+					// filter를 소문자로 변환
+					std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
+
+					bSearchResult = word.find(filter) != std::wstring::npos;
+				}
+
+				if (!bSearchResult) {
+					continue;
+				}
+
+
+				nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
+
+				if (nk_button_label(ctx, "Load")) {
+					m_sDisablePath = (*it).first;
+				}
+			}
+			nk_group_end(ctx);
+		}
 	}
 }

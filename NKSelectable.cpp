@@ -115,10 +115,10 @@ bool NKSelectable::CIsSelected(void* param) const
     return false;
 }
 
-void NKSelectable::RegistCommand()
+void NKSelectable::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CSetLabel, "NKSelectable");
-    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CSetSelected, "NKSelectable");
-    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CIsSelected, "NKSelectable");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CSetLabel, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CSetSelected, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKSelectable::CIsSelected, classname);
 }

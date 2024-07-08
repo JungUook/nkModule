@@ -16,9 +16,10 @@ NKStyleItem::NKStyleItem()
 	m_pTarget	 = nullptr;
 	m_pRestore	 = nullptr;
 	m_bApply	 = false;
+	m_bDisabled	 = false;
 }
 
-NKStyleItem::NKStyleItem(nk_style_item* pTarget, nk_style_item* pRestore) : m_sImagePath("None"), m_iOption(0), m_iSprIndex(0), m_iSprSize(0), m_pTarget(nullptr), m_pRestore(nullptr), m_bApply(false) {
+NKStyleItem::NKStyleItem(nk_style_item* pTarget, nk_style_item* pRestore) : m_sImagePath("None"), m_iOption(0), m_iSprIndex(0), m_iSprSize(0), m_pTarget(nullptr), m_pRestore(nullptr), m_bApply(false), m_bDisabled(false) {
 	for (int i = 0; i < 4; ++i) {
 		m_iNineslice[i] = 0;
 	}
@@ -40,6 +41,7 @@ NKStyleItem& NKStyleItem::operator=(const NKStyleItem& other)
 		m_bApply = other.m_bApply;
 		*m_pTarget = *other.m_pTarget;
 		*m_pRestore = *other.m_pRestore;
+		m_bDisabled = other.m_bDisabled;
 	}
 	return *this;
 }
@@ -55,6 +57,45 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 	if (!m_bApply) return;
 
 	if (m_sImagePath == "None") return;
+
+	if (m_bDisabled) {
+		if (m_iOption == 1) {
+			struct nk_image img;
+			bool bResult = pManager->GetSprite(m_sDisablePath.c_str(), m_iSprIndex, img);
+
+			if (!bResult) {
+				pManager->ErrorPopup("Image URL not linked to the editor.");
+				m_sDisablePath = "None";
+				m_iOption = 0;
+				(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+				return;
+			}
+
+			(*m_pTarget) = nk_style_item_image(img);
+		}
+		else if (m_iOption == 2) {
+			struct nk_image img;
+			bool bResult = pManager->GetSprite(m_sDisablePath.c_str(), m_iSprIndex, img);
+
+			if (!bResult) {
+				pManager->ErrorPopup("Image URL not linked to the editor.");
+				m_sDisablePath = "None";
+				m_iOption = 0;
+				(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+				return;
+			}
+
+			struct nk_nine_slice nineslice {};
+			nineslice.img = img;
+			nineslice.l = (nk_ushort)m_iNineslice[0];
+			nineslice.t = (nk_ushort)m_iNineslice[1];
+			nineslice.r = (nk_ushort)m_iNineslice[2];
+			nineslice.b = (nk_ushort)m_iNineslice[3];
+			(*m_pTarget) = nk_style_item_nine_slice(nineslice);
+		}
+
+		return;
+	}
 
 	if (m_iOption == 1) {
 		struct nk_image img;
@@ -207,4 +248,14 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 			}
 		}
 	}
+}
+
+void NKStyleItem::DisableButton(bool bDisabled)
+{
+	m_bDisabled = bDisabled;
+}
+
+void NKStyleItem::EditDisablePath(const char* disablePath)
+{
+	m_sDisablePath = disablePath;
 }

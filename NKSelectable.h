@@ -32,7 +32,7 @@ public:
     bool IsSelected() const;
     bool CIsSelected(void* param) const;
 
-    virtual void RegistCommand() override;
+    virtual void RegistCommand(const char* classname) override;
 public:
     int m_selected;
 

@@ -27,6 +27,8 @@ protected:
 	int m_scale_left;
 	int m_no_input;
 
+	float m_fScale;
+
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {

@@ -104,9 +104,9 @@ bool NKProgress::CGetProgress(void* param)
     return false;
 }
 
-void NKProgress::RegistCommand()
+void NKProgress::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKProgress::CSetProgress, "NKProgress");
-    MAKE_INTERFACE(m_mapFunc, this, NKProgress::CGetProgress, "NKProgress");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKProgress::CSetProgress, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKProgress::CGetProgress, classname);
 }

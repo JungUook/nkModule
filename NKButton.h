@@ -23,7 +23,13 @@ public:
 	virtual void EditInfo(nk_context* ctx) override;
 	virtual void EditStyle(nk_context* ctx) override;
 
-	virtual void RegistCommand() override;
+	virtual void RegistCommand(const char* classname) override;
+
+	void DisableButton(bool bDisabled);
+	void LDisableButton(luabridge::LuaRef ref);
+	bool CDisableButton(void* param);
+public:
+	nk_bool m_bDisabled;
 public:
 	template <class Archive>
 	void serialize(Archive& ar) {
@@ -31,6 +37,7 @@ public:
 			, cereal::base_class<NKHandler>(this)
 			, cereal::base_class<NKBaseLabel>(this)
 			, cereal::base_class<NKStyleButton>(this)
+			, m_bDisabled
 		);
 	}
 };

@@ -50,7 +50,7 @@ public:
     virtual void EditInfo(nk_context* ctx) override;
     virtual void EditStyle(nk_context* ctx) override;
 
-    virtual void RegistCommand() override;
+    virtual void RegistCommand(const char* classname) override;
 public:
     std::vector<MenuItem> m_items;
 

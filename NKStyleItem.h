@@ -15,6 +15,9 @@ public:
 
 	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager);
 	virtual void ItemEditor(nk_context* ctx, NuklearUI* pManager);
+
+	void DisableButton(bool bDisabled);
+	void EditDisablePath(const char* disablePath);
 protected:
 	std::string m_sImagePath;
 	int m_iOption;
@@ -24,6 +27,9 @@ protected:
 	bool m_bApply;
 	struct nk_style_item* m_pTarget;
 	struct nk_style_item* m_pRestore;
+
+	bool m_bDisabled;
+	std::string m_sDisablePath;
 
 public:
 	template <class Archive>
@@ -35,6 +41,8 @@ public:
 			, m_iNineslice
 			, m_bApply
 			, *m_pTarget
+			, m_bDisabled
+			, m_sDisablePath
 		);
 	}
 };

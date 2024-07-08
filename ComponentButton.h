@@ -13,6 +13,8 @@ public:
 	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) override;
 
+	void DisableButton(bool bDisabled);
+	void EditDisablePath(nk_context* ctx, NuklearUI* pManager);
 protected:
 	struct nk_style_button* m_pTarget;
 	struct nk_style_button* m_pRestore;
@@ -20,6 +22,9 @@ protected:
 	NKStyleItem* m_pNormal;
 	NKStyleItem* m_pHover;
 	NKStyleItem* m_pActive;
+
+	bool m_bDisabled;
+	std::string m_sDisablePath;
 
 public:
 	template <class Archive>
@@ -30,6 +35,7 @@ public:
 			, *m_pNormal
 			, *m_pHover
 			, *m_pActive
+			, m_bDisabled
 		);
 	}
 };

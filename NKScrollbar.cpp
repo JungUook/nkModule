@@ -90,9 +90,9 @@ bool NKScrollbar::CGetScroll(void* param) const
     return false;
 }
 
-void NKScrollbar::RegistCommand()
+void NKScrollbar::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKScrollbar::CSetScroll, "NKScrollbar");
-    MAKE_INTERFACE(m_mapFunc, this, NKScrollbar::CGetScroll, "NKScrollbar");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKScrollbar::CSetScroll, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKScrollbar::CGetScroll, classname);
 }

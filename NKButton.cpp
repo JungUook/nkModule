@@ -32,9 +32,10 @@ void NKButton::LayoutBegin(nk_context* ctx)
 
 void NKButton::Layout(nk_context* ctx)
 {
-	if (nk_button_label(ctx, m_cContent))
-	{
-		CallEvent(m_pLuaManager);
+	if (nk_button_label(ctx, m_cContent)) {
+		if (!m_bDisabled) {
+			CallEvent(m_pLuaManager);
+		}
 	}
 }
 
@@ -54,6 +55,10 @@ void NKButton::SafeRenderEnd(nk_context* ctx)
 
 void NKButton::EditInfo(nk_context* ctx)
 {
+	nk_layout_row_dynamic(ctx, 33, 1);
+	if (nk_checkbox_label(ctx, "Disabled", &m_bDisabled)) {
+		DisableButton(m_bDisabled);
+	}
 	EditLabel(ctx, m_pManager);
 	EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
@@ -64,7 +69,31 @@ void NKButton::EditStyle(nk_context* ctx)
 	EditComponentStyle(ctx, m_pManager);
 }
 
-void NKButton::RegistCommand()
+void NKButton::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
+	NKBase::RegistCommand(classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKButton::CDisableButton, classname);
+}
+
+void NKButton::DisableButton(bool bDisabled)
+{
+	m_bDisabled = bDisabled;
+	m_pComponent->DisableButton(m_bDisabled);
+}
+
+void NKButton::LDisableButton(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	bool bDisabled = ref.cast<bool>();
+	DisableButton(bDisabled);
+}
+
+bool NKButton::CDisableButton(void* param)
+{
+	bool* bDisabled = static_cast<bool*>(param);
+	if (bDisabled) {
+		DisableButton(*bDisabled);
+		return true;
+	}
+	return false;
 }

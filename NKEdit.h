@@ -21,7 +21,7 @@ public:
 	void Clear();
 	bool CClear(void* param);
 
-	virtual void RegistCommand() override;
+	virtual void RegistCommand(const char* classname) override;
 public:
 	char m_inputText[256];
 	int m_inputTextLength;

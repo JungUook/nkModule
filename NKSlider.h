@@ -28,7 +28,7 @@ public:
     float GetValue() const;
     bool CGetValue(void* param) const;
 
-    virtual void RegistCommand() override;
+    virtual void RegistCommand(const char* classname) override;
 public:
     float m_min;
     float m_max;

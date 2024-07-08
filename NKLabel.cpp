@@ -82,8 +82,8 @@ void NKLabel::EditStyle(nk_context* ctx)
 	EditComponentStyle(ctx, m_pManager);
 }
 
-void NKLabel::RegistCommand()
+void NKLabel::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
-	MAKE_INTERFACE(m_mapFunc, this, NKLabel::CSetLabel, "NKLabel");
+	NKBase::RegistCommand(classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKLabel::CSetLabel, classname);
 }

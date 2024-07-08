@@ -199,10 +199,10 @@ bool NKSpace::CSetCols(void* param)
 	return false;
 }
 
-void NKSpace::RegistCommand()
+void NKSpace::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
+	NKBase::RegistCommand(classname);
 
-	MAKE_INTERFACE(m_mapFunc, this, NKSpace::CSetLayout, "NKSpace");
-	MAKE_INTERFACE(m_mapFunc, this, NKSpace::CSetCols, "NKSpace");
+	MAKE_INTERFACE(m_mapFunc, this, NKSpace::CSetLayout, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKSpace::CSetCols, classname);
 }

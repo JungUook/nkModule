@@ -121,10 +121,10 @@ bool NKTree::CGetState(void* param) const
     return false;
 }
 
-void NKTree::RegistCommand()
+void NKTree::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKTree::CSetLabel, "NKTree");
-    MAKE_INTERFACE(m_mapFunc, this, NKTree::CSetState, "NKTree");
-    MAKE_INTERFACE(m_mapFunc, this, NKTree::CGetState, "NKTree");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKTree::CSetLabel, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKTree::CSetState, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKTree::CGetState, classname);
 }

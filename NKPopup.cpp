@@ -83,7 +83,7 @@ void NKPopup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
 }
 
-void NKPopup::RegistCommand()
+void NKPopup::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
+	NKBase::RegistCommand(classname);
 }

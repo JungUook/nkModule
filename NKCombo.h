@@ -26,7 +26,7 @@ public:
 	void LSetLabelSize(luabridge::LuaRef ref);
 	bool CSetLabelSize(void* param);
 	void SetCurrentLabel(int number);
-	virtual void RegistCommand() override;
+	virtual void RegistCommand(const char* classname) override;
 public:
 	int m_currentLabel;
 	nk_text_alignment m_labelAlignment;

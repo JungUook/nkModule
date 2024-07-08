@@ -15,6 +15,7 @@ NKBaseWindow::NKBaseWindow()
 	m_background = 0;
 	m_scale_left = 0;
 	m_no_input = 0;
+	m_fScale = 1.f;
 }
 
 NKBaseWindow::NKBaseWindow(const NKBaseWindow& other)
@@ -30,6 +31,7 @@ NKBaseWindow::NKBaseWindow(const NKBaseWindow& other)
 	m_background		= other.m_background;
 	m_scale_left		= other.m_scale_left;
 	m_no_input			= other.m_no_input;
+	m_fScale			= other.m_fScale;
 }
 
 NKBaseWindow::~NKBaseWindow()
@@ -76,4 +78,13 @@ void NKBaseWindow::EditInfoWindowProperty(nk_context* ctx, nk_flags& flags)
 		flags |= NK_WINDOW_SCALE_LEFT;
 	if (m_no_input)
 		flags |= NK_WINDOW_NO_INPUT;
+
+	if (m_title) {
+		if (nk_tree_push(ctx, NK_TREE_NODE, "Properties", NK_MINIMIZED)) {
+			nk_layout_row_dynamic(ctx, 44, 1);
+			nk_slider_float(ctx, 0.1f, &m_fScale, 2.f, 0.01f);
+			nk_property_float(ctx, "#Title size", 0.1f, &m_fScale, 2.f, 0.1f, 0.01f);
+			nk_tree_pop(ctx);
+		}
+	}
 }

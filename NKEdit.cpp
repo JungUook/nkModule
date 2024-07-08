@@ -75,8 +75,8 @@ bool NKEdit::CClear(void* param)
 	return true;
 }
 
-void NKEdit::RegistCommand()
+void NKEdit::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
-	MAKE_INTERFACE(m_mapFunc, this, NKEdit::CClear, "NKEdit");
+	NKBase::RegistCommand(classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKEdit::CClear, classname);
 }

@@ -82,9 +82,9 @@ bool NKChart::CClear(void* param)
     return true;
 }
 
-void NKChart::RegistCommand()
+void NKChart::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKChart::CAddValue, "NKChart");
-    MAKE_INTERFACE(m_mapFunc, this, NKChart::CClear, "NKChart");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKChart::CAddValue, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKChart::CClear, classname);
 }

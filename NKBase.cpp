@@ -81,7 +81,7 @@ void NKBase::Initialize(NuklearUI* pManager, bool bStyle)
 		m_iWindowPrimaryID = 0;
 	}
 	NKProperty::Initialize();
-	RegistCommand();
+	RegistCommand(getClassName().c_str());
 }
 
 void NKBase::Initialize(NKBase* pParent, bool bStyle)
@@ -100,7 +100,7 @@ void NKBase::Initialize(NKBase* pParent, bool bStyle)
 		InitializeStyle(m_pParent->m_font, m_style, m_pParent->m_pParentStyle);
 	}
 	NKProperty::Initialize();
-	RegistCommand();
+	RegistCommand(getClassName().c_str());
 }
 
 void NKBase::Update(nk_context* ctx)
@@ -318,7 +318,7 @@ void NKBase::RegistInit(NKBase* pParent)
 			m_iWindowPrimaryID = pWin->GetPrimaryID();
 		}
 	}
-	RegistCommand();
+	RegistCommand(getClassName().c_str());
 }
 
 void NKBase::RegistChild(NKBase* pBase)
@@ -403,11 +403,11 @@ void NKBase::MoveBack()
 	}
 }
 
-void NKBase::RegistCommand()
+void NKBase::RegistCommand(const char* classname)
 {
-	MAKE_INTERFACE(m_mapFunc, this, NKBase::CSetActive, "NKBase");
-	MAKE_INTERFACE(m_mapFunc, this, NKBase::CAddChild, "NKBase");
-	MAKE_INTERFACE(m_mapFunc, this, NKBase::CRemoveChild, "NKBase");
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CSetActive, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CAddChild, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CRemoveChild, classname);
 }
 
 bool NKBase::ProcessCommand(const char* command, void* param)

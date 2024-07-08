@@ -85,9 +85,9 @@ bool NKColorPicker::CGetColor(void* param) const
     return false;
 }
 
-void NKColorPicker::RegistCommand()
+void NKColorPicker::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKColorPicker::CSetColor, "NKColorPicker");
-    MAKE_INTERFACE(m_mapFunc, this, NKColorPicker::CGetColor, "NKColorPicker");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKColorPicker::CSetColor, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKColorPicker::CGetColor, classname);
 }

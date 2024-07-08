@@ -173,9 +173,9 @@ void NKCombo::SetCurrentLabel(int number)
 	m_currentLabel = number;
 }
 
-void NKCombo::RegistCommand()
+void NKCombo::RegistCommand(const char* classname)
 {
-	NKBase::RegistCommand();
-	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetComboName, "NKCombo");
-	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetLabelSize, "NKCombo");
+	NKBase::RegistCommand(classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetComboName, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetLabelSize, classname);
 }

@@ -20,7 +20,7 @@ public:
     struct nk_colorf GetColor() const;
 	bool CGetColor(void* param) const;
 
-	virtual void RegistCommand() override;
+	virtual void RegistCommand(const char* classname) override;
 public:
     struct nk_colorf m_color;
 

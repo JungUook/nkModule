@@ -28,7 +28,7 @@ public:
     nk_collapse_states GetState() const;
     bool CGetState(void* param) const;
 
-    virtual void RegistCommand() override;
+    virtual void RegistCommand(const char* classname) override;
 public:
     nk_tree_type m_treeType;
     nk_collapse_states m_state;

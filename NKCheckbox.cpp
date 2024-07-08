@@ -101,10 +101,10 @@ bool NKCheckbox::CIsChecked(void* param) const
     return false;
 }
 
-void NKCheckbox::RegistCommand()
+void NKCheckbox::RegistCommand(const char* classname)
 {
-    NKBase::RegistCommand();
-    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CSetLabel, "NKCheckbox");
-    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CSetChecked, "NKCheckbox");
-    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CIsChecked, "NKCheckbox");
+    NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CSetLabel, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CSetChecked, classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKCheckbox::CIsChecked, classname);
 }

@@ -68,7 +68,7 @@ public:
 	virtual void MoveFront();
 	virtual void MoveBack();
 
-	virtual void RegistCommand();
+	virtual void RegistCommand(const char* classname);
 	virtual bool ProcessCommand(const char* command, void* param);
 
 	//각 객체의 기본값
