@@ -43,6 +43,7 @@ public:
 			, m_background
 			, m_scale_left
 			, m_no_input
+			, m_fScale
 		);
 	}
 };

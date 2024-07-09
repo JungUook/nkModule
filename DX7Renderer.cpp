@@ -69,9 +69,9 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 	//NK_ASSERT(atlas->permanent.alloc);
 	//NK_ASSERT(atlas->permanent.free);
 
-	d3d7.original_height = 24.0f;
+	d3d7.original_height = 12.0f;
 	struct nk_font_config cfg = nk_font_config(d3d7.original_height);
-	cfg.oversample_h = 1; // 수평 오버샘플링
+	cfg.oversample_h = 3; // 수평 오버샘플링
 	cfg.oversample_v = 1; // 수직 오버샘플링
 
 	eLang language = (eLang)lang;
@@ -530,7 +530,6 @@ void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 void DX7Renderer::nk_d3d7_render_skip()
 {
 	struct nk_buffer vbuf, ebuf;
-	const struct nk_draw_command* cmd;
 	const nk_draw_index* offset = NULL;
 	struct nk_convert_config config;
 	struct nk_d3d7_vertex* vertices;
