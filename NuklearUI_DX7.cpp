@@ -4,7 +4,7 @@
 #include <stb_image.h>
 
 #ifdef _DX7
-void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang, const char* fontPath = nullptr)
+void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang, const char* fontPath)
 {
 	CHAR path[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, path))) {
