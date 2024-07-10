@@ -30,7 +30,7 @@ extern "C" {
 #elif _DX7
 	NKMOD_API void CreateD3D7Device(HWND wnd, int width, int height);
 	NKMOD_API void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* primary, IDirectDrawSurface7* backBuffer, int width, int height);
-	NKMOD_API void Initialize(IDirectDraw7* pdd, void* pdevice, int width, int height, int lang);
+	NKMOD_API void Initialize(IDirectDraw7* pdd, void* pdevice, int width, int height, int lang, const char* fontPath = nullptr);
 	NKMOD_API void LoadSprFile(const char* filename);
 #endif
 	NKMOD_API void LoadLuaFile(const char* filePath);

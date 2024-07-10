@@ -200,7 +200,7 @@ void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* prima
     vp.dvMaxZ = 1.0f;
     g_pD3DDevice->SetViewport(&vp);
 }
-void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int lang, const char* fontPath = nullptr)
+void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int lang, const char* fontPath)
 {
     IDirect3DDevice7* pdevice = (IDirect3DDevice7*)pvDevice;
     g_nuklear = new NuklearUI();
