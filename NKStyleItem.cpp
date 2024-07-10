@@ -64,7 +64,9 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 			bool bResult = pManager->GetSprite(m_sDisablePath.c_str(), m_iSprIndex, img);
 
 			if (!bResult) {
+#ifdef _NKDEBUG
 				pManager->ErrorPopup("Image URL not linked to the editor.");
+#endif
 				m_sDisablePath = "None";
 				m_iOption = 0;
 				(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
@@ -78,7 +80,9 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 			bool bResult = pManager->GetSprite(m_sDisablePath.c_str(), m_iSprIndex, img);
 
 			if (!bResult) {
+#ifdef _NKDEBUG
 				pManager->ErrorPopup("Image URL not linked to the editor.");
+#endif
 				m_sDisablePath = "None";
 				m_iOption = 0;
 				(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
@@ -102,7 +106,9 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 		bool bResult = pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 
 		if (!bResult) {
+#ifdef _NKDEBUG
 			pManager->ErrorPopup("Image URL not linked to the editor.");
+#endif
 			m_sImagePath = "None";
 			m_iOption = 0;
 			(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
@@ -116,7 +122,9 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 		bool bResult = pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 
 		if (!bResult) {
+#ifdef _NKDEBUG
 			pManager->ErrorPopup("Image URL not linked to the editor.");
+#endif
 			m_sImagePath = "None";
 			m_iOption = 0;
 			(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);

@@ -193,34 +193,34 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)_d</TargetName>
-    <IncludePath>$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\nuklear;$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(ProjectDir)..\..\..\BinTemp\GZ_SDK_2010\$(PlatformName)\$(ConfigurationName)\$(ProjectName)\</IntDir>
     <OutDir>$(ProjectDir)bin\$(Configuration)_$(PlatformName)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DX7_Debug|Win32'">
     <TargetName>$(ProjectName)_d</TargetName>
-    <IncludePath>$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\nuklear;$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DX9_Debug|Win32'">
     <TargetName>$(ProjectName)_d</TargetName>
-    <IncludePath>$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\nuklear;$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>$(ProjectName)</TargetName>
-    <IncludePath>$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\nuklear;$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DX7_Release|Win32'">
     <TargetName>$(ProjectName)</TargetName>
-    <IncludePath>$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\nuklear;$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DX9_Release|Win32'">
     <TargetName>$(ProjectName)</TargetName>
-    <IncludePath>$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\nuklear;$(ProjectDir)include\Lua;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -322,7 +322,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;NKMOD_EXPORTS;_WINDOWS;_USRDLL;FVF_XYZRHW#1;_DX7#1;_NKDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;NKMOD_EXPORTS;_WINDOWS;_USRDLL;FVF_XYZRHW#1;_DX7#1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -531,6 +531,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClInclude Include="NKTransform.h" />
     <ClInclude Include="NKTree.h" />
     <ClInclude Include="NKWindow.h" />
+    <ClInclude Include="nuklear_extensions.h" />
     <ClInclude Include="NuklearEditor.h" />
     <ClInclude Include="NuklearUI.h" />
     <ClInclude Include="pch.h" />
@@ -602,6 +603,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClCompile Include="NKTransform.cpp" />
     <ClCompile Include="NKTree.cpp" />
     <ClCompile Include="NKWindow.cpp" />
+    <ClCompile Include="nuklear_extensions.cpp" />
     <ClCompile Include="NuklearEditor.cpp" />
     <ClCompile Include="NuklearUI.cpp" />
     <ClCompile Include="NuklearUI_DX7.cpp" />

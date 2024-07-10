@@ -62,7 +62,7 @@ public:
 #ifdef _DX9
 	void Initialize(IDirect3DDevice9* device, int width, int height, int lang);
 #elif _DX7
-	void Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang);
+	void Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang, const char* fontPath = nullptr);
 #endif // _DX9
 	void Release();
 	void NKInputBegin();

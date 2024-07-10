@@ -1,5 +1,4 @@
 #include "pch.h"
-
 #define NK_IMPLEMENTATION
 #define NK_INCLUDE_STANDARD_VARARGS
 #define NK_INCLUDE_DEFAULT_ALLOCATOR
@@ -26,6 +25,7 @@ DX7Renderer::DX7Renderer()
 	dwD3DSAMP_ADDRESSV = 0;
 	dwD3DSAMP_MAGFILTER = 0;
 	dwD3DSAMP_MINFILTER = 0;
+	dwD3DTSS_MIPFILTER = 0;
 	dwD3DTSS_COLOROP = 0;
 	dwD3DTSS_COLORARG1 = 0;
 	dwD3DTSS_COLORARG2 = 0;
@@ -57,30 +57,25 @@ nk_context* DX7Renderer::nk_d3d7_init(LPDIRECTDRAW7 pdd, LPDIRECT3DDEVICE7 pdevi
 	return &d3d7.ctx;
 }
 
-void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, int lang)
+void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, int lang, const char* fontPath)
 {
 	nk_font_atlas_init_default(&d3d7.atlas);
 	nk_font_atlas_begin(&d3d7.atlas);
 	*atlas = &d3d7.atlas;
 
 	NK_ASSERT(atlas);
-	//NK_ASSERT(atlas->temporary.alloc);
-	//NK_ASSERT(atlas->temporary.free);
-	//NK_ASSERT(atlas->permanent.alloc);
-	//NK_ASSERT(atlas->permanent.free);
 
-	d3d7.original_height = 12.0f;
+	d3d7.original_height = 18.f;
 	struct nk_font_config cfg = nk_font_config(d3d7.original_height);
-	cfg.oversample_h = 3; // 수평 오버샘플링
-	cfg.oversample_v = 1; // 수직 오버샘플링
-
 	eLang language = (eLang)lang;
 
-	char fontPath[512] = { 0, };
+	char tfontPath[512] = { 0, };
 	switch (language)
 	{
 	case DX7Renderer::JPN: {
-		sprintf_s(fontPath, "%s\\msgothic.ttc", path);
+		if (fontPath == nullptr) {
+			sprintf_s(tfontPath, "%s\\msgothic.ttc", path);
+		}
 
 		NK_STORAGE const nk_rune ranges[] = {
 			0x0020, 0x007E,
@@ -98,43 +93,72 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 					   break;
 
 	case DX7Renderer::TWA: {
-		sprintf_s(fontPath, "%s\\simsun.ttc", path);
+		if (fontPath == nullptr) {
+			sprintf_s(tfontPath, "%s\\simsun.ttc", path);
+		}
 		cfg.range = nk_font_chinese_glyph_ranges();
 	}
 					   break;
 
 	case DX7Renderer::CHI: {
-		sprintf_s(fontPath, "%s\\Msjhl.ttc", path);
+		if (fontPath == nullptr) {
+			sprintf_s(tfontPath, "%s\\Msjhl.ttc", path);
+		}
 		cfg.range = nk_font_chinese_glyph_ranges();
 	}
 					   break;
 
 	case DX7Renderer::KOR:
 	default:
-		sprintf_s(fontPath, "%s\\gulim.ttc", path);
+		if (fontPath == nullptr) {
+			//sprintf_s(tfontPath, "%s\\gulim.ttc", path);
+			sprintf_s(tfontPath, "C:\\Users\\kimjw\\source\\repos\\test\\DX7_Debug\\data\\NotoSansKR-Regular.ttf");
+		}
 		cfg.range = nk_font_korean_glyph_ranges();
-
 		break;
 	}
 
+	char* buffer = nullptr;
+	nk_size size = 0;
+	if (fontPath != nullptr) {
+		std::ifstream file(fontPath, std::ios::binary | std::ios::ate);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file: " << fontPath << std::endl;
+			return;
+		}
+		std::streamsize file_size = file.tellg();
+		file.seekg(0, std::ios::beg);
 
-	std::ifstream file(fontPath, std::ios::binary | std::ios::ate);
-	if (!file.is_open()) {
-		std::cerr << "Failed to open file: " << fontPath << std::endl;
-		return;
-	}
-	std::streamsize file_size = file.tellg();
-	file.seekg(0, std::ios::beg);
-
-	char* buffer = new char[(unsigned int)file_size];
-	nk_size size;
-	if (file.read(buffer, file_size)) {
-		size = static_cast<nk_size>(file_size);
+		buffer = new char[(unsigned int)file_size];
+		
+		if (file.read(buffer, file_size)) {
+			size = static_cast<nk_size>(file_size);
+		}
+		else {
+			delete[] buffer;
+			std::cerr << "Failed to read file: " << fontPath << std::endl;
+			return;
+		}
 	}
 	else {
-		delete[] buffer;
-		std::cerr << "Failed to read file: " << fontPath << std::endl;
-		return;
+		std::ifstream file(tfontPath, std::ios::binary | std::ios::ate);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open file: " << tfontPath << std::endl;
+			return;
+		}
+		std::streamsize file_size = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		buffer = new char[(unsigned int)file_size];
+
+		if (file.read(buffer, file_size)) {
+			size = static_cast<nk_size>(file_size);
+		}
+		else {
+			delete[] buffer;
+			std::cerr << "Failed to read file: " << tfontPath << std::endl;
+			return;
+		}
 	}
 
 	cfg = (&cfg) ? cfg : nk_font_config(d3d7.original_height);
@@ -142,9 +166,12 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 	cfg.ttf_size = size;
 	cfg.size = d3d7.original_height;
 	cfg.ttf_data_owned_by_atlas = 1;
+	cfg.pixel_snap = nk_true;
+	cfg.oversample_h = 3; // 수평 오버샘플링
+	cfg.oversample_v = 3; // 수직 오버샘플링
+	cfg.coord_type = NK_COORD_UV;
 	d3d7.font = nk_font_atlas_add(*atlas, &cfg);
 
-	//m_font = nk_font_atlas_add_from_file(atlas, fontPath, original_height, &cfg);
 	nk_d3d7_font_stash_end();
 	nk_style_set_font(&d3d7.ctx, &d3d7.font->handle);
 }
@@ -562,13 +589,13 @@ void DX7Renderer::nk_d3d7_render_skip()
 	offset = (const nk_draw_index*)nk_buffer_memory_const(&ebuf);
 
 	vertices = (struct nk_d3d7_vertex*)nk_buffer_memory_const(&vbuf);
-	for (int i = 0; i < vertex_count; ++i) {
-		struct nk_d3d7_vertex vertex = vertices[i];
-		vertices[i].x += 0.5f;
-		vertices[i].y += 0.5f;
-		vertices[i].z = 0.0f;
-		vertices[i].rhw = 1.0f;
-	}
+	//for (int i = 0; i < vertex_count; ++i) {
+	//	struct nk_d3d7_vertex vertex = vertices[i];
+	//	vertices[i].x += 0.1f;
+	//	vertices[i].y += 0.1f;
+	//	vertices[i].z = 0.0f;
+	//	vertices[i].rhw = 1.0f;
+	//}
 
 	nk_buffer_free(&vbuf);
 	nk_buffer_free(&ebuf);
@@ -632,6 +659,8 @@ void DX7Renderer::nk_d3d7_create_state(void)
 	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_MINFILTER, &dwD3DSAMP_MINFILTER); // 축소 필터를 가져옴
 	NK_ASSERT(SUCCEEDED(hr));
+	hr = d3d7.device->GetTextureStageState(0, D3DTSS_MIPFILTER, &dwD3DTSS_MIPFILTER); // 축소 필터를 가져옴
+	NK_ASSERT(SUCCEEDED(hr));
 
 	/* Set texture stage state */
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_COLOROP, &dwD3DTSS_COLOROP);
@@ -646,9 +675,6 @@ void DX7Renderer::nk_d3d7_create_state(void)
 	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_ALPHAARG2, &dwD3DTSS_ALPHAARG2);
 	NK_ASSERT(SUCCEEDED(hr));
-
-
-
 
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
 	NK_ASSERT(SUCCEEDED(hr));
@@ -673,6 +699,8 @@ void DX7Renderer::nk_d3d7_create_state(void)
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR); // 확대 필터를 가져옴
 	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR); // 축소 필터를 가져옴
+	NK_ASSERT(SUCCEEDED(hr));
+	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_NONE); // 축소 필터를 가져옴
 	NK_ASSERT(SUCCEEDED(hr));
 
 	/* Set texture stage state */
@@ -718,6 +746,8 @@ void DX7Renderer::nk_d3d7_create_state_restore(void)
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MAGFILTER, dwD3DSAMP_MAGFILTER); // 확대 필터를 가져옴
 	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MINFILTER, dwD3DSAMP_MINFILTER); // 축소 필터를 가져옴
+	NK_ASSERT(SUCCEEDED(hr));
+	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MIPFILTER, dwD3DTSS_MIPFILTER); // 축소 필터를 가져옴
 	NK_ASSERT(SUCCEEDED(hr));
 
 	/* Set texture stage state */
@@ -829,6 +859,7 @@ void DX7Renderer::nk_d3d7_create_font_texture()
 	HRESULT hr = d3d7.dd->CreateSurface(&ddsd, &d3d7.font_texture, NULL);
 	if (FAILED(hr)) return;
 
+
 	ddsd.dwSize = sizeof(ddsd);
 	hr = d3d7.font_texture->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
 	if (FAILED(hr)) return;
@@ -838,4 +869,10 @@ void DX7Renderer::nk_d3d7_create_font_texture()
 	d3d7.font_texture->Unlock(NULL);
 
 	nk_font_atlas_end(&d3d7.atlas, nk_handle_ptr(d3d7.font_texture), &d3d7.tex_null);
+
+	// 텍스처 필터링 설정
+	d3d7.device->SetTexture(0, d3d7.font_texture);
+	d3d7.device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
+	d3d7.device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
+	d3d7.device->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_NONE);
 }

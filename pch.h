@@ -20,6 +20,7 @@
 #define NK_INCLUDE_DEFAULT_ALLOCATOR_h__
 #define NK_BUTTON_TRIGGER_ON_RELEASE
 #include <nuklear.h>
+#include "nuklear_extensions.h"
 
 #include <stb_image.h>
 #include <shlobj.h>

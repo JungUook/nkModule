@@ -25,6 +25,9 @@ public:
 	virtual void RegistCommand(const char* classname) override;
 public:
 	nk_bool m_bWrap;
+	nk_bool m_bBold;
+	nk_bool m_bUnderline;
+	nk_bool m_bStrikethrough;
 
 public:
     template <class Archive>

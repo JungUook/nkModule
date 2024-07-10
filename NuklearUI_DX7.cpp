@@ -4,7 +4,7 @@
 #include <stb_image.h>
 
 #ifdef _DX7
-void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang)
+void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang, const char* fontPath = nullptr)
 {
 	CHAR path[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, path))) {
@@ -14,7 +14,7 @@ void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int wid
 	m_ctx = m_dx7.nk_d3d7_init(pdd, pdevice);
 
 	struct nk_font_atlas* atlas;
-	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, lang);
+	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, lang, fontPath);
 	m_font = m_dx7.d3d7.font;
 
 	m_bMouseHovering = false;

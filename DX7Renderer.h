@@ -12,11 +12,13 @@
 #include <nuklear.h>
 
 #define WIN32_LEAN_AND_MEAN
+
 #include <ddraw.h>
 #include <d3d.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include "nuklear_extensions.h"
 
 typedef struct IDirectDrawSurface7 IDirectDrawSurface7;
 
@@ -64,7 +66,7 @@ public:
 
 public:
 	struct nk_context* nk_d3d7_init(LPDIRECTDRAW7 pdd, LPDIRECT3DDEVICE7 pdevice);
-	void nk_d3d7_font_stash_begin(struct nk_font_atlas** atlas, CHAR* path, int lang = 0);
+	void nk_d3d7_font_stash_begin(struct nk_font_atlas** atlas, CHAR* path, int lang = 0, const char* fontPath = nullptr);
 	void nk_d3d7_font_stash_end(void);
 	int nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	void nk_d3d7_render(enum nk_anti_aliasing antialiasing);
@@ -91,6 +93,7 @@ private:
 	DWORD dwD3DSAMP_ADDRESSV;
 	DWORD dwD3DSAMP_MAGFILTER;
 	DWORD dwD3DSAMP_MINFILTER;
+	DWORD dwD3DTSS_MIPFILTER;
 
 	DWORD dwD3DTSS_COLOROP;
 	DWORD dwD3DTSS_COLORARG1;

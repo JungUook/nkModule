@@ -67,8 +67,9 @@ void NKSelectable::EditStyle(nk_context* ctx)
 void NKSelectable::SetLabel(const char* text)
 {
     if (strlen(text) <= 0) {
-
+#ifdef _NKDEBUG
         m_pManager->ErrorPopup("A selectable must have a string.");
+#endif
         return;
     }
 

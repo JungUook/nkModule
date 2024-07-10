@@ -200,14 +200,14 @@ void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* prima
     vp.dvMaxZ = 1.0f;
     g_pD3DDevice->SetViewport(&vp);
 }
-void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int lang)
+void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int lang, const char* fontPath = nullptr)
 {
     IDirect3DDevice7* pdevice = (IDirect3DDevice7*)pvDevice;
     g_nuklear = new NuklearUI();
     g_sprLoader = new sprLoader();
     g_lang = lang;
     if (pdd && pdevice) {
-        g_nuklear->Initialize(pdd, pdevice, width, height, lang);
+        g_nuklear->Initialize(pdd, pdevice, width, height, lang, fontPath);
         g_sprLoader->Init(pdd);
         g_nuklear->Register_spr(g_sprLoader);
     }
@@ -215,7 +215,7 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
         if (hwnd) {
             HRESULT hr = CoInitialize(NULL);
             CreateD3D7Device(hwnd, width, height);
-            g_nuklear->Initialize(g_pDD, g_pD3DDevice, width, height, lang);
+            g_nuklear->Initialize(g_pDD, g_pD3DDevice, width, height, lang, fontPath);
             g_sprLoader->Init(g_pDD);
             g_nuklear->Register_spr(g_sprLoader);
             CoUninitialize();

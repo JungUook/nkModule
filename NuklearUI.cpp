@@ -118,9 +118,11 @@ void NuklearUI::FrameSkip()
 		m_dx7.nk_d3d7_render_skip();
 	}
 
+#ifdef _NKDEBUG
 	if (g_editor.m_ctx) {
 		g_editor.m_dx7.nk_d3d7_render_skip();
 	}
+#endif
 
 	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
 	{

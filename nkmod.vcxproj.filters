@@ -249,6 +249,9 @@
     <ClInclude Include="NKCereal.h">
       <Filter>소스 파일\Nuklear</Filter>
     </ClInclude>
+    <ClInclude Include="nuklear_extensions.h">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -459,6 +462,9 @@
       <Filter>소스 파일\Nuklear</Filter>
     </ClCompile>
     <ClCompile Include="NKCereal.cpp">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClCompile>
+    <ClCompile Include="nuklear_extensions.cpp">
       <Filter>소스 파일\Nuklear</Filter>
     </ClCompile>
   </ItemGroup>

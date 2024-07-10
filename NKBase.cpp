@@ -516,7 +516,9 @@ void NKBase::EditStyle(nk_context* ctx)
 void NKBase::EditPrimaryName(const char* name)
 {
 	if (!m_pManager->SetPrimaryname(this, name)) {
+#ifdef _NKDEBUG
 		m_pManager->ErrorPopup("There is already a primary name. primaryname cannot be duplicated.");
+#endif
 	}
 }
 

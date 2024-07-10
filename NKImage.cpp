@@ -43,7 +43,9 @@ void NKImage::Layout(nk_context* ctx)
 			struct nk_image img;
 			bool bResult = m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img);
 			if (!bResult) {
+#ifdef _NKDEBUG
 				m_pManager->ErrorPopup("Image URL not linked to the editor.");
+#endif
 				m_imagePath = "None";
 				return;
 			}
@@ -55,7 +57,9 @@ void NKImage::Layout(nk_context* ctx)
 			struct nk_image img;
 			bool bResult = m_pManager->GetImage(m_imagePath.c_str(), img);
 			if (!bResult) {
+#ifdef _NKDEBUG
 				m_pManager->ErrorPopup("Image URL not linked to the editor.");
+#endif
 				m_imagePath = "None";
 				return;
 			}
