@@ -322,128 +322,128 @@ void SaveSwitch(NKBase* ptr, cereal::JSONOutputArchive& archive) {
 	{
 	case eWINDOW: {
 		NKWindow* nkWindow = static_cast<NKWindow*>(ptr);
-		NKWindow& nWindow = *nkWindow;
-		archive(CEREAL_NVP(nWindow));
+		NKWindow& cWindow = *nkWindow;
+		archive(CEREAL_NVP(cWindow));
 		break;
 	}
 	case eSPACE: {
 		NKSpace* nkSpace = static_cast<NKSpace*>(ptr);
-		NKSpace& nSpace = *nkSpace;
-		archive(CEREAL_NVP(nSpace));
+		NKSpace& cSpace = *nkSpace;
+		archive(CEREAL_NVP(cSpace));
 		break;
 	}
 	case eGROUP: {
 		NKGroup* nkGroup = static_cast<NKGroup*>(ptr);
-		NKGroup& nGroup = *nkGroup;
-		archive(CEREAL_NVP(nGroup));
+		NKGroup& cGroup = *nkGroup;
+		archive(CEREAL_NVP(cGroup));
 		break;
 	}
 	case ePOPUP: {
 		NKPopup* nkPopup = static_cast<NKPopup*>(ptr);
-		NKPopup& nPopup = *nkPopup;
-		archive(CEREAL_NVP(nPopup));
+		NKPopup& cPopup = *nkPopup;
+		archive(CEREAL_NVP(cPopup));
 		break;
 	}
 	case eCOMBO: {
 		NKCombo* nkCombo = static_cast<NKCombo*>(ptr);
-		NKCombo& nCombo = *nkCombo;
-		archive(CEREAL_NVP(nCombo));
+		NKCombo& cCombo = *nkCombo;
+		archive(CEREAL_NVP(cCombo));
 		break;
 	}
 	case eBUTTON: {
 		NKButton* nkButton = static_cast<NKButton*>(ptr);
-		NKButton& nButton = *nkButton;
-		archive(CEREAL_NVP(nButton));
+		NKButton& cButton = *nkButton;
+		archive(CEREAL_NVP(cButton));
 		break;
 	}
 	case eEDIT: {
 		NKEdit* nkEdit = static_cast<NKEdit*>(ptr);
-		NKEdit& nEdit = *nkEdit;
-		archive(CEREAL_NVP(nEdit));
+		NKEdit& cEdit = *nkEdit;
+		archive(CEREAL_NVP(cEdit));
 		break;
 	}
 	case eIMAGE: {
 		NKImage* nkImage = static_cast<NKImage*>(ptr);
-		NKImage& nImage = *nkImage;
-		archive(CEREAL_NVP(nImage));
+		NKImage& cImage = *nkImage;
+		archive(CEREAL_NVP(cImage));
 		break;
 	}
 	case eLABEL: {
 		NKLabel* nkLabel = static_cast<NKLabel*>(ptr);
-		NKLabel& nLabel = *nkLabel;
-		archive(CEREAL_NVP(nLabel));
+		NKLabel& cLabel = *nkLabel;
+		archive(CEREAL_NVP(cLabel));
 		break;
 	}
 	case eCOMBO_ITEM: {
 		NKComboItem* nkComboItem = static_cast<NKComboItem*>(ptr);
-		NKComboItem& nComboItem = *nkComboItem;
-		archive(CEREAL_NVP(nComboItem));
+		NKComboItem& cComboItem = *nkComboItem;
+		archive(CEREAL_NVP(cComboItem));
 		break;
 	}
 	case eCHECKBOX: {
 		NKCheckbox* nkCheckbox = static_cast<NKCheckbox*>(ptr);
-		NKCheckbox& nCheckbox = *nkCheckbox;
-		archive(CEREAL_NVP(nCheckbox));
+		NKCheckbox& cCheckbox = *nkCheckbox;
+		archive(CEREAL_NVP(cCheckbox));
 		break;
 	}
 	case eSLIDER: {
 		NKSlider* nkSlider = static_cast<NKSlider*>(ptr);
-		NKSlider& nSlider = *nkSlider;
-		archive(CEREAL_NVP(nSlider));
+		NKSlider& cSlider = *nkSlider;
+		archive(CEREAL_NVP(cSlider));
 		break;
 	}
 	case ePROGRESS: {
 		NKProgress* nkProgress = static_cast<NKProgress*>(ptr);
-		NKProgress& nProgress = *nkProgress;
-		archive(CEREAL_NVP(nProgress));
+		NKProgress& cProgress = *nkProgress;
+		archive(CEREAL_NVP(cProgress));
 		break;
 	}
 	case eSELECTABLE: {
 		NKSelectable* nkSelectable = static_cast<NKSelectable*>(ptr);
-		NKSelectable& nSelectable = *nkSelectable;
-		archive(CEREAL_NVP(nSelectable));
+		NKSelectable& cSelectable = *nkSelectable;
+		archive(CEREAL_NVP(cSelectable));
 		break;
 	}
 	case eTREE: {
 		NKTree* nkTree = static_cast<NKTree*>(ptr);
-		NKTree& nTree = *nkTree;
-		archive(CEREAL_NVP(nTree));
+		NKTree& cTree = *nkTree;
+		archive(CEREAL_NVP(cTree));
 		break;
 	}
 	case eCHART: {
 		NKChart* nkChart = static_cast<NKChart*>(ptr);
-		NKChart& nChart = *nkChart;
-		archive(CEREAL_NVP(nChart));
+		NKChart& cChart = *nkChart;
+		archive(CEREAL_NVP(cChart));
 		break;
 	}
 	case eCOLOR_PICKER: {
 		NKColorPicker* nkColorPicker = static_cast<NKColorPicker*>(ptr);
-		NKColorPicker& nColorPicker = *nkColorPicker;
-		archive(CEREAL_NVP(nColorPicker));
+		NKColorPicker& cColorPicker = *nkColorPicker;
+		archive(CEREAL_NVP(cColorPicker));
 		break;
 	}
 	case eTOOLTIP: {
 		NKTooltip* nkTooltip = static_cast<NKTooltip*>(ptr);
-		NKTooltip& nTooltip = *nkTooltip;
-		archive(CEREAL_NVP(nTooltip));
+		NKTooltip& cTooltip = *nkTooltip;
+		archive(CEREAL_NVP(cTooltip));
 		break;
 	}
 	case eMENU: {
 		NKMenu* nkMenu = static_cast<NKMenu*>(ptr);
-		NKMenu& nMenu = *nkMenu;
-		archive(CEREAL_NVP(nMenu));
+		NKMenu& cMenu = *nkMenu;
+		archive(CEREAL_NVP(cMenu));
 		break;
 	}
 	case eSCROLLBAR: {
 		NKScrollbar* nkScrollbar = static_cast<NKScrollbar*>(ptr);
-		NKScrollbar& nScrollbar = *nkScrollbar;
-		archive(CEREAL_NVP(nScrollbar));
+		NKScrollbar& cScrollbar = *nkScrollbar;
+		archive(CEREAL_NVP(cScrollbar));
 		break;
 	}
 	case eSUPERSTYLE: {
 		NKSuperStyleObject* nkSuperStyleObject = static_cast<NKSuperStyleObject*>(ptr);
-		NKSuperStyleObject& nSuperStyleObject = *nkSuperStyleObject;
-		archive(CEREAL_NVP(nSuperStyleObject));
+		NKSuperStyleObject& cSuperStyleObject = *nkSuperStyleObject;
+		archive(CEREAL_NVP(cSuperStyleObject));
 		break;
 	}
 	default:
