@@ -60,7 +60,7 @@ extern "C" {
 	NKMOD_API void AddBindHandler(int key, void* callback, void(*func)(void*, void*));
 	NKMOD_API void RemoveHandler(int key);
 	NKMOD_API void RemoveBindHandler(int key);
-	NKMOD_API void* ConvertData(void* param);
+	NKMOD_API void* NKGetData(void* params, const char* key);
 	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param);
 }
 

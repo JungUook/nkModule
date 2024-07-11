@@ -411,9 +411,9 @@ void RemoveBindHandler(int key)
     g_nuklear->m_luaInterface.m_mapBindingEventHandlers.erase(key);
 }
 
-void* ConvertData(void* param)
+void* NKGetData(void* params, const char* key)
 {
-    return g_nuklear->m_luaInterface.ConvertData(param);
+    return g_nuklear->m_luaInterface.GetData(params, key);
 }
 
 bool NKCommand(const char* primaryName, const char* command, void* param)

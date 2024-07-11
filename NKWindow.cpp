@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "NKWindow.h"
 
-NKWindow::NKWindow() : NKBase(), NKBaseWindow(), NKStyleHeader(), NKStyleWindow()
+NKWindow::NKWindow() : NKBase(), NKBaseWindow(), NKHandler(), NKStyleHeader(), NKStyleWindow()
 {
 	m_type = eWINDOW;
 	m_flags = NK_WINDOW_TITLE;
 }
 
-NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
+NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKHandler(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type = eWINDOW;
 	m_flags = NK_WINDOW_TITLE;
@@ -18,7 +18,7 @@ NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_cTransform.h = 600.f;
 }
 
-NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
+NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKHandler(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_flags = other.m_flags;
@@ -48,6 +48,7 @@ void NKWindow::Layout(nk_context* ctx)
 	}
 	else {
 		m_bActive = false;
+		CallEvent(m_pLuaManager);
 	}
 	nk_end(ctx);
 }
@@ -88,6 +89,7 @@ void NKWindow::EditStyle(nk_context* ctx)
 {
 	NKBase::EditStyle(ctx);
 	EditComponentStyle(ctx, m_pManager);
+	EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
 
 nk_bool NKWindow::CheckMouseHover(nk_context* ctx)

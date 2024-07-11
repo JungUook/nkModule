@@ -88,7 +88,8 @@ public:
 	void TriggerEvent(luabridge::LuaRef args);
 	void BindingTriggerEvent(luabridge::LuaRef args);
 
-	void* ConvertData(void* params);
+	void* ConvertData(luabridge::LuaRef params);
+	void* GetData(void* params, const char* key);
 
 	void RegisterBase();
 
@@ -100,13 +101,11 @@ public:
 	std::map<int, std::function<void(void*)>> m_mapEventHandlers;
 	std::map<int, BindingFunc> m_mapBindingEventHandlers;
 
-	std::vector<luabridge::LuaRef> m_vecRef;
-
 	std::vector<double> m_vRef_d;
 	std::vector<std::string> m_vRef_s;
 	std::vector<int> m_vRef_b;
 
-	std::map<std::string, void*> m_vTableRef;
+	std::map<std::string, void*> m_mTableRef;
 	double m_dRef;
 	std::string m_sRef;
 	bool m_bRef;

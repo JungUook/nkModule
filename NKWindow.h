@@ -3,9 +3,10 @@
 #define NKWindow_h__
 #include "NKBase.h"
 #include "NKBaseWindow.h"
+#include "NKHandler.h"
 #include "NKStyleHeader.h"
 #include "NKStyleWindow.h"
-class NKWindow : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow
+class NKWindow : public NKBase, public NKBaseWindow, public NKHandler, public NKStyleHeader, public NKStyleWindow
 {
 public:
 	NKWindow();
@@ -33,6 +34,7 @@ public:
 	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKBaseWindow>(this)
+			, cereal::base_class<NKHandler>(this)
 			, cereal::base_class<NKStyleHeader>(this)
 			, cereal::base_class<NKStyleWindow>(this)
 		);
