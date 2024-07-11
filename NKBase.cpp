@@ -405,9 +405,9 @@ void NKBase::MoveBack()
 
 void NKBase::RegistCommand(const char* classname)
 {
-	MAKE_INTERFACE(m_mapFunc, this, NKBase::CSetActive, classname);
-	MAKE_INTERFACE(m_mapFunc, this, NKBase::CAddChild, classname);
-	MAKE_INTERFACE(m_mapFunc, this, NKBase::CRemoveChild, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CSetActive, "NKBase");
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CAddChild, "NKBase");
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CRemoveChild, "NKBase");
 }
 
 bool NKBase::ProcessCommand(const char* command, void* param)
