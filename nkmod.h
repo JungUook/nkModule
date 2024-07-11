@@ -21,7 +21,7 @@ extern "C" {
 	NKMOD_API void RegistHWND(HWND wnd);
 
 #ifdef _NKDEBUG
-	NKMOD_API BOOL InitSubWindow(HINSTANCE hInstance);
+	NKMOD_API BOOL InitSubWindow(HINSTANCE hInstance, const char* fontPath = nullptr);
 #endif
 
 #ifdef _DX9

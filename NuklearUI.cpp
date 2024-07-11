@@ -241,9 +241,9 @@ struct nk_rect* NuklearUI::GetViewport()
 }
 
 #ifdef _NKDEBUG
-BOOL NuklearUI::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
+BOOL NuklearUI::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath)
 {
-	return g_editor.InitSubWindow(hInstance, hMainWnd);
+	return g_editor.InitSubWindow(hInstance, hMainWnd, fontPath);
 }
 
 void NuklearUI::EditorRender()

@@ -81,7 +81,7 @@ private:
 	//subWindow
 public:
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
-	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd);
+	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath = nullptr);
 	void Render();
 
 	nk_context* m_ctx;

@@ -1116,7 +1116,7 @@ int NuklearEditor::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return m_dx7.nk_d3d7_handle_event(wnd, msg, wparam, lparam);
 }
 
-BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
+BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath)
 {
 	WNDCLASSW wc;
 	RECT rect = { 0, 0, 512, 960 };
@@ -1197,7 +1197,7 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd)
 	m_ctx = m_dx7.nk_d3d7_init(pDD, pD3DDevice);
 
 	struct nk_font_atlas* atlas;
-	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, 0);
+	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, 0, fontPath);
 
 	return TRUE;
 }

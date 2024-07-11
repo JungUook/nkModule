@@ -34,8 +34,8 @@ void RegistHWND(HWND wnd)
 }
 
 #ifdef _NKDEBUG
-BOOL InitSubWindow(HINSTANCE hInstance) {
-    return g_nuklear->InitSubWindow(hInstance, hwnd);
+BOOL InitSubWindow(HINSTANCE hInstance, const char* fontPath) {
+    return g_nuklear->InitSubWindow(hInstance, hwnd, fontPath);
 }
 #endif
 
