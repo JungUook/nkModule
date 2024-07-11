@@ -29,7 +29,7 @@ public:
     virtual void RegistCommand(const char* classname) override;
 public:
     template <class Archive>
-    void serialize(Archive& ar) {
+    void serialize(Archive& ar, const unsigned int version) {
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKObjectFinder>(this)

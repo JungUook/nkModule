@@ -33,11 +33,11 @@ public:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
-			, m_layoutFormat
-			, m_widgetCount
-			, m_dynamicCount
+			, CEREAL_NVP(m_layoutFormat)
+			, CEREAL_NVP(m_widgetCount)
+			, CEREAL_NVP(m_dynamicCount)
 		);
 	}
 };

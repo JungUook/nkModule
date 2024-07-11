@@ -27,15 +27,15 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKComponent>(this)
-			, *m_pTarget
-			, *m_pRestore
-			, *m_pBackground
-			, *m_pTabMaximizeButton
-			, *m_pTabMinimizeButton
-			, *m_pNodeMaximizeButton
-			, *m_pNodeMinimizeButton
+			, CEREAL_NVP(*m_pTarget)
+			, CEREAL_NVP(*m_pRestore)
+			, CEREAL_NVP(*m_pBackground)
+			, CEREAL_NVP(*m_pTabMaximizeButton)
+			, CEREAL_NVP(*m_pTabMinimizeButton)
+			, CEREAL_NVP(*m_pNodeMaximizeButton)
+			, CEREAL_NVP(*m_pNodeMinimizeButton)
 		);
 	}
 };

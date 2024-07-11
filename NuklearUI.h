@@ -2,6 +2,8 @@
 #ifndef NuklearUI_h__
 #define NuklearUI_h__
 
+#define EditorVersion 1
+
 #include "sprLoader.h"
 #include "NKLuaInterface.h"
 #include "NKCereal.h"
@@ -95,6 +97,7 @@ public:
 	void IMEInputSystem(nk_context* ctx, char* memory, int* len);
 
 private:
+	unsigned int m_iVersionEditor;
 
 #ifdef _DX7
 	DX7Renderer m_dx7;
@@ -119,6 +122,7 @@ public:
 	struct nk_rect* GetViewport();
 	void SetPrimary(NKBase* pBase);
 	bool SetPrimaryname(NKBase* pBase, const char* name);
+	bool SetWindowname(NKBase* pBase, const char* name);
 	void Add(NKBase* type, bool bStyle = true);
 	struct nk_image* SearchImage(int SID);
 
@@ -159,6 +163,7 @@ private:
 	std::vector<NKBase*> &m_vecModule;
 	std::map<unsigned int, NKBase*> &m_mapModuleID;
 	std::map<std::string, NKBase*> &m_mapModuleName;
+	std::map<std::string, NKBase*>& m_mapWindowName;
 	std::map<int, struct nk_image> m_mapImage;
 
 	struct nk_vec2 m_pivot;

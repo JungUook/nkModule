@@ -11,7 +11,7 @@ NKCombo::NKCombo() : NKBase(), NKStyleCombo()
 	m_currentLabel = 0;
 	m_labelAlignment = NK_TEXT_LEFT;
 
-	memset(m_cComboLabel, 0, sizeof(m_cComboLabel));
+	m_cComboLabel = "None";
 }
 
 NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleCombo(ctx, &m_style)
@@ -27,7 +27,7 @@ NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_currentLabel = 0;
 	m_labelAlignment = NK_TEXT_LEFT;
 
-	memset(m_cComboLabel, 0, sizeof(m_cComboLabel));
+	m_cComboLabel = "None";
 }
 
 NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ctx, &m_style)
@@ -39,7 +39,7 @@ NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ct
 	m_currentLabel = other.m_currentLabel;
 	m_labelAlignment = other.m_labelAlignment;
 
-	memset(m_cComboLabel, 0, sizeof(m_cComboLabel));
+	m_cComboLabel = other.m_cComboLabel;
 }
 
 NKCombo::~NKCombo()
@@ -48,7 +48,7 @@ NKCombo::~NKCombo()
 
 void NKCombo::Layout(nk_context* ctx)
 {
-	if (nk_combo_begin_label(ctx, m_cComboLabel, m_labelSize))
+	if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), m_labelSize))
 	{
 		nk_layout_space_begin(ctx, NK_STATIC, m_labelSize.y, m_pChildList.size());
 
@@ -113,7 +113,7 @@ void NKCombo::EditStyle(nk_context* ctx)
 
 void NKCombo::SetComboName(const char* name)
 {
-	strcpy_s(m_cComboLabel, name);
+	m_cComboLabel = name;
 }
 
 void NKCombo::LSetComboName(luabridge::LuaRef ref)

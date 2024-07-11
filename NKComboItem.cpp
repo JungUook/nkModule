@@ -43,10 +43,10 @@ void NKComboItem::Layout(nk_context* ctx)
 	NKCombo* parent = (NKCombo*)m_pParent;
 	if (parent)
 	{
-		if (nk_combo_item_label(ctx, m_cContent, parent->m_labelAlignment))
+		if (nk_combo_item_label(ctx, m_sContent.c_str(), parent->m_labelAlignment))
 		{
 			parent->SetCurrentLabel(m_labelNumber);
-			parent->SetComboName(m_cContent);
+			parent->SetComboName(m_sContent.c_str());
 			CallEvent(m_pLuaManager);
 		}
 	}

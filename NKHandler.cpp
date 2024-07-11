@@ -4,20 +4,20 @@
 
 NKHandler::NKHandler()
 {
-	memset(m_functionName, 0, sizeof(m_functionName));
-	memset(m_argsName, 0, sizeof(m_argsName));
-	memset(m_functionName, 0, sizeof(m_functionNameEdit));
-	memset(m_argsName, 0, sizeof(m_argsNameEdit));
+	m_functionName = "None";
+	m_argsName = "None";
+	memset(m_functionNameEdit, 0, sizeof(m_functionNameEdit));
+	memset(m_argsNameEdit, 0, sizeof(m_argsNameEdit));
 	m_functionNameEditLen = 0;
 	m_argsNameEditLen = 0;
 }
 
 NKHandler::NKHandler(const NKHandler& other)
 {
-	strcpy_s(m_functionName, other.m_functionName);
-	strcpy_s(m_argsName, other.m_argsName);
-	strcpy_s(m_functionName, other.m_functionNameEdit);
-	strcpy_s(m_argsName, other.m_argsNameEdit);
+	m_functionName = other.m_functionName;
+	m_argsName = other.m_argsName;
+	strcpy_s(m_functionNameEdit, other.m_functionNameEdit);
+	strcpy_s(m_argsNameEdit, other.m_argsNameEdit);
 	m_functionNameEditLen = 0;
 	m_argsNameEditLen = 0;
 }
@@ -31,7 +31,7 @@ void NKHandler::RegistFunction(const char* functionName, NKLuaInterface* pInterf
 	if (functionName != nullptr && strlen(functionName) > 0)
 	{
 		pInterface->UnsubscribeFunction(m_functionName, this);
-		strcpy_s(m_functionName, functionName);
+		m_functionName = functionName;
 		pInterface->SubscribeFunction(functionName, this);
 	}
 }
@@ -41,32 +41,32 @@ void NKHandler::RegistVariable(const char* argsName, NKLuaInterface* pInterface)
 	if (argsName != nullptr && strlen(argsName) > 0)
 	{
 		pInterface->UnsubscribeFunction(m_argsName, this);
-		strcpy_s(m_argsName, argsName);
+		m_argsName = argsName;
 		pInterface->SubscribeVariable(argsName, this);
 	}
 }
 
 void NKHandler::CallEvent(NKLuaInterface* pManager)
 {
-	if (m_functionName != nullptr && strlen(m_functionName) > 0)
+	if (m_functionName != "None" && m_functionName.length() > 0)
 	{
-		if (m_argsName != nullptr && strlen(m_argsName) > 0)
+		if (m_argsName != "None" && m_argsName.length() > 0)
 		{
 			luabridge::LuaRef table = pManager->GetLuaTable(m_argsName);
-			pManager->RunFunctionArgs(m_functionName, table);
+			pManager->RunFunctionArgs(m_functionName.c_str(), table);
 		}
 		else
 		{
-			pManager->RunFunction(m_functionName);
+			pManager->RunFunction(m_functionName.c_str());
 		}
 	}
 }
 
 void NKHandler::CallEvent(NKLuaInterface* pManager, nk_edit_events edit_event, char* inputText, int* inputTextLength)
 {
-	if (m_functionName != nullptr && strlen(m_functionName) > 0)
+	if (m_functionName != "None" && m_functionName.length() > 0)
 	{
-		if (m_argsName != nullptr && strlen(m_argsName) > 0)
+		if (m_argsName != "None" && m_argsName.length() > 0)
 		{
 			luabridge::LuaRef table = pManager->GetLuaTable(m_argsName);
 
@@ -98,11 +98,11 @@ void NKHandler::CallEvent(NKLuaInterface* pManager, nk_edit_events edit_event, c
 				break;
 			}
 
-			pManager->RunFunctionArgs(m_functionName, table);
+			pManager->RunFunctionArgs(m_functionName.c_str(), table);
 		}
 		else
 		{
-			pManager->RunFunction(m_functionName);
+			pManager->RunFunction(m_functionName.c_str());
 		}
 	}
 }
@@ -113,12 +113,12 @@ void NKHandler::CallbackEvent(NKLuaInterface* pManager)
 
 const char* NKHandler::GetFunctionName()
 {
-	return m_functionName;
+	return m_functionName.c_str();
 }
 
 const char* NKHandler::GetArgsName()
 {
-	return m_argsName;
+	return m_argsName.c_str();
 }
 
 void NKHandler::EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterface* pInterface)
@@ -133,7 +133,7 @@ void NKHandler::EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterfac
 		RegistFunction(m_functionNameEdit, pInterface);
 	}
 
-	if (strlen(m_functionName) > 0) {
+	if (m_functionName != "None" && m_functionName.length() > 0) {
 		nk_layout_row_dynamic(ctx, 33, 1);
 		if (pInterface->IsActiveFunction(m_functionName)) {
 			nk_color origin = ctx->style.text.color;
@@ -156,7 +156,7 @@ void NKHandler::EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterfac
 		RegistVariable(m_argsNameEdit, pInterface);
 	}
 
-	if (strlen(m_argsName) > 0) {
+	if (m_argsName != "None" && m_argsName.length() > 0) {
 		nk_layout_row_dynamic(ctx, 33, 1);
 		if (pInterface->IsActiveVariable(m_argsName)) {
 			nk_color origin = ctx->style.text.color;

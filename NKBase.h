@@ -85,6 +85,7 @@ public:
 	virtual void EditInfo(nk_context* ctx);
 	virtual void EditStyle(nk_context* ctx);
 	virtual void EditPrimaryName(const char* name);
+	virtual void EditWindowName(const char* name);
 	virtual void CreateUI(const char* classname);
 
 	virtual void FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent) override;
@@ -107,12 +108,13 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKProperty>(this)
-			, m_iNKIndex
-			, m_flags
-			, m_bActive
-			, m_bEditActive);
+			, CEREAL_NVP(m_iNKIndex)
+			, CEREAL_NVP(m_flags)
+			, CEREAL_NVP(m_bActive)
+			, CEREAL_NVP(m_bEditActive)
+			);
 	}
 };
 #endif //NKBaseObject_h__

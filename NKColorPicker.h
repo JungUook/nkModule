@@ -26,9 +26,9 @@ public:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
-			, m_color
+			, CEREAL_NVP(m_color)
 		);
 	}
 };

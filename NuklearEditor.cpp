@@ -1,7 +1,7 @@
 #include "pch.h"
+#include "NuklearUI.h"
 #include "UiLibrary.h"
 #include "NuklearEditor.h"
-#include "NuklearUI.h"
 
 #include <iostream>
 #include <vector>
@@ -21,6 +21,7 @@ NuklearEditor::NuklearEditor()
 	m_vecModule = nullptr;
 	m_mapModuleID = nullptr;
 	m_mapModuleName = nullptr;
+	m_mapWindowName = nullptr;
 	m_mapImage = nullptr;
 	m_mapSpr = nullptr;
 
@@ -33,6 +34,7 @@ NuklearEditor::NuklearEditor()
 	m_mapVariable = nullptr;
 	m_mapFunction = nullptr;
 	m_vecPrefab = nullptr;
+	m_vecLuaCode = nullptr;
 	m_bShow_popup = 0;
 	m_bMovingNode = false;
 
@@ -53,7 +55,7 @@ NuklearEditor::~NuklearEditor()
 	g_Editor = nullptr;
 }
 
-void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::map<std::string, CustomData>* mvariable, std::map<std::string, CustomData>* mfunction, std::vector<std::string>* vPrefab, std::vector<std::string>* vLua)
+void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<std::string, NKBase*>* windowName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::map<std::string, CustomData>* mvariable, std::map<std::string, CustomData>* mfunction, std::vector<std::string>* vPrefab, std::vector<std::string>* vLua)
 {
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
@@ -62,6 +64,7 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 	m_vecModule = module;
 	m_mapModuleID = moduleID;
 	m_mapModuleName = moduleName;
+	m_mapWindowName = windowName;
 	m_mapImage = image;
 	m_mapSpr = spr;
 	m_mapVariable = mvariable;
@@ -84,62 +87,196 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 		}
 
 		if (nk_tree_push(ctx, NK_TREE_TAB, "System", NK_MINIMIZED)) {
-
 			nk_layout_row_dynamic(ctx, 50.f, 4);
-			if (nk_button_label(ctx, "New"))
-			{
-				NKWindow* pWin = new NKWindow(ctx, m_pManager);
-				m_pManager->Add(pWin);
-			}
-			if (nk_button_label(ctx, "Refresh"))
-			{
-				Clear();
-			}
-			if (nk_button_label(ctx, "Save")) {
-				char path[MAX_PATH];
-				HMODULE hModule = GetModuleHandle(NULL);
-				if (hModule != NULL) {
-					// 현재 실행 파일의 경로를 얻습니다.
-					GetModuleFileNameA(hModule, path, MAX_PATH);
-				}
-				else {
-					std::cerr << "Failed to get module handle." << std::endl;
-					return;
-				}
-				std::string basePath(path);
-				basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-				std::string dataPath = basePath + "\\data";
-				if (!CreateDirectoryIfNotExists(dataPath)) {
-					std::cerr << "Failed to create directory: " << dataPath << std::endl;
-					return;
-				}
-				std::string filePath = dataPath + "\\nkmod.json";
+			//if (nk_button_label(ctx, "New"))
+			//{
+			//	NKWindow* pWin = new NKWindow(ctx, m_pManager);
+			//	m_pManager->Add(pWin);
+			//}
 
-				m_pManager->m_cereal.SaveFile(filePath);
-			}
-			if (nk_button_label(ctx, "Load")) {
-				Clear();
-				char path[MAX_PATH];
-				HMODULE hModule = GetModuleHandle(NULL);
-				if (hModule != NULL) {
-					// 현재 실행 파일의 경로를 얻습니다.
-					GetModuleFileNameA(hModule, path, MAX_PATH);
-				}
-				else {
-					std::cerr << "Failed to get module handle." << std::endl;
-					return;
-				}
-				std::string basePath(path);
-				basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-				std::string dataPath = basePath + "\\data";
-				if (!CreateDirectoryIfNotExists(dataPath)) {
-					std::cerr << "Failed to create directory: " << dataPath << std::endl;
-					return;
-				}
-				std::string filePath = dataPath + "\\nkmod.json";
+			static bool bRealClear = false;
 
-				m_pManager->m_cereal.LoadFile(*m_mapVariable, *m_mapFunction, filePath);
+			if(bRealClear) {
+				if (nk_popup_begin(ctx, NK_POPUP_STATIC, "Clear", NK_WINDOW_TITLE, nk_rect(debugRect.w / 2.f - 400.f / 2, debugRect.h / 2.f - 100.f / 2.f, 400.f, 200.f))) {
+
+					nk_layout_row_dynamic(ctx, 100, 1);
+					nk_label_wrap(ctx, "Are you sure you want to clear the project? Confirming will delete all the information in the current project.");
+
+					nk_layout_row_dynamic(ctx, 20, 2);
+					if (nk_button_label(ctx, "Yes")) {
+						Clear();
+						bRealClear = false;
+						nk_popup_close(ctx);
+					}
+					if (nk_button_label(ctx, "No")) {
+						bRealClear = false;
+						nk_popup_close(ctx);
+					}
+					nk_popup_end(ctx);
+				}
 			}
+
+			if (nk_button_label(ctx, "Clear"))
+			{
+				bRealClear = true;
+			}
+			if (nk_button_label(ctx, "Reload"))
+			{
+				for (auto it = m_vecLuaCode->begin(); it != m_vecLuaCode->end(); ++it) {
+					std::string str = *it;
+					m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
+				}
+			}
+			if (nk_menu_begin_label(ctx, "Save", NK_TEXT_CENTERED, nk_vec2(100,100))) {
+
+				nk_layout_row_dynamic(ctx, 25, 1);
+				if (nk_menu_item_label(ctx, "json", NK_TEXT_LEFT))
+				{
+					char path[MAX_PATH];
+					HMODULE hModule = GetModuleHandle(NULL);
+					if (hModule != NULL) {
+						// 현재 실행 파일의 경로를 얻습니다.
+						GetModuleFileNameA(hModule, path, MAX_PATH);
+					}
+					else {
+						std::cerr << "Failed to get module handle." << std::endl;
+						return;
+					}
+					std::string basePath(path);
+					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+					std::string dataPath = basePath + "\\data";
+					if (!CreateDirectoryIfNotExists(dataPath)) {
+						std::cerr << "Failed to create directory: " << dataPath << std::endl;
+						return;
+					}
+					std::string filePath = dataPath + "\\nkmod.json";
+
+					m_pManager->m_cereal.SaveFile(filePath);
+				}
+				if (nk_menu_item_label(ctx, "binary", NK_TEXT_LEFT))
+				{
+					char path[MAX_PATH];
+					HMODULE hModule = GetModuleHandle(NULL);
+					if (hModule != NULL) {
+						// 현재 실행 파일의 경로를 얻습니다.
+						GetModuleFileNameA(hModule, path, MAX_PATH);
+					}
+					else {
+						std::cerr << "Failed to get module handle." << std::endl;
+						return;
+					}
+					std::string basePath(path);
+					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+					std::string dataPath = basePath + "\\data";
+					if (!CreateDirectoryIfNotExists(dataPath)) {
+						std::cerr << "Failed to create directory: " << dataPath << std::endl;
+						return;
+					}
+					std::string filePath = dataPath + "\\nkmod.bin";
+
+					m_pManager->m_cereal.SaveFile(filePath);
+				}
+				nk_menu_end(ctx);
+			}
+			if (nk_menu_begin_label(ctx, "Load", NK_TEXT_CENTERED, nk_vec2(100, 100))) {
+
+				nk_layout_row_dynamic(ctx, 25, 1);
+				if (nk_menu_item_label(ctx, "json", NK_TEXT_LEFT))
+				{
+					Clear();
+					char path[MAX_PATH];
+					HMODULE hModule = GetModuleHandle(NULL);
+					if (hModule != NULL) {
+						// 현재 실행 파일의 경로를 얻습니다.
+						GetModuleFileNameA(hModule, path, MAX_PATH);
+					}
+					else {
+						std::cerr << "Failed to get module handle." << std::endl;
+						return;
+					}
+					std::string basePath(path);
+					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+					std::string dataPath = basePath + "\\data";
+					if (!CreateDirectoryIfNotExists(dataPath)) {
+						std::cerr << "Failed to create directory: " << dataPath << std::endl;
+						return;
+					}
+					std::string filePath = dataPath + "\\nkmod.json";
+
+					m_pManager->m_cereal.LoadFile(*m_mapVariable, *m_mapFunction, filePath);
+				}
+				if (nk_menu_item_label(ctx, "binary", NK_TEXT_LEFT))
+				{
+					Clear();
+					char path[MAX_PATH];
+					HMODULE hModule = GetModuleHandle(NULL);
+					if (hModule != NULL) {
+						// 현재 실행 파일의 경로를 얻습니다.
+						GetModuleFileNameA(hModule, path, MAX_PATH);
+					}
+					else {
+						std::cerr << "Failed to get module handle." << std::endl;
+						return;
+					}
+					std::string basePath(path);
+					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+					std::string dataPath = basePath + "\\data";
+					if (!CreateDirectoryIfNotExists(dataPath)) {
+						std::cerr << "Failed to create directory: " << dataPath << std::endl;
+						return;
+					}
+					std::string filePath = dataPath + "\\nkmod.json";
+
+					m_pManager->m_cereal.LoadFile(*m_mapVariable, *m_mapFunction, filePath);
+				}
+				nk_menu_end(ctx);
+			}
+
+			//if (nk_button_label(ctx, "Save")) {
+			//	char path[MAX_PATH];
+			//	HMODULE hModule = GetModuleHandle(NULL);
+			//	if (hModule != NULL) {
+			//		// 현재 실행 파일의 경로를 얻습니다.
+			//		GetModuleFileNameA(hModule, path, MAX_PATH);
+			//	}
+			//	else {
+			//		std::cerr << "Failed to get module handle." << std::endl;
+			//		return;
+			//	}
+			//	std::string basePath(path);
+			//	basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+			//	std::string dataPath = basePath + "\\data";
+			//	if (!CreateDirectoryIfNotExists(dataPath)) {
+			//		std::cerr << "Failed to create directory: " << dataPath << std::endl;
+			//		return;
+			//	}
+			//	std::string filePath = dataPath + "\\nkmod.json";
+
+			//	m_pManager->m_cereal.SaveFile(filePath);
+			//}
+			//if (nk_button_label(ctx, "Load")) {
+			//	Clear();
+			//	char path[MAX_PATH];
+			//	HMODULE hModule = GetModuleHandle(NULL);
+			//	if (hModule != NULL) {
+			//		// 현재 실행 파일의 경로를 얻습니다.
+			//		GetModuleFileNameA(hModule, path, MAX_PATH);
+			//	}
+			//	else {
+			//		std::cerr << "Failed to get module handle." << std::endl;
+			//		return;
+			//	}
+			//	std::string basePath(path);
+			//	basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+			//	std::string dataPath = basePath + "\\data";
+			//	if (!CreateDirectoryIfNotExists(dataPath)) {
+			//		std::cerr << "Failed to create directory: " << dataPath << std::endl;
+			//		return;
+			//	}
+			//	std::string filePath = dataPath + "\\nkmod.json";
+
+			//	m_pManager->m_cereal.LoadFile(*m_mapVariable, *m_mapFunction, filePath);
+			//}
 
 			nk_layout_row_dynamic(ctx, 30, 4);
 			if (nk_option_label(ctx, "node", m_iOption == eNODE)) m_iOption = eNODE;
@@ -430,7 +567,7 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 	}
 
 	static char selectedFilename[260] = { 0, };
-	float ratio[2] = { 0.8f, 0.2f };
+	float ratio[3] = { 0.6f, 0.2f, 0.2f };
 
 	if (m_mapSpr->size() == 0) {
 		memset(selectedFilename, 0, sizeof(selectedFilename));
@@ -438,8 +575,8 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 
 	nk_layout_row_dynamic(ctx, 500, 1);
 	if (nk_group_begin(ctx, "File List", NK_WINDOW_TITLE)) {
-		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
-		for (std::map<std::string, sprData*>::iterator it = m_mapSpr->begin(); it != m_mapSpr->end(); ++it) {
+		nk_layout_row(ctx, NK_DYNAMIC, 22, 3, ratio);
+		for (std::map<std::string, sprData*>::iterator it = m_mapSpr->begin(); it != m_mapSpr->end();) {
 			std::filesystem::path filePath((*it).first.c_str());
 
 			bool bSearch = false;
@@ -464,13 +601,45 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 				continue;
 			}
 
-
+			float text_width = ctx->style.font->width(ctx->style.font->userdata, ctx->style.font->height, (*it).first.c_str(), (*it).first.length());
+			float text_height = ctx->style.font->height;
 
 			nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
+			struct nk_rect label_bounds = nk_layout_widget_bounds(ctx);
+			if (nk_input_is_mouse_hovering_rect(&ctx->input, label_bounds)) {
+
+				const struct nk_style* style;
+				struct nk_vec2 padding;
+
+				float text_width;
+				float text_height;
+
+				style = &ctx->style;
+				padding = style->window.padding;
+
+				text_width = style->font->width(style->font->userdata,
+					style->font->height, (*it).first.c_str(), (*it).first.length());
+				text_width += (4 * padding.x);
+				text_height = (style->font->height + 2 * padding.y);
+
+				if (nk_tooltip_begin(ctx, (float)text_width)) {
+					nk_layout_row_dynamic(ctx, (float)text_height, 1);
+					nk_text(ctx, (*it).first.c_str(), (*it).first.length(), NK_TEXT_LEFT);
+					nk_tooltip_end(ctx);
+				}
+			}
 
 			if (nk_button_label(ctx, "Load")) {
 				memset(selectedFilename, 0, sizeof(selectedFilename));
 				strcpy_s(selectedFilename, (*it).first.c_str());
+			}
+
+			if (nk_button_label(ctx, "Delete")) {
+				memset(selectedFilename, 0, sizeof(selectedFilename));
+				it = m_mapSpr->erase(it);
+			}
+			else {
+				++it;
 			}
 		}
 		nk_group_end(ctx);
@@ -528,7 +697,7 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 	}
 
 	static char selectedFilename[260] = { 0, };
-	float ratio[2] = { 0.8f, 0.2f };
+	float ratio[3] = { 0.6f, 0.2f, 0.2f };
 
 	if (m_vecLuaCode->size() == 0) {
 		memset(selectedFilename, 0, sizeof(selectedFilename));
@@ -536,8 +705,8 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 
 	nk_layout_row_dynamic(ctx, 500, 1);
 	if (nk_group_begin(ctx, "Lua Code List", NK_WINDOW_TITLE)) {
-		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
-		for (std::vector<std::string>::iterator it = m_vecLuaCode->begin(); it != m_vecLuaCode->end(); ++it) {
+		nk_layout_row(ctx, NK_DYNAMIC, 22, 3, ratio);
+		for (std::vector<std::string>::iterator it = m_vecLuaCode->begin(); it != m_vecLuaCode->end();) {
 			std::filesystem::path filePath((*it).c_str());
 
 			bool bSearch = false;
@@ -564,11 +733,43 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 
 			nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
 
+			float text_width = ctx->style.font->width(ctx->style.font->userdata, ctx->style.font->height, (*it).c_str(), (*it).length());
+			float text_height = ctx->style.font->height;
+			struct nk_rect label_bounds = nk_layout_widget_bounds(ctx);
+			if (nk_input_is_mouse_hovering_rect(&ctx->input, label_bounds)) {
+
+				const struct nk_style* style;
+				struct nk_vec2 padding;
+
+				float text_width;
+				float text_height;
+
+				style = &ctx->style;
+				padding = style->window.padding;
+
+				text_width = style->font->width(style->font->userdata,
+					style->font->height, (*it).c_str(), (*it).length());
+				text_width += (4 * padding.x);
+				text_height = (style->font->height + 2 * padding.y);
+
+				if (nk_tooltip_begin(ctx, (float)text_width)) {
+					nk_layout_row_dynamic(ctx, (float)text_height, 1);
+					nk_text(ctx, (*it).c_str(), (*it).length(), NK_TEXT_LEFT);
+					nk_tooltip_end(ctx);
+				}
+			}
+
 			if (nk_button_label(ctx, "Reload")) {
 				memset(selectedFilename, 0, sizeof(selectedFilename));
 				strcpy_s(selectedFilename, (*it).c_str());
 
 				m_pManager->m_luaInterface.LoadLuaFile(selectedFilename);
+			}
+			if (nk_button_label(ctx, "Delete")) {
+				it = m_vecLuaCode->erase(it);
+			}
+			else {
+				++it;
 			}
 		}
 		nk_group_end(ctx);
@@ -744,7 +945,7 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 	}
 
 	static char selectedFilename[260] = { 0, };
-	float ratio[2] = { 0.8f, 0.2f };
+	float ratio[3] = { 0.6f, 0.2f, 0.2f };
 
 	if (m_vecPrefab->size() == 0) {
 		memset(selectedFilename, 0, sizeof(selectedFilename));
@@ -752,8 +953,8 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 
 	nk_layout_row_dynamic(ctx, 500, 1);
 	if (nk_group_begin(ctx, "Prefab List", NK_WINDOW_TITLE)) {
-		nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
-		for (std::vector<std::string>::iterator it = m_vecPrefab->begin(); it != m_vecPrefab->end(); ++it) {
+		nk_layout_row(ctx, NK_DYNAMIC, 22, 3, ratio);
+		for (std::vector<std::string>::iterator it = m_vecPrefab->begin(); it != m_vecPrefab->end();) {
 			std::filesystem::path filePath((*it).c_str());
 
 			bool bSearch = false;
@@ -780,11 +981,43 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 
 			nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
 
+			float text_width = ctx->style.font->width(ctx->style.font->userdata, ctx->style.font->height, (*it).c_str(), (*it).length());
+			float text_height = ctx->style.font->height;
+			struct nk_rect label_bounds = nk_layout_widget_bounds(ctx);
+			if (nk_input_is_mouse_hovering_rect(&ctx->input, label_bounds)) {
+
+				const struct nk_style* style;
+				struct nk_vec2 padding;
+
+				float text_width;
+				float text_height;
+
+				style = &ctx->style;
+				padding = style->window.padding;
+
+				text_width = style->font->width(style->font->userdata,
+					style->font->height, (*it).c_str(), (*it).length());
+				text_width += (4 * padding.x);
+				text_height = (style->font->height + 2 * padding.y);
+
+				if (nk_tooltip_begin(ctx, (float)text_width)) {
+					nk_layout_row_dynamic(ctx, (float)text_height, 1);
+					nk_text(ctx, (*it).c_str(), (*it).length(), NK_TEXT_LEFT);
+					nk_tooltip_end(ctx);
+				}
+			}
+
 			if (nk_button_label(ctx, "Make")) {
 				memset(selectedFilename, 0, sizeof(selectedFilename));
 				strcpy_s(selectedFilename, (*it).c_str());
 
 				m_pManager->m_cereal.LoadPrefab(selectedFilename, m_pSelectedNode);
+			}
+			if (nk_button_label(ctx, "Delete")) {
+				it = m_vecPrefab->erase(it);
+			}
+			else {
+				++it;
 			}
 		}
 		nk_group_end(ctx);
@@ -834,6 +1067,7 @@ void NuklearEditor::Clear()
 	m_vecModule->clear();
 	m_mapModuleID->clear();
 	m_mapModuleName->clear();
+	m_mapWindowName->clear();
 	m_pSelectedNode = nullptr;
 
 	m_mapSpr->clear();

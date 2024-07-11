@@ -21,11 +21,11 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(*color
-			, *padding
-			, *color_factor
-			, *disabled_factor
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(CEREAL_NVP(*color)
+			, CEREAL_NVP(*padding)
+			, CEREAL_NVP(*color_factor)
+			, CEREAL_NVP(*disabled_factor)
 		);
 	}
 };

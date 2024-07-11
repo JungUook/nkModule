@@ -29,12 +29,12 @@ public:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKHandler>(this)
 			, cereal::base_class<NKStyleEdit>(this)
-			, m_inputText
-			, m_inputTextLength
+			, CEREAL_NVP(m_inputText)
+			, CEREAL_NVP(m_inputTextLength)
 		);
 	}
 };

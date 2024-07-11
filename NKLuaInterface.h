@@ -19,6 +19,8 @@ class NKHandler;
 class NuklearUI;
 class NKObjectFinder;
 
+#define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
+
 struct CustomData {
 	char name[256];
 	bool bFunction;
@@ -32,11 +34,11 @@ struct CustomData {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(name
-			, bFunction
-			, desc
-			, descLen
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(CEREAL_NVP(name)
+			, CEREAL_NVP(bFunction)
+			, CEREAL_NVP(desc)
+			, CEREAL_NVP(descLen)
 		);
 	}
 };
@@ -104,7 +106,7 @@ public:
 	std::vector<std::string> m_vRef_s;
 	std::vector<int> m_vRef_b;
 
-	std::vector<void*> m_vTableRef;
+	std::map<std::string, void*> m_vTableRef;
 	double m_dRef;
 	std::string m_sRef;
 	bool m_bRef;

@@ -33,15 +33,15 @@ void NKMenu::Layout(nk_context* ctx)
 {
     UpdateComponent(ctx, m_pManager);
 
-    if (nk_menu_begin_label(ctx, m_cContent, NK_TEXT_LEFT, nk_vec2(120, 200)))
+    if (nk_menu_begin_label(ctx, m_sContent.c_str(), NK_TEXT_LEFT, nk_vec2(120, 200)))
     {
         nk_layout_row_dynamic(ctx, 25, 1);
         for (auto it = m_items.begin(); it != m_items.end(); ++it)
         {
             if (nk_menu_item_label(ctx, it->name, NK_TEXT_LEFT))
             {
-                strcpy_s(m_functionName, it->functionName);
-                strcpy_s(m_argsName, it->argsName);
+                m_functionName = it->functionName;
+                m_argsName = it->argsName;
                 CallEvent(m_pLuaManager);
             }
         }

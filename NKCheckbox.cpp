@@ -35,7 +35,7 @@ void NKCheckbox::Layout(nk_context* ctx)
 {
     UpdateComponent(ctx, m_pManager);
 
-    nk_checkbox_label(ctx, m_cContent, &m_checked);
+    nk_checkbox_label(ctx, m_sContent.c_str(), &m_checked);
 }
 
 void NKCheckbox::LayoutEnd(nk_context* ctx)

@@ -5,6 +5,7 @@
 class NuklearUI;
 class NKBase;
 
+#define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
 class NKObjectFinder
 {
 public:
@@ -31,9 +32,9 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(
-			m_iResultObjPrimaryID
+			CEREAL_NVP(m_iResultObjPrimaryID)
 		);
 	}
 };

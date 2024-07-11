@@ -33,16 +33,16 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(m_sImagePath
-			, m_iOption
-			, m_iSprIndex
-			, m_iSprSize
-			, m_iNineslice
-			, m_bApply
-			, *m_pTarget
-			, m_bDisabled
-			, m_sDisablePath
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(CEREAL_NVP(m_sImagePath)
+			, CEREAL_NVP(m_iOption)
+			, CEREAL_NVP(m_iSprIndex)
+			, CEREAL_NVP(m_iSprSize)
+			, CEREAL_NVP(m_iNineslice)
+			, CEREAL_NVP(m_bApply)
+			, CEREAL_NVP(*m_pTarget)
+			, CEREAL_NVP(m_bDisabled)
+			, CEREAL_NVP(m_sDisablePath)
 		);
 	}
 };
@@ -56,7 +56,7 @@ public:
 	virtual void CustomComponentsEditor(nk_context* ctx, NuklearUI* pManager) = 0;
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 	}
 };
 #endif //NKStyleItem_h__

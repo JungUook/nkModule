@@ -26,13 +26,17 @@ public:
 	//project
 public:
 	void SaveFile(const std::string& filename);
+	void SaveFileBinary(const std::string& filename);
 	void LoadFile(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename);
+	void LoadFileBinary(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename);
 
 	//Prefab
 public:
 	void OpenPrefabDialog();
 	void SavePrefab(const std::string& filename, NKBase* prefab);
+	void SavePrefabBinary(const std::string& filename, NKBase* prefab);
 	void LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
+	void LoadPrefabBinary(const std::string& filename, NKBase* parent = nullptr);
 	void LLoadPrefab(luabridge::LuaRef ref);
 
 	void OpenLuaCodeDialog();
@@ -52,6 +56,7 @@ public:
 	std::vector<NKBase*> m_vecModule;
 	std::map<unsigned int, NKBase*> m_mapModuleID;
 	std::map<std::string, NKBase*> m_mapModuleName;
+	std::map<std::string, NKBase*> m_mapWindowName;
 	std::map<std::string, sprData*> m_mapSpr;
 };
 

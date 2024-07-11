@@ -28,18 +28,18 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(
-			*m_pBackground
-			, *border_color
-			, *selected_color
-			, *color
-			, *border
-			, *rounding
-			, *padding
-			, *color_factor
-			, *disabled_factor
-			, *show_markers
+			CEREAL_NVP(*m_pBackground)
+			, CEREAL_NVP(*border_color)
+			, CEREAL_NVP(*selected_color)
+			, CEREAL_NVP(*color)
+			, CEREAL_NVP(*border)
+			, CEREAL_NVP(*rounding)
+			, CEREAL_NVP(*padding)
+			, CEREAL_NVP(*color_factor)
+			, CEREAL_NVP(*disabled_factor)
+			, CEREAL_NVP(*show_markers)
 		);
 	}
 };

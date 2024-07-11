@@ -2,29 +2,35 @@
 #include "NKProperty.h"
 NKProperty::NKProperty() : NKBaseStyle(), NKTransform()
 , m_iPrimaryID(0)
-, m_cprimaryEditName_len(0)
-, m_cBaseEditName_len(0)
+, m_iPrimaryEditName_len(0)
+, m_iWindowEditName_len(0)
+, m_iBaseEditName_len(0)
 , m_iParentPrimaryID(0)
 , m_type(eNONE)
 , m_iWindowPrimaryID(0)
 {
-	memset(m_cprimaryName, 0, sizeof(m_cprimaryName));
-	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	memset(m_cprimaryEditName, 0, sizeof(m_cprimaryEditName));
+	m_sPrimaryName = "None";
+	m_sWindowName = "None";
+	m_sBaseName = "None";
+	memset(m_cPrimaryEditName, 0, sizeof(m_cPrimaryEditName));
+	memset(m_cWindowEditName, 0, sizeof(m_cWindowEditName));
 	memset(m_cBaseEditName, 0, sizeof(m_cBaseEditName));
 }
 
 NKProperty::NKProperty(nk_context* ctx, NuklearUI* pManager) : NKBaseStyle(ctx, pManager), NKTransform()
 , m_iPrimaryID(0)
-, m_cprimaryEditName_len(0)
-, m_cBaseEditName_len(0)
+, m_iPrimaryEditName_len(0)
+, m_iWindowEditName_len(0)
+, m_iBaseEditName_len(0)
 , m_iParentPrimaryID(0)
 , m_type(eNONE)
 , m_iWindowPrimaryID(0)
 {
-	memset(m_cprimaryName, 0, sizeof(m_cprimaryName));
-	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	memset(m_cprimaryEditName, 0, sizeof(m_cprimaryEditName));
+	m_sPrimaryName = "None";
+	m_sWindowName = "None";
+	m_sBaseName = "None";
+	memset(m_cPrimaryEditName, 0, sizeof(m_cPrimaryEditName));
+	memset(m_cWindowEditName, 0, sizeof(m_cWindowEditName));
 	memset(m_cBaseEditName, 0, sizeof(m_cBaseEditName));
 }
 
@@ -33,12 +39,15 @@ NKProperty::NKProperty(const NKProperty& other) : NKBaseStyle(other), NKTransfor
 	m_iPrimaryID = reinterpret_cast<intptr_t>(this);
 	m_iParentPrimaryID = other.m_iParentPrimaryID;
 	m_iWindowPrimaryID = other.m_iWindowPrimaryID;
-	m_cprimaryEditName_len = other.m_cprimaryEditName_len;
-	m_cBaseEditName_len = other.m_cBaseEditName_len;
+	m_iPrimaryEditName_len = other.m_iPrimaryEditName_len;
+	m_iWindowEditName_len = other.m_iWindowEditName_len;
+	m_iBaseEditName_len = other.m_iBaseEditName_len;
 	m_type = other.m_type;
-	strcpy_s(m_cprimaryName, other.m_cprimaryName);
-	strcpy_s(m_cBaseName, other.m_cBaseName);
-	strcpy_s(m_cprimaryEditName, other.m_cprimaryEditName);
+	m_sPrimaryName = other.m_sPrimaryName;
+	m_sWindowName = other.m_sWindowName;
+	m_sBaseName = other.m_sBaseName;
+	strcpy_s(m_cPrimaryEditName, other.m_cPrimaryEditName);
+	strcpy_s(m_cWindowEditName, other.m_cWindowEditName);
 	strcpy_s(m_cBaseEditName, other.m_cBaseEditName);
 }
 
@@ -62,8 +71,9 @@ std::string NKProperty::getClassName() const
 void NKProperty::Initialize()
 {
 	std::string className = getClassName().c_str();
-	strcpy_s(m_cprimaryName, className.c_str());
-	strcpy_s(m_cBaseName, className.c_str());
+	m_sPrimaryName = className.c_str();
+	m_sWindowName = className.c_str();
+	m_sBaseName = className.c_str();
 }
 
 unsigned int NKProperty::GetPrimaryID()
@@ -73,12 +83,17 @@ unsigned int NKProperty::GetPrimaryID()
 
 const char* NKProperty::GetPrimaryName()
 {
-	return m_cprimaryName;
+	return m_sPrimaryName.c_str();
+}
+
+const char* NKProperty::GetWindowName()
+{
+	return m_sWindowName.c_str();
 }
 
 const char* NKProperty::GetBaseName()
 {
-	return m_cBaseName;
+	return m_sBaseName.c_str();
 }
 
 unsigned int NKProperty::GetParentPrimaryID()
@@ -98,12 +113,14 @@ void NKProperty::SetPrimaryID(unsigned int id)
 
 void NKProperty::SetPrimaryName(const char* name)
 {
-	memset(m_cprimaryName, 0, sizeof(m_cprimaryName));
-	strcpy_s(m_cprimaryName, name);
+	m_sPrimaryName = name;
+}
+void NKProperty::SetWindowName(const char* name)
+{
+	m_sWindowName = name;
 }
 
 void NKProperty::SetBaseName(const char* name)
 {
-	memset(m_cBaseName, 0, sizeof(m_cBaseName));
-	strcpy_s(m_cBaseName, name);
+	m_sBaseName = name;
 }

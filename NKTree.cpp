@@ -38,7 +38,7 @@ void NKTree::Layout(nk_context* ctx)
 {
     UpdateComponent(ctx, m_pManager);
 
-    if (nk_tree_push_id(ctx, m_treeType, m_cContent, m_state, reinterpret_cast<intptr_t>(this)))
+    if (nk_tree_push_id(ctx, m_treeType, m_sContent.c_str(), m_state, reinterpret_cast<intptr_t>(this)))
     {
         for (auto child = m_pChildList.begin(); child != m_pChildList.end(); ++child)
         {

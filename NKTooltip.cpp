@@ -39,7 +39,7 @@ void NKTooltip::Layout(nk_context* ctx)
     if (nk_tooltip_begin(ctx, GetWidth()))
     {
         nk_layout_row_dynamic(ctx, 22, 1);
-        nk_label(ctx, m_cContent, NK_TEXT_CENTERED);
+        nk_label(ctx, m_sContent.c_str(), NK_TEXT_CENTERED);
 
         nk_tooltip_end(ctx);
     }

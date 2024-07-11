@@ -29,17 +29,17 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(*m_pFixedBackground
-			, *m_pScaler
-			, *m_pBackground
-			, *border
-			, *border_color
-			, *rounding
-			, *spacing
-			, *scrollbar_size
-			, *min_size
-			, *padding
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(CEREAL_NVP(*m_pFixedBackground)
+			, CEREAL_NVP(*m_pScaler)
+			, CEREAL_NVP(*m_pBackground)
+			, CEREAL_NVP(*border)
+			, CEREAL_NVP(*border_color)
+			, CEREAL_NVP(*rounding)
+			, CEREAL_NVP(*spacing)
+			, CEREAL_NVP(*scrollbar_size)
+			, CEREAL_NVP(*min_size)
+			, CEREAL_NVP(*padding)
 		);
 	}
 };

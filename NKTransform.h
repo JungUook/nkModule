@@ -44,11 +44,11 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(m_cPivot
-			, m_cPosition
-			, m_cTransform
-			, m_bMouseHover
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(CEREAL_NVP(m_cPivot)
+			, CEREAL_NVP(m_cPosition)
+			, CEREAL_NVP(m_cTransform)
+			, CEREAL_NVP(m_bMouseHover)
 		);
 	}
 };

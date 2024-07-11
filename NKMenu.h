@@ -21,13 +21,13 @@ struct MenuItem {
     }
 
     template <class Archive>
-    void serialize(Archive& ar) {
-        ar(name
-            , nameLen
-            , functionName
-            , functionNameLen
-            , argsName
-            , argsNameLen
+    void serialize(Archive& ar, const unsigned int version) {
+        ar(CEREAL_NVP(name)
+            , CEREAL_NVP(nameLen)
+            , CEREAL_NVP(functionName)
+            , CEREAL_NVP(functionNameLen)
+            , CEREAL_NVP(argsName)
+            , CEREAL_NVP(argsNameLen)
         );
     }
 };
@@ -56,12 +56,12 @@ public:
 
 public:
     template <class Archive>
-    void serialize(Archive& ar) {
+    void serialize(Archive& ar, const unsigned int version) {
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKHandler>(this)
             , cereal::base_class<NKBaseLabel>(this)
             , cereal::base_class<NKStyleMenuButton>(this)
-            , m_items
+            , CEREAL_NVP(m_items)
         );
     }
 };

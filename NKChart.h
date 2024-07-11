@@ -30,12 +30,12 @@ public:
 
 public:
     template <class Archive>
-    void serialize(Archive& ar) {
+    void serialize(Archive& ar, const unsigned int version) {
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKStyleChart>(this)
-            , m_values
-            , m_min
-            , m_max
+            , CEREAL_NVP(m_values)
+            , CEREAL_NVP(m_min)
+            , CEREAL_NVP(m_max)
         );
     }
 };

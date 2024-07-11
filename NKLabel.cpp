@@ -49,19 +49,19 @@ void NKLabel::LayoutBegin(nk_context* ctx)
 void NKLabel::Layout(nk_context* ctx)
 {
 	if (m_bWrap) {
-		nk_label_wrap(ctx, m_cContent);
+		nk_label_wrap(ctx, m_sContent.c_str());
 	}
 	else if (m_bBold) {
-		nk_label_bold(ctx, m_cContent, NK_TEXT_LEFT);
+		nk_label_bold(ctx, m_sContent.c_str(), NK_TEXT_LEFT);
 	}
 	else if (m_bUnderline) {
-		nk_label_underline(ctx, m_cContent, NK_TEXT_LEFT);
+		nk_label_underline(ctx, m_sContent.c_str(), NK_TEXT_LEFT);
 	}
 	else if (m_bStrikethrough) {
-		nk_label_strikethrough(ctx, m_cContent, NK_TEXT_LEFT);
+		nk_label_strikethrough(ctx, m_sContent.c_str(), NK_TEXT_LEFT);
 	}
 	else {
-		nk_label(ctx, m_cContent, m_flags);
+		nk_label(ctx, m_sContent.c_str(), m_flags);
 	}
 }
 

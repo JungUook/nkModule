@@ -27,16 +27,16 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKComponent>(this)
-			, *m_pTarget
-			, *m_pRestore
-			, *m_pNormal
-			, *m_pHover
-			, *m_pPressed
-			, *m_pNormalActive
-			, *m_pHoverActive
-			, *m_pPressedActive
+			, CEREAL_NVP(*m_pTarget)
+			, CEREAL_NVP(*m_pRestore)
+			, CEREAL_NVP(*m_pNormal)
+			, CEREAL_NVP(*m_pHover)
+			, CEREAL_NVP(*m_pPressed)
+			, CEREAL_NVP(*m_pNormalActive)
+			, CEREAL_NVP(*m_pHoverActive)
+			, CEREAL_NVP(*m_pPressedActive)
 		);
 	}
 };

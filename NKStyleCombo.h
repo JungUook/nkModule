@@ -17,9 +17,9 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(
-			*m_pComponent
+			CEREAL_NVP(*m_pComponent)
 		);
 	}
 };

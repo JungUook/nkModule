@@ -23,15 +23,15 @@ protected:
 	float m_fScale;
 	char m_cEditLabel[256];
 	int m_iEditLabelLen;
-	char m_cContent[256];
+	std::string m_sContent;
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(m_fScale
-			, m_cEditLabel
-			, m_iEditLabelLen
-			, m_cContent
+			, CEREAL_NVP(m_cEditLabel)
+			, CEREAL_NVP(m_iEditLabelLen)
+			, CEREAL_NVP(m_sContent)
 		);
 	}
 };

@@ -2,6 +2,8 @@
 #ifndef NKBaseWindow_h__
 #define NKBaseWindow_h__
 
+#define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
+
 class NuklearUI;
 
 class NKBaseWindow
@@ -31,19 +33,20 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(m_border
-			, m_movable
-			, m_scalable
-			, m_closable
-			, m_minimizable
-			, m_no_scrollbar
-			, m_title
-			, m_scroll_auto_hide
-			, m_background
-			, m_scale_left
-			, m_no_input
-			, m_fScale
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(
+			  CEREAL_NVP(m_border)
+			, CEREAL_NVP(m_movable)
+			, CEREAL_NVP(m_scalable)
+			, CEREAL_NVP(m_closable)
+			, CEREAL_NVP(m_minimizable)
+			, CEREAL_NVP(m_no_scrollbar)
+			, CEREAL_NVP(m_title)
+			, CEREAL_NVP(m_scroll_auto_hide)
+			, CEREAL_NVP(m_background)
+			, CEREAL_NVP(m_scale_left)
+			, CEREAL_NVP(m_no_input)
+			, CEREAL_NVP(m_fScale)
 		);
 	}
 };

@@ -42,8 +42,10 @@ protected:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(m_followParentStyle);
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(
+			CEREAL_NVP(m_followParentStyle)
+		);
 	}
 };
 #endif //NKBaseStyle_h__

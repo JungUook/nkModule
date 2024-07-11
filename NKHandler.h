@@ -2,6 +2,8 @@
 #ifndef NKHandler_h__
 #define NKHandler_h__
 
+#define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
+
 class NuklearUI;
 class NKLuaInterface;
 
@@ -25,21 +27,20 @@ protected:
 	virtual void EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterface* pInterface);
 
 public:
-	char m_functionName[64];
-	char m_argsName[64];
+	std::string m_functionName;
+	std::string m_argsName;
 
 	char m_functionNameEdit[64];
 	int m_functionNameEditLen;
-
 
 	char m_argsNameEdit[64];
 	int m_argsNameEditLen;
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
-		ar(m_functionName
-			, m_argsName
+	void serialize(Archive& ar, const unsigned int version) {
+		ar(CEREAL_NVP(m_functionName)
+			, CEREAL_NVP(m_argsName)
 		);
 	}
 };

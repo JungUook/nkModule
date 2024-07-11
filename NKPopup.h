@@ -29,12 +29,12 @@ public:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKBaseWindow>(this)
 			, cereal::base_class<NKStyleHeader>(this)
 			, cereal::base_class<NKStyleWindow>(this)
-			, m_popupType
+			, CEREAL_NVP(m_popupType)
 		);
 	}
 };

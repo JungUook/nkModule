@@ -28,11 +28,11 @@ public:
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKHandler>(this)
 			, cereal::base_class<NKBaseLabel>(this)
-			, m_labelNumber
+			, CEREAL_NVP(m_labelNumber)
 		);
 	}
 };

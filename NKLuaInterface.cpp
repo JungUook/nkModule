@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "NKLuaInterface.h"
-#include "UiLibrary.h"
 #include "NuklearUI.h"
 #include <functional>
 #include <any>
+#include "UiLibrary.h"
 
 NKLuaInterface::NKLuaInterface()
 {
@@ -276,7 +276,7 @@ void* NKLuaInterface::ConvertData(void* params)
 				m_vRef_d.push_back(result);
 
 				double* result_ref = &m_vRef_d.at(index);
-				m_vTableRef.push_back(result_ref);
+				m_vTableRef.insert(std::make_pair(key.cast<std::string>(), result_ref));
 			}
 			else if (value.isString()) {
 				std::string result = value.cast<std::string>();
@@ -284,7 +284,7 @@ void* NKLuaInterface::ConvertData(void* params)
 				m_vRef_s.push_back(result);
 
 				std::string* result_ref = &m_vRef_s.at(index);
-				m_vTableRef.push_back(result_ref);
+				m_vTableRef.insert(std::make_pair(key.cast<std::string>(), result_ref));
 			}
 			else if (value.isBool()) {
 				bool result = value.cast<bool>();
@@ -292,11 +292,11 @@ void* NKLuaInterface::ConvertData(void* params)
 				m_vRef_b.push_back(result ? 1 : 0);
 
 				int* result_ref = &m_vRef_b.at(index);
-				m_vTableRef.push_back(result_ref);
+				m_vTableRef.insert(std::make_pair(key.cast<std::string>(), result_ref));
 			}
 			else {
-				void* result = nullptr;
-				m_vTableRef.push_back(result);
+				void* result_ref = nullptr;
+				m_vTableRef.insert(std::make_pair(key.cast<std::string>(), result_ref));
 			}
 		}
 		return &m_vTableRef;

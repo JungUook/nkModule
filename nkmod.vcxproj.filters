@@ -467,5 +467,11 @@
     <ClCompile Include="nuklear_extensions.cpp">
       <Filter>소스 파일\Nuklear</Filter>
     </ClCompile>
+    <ClCompile Include="NKCerealBinary.cpp">
+      <Filter>소스 파일\Nuklear</Filter>
+    </ClCompile>
+    <ClCompile Include="UiLibrary.cpp">
+      <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

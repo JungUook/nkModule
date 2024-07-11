@@ -449,16 +449,29 @@ void NKBase::ActiveEditor(nk_context* ctx)
 void NKBase::LayoutEditor(nk_context* ctx)
 {
 	if (nk_tree_push(ctx, NK_TREE_TAB, "DefaultInfo", NK_MINIMIZED)) {
+
+		nk_layout_row_dynamic(ctx, 44, 1);
+		nk_label(ctx, "Primary Name", NK_TEXT_LEFT);
+
+		nk_layout_row_dynamic(ctx, 44, 2);
+		nk_label(ctx, "Current:", NK_TEXT_LEFT);
+		nk_label(ctx, m_sPrimaryName.c_str(), NK_TEXT_RIGHT);
+		nk_flags result = m_pManager->IMEInputSystem(ctx, m_cPrimaryEditName, sizeof(m_cPrimaryEditName), &m_iPrimaryEditName_len);
+		if (result & NK_EDIT_COMMITED)
+		{
+			EditPrimaryName(m_cPrimaryEditName);
+		}
+
 		nk_layout_row_dynamic(ctx, 44, 1);
 		nk_label(ctx, "Window Name", NK_TEXT_LEFT);
 
 		nk_layout_row_dynamic(ctx, 44, 2);
 		nk_label(ctx, "Current:", NK_TEXT_LEFT);
-		nk_label(ctx, m_cprimaryName, NK_TEXT_RIGHT);
-		nk_flags result = m_pManager->IMEInputSystem(ctx, m_cprimaryEditName, sizeof(m_cprimaryEditName), &m_cprimaryEditName_len);
+		nk_label(ctx, m_sWindowName.c_str(), NK_TEXT_RIGHT);
+		result = m_pManager->IMEInputSystem(ctx, m_cWindowEditName, sizeof(m_cWindowEditName), &m_iWindowEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{
-			EditPrimaryName(m_cprimaryEditName);
+			EditWindowName(m_cWindowEditName);
 		}
 
 		nk_layout_row_dynamic(ctx, 44, 1);
@@ -466,8 +479,8 @@ void NKBase::LayoutEditor(nk_context* ctx)
 
 		nk_layout_row_dynamic(ctx, 44, 2);
 		nk_label(ctx, "Current:", NK_TEXT_LEFT);
-		nk_label(ctx, m_cBaseName, NK_TEXT_RIGHT);
-		result = m_pManager->IMEInputSystem(ctx, m_cBaseEditName, sizeof(m_cBaseEditName), &m_cBaseEditName_len);
+		nk_label(ctx, m_sBaseName.c_str(), NK_TEXT_RIGHT);
+		result = m_pManager->IMEInputSystem(ctx, m_cBaseEditName, sizeof(m_cBaseEditName), &m_iBaseEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{
 			SetBaseName(m_cBaseEditName);
@@ -518,6 +531,15 @@ void NKBase::EditPrimaryName(const char* name)
 	if (!m_pManager->SetPrimaryname(this, name)) {
 #ifdef _NKDEBUG
 		m_pManager->ErrorPopup("There is already a primary name. primaryname cannot be duplicated.");
+#endif
+	}
+}
+
+void NKBase::EditWindowName(const char* name)
+{
+	if (!m_pManager->SetWindowname(this, name)) {
+#ifdef _NKDEBUG
+		m_pManager->ErrorPopup("There is already a window name. windowname cannot be duplicated.");
 #endif
 	}
 }

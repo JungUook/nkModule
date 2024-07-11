@@ -31,17 +31,17 @@ public:
 	int m_currentLabel;
 	nk_text_alignment m_labelAlignment;
 	struct nk_vec2 m_labelSize;
-	char m_cComboLabel[256];
+	std::string m_cComboLabel;
 
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKStyleCombo>(this)
-			, m_currentLabel
-			, m_labelAlignment
-			, m_labelSize
-			, m_cComboLabel
+			, CEREAL_NVP(m_currentLabel)
+			, CEREAL_NVP(m_labelAlignment)
+			, CEREAL_NVP(m_labelSize)
+			, CEREAL_NVP(m_cComboLabel)
 		);
 	}
 };

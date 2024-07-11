@@ -32,11 +32,11 @@ public:
 
 public:
     template <class Archive>
-    void serialize(Archive& ar) {
+    void serialize(Archive& ar, const unsigned int version) {
         ar(cereal::base_class<NKBase>(this)
             , cereal::base_class<NKStyleScrollbarH>(this)
             , cereal::base_class<NKStyleScrollbarV>(this)
-            , m_scroll
+            , CEREAL_NVP(m_scroll)
         );
     }
 };

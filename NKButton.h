@@ -32,12 +32,12 @@ public:
 	nk_bool m_bDisabled;
 public:
 	template <class Archive>
-	void serialize(Archive& ar) {
+	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBase>(this)
 			, cereal::base_class<NKHandler>(this)
 			, cereal::base_class<NKBaseLabel>(this)
 			, cereal::base_class<NKStyleButton>(this)
-			, m_bDisabled
+			, CEREAL_NVP(m_bDisabled)
 		);
 	}
 };

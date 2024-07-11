@@ -558,6 +558,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClCompile Include="NKBaseWindow.cpp" />
     <ClCompile Include="NKButton.cpp" />
     <ClCompile Include="NKCereal.cpp" />
+    <ClCompile Include="NKCerealBinary.cpp" />
     <ClCompile Include="NKChart.cpp" />
     <ClCompile Include="NKCheckbox.cpp" />
     <ClCompile Include="NKColorPicker.cpp" />
@@ -623,6 +624,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DX9_Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="sprLoader.cpp" />
+    <ClCompile Include="UiLibrary.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

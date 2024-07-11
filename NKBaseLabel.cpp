@@ -5,7 +5,7 @@
 NKBaseLabel::NKBaseLabel()
 {
 	memset(m_cEditLabel, 0, sizeof(m_cEditLabel));
-	memset(m_cContent, 0, sizeof(m_cContent));
+	m_sContent = "None";
 	m_iEditLabelLen = 0;
 	m_fScale = 1.f;
 }
@@ -13,7 +13,7 @@ NKBaseLabel::NKBaseLabel()
 NKBaseLabel::NKBaseLabel(const NKBaseLabel& other)
 {
 	strcpy_s(m_cEditLabel, other.m_cEditLabel);
-	strcpy_s(m_cContent, other.m_cContent);
+	m_sContent = other.m_sContent;
 	m_iEditLabelLen = other.m_iEditLabelLen;
 	m_fScale = other.m_fScale;
 }
@@ -42,7 +42,7 @@ nk_flags NKBaseLabel::EditLabel(nk_context* ctx, NuklearUI* pManager)
 
 void NKBaseLabel::SetLabel(const char* text)
 {
-	strcpy_s(m_cContent, text);
+	m_sContent = text;
 }
 
 void NKBaseLabel::LSetLabel(luabridge::LuaRef ref)
