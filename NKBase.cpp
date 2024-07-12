@@ -123,6 +123,9 @@ void NKBase::Update(nk_context* ctx)
 		//ctx->style = original;
 		StyleUpdateEnd(ctx, original);
 	}
+	else {
+		m_bMouseHover = false;
+	}
 }
 
 void NKBase::LayoutBegin(nk_context* ctx)

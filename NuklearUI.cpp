@@ -105,10 +105,12 @@ void NuklearUI::Update()
 	{
 		(*iter)->Update(m_ctx);
 
-		if ((*iter)->IsHovering())
+		if ((*iter)->IsHovering()) {
 			m_bMouseHovering = true;
-		if ((*iter)->IsEditActive())
+		}
+		if ((*iter)->IsEditActive()) {
 			m_bEditActive = true;
+		}
 	}
 
 #ifdef _NKDEBUG
