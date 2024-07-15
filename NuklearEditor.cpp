@@ -1137,8 +1137,44 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 
 	m_ctx = m_dx7.nk_d3d7_init(pDD, pD3DDevice);
 
+
+	CHAR systemPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, systemPath))) {
+		std::cout << "System font path: " << systemPath << std::endl;
+
+	}
+	char path[MAX_PATH];
+	HMODULE hModule = GetModuleHandle(NULL);
+	if (hModule != NULL) {
+		// 현재 실행 파일의 경로를 얻습니다.
+		GetModuleFileNameA(hModule, path, MAX_PATH);
+	}
+	else {
+		std::cerr << "Failed to get module handle." << std::endl;
+		return;
+	}
+
+	std::string basePath(path);
+	basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+	std::string dataPath = "";
+	if (fontPath != nullptr) {
+		dataPath = basePath + fontPath;
+		if (!CreateDirectoryIfNotExists(dataPath)) {
+			std::cerr << "Failed to create directory: " << dataPath << std::endl;
+			return;
+		}
+	}
+	else {
+		dataPath = "None";
+	}
+
 	struct nk_font_atlas* atlas;
-	m_dx7.nk_d3d7_font_stash_begin(&atlas, path, 0, fontPath);
+	if (dataPath != "None") {
+		m_dx7.nk_d3d7_font_stash_begin(&atlas, systemPath, 0, dataPath.c_str());
+	}
+	else {
+		m_dx7.nk_d3d7_font_stash_begin(&atlas, systemPath, 0);
+	}
 
 	return TRUE;
 }
