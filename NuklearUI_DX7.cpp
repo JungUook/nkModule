@@ -235,7 +235,8 @@ void NuklearUI::OpenFileDialog()
 void NuklearUI::LoadSprFile(const char* filename)
 {
 	sprData* pData = m_sprLoader->LoadSprite(filename);
-	m_mapSpr.insert(std::make_pair(filename, pData));
+	std::string relativePath = m_sprLoader->GetRelativePath(filename);
+	m_mapSpr.insert(std::make_pair(relativePath, pData));
 }
 
 bool NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal)

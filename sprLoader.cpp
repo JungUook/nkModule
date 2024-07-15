@@ -112,11 +112,27 @@ sprData* sprLoader::LoadSprite(const char* filename)
             pData = new sprData(m_pDD, pSpr);
 
             if (pData != nullptr) {
-                m_mapSprite.insert(std::make_pair(filename, pData));
+                std::string relativePath = GetRelativePath(filename);
+                m_mapSprite.insert(std::make_pair(relativePath, pData));
             }
 		}
 	}
 	return pData;
+}
+std::string sprLoader::GetRelativePath(const char* absolutePath)
+{
+    std::filesystem::path absPath(absolutePath);
+    std::filesystem::path execPath = GetExecutablePath(); // 실행 파일의 위치
+
+    std::filesystem::path relativePath = std::filesystem::relative(absPath, execPath);
+    return relativePath.string();
+}
+std::string sprLoader::GetExecutablePath()
+{
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+    return std::string(buffer).substr(0, pos);
 }
 void sprLoader::Init(IDirectDraw7* pDD)
 {

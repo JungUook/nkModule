@@ -70,7 +70,7 @@ void NKCereal::LoadFile(std::map<std::string, CustomData>& vVar, std::map<std::s
 	wchar_t originalDir[MAX_PATH] = { 0, };
 	GetCurrentDirectoryW(MAX_PATH, originalDir);
 	for (size_t i = 0; i < vSprData.size(); ++i) {
-		std::string str = vSprData.at(i);
+		std::string str = GetExecutablePath() + "\\" + vSprData.at(i);
 		m_pManager->LoadSprFile(str.c_str());
 	}
 	SetCurrentDirectoryW(originalDir);
@@ -82,7 +82,7 @@ void NKCereal::LoadFile(std::map<std::string, CustomData>& vVar, std::map<std::s
 	archive(CEREAL_NVP(vStr));
 
 	for (auto it = m_vecLuaCode.begin(); it != m_vecLuaCode.end(); ++it) {
-		std::string str = *it;
+		std::string str = GetExecutablePath() + "\\" + *it;
 		m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
 	}
 
@@ -275,7 +275,8 @@ void NKCereal::OpenDialog(LPCWSTR strFilter, const wchar_t* strExtension, std::v
 				WideCharToMultiByte(CP_UTF8, 0, filePath.c_str(), -1, result, size_needed, NULL, NULL);
 
 				if (!Contains(vec, result)) {
-					vec.push_back(result);
+					std::string relativePath = GetRelativePath(result);
+					vec.push_back(relativePath);
 				}
 				else {
 				}
@@ -296,7 +297,8 @@ void NKCereal::OpenDialog(LPCWSTR strFilter, const wchar_t* strExtension, std::v
 				WideCharToMultiByte(CP_UTF8, 0, directory.c_str(), -1, result, size_needed, NULL, NULL);
 
 				if (!Contains(vec, result)) {
-					vec.push_back(result);
+					std::string relativePath = GetRelativePath(result);
+					vec.push_back(relativePath);
 				}
 				else {
 				}
@@ -309,6 +311,23 @@ void NKCereal::OpenDialog(LPCWSTR strFilter, const wchar_t* strExtension, std::v
 	delete[] szFile; // 동적으로 할당한 메모리 해제
 
 	SetCurrentDirectoryW(originalDir);
+}
+
+std::string NKCereal::GetRelativePath(const char* absolutePath)
+{
+	std::filesystem::path absPath(absolutePath);
+	std::filesystem::path execPath = GetExecutablePath(); // 실행 파일의 위치
+
+	std::filesystem::path relativePath = std::filesystem::relative(absPath, execPath);
+	return relativePath.string();
+}
+
+std::string NKCereal::GetExecutablePath()
+{
+	char buffer[MAX_PATH];
+	GetModuleFileNameA(NULL, buffer, MAX_PATH);
+	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+	return std::string(buffer).substr(0, pos);
 }
 
 bool NKCereal::Contains(const std::vector<std::string>& vec, const std::string& str)

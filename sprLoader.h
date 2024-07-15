@@ -3,6 +3,7 @@
 #include <ddraw.h>
 #include <map>
 #include <assert.h>
+#include <filesystem>
 
 // Spr 종류 
 #define SPRTYPE_SPR             0   // 일반 스프라이트 (0번 압축. ) 
@@ -173,6 +174,8 @@ class sprLoader
 {
 public:
     sprData* LoadSprite(const char* filename);
+    std::string GetRelativePath(const char* absolutePath);
+    std::string GetExecutablePath();
     void Init(IDirectDraw7* pDD);
     void Release();
 private:

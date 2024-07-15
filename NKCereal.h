@@ -42,10 +42,11 @@ public:
 	void OpenLuaCodeDialog();
 
 	void OpenDialog(LPCWSTR strFilter, const wchar_t* strExtension, std::vector<std::string>& vec);
+	std::string GetRelativePath(const char* absolutePath);
+	std::string GetExecutablePath();
 
 private:
 	bool Contains(const std::vector<std::string>& vec, const std::string& str);
-
 public:
 	std::vector<std::string> m_vecPrefab;
 	std::vector<std::string> m_vecLuaCode;

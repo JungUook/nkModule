@@ -123,7 +123,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 			if (nk_button_label(ctx, "Reload"))
 			{
 				for (auto it = m_vecLuaCode->begin(); it != m_vecLuaCode->end(); ++it) {
-					std::string str = *it;
+					std::string str = m_pManager->m_cereal.GetExecutablePath() + "\\" + *it;
 					m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
 				}
 			}
@@ -144,7 +144,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					}
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-					std::string dataPath = basePath + "\\data";
+					std::string dataPath = basePath + "\\NInterface\\Data2";
 					if (!CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
@@ -167,7 +167,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					}
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-					std::string dataPath = basePath + "\\data";
+					std::string dataPath = basePath + "\\NInterface\\Data2";
 					if (!CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
@@ -196,7 +196,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					}
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-					std::string dataPath = basePath + "\\data";
+					std::string dataPath = basePath + "\\NInterface\\Data2";
 					if (!CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
@@ -220,7 +220,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					}
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-					std::string dataPath = basePath + "\\data";
+					std::string dataPath = basePath + "\\NInterface\\Data2";
 					if (!CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
@@ -231,52 +231,6 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 				}
 				nk_menu_end(ctx);
 			}
-
-			//if (nk_button_label(ctx, "Save")) {
-			//	char path[MAX_PATH];
-			//	HMODULE hModule = GetModuleHandle(NULL);
-			//	if (hModule != NULL) {
-			//		// 현재 실행 파일의 경로를 얻습니다.
-			//		GetModuleFileNameA(hModule, path, MAX_PATH);
-			//	}
-			//	else {
-			//		std::cerr << "Failed to get module handle." << std::endl;
-			//		return;
-			//	}
-			//	std::string basePath(path);
-			//	basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-			//	std::string dataPath = basePath + "\\data";
-			//	if (!CreateDirectoryIfNotExists(dataPath)) {
-			//		std::cerr << "Failed to create directory: " << dataPath << std::endl;
-			//		return;
-			//	}
-			//	std::string filePath = dataPath + "\\nkmod.json";
-
-			//	m_pManager->m_cereal.SaveFile(filePath);
-			//}
-			//if (nk_button_label(ctx, "Load")) {
-			//	Clear();
-			//	char path[MAX_PATH];
-			//	HMODULE hModule = GetModuleHandle(NULL);
-			//	if (hModule != NULL) {
-			//		// 현재 실행 파일의 경로를 얻습니다.
-			//		GetModuleFileNameA(hModule, path, MAX_PATH);
-			//	}
-			//	else {
-			//		std::cerr << "Failed to get module handle." << std::endl;
-			//		return;
-			//	}
-			//	std::string basePath(path);
-			//	basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-			//	std::string dataPath = basePath + "\\data";
-			//	if (!CreateDirectoryIfNotExists(dataPath)) {
-			//		std::cerr << "Failed to create directory: " << dataPath << std::endl;
-			//		return;
-			//	}
-			//	std::string filePath = dataPath + "\\nkmod.json";
-
-			//	m_pManager->m_cereal.LoadFile(*m_mapVariable, *m_mapFunction, filePath);
-			//}
 
 			nk_layout_row_dynamic(ctx, 30, 4);
 			if (nk_option_label(ctx, "node", m_iOption == eNODE)) m_iOption = eNODE;
@@ -371,7 +325,7 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 			}
 			std::string basePath(path);
 			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
-			std::string dataPath = basePath + "\\prefabs";
+			std::string dataPath = basePath + "\\NInterface\\Data2\\dp";
 			if (!CreateDirectoryIfNotExists(dataPath)) {
 				std::cerr << "Failed to create directory: " << dataPath << std::endl;
 				return;
@@ -679,7 +633,7 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 	if (nk_button_label(ctx, "Reload")) {
 		
 		for (auto it = m_vecLuaCode->begin(); it != m_vecLuaCode->end(); ++it) {
-			std::string str = *it;
+			std::string str = m_pManager->m_cereal.GetExecutablePath() + "\\" + *it;
 			m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
 		}
 	}
@@ -763,7 +717,8 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 				memset(selectedFilename, 0, sizeof(selectedFilename));
 				strcpy_s(selectedFilename, (*it).c_str());
 
-				m_pManager->m_luaInterface.LoadLuaFile(selectedFilename);
+				std::string str = m_pManager->m_cereal.GetExecutablePath() + "\\" + *it;
+				m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
 			}
 			if (nk_button_label(ctx, "Delete")) {
 				it = m_vecLuaCode->erase(it);

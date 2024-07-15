@@ -29,7 +29,7 @@ void NKCereal::SaveFileBinary(const std::string& filename)
 		vStr.push_back(str);
 	}
 
-	std::ofstream  os(filename, std::ios::binary);
+	std::ofstream os(filename, std::ios::binary);
 	cereal::BinaryOutputArchive archive(os);
 
 
@@ -61,7 +61,7 @@ void NKCereal::LoadFileBinary(std::map<std::string, CustomData>& vVar, std::map<
 	wchar_t originalDir[MAX_PATH] = { 0, };
 	GetCurrentDirectoryW(MAX_PATH, originalDir);
 	for (size_t i = 0; i < vSprData.size(); ++i) {
-		std::string str = vSprData.at(i);
+		std::string str = GetExecutablePath() + "\\" + vSprData.at(i);
 		m_pManager->LoadSprFile(str.c_str());
 	}
 	SetCurrentDirectoryW(originalDir);
@@ -73,7 +73,7 @@ void NKCereal::LoadFileBinary(std::map<std::string, CustomData>& vVar, std::map<
 	archive(CEREAL_NVP(vStr));
 
 	for (auto it = m_vecLuaCode.begin(); it != m_vecLuaCode.end(); ++it) {
-		std::string str = *it;
+		std::string str = GetExecutablePath() + "\\" + *it;
 		m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
 	}
 
