@@ -64,8 +64,12 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 	*atlas = &d3d7.atlas;
 
 	NK_ASSERT(atlas);
-
-	d3d7.original_height = 18.f;
+	if (fontPath != nullptr) {
+		d3d7.original_height = 18.f;
+	}
+	else {
+		d3d7.original_height = 13.f;
+	}
 	struct nk_font_config cfg = nk_font_config(d3d7.original_height);
 	eLang language = (eLang)lang;
 
@@ -75,6 +79,9 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 	case DX7Renderer::JPN: {
 		if (fontPath == nullptr) {
 			sprintf_s(tfontPath, "%s\\msgothic.ttc", path);
+		}
+		else {
+			sprintf_s(tfontPath, "%s\\NotoSansJP-Regular.ttf", fontPath);
 		}
 
 		NK_STORAGE const nk_rune ranges[] = {
@@ -89,30 +96,38 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 		};
 
 		cfg.range = ranges;
+		break;
 	}
-					   break;
 
 	case DX7Renderer::TWA: {
 		if (fontPath == nullptr) {
 			sprintf_s(tfontPath, "%s\\simsun.ttc", path);
 		}
+		else {
+			sprintf_s(tfontPath, "%s\\NotoSansTC-Regular.ttf", fontPath);
+		}
 		cfg.range = nk_font_chinese_glyph_ranges();
+		break;
 	}
-					   break;
 
 	case DX7Renderer::CHI: {
 		if (fontPath == nullptr) {
 			sprintf_s(tfontPath, "%s\\Msjhl.ttc", path);
 		}
+		else {
+			sprintf_s(tfontPath, "%s\\NotoSansSC-Regular.ttf", fontPath);
+		}
 		cfg.range = nk_font_chinese_glyph_ranges();
+		break;
 	}
-					   break;
 
 	case DX7Renderer::KOR:
 	default:
 		if (fontPath == nullptr) {
-			//sprintf_s(tfontPath, "%s\\gulim.ttc", path);
-			sprintf_s(tfontPath, "C:\\Users\\kimjw\\source\\repos\\test\\DX7_Debug\\data\\NotoSansKR-Regular.ttf");
+			sprintf_s(tfontPath, "%s\\gulim.ttc", path);
+		}
+		else {
+			sprintf_s(tfontPath, "%s\\NotoSansKR-Regular.ttf", fontPath);
 		}
 		cfg.range = nk_font_korean_glyph_ranges();
 		break;
@@ -120,45 +135,24 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 
 	char* buffer = nullptr;
 	nk_size size = 0;
-	if (fontPath != nullptr) {
-		std::ifstream file(fontPath, std::ios::binary | std::ios::ate);
-		if (!file.is_open()) {
-			std::cerr << "Failed to open file: " << fontPath << std::endl;
-			return;
-		}
-		std::streamsize file_size = file.tellg();
-		file.seekg(0, std::ios::beg);
 
-		buffer = new char[(unsigned int)file_size];
-		
-		if (file.read(buffer, file_size)) {
-			size = static_cast<nk_size>(file_size);
-		}
-		else {
-			delete[] buffer;
-			std::cerr << "Failed to read file: " << fontPath << std::endl;
-			return;
-		}
+	std::ifstream file(tfontPath, std::ios::binary | std::ios::ate);
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << tfontPath << std::endl;
+		return;
+	}
+	std::streamsize file_size = file.tellg();
+	file.seekg(0, std::ios::beg);
+
+	buffer = new char[(unsigned int)file_size];
+
+	if (file.read(buffer, file_size)) {
+		size = static_cast<nk_size>(file_size);
 	}
 	else {
-		std::ifstream file(tfontPath, std::ios::binary | std::ios::ate);
-		if (!file.is_open()) {
-			std::cerr << "Failed to open file: " << tfontPath << std::endl;
-			return;
-		}
-		std::streamsize file_size = file.tellg();
-		file.seekg(0, std::ios::beg);
-
-		buffer = new char[(unsigned int)file_size];
-
-		if (file.read(buffer, file_size)) {
-			size = static_cast<nk_size>(file_size);
-		}
-		else {
-			delete[] buffer;
-			std::cerr << "Failed to read file: " << tfontPath << std::endl;
-			return;
-		}
+		delete[] buffer;
+		std::cerr << "Failed to read file: " << tfontPath << std::endl;
+		return;
 	}
 
 	cfg = (&cfg) ? cfg : nk_font_config(d3d7.original_height);
@@ -167,8 +161,8 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 	cfg.size = d3d7.original_height;
 	cfg.ttf_data_owned_by_atlas = 1;
 	cfg.pixel_snap = nk_true;
-	cfg.oversample_h = 3; // 수평 오버샘플링
-	cfg.oversample_v = 3; // 수직 오버샘플링
+	cfg.oversample_h = 2; // 수평 오버샘플링
+	cfg.oversample_v = 2; // 수직 오버샘플링
 	cfg.coord_type = NK_COORD_UV;
 	d3d7.font = nk_font_atlas_add(*atlas, &cfg);
 

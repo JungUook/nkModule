@@ -209,5 +209,8 @@ public:
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath = nullptr);
 	void EditorRender();
 #endif
+
+public:
+	bool CreateDirectoryIfNotExists(const std::string& path);
 };
 #endif //NuklearUI_h__

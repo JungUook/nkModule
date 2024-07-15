@@ -145,7 +145,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
 					std::string dataPath = basePath + "\\NInterface\\Data2";
-					if (!CreateDirectoryIfNotExists(dataPath)) {
+					if (!m_pManager->CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
 					}
@@ -168,7 +168,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
 					std::string dataPath = basePath + "\\NInterface\\Data2";
-					if (!CreateDirectoryIfNotExists(dataPath)) {
+					if (!m_pManager->CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
 					}
@@ -197,7 +197,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
 					std::string dataPath = basePath + "\\NInterface\\Data2";
-					if (!CreateDirectoryIfNotExists(dataPath)) {
+					if (!m_pManager->CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
 					}
@@ -221,7 +221,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					std::string basePath(path);
 					basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
 					std::string dataPath = basePath + "\\NInterface\\Data2";
-					if (!CreateDirectoryIfNotExists(dataPath)) {
+					if (!m_pManager->CreateDirectoryIfNotExists(dataPath)) {
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
 					}
@@ -326,7 +326,7 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 			std::string basePath(path);
 			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
 			std::string dataPath = basePath + "\\NInterface\\Data2\\dp";
-			if (!CreateDirectoryIfNotExists(dataPath)) {
+			if (!m_pManager->CreateDirectoryIfNotExists(dataPath)) {
 				std::cerr << "Failed to create directory: " << dataPath << std::endl;
 				return;
 			}
@@ -986,22 +986,8 @@ void NuklearEditor::OpenErrorPopup(const char* content)
 	m_bShow_popup = 1;
 }
 
-bool NuklearEditor::CreateDirectoryIfNotExists(const std::string& path)
-{
-	DWORD ftyp = GetFileAttributesA(path.c_str());
-	if (ftyp == INVALID_FILE_ATTRIBUTES) {
-		// 경로가 존재하지 않으므로 생성 시도
-		if (CreateDirectoryA(path.c_str(), NULL) || GetLastError() == ERROR_ALREADY_EXISTS) {
-			return true; // 생성 성공 또는 이미 존재
-		}
-		else {
-			return false; // 생성 실패
-		}
-	}
-	else if (ftyp & FILE_ATTRIBUTE_DIRECTORY) {
-		return true; // 이미 디렉토리로 존재
-	}
-	return false; // 파일은 존재하지만 디렉토리가 아님
+bool NuklearEditor::CreateDirectoryIfNotExists(const std::string& path) {
+	return m_pManager->CreateDirectoryIfNotExists(path);
 }
 
 void NuklearEditor::Clear()

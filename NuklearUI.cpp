@@ -252,6 +252,23 @@ void NuklearUI::EditorRender()
 {
 	g_editor.Render();
 }
+bool NuklearUI::CreateDirectoryIfNotExists(const std::string& path)
+{
+	DWORD ftyp = GetFileAttributesA(path.c_str());
+	if (ftyp == INVALID_FILE_ATTRIBUTES) {
+		// 경로가 존재하지 않으므로 생성 시도
+		if (CreateDirectoryA(path.c_str(), NULL) || GetLastError() == ERROR_ALREADY_EXISTS) {
+			return true; // 생성 성공 또는 이미 존재
+		}
+		else {
+			return false; // 생성 실패
+		}
+	}
+	else if (ftyp & FILE_ATTRIBUTE_DIRECTORY) {
+		return true; // 이미 디렉토리로 존재
+	}
+	return false; // 파일은 존재하지만 디렉토리가 아님
+}
 #endif
 void NuklearUI::Register_UI()
 {
