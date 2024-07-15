@@ -1086,9 +1086,9 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 	ShowWindow(hMainWnd, true);
 	ShowWindow(wnd, true);
 
-	CHAR path[MAX_PATH];
-	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, path))) {
-		std::cout << "System font path: " << path << std::endl;
+	CHAR systemPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, systemPath))) {
+		std::cout << "System font path: " << systemPath << std::endl;
 	}
 
 	HRESULT hr;
@@ -1137,11 +1137,6 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 
 	m_ctx = m_dx7.nk_d3d7_init(pDD, pD3DDevice);
 
-
-	CHAR systemPath[MAX_PATH];
-	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, systemPath))) {
-		std::cout << "System font path: " << systemPath << std::endl;
-	}
 	char path[MAX_PATH];
 	HMODULE hModule = GetModuleHandle(NULL);
 	if (hModule != NULL) {
