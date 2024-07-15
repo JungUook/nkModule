@@ -79,6 +79,9 @@ void NKLuaInterface::ResponseFunctionArgs(const char* functionName, const luabri
 
 void NKLuaInterface::SubscribeVariable(std::string key, NKHandler* handler)
 {
+	if (key == "None") {
+		return;
+	}
 	auto found = m_mapVariable.find(key);
 	if (found != m_mapVariable.end()) {
 		CustomData& var = found->second;
@@ -96,6 +99,10 @@ void NKLuaInterface::SubscribeVariable(std::string key, NKHandler* handler)
 
 void NKLuaInterface::SubscribeFunction(std::string key, NKHandler* handler)
 {
+	if (key == "None") {
+		return;
+	}
+
 	auto found = m_mapFunction.find(key);
 	if (found != m_mapFunction.end()) {
 		CustomData& func = found->second;

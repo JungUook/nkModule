@@ -34,6 +34,9 @@ void NKHandler::RegistFunction(const char* functionName, NKLuaInterface* pInterf
 		m_functionName = functionName;
 		pInterface->SubscribeFunction(functionName, this);
 	}
+	else {
+		m_functionName = "None";
+	}
 }
 
 void NKHandler::RegistVariable(const char* argsName, NKLuaInterface* pInterface)
@@ -43,6 +46,9 @@ void NKHandler::RegistVariable(const char* argsName, NKLuaInterface* pInterface)
 		pInterface->UnsubscribeFunction(m_argsName, this);
 		m_argsName = argsName;
 		pInterface->SubscribeVariable(argsName, this);
+	}
+	else {
+		m_argsName = "None";
 	}
 }
 

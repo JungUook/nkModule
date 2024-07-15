@@ -87,13 +87,13 @@ void NKWindow::EditInfo(nk_context* ctx)
 		}
 		nk_tree_pop(ctx);
 	}
+	EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
 
 void NKWindow::EditStyle(nk_context* ctx)
 {
 	NKBase::EditStyle(ctx);
 	EditComponentStyle(ctx, m_pManager);
-	EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
 
 nk_bool NKWindow::CheckMouseHover(nk_context* ctx)
