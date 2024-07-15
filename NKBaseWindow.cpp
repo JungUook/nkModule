@@ -42,7 +42,9 @@ void NKBaseWindow::EditInfoWindowProperty(nk_context* ctx, nk_flags& flags)
 {
 	if (nk_tree_push(ctx, NK_TREE_NODE, "Flag", NK_MINIMIZED)) {
 		nk_checkbox_label(ctx, "BORDER", &m_border);
-		nk_checkbox_label(ctx, "MOVABLE", &m_movable);
+		if (!m_no_input) {
+			nk_checkbox_label(ctx, "MOVABLE", &m_movable);
+		}
 		nk_checkbox_label(ctx, "SCALABLE", &m_scalable);
 		nk_checkbox_label(ctx, "CLOSABLE", &m_closable);
 		nk_checkbox_label(ctx, "MINIMIZABLE", &m_minimizable);
@@ -51,7 +53,9 @@ void NKBaseWindow::EditInfoWindowProperty(nk_context* ctx, nk_flags& flags)
 		nk_checkbox_label(ctx, "SCROLL_AUTO_HIDE", &m_scroll_auto_hide);
 		nk_checkbox_label(ctx, "BACKGROUND", &m_background);
 		nk_checkbox_label(ctx, "SCALE_LEFT", &m_scale_left);
-		nk_checkbox_label(ctx, "NO_INPUT", &m_no_input);
+		if (!m_movable) {
+			nk_checkbox_label(ctx, "NO_INPUT", &m_no_input);
+		}
 		nk_tree_pop(ctx);
 	}
 
