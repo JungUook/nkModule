@@ -1141,7 +1141,6 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 	CHAR systemPath[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, systemPath))) {
 		std::cout << "System font path: " << systemPath << std::endl;
-
 	}
 	char path[MAX_PATH];
 	HMODULE hModule = GetModuleHandle(NULL);
@@ -1151,7 +1150,7 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 	}
 	else {
 		std::cerr << "Failed to get module handle." << std::endl;
-		return;
+		return FALSE;
 	}
 
 	std::string basePath(path);
@@ -1161,7 +1160,7 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 		dataPath = basePath + fontPath;
 		if (!CreateDirectoryIfNotExists(dataPath)) {
 			std::cerr << "Failed to create directory: " << dataPath << std::endl;
-			return;
+			return FALSE;
 		}
 	}
 	else {
