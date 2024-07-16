@@ -373,6 +373,7 @@ void NKBase::MoveForward()
 	auto it = std::find(lst->begin(), lst->end(), this);
 	if (it != lst->end() && it != lst->begin()) {
 		auto prev_it = std::prev(it);
+		m_pManager->SwapElements((*it)->m_iNKIndex, (*prev_it)->m_iNKIndex);
 		std::iter_swap(it, prev_it);
 	}
 }
@@ -385,6 +386,7 @@ void NKBase::MoveBackward()
 	if (it != lst->end()) {
 		auto next_it = std::next(it);
 		if (next_it != lst->end()) {
+			m_pManager->SwapElements((*it)->m_iNKIndex, (*next_it)->m_iNKIndex);
 			std::iter_swap(it, next_it);
 		}
 	}
@@ -396,6 +398,7 @@ void NKBase::MoveFront()
 
 	auto it = std::find(lst->begin(), lst->end(), this);
 	if (it != lst->end() && it != lst->begin()) {
+		m_pManager->MoveToBefore(this->m_iNKIndex, (*lst->begin())->m_iNKIndex);
 		lst->splice(lst->begin(), *lst, it);
 	}
 }
@@ -406,6 +409,7 @@ void NKBase::MoveBack()
 
 	auto it = std::find(lst->begin(), lst->end(), this);
 	if (it != lst->end() && it != std::prev(lst->end())) {
+		m_pManager->MoveToAfter(this->m_iNKIndex, (*std::prev(lst->end()))->m_iNKIndex);
 		lst->splice(lst->end(), *lst, it);
 	}
 }

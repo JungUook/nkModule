@@ -140,6 +140,11 @@ public:
 		}
 	}
 
+	void SwapElements(size_t index1, size_t index2);
+	void UpdateIndices();
+	void MoveToBefore(size_t fromIndex, size_t toIndex);
+	void MoveToAfter(size_t fromIndex, size_t toIndex);
+
 	void Move(unsigned int child, unsigned int parent);
 
 	void Remove(unsigned int id);

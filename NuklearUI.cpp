@@ -443,6 +443,40 @@ void NuklearUI::Add(NKBase* type, bool bStyle)
 	}
 }
 
+void NuklearUI::SwapElements(size_t index1, size_t index2)
+{
+	if (index1 < m_vecModule.size() && index2 < m_vecModule.size()) {
+		std::swap(m_vecModule[index1], m_vecModule[index2]);
+	}
+}
+
+void NuklearUI::UpdateIndices()
+{
+	for (size_t i = 0; i < m_vecModule.size(); ++i) {
+		m_vecModule[i]->SetNuklearIndex(i);
+	}
+}
+
+void NuklearUI::MoveToBefore(size_t fromIndex, size_t toIndex)
+{
+	if (fromIndex < m_vecModule.size() && toIndex <= m_vecModule.size() && fromIndex != toIndex) {
+		NKBase* temp = m_vecModule[fromIndex];
+		m_vecModule.erase(m_vecModule.begin() + fromIndex);
+		m_vecModule.insert(m_vecModule.begin() + toIndex, temp);
+		UpdateIndices();
+	}
+}
+
+void NuklearUI::MoveToAfter(size_t fromIndex, size_t toIndex)
+{
+	if (fromIndex < m_vecModule.size() && toIndex < m_vecModule.size() && fromIndex != toIndex) {
+		NKBase* temp = m_vecModule[fromIndex];
+		m_vecModule.erase(m_vecModule.begin() + fromIndex);
+		m_vecModule.insert(m_vecModule.begin() + toIndex + 1, temp);
+		UpdateIndices();
+	}
+}
+
 void NuklearUI::Move(unsigned int child, unsigned int parent)
 {
 	NKBase* pChild = nullptr;
