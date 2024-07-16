@@ -446,6 +446,8 @@ void NuklearUI::Add(NKBase* type, bool bStyle)
 void NuklearUI::SwapElements(size_t index1, size_t index2)
 {
 	if (index1 < m_vecModule.size() && index2 < m_vecModule.size()) {
+		m_vecModule[index1]->SetNuklearIndex(index2);
+		m_vecModule[index2]->SetNuklearIndex(index1);
 		std::swap(m_vecModule[index1], m_vecModule[index2]);
 	}
 }

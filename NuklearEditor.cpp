@@ -174,7 +174,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					}
 					std::string filePath = dataPath + "\\nkmod.bin";
 
-					m_pManager->m_cereal.SaveFile(filePath);
+					m_pManager->m_cereal.SaveFileBinary(filePath);
 				}
 				nk_menu_end(ctx);
 			}
@@ -225,9 +225,9 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 						std::cerr << "Failed to create directory: " << dataPath << std::endl;
 						return;
 					}
-					std::string filePath = dataPath + "\\nkmod.json";
+					std::string filePath = dataPath + "\\nkmod.bin";
 
-					m_pManager->m_cereal.LoadFile(*m_mapVariable, *m_mapFunction, filePath);
+					m_pManager->m_cereal.LoadFileBinary(*m_mapVariable, *m_mapFunction, filePath);
 				}
 				nk_menu_end(ctx);
 			}
