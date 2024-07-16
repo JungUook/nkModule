@@ -388,27 +388,48 @@ void* GetDevice()
 }
 #endif
 
-void AddHandler(int key, void(*func)(void*))
+bool AddHandler(int key, void(*func)(void*))
 {
-    g_nuklear->m_luaInterface.m_mapEventHandlers.insert(std::make_pair(key, func));
+    auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
+    if (found == g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
+        g_nuklear->m_luaInterface.m_mapEventHandlers.insert(std::make_pair(key, func));
+        return true;
+    }
+    return false;
 }
 
-void AddBindHandler(int key, void* callback, void(*func)(void*, void*))
+bool AddBindHandler(int key, void* callback, void(*func)(void*, void*))
 {
-    BindingFunc bf;
-    bf.binding = callback;
-    bf.func = func;
-    g_nuklear->m_luaInterface.m_mapBindingEventHandlers.insert(std::make_pair(key, bf));
+    auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
+    if (found == g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
+        BindingFunc bf;
+        bf.binding = callback;
+        bf.func = func;
+
+        g_nuklear->m_luaInterface.m_mapBindingEventHandlers.insert(std::make_pair(key, bf));
+        return true;
+    }
+    return false;
 }
 
-void RemoveHandler(int key)
+bool RemoveHandler(int key)
 {
-    g_nuklear->m_luaInterface.m_mapEventHandlers.erase(key);
+    auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
+    if (found != g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
+        g_nuklear->m_luaInterface.m_mapEventHandlers.erase(key);
+        return true;
+    }
+    return false;
 }
 
-void RemoveBindHandler(int key)
+bool RemoveBindHandler(int key)
 {
-    g_nuklear->m_luaInterface.m_mapBindingEventHandlers.erase(key);
+    auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
+    if (found != g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
+        g_nuklear->m_luaInterface.m_mapBindingEventHandlers.erase(key);
+        return true;
+    }
+    return false;
 }
 
 void* NKGetData(void* params, const char* key)

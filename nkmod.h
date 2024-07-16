@@ -56,10 +56,10 @@ extern "C" {
 	NKMOD_API void* GetDevice();
 #endif
 
-	NKMOD_API void AddHandler(int key, void(*func)(void*));
-	NKMOD_API void AddBindHandler(int key, void* callback, void(*func)(void*, void*));
-	NKMOD_API void RemoveHandler(int key);
-	NKMOD_API void RemoveBindHandler(int key);
+	NKMOD_API bool AddHandler(int key, void(*func)(void*));
+	NKMOD_API bool AddBindHandler(int key, void* callback, void(*func)(void*, void*));
+	NKMOD_API bool RemoveHandler(int key);
+	NKMOD_API bool RemoveBindHandler(int key);
 	NKMOD_API void* NKGetData(void* params, const char* key);
 	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param);
 }
@@ -82,28 +82,32 @@ public:
 
 	NKInterface& operator+=(const NKHandler& other)
 	{
-		AddBindHandler(other.id, other.handler, CallBindingEvent);
-		handlers.push_back(other);
+		bool bResult = AddBindHandler(other.id, other.handler, CallBindingEvent);
+		assert(bResult && "id already exists in the map!");
+		if (bResult) {
+			handlers.push_back(other);
+		}
 
 		return *this;
 	}
 	NKInterface& operator-=(const NKHandler& other)
 	{
-		RemoveBindHandler(other.id);
-		delete(other.handler);
+		bool bResult = RemoveBindHandler(other.id);
+		assert(bResult && "Failed to insert key-value pair for id!");
+		if (bResult) {
+			delete(other.handler);
+			for (auto it = handlers.begin(); it != handlers.end();) {
+				NKHandler& handle = *it;
 
-		for (auto it = handlers.begin(); it != handlers.end();) {
-			NKHandler& handle = *it;
-
-			if (handle.id == other.id) {
-				it = handlers.erase(it);
-				break;
-			}
-			else {
-				++it;
+				if (handle.id == other.id) {
+					it = handlers.erase(it);
+					break;
+				}
+				else {
+					++it;
+				}
 			}
 		}
-
 		return *this;
 	}
 	void executeHandlers(void* event)
