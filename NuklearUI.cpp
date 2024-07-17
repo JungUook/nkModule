@@ -252,6 +252,7 @@ void NuklearUI::EditorRender()
 {
 	g_editor.Render();
 }
+#endif
 bool NuklearUI::CreateDirectoryIfNotExists(const std::string& path)
 {
 	DWORD ftyp = GetFileAttributesA(path.c_str());
@@ -269,7 +270,6 @@ bool NuklearUI::CreateDirectoryIfNotExists(const std::string& path)
 	}
 	return false; // 파일은 존재하지만 디렉토리가 아님
 }
-#endif
 void NuklearUI::Register_UI()
 {
 	REGISTER_CHILD(NKWindow);

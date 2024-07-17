@@ -22,6 +22,8 @@ LPDIRECT3DDEVICE7 g_pD3DDevice = nullptr;
 DDSURFACEDESC2 g_ddsd;
 sprLoader* g_sprLoader = nullptr;
 int g_renderCnt = 0;
+int g_width = 0;
+int g_height = 0;
 #endif
 
 NuklearUI* g_nuklear = nullptr;
@@ -199,34 +201,21 @@ void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* prima
     vp.dvMaxZ = 1.0f;
     g_pD3DDevice->SetViewport(&vp);
 }
-void CreateD3D7DeviceWindow(HWND wnd, IDirectDraw7* pdd, int width, int height, int bpp)
+void CreateD3D7DeviceWindow(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* primary, int width, int height, int bpp)
 {
     HRESULT hr;
 
     g_pDD = pdd;
+    g_pDDSPrimary = primary;
 
-    // DirectDraw 설정
-    hr = g_pDD->SetCooperativeLevel(wnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE | DDSCL_ALLOWREBOOT);
-    if (FAILED(hr)) return;
-
-    hr = g_pDD->SetDisplayMode(width, height, bpp, 0, 0);
-    if (FAILED(hr)) return;
-
-    // 기본 서피스와 백 버퍼 설정
-    memset(&g_ddsd, 0, sizeof(g_ddsd));
+    ZeroMemory(&g_ddsd, sizeof(g_ddsd));
     g_ddsd.dwSize = sizeof(g_ddsd);
-    g_ddsd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-    g_ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_COMPLEX | DDSCAPS_FLIP | DDSCAPS_3DDEVICE;
-    g_ddsd.dwBackBufferCount = 1;
+    g_ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;;
+    g_ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
+    g_ddsd.dwWidth = width;
+    g_ddsd.dwHeight = height;
 
-    hr = g_pDD->CreateSurface(&g_ddsd, &g_pDDSPrimary, NULL);
-    if (FAILED(hr)) return;
-
-    DDSCAPS2 ddscaps;
-    memset(&ddscaps, 0, sizeof(ddscaps));
-    ddscaps.dwCaps = DDSCAPS_BACKBUFFER;
-
-    hr = g_pDDSPrimary->GetAttachedSurface(&ddscaps, &g_pDDSBackBuffer);
+    hr = g_pDD->CreateSurface(&g_ddsd, &g_pDDSBackBuffer, NULL);
     if (FAILED(hr)) return;
 
     // Direct3D 인터페이스 가져오기
@@ -252,10 +241,33 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
     IDirect3DDevice7* pdevice = (IDirect3DDevice7*)pvDevice;
     g_nuklear = new NuklearUI();
     g_sprLoader = new sprLoader();
+    g_width = width;
+    g_height = height;
     if (pdd && pdevice) {
         g_nuklear->Initialize(pdd, pdevice, width, height, lang, fontPath);
         g_sprLoader->Init(pdd);
         g_nuklear->Register_spr(g_sprLoader);
+
+        char path[MAX_PATH];
+        HMODULE hModule = GetModuleHandle(NULL);
+        if (hModule != NULL) {
+            // 현재 실행 파일의 경로를 얻습니다.
+            GetModuleFileNameA(hModule, path, MAX_PATH);
+        }
+        else {
+            std::cerr << "Failed to get module handle." << std::endl;
+            return;
+        }
+        std::string basePath(path);
+        basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+        std::string dataPath = basePath + "\\NInterface\\Data2";
+        if (!g_nuklear->CreateDirectoryIfNotExists(dataPath)) {
+            std::cerr << "Failed to create directory: " << dataPath << std::endl;
+            return;
+        }
+        std::string filePath = dataPath + "\\nkmod.json";
+
+        g_nuklear->m_cereal.LoadFile(g_nuklear->m_mapVariable, g_nuklear->m_mapFunction, filePath);
     }
     else {
         if (hwnd) {
@@ -273,6 +285,9 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
 }
 void LoadSprFile(const char* filename)
 {
+    if (g_nuklear == nullptr) {
+        return;
+    }
     sprData* pData = g_sprLoader->LoadSprite(filename);
     g_nuklear->LoadSpriteData(pData->GetSurface()
         , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres()
@@ -282,11 +297,17 @@ void LoadSprFile(const char* filename)
 #endif
 void LoadLuaFile(const char* filePath)
 {
+    if (g_nuklear == nullptr) {
+        return;
+    }
     g_nuklear->m_luaInterface.LoadLuaFile(filePath);
 }
 
 void Release()
 {
+    if (g_nuklear == nullptr) {
+        return;
+    }
     g_nuklear->Release();    
     if (g_nuklear != nullptr)
         delete g_nuklear;
@@ -301,22 +322,35 @@ void Release()
 
 void NKInputBegin()
 {
+    if (g_nuklear == nullptr) {
+        return;
+    }
+
     NKFrameSkip();
     g_nuklear->NKInputBegin();
 }
 
 void NKInputEnd()
 {
+    if (g_nuklear == nullptr) {
+        return;
+    }
     g_nuklear->NKInputEnd();
 }
 
 void NKUpdate()
 {
+    if (g_nuklear == nullptr) {
+        return;
+    }
     g_nuklear->Update();
 }
 
 void NKFrameSkip()
 {
+    if (g_nuklear == nullptr) {
+        return;
+    }
     if (g_renderCnt > 0) {
         g_renderCnt = 0;
     }
@@ -333,18 +367,21 @@ void NKRender(IDirect3DDevice9* device)
 #elif _DX7
 BOOL NKRender(void* device)
 {
+    if (g_nuklear == nullptr) {
+        return FALSE;
+    }
     IDirect3DDevice7* pDevice = (IDirect3DDevice7*)device;
 
     HRESULT hr;
     BOOL bResult = TRUE;
 
     hr = IDirect3DDevice7_BeginScene(pDevice);
-    assert(SUCCEEDED(hr));
+    //assert(SUCCEEDED(hr));
 
     g_nuklear->Render(pDevice);
 
     hr = IDirect3DDevice7_EndScene(pDevice);
-    assert(SUCCEEDED(hr));
+    //assert(SUCCEEDED(hr));
 
     if (FAILED(hr)) {
         bResult = FALSE;
@@ -362,6 +399,22 @@ BOOL NKRender(void* device)
             hr = g_pDDSBackBuffer->Restore();
             if (FAILED(hr)) {
                 printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+
+                g_pDDSBackBuffer->Release();
+                g_pDDSBackBuffer = nullptr;
+
+                ZeroMemory(&g_ddsd, sizeof(g_ddsd));
+                g_ddsd.dwSize = sizeof(g_ddsd);
+                g_ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;;
+                g_ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
+                g_ddsd.dwWidth = g_width;
+                g_ddsd.dwHeight = g_height;
+
+                hr = g_pDD->CreateSurface(&g_ddsd, &g_pDDSBackBuffer, NULL);
+                if (FAILED(hr)) return FALSE;
+
+                hr = g_pDD->QueryInterface(IID_IDirect3D7, (void**)&g_pD3D);
+                if (FAILED(hr)) return FALSE;
             }
 
             g_pD3DDevice->Release();
@@ -370,6 +423,7 @@ BOOL NKRender(void* device)
             hr = g_pD3D->CreateDevice(IID_IDirect3DHALDevice, g_pDDSBackBuffer, &g_pD3DDevice);
             if (FAILED(hr)) {
                 printf("Failed g_pD3D->CreateDevice: 0x%08lx\n", hr);
+                return FALSE;
             }
 
             D3DVIEWPORT7 vp;
@@ -393,6 +447,9 @@ BOOL NKRender(void* device)
 
 int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+    if (g_nuklear == nullptr) {
+        return 0;
+    }
 #ifdef _DX9
     return g_nuklear->HandleEvent(wnd, msg, wparam, lparam, &g_present);
 #elif _DX7
@@ -402,6 +459,9 @@ int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 BOOL IsHovering()
 {
+    if (g_nuklear == nullptr) {
+        return FALSE;
+    }
     return g_nuklear->IsMouseHovering();
 }
 
@@ -436,6 +496,9 @@ void* GetDevice()
 
 bool AddHandler(int key, void(*func)(void*))
 {
+    if (g_nuklear == nullptr) {
+        return false;
+    }
     auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
     if (found == g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
         g_nuklear->m_luaInterface.m_mapEventHandlers.insert(std::make_pair(key, func));
@@ -446,6 +509,9 @@ bool AddHandler(int key, void(*func)(void*))
 
 bool AddBindHandler(int key, void* callback, void(*func)(void*, void*))
 {
+    if (g_nuklear == nullptr) {
+        return false;
+    }
     auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
     if (found == g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
         BindingFunc bf;
@@ -460,6 +526,9 @@ bool AddBindHandler(int key, void* callback, void(*func)(void*, void*))
 
 bool RemoveHandler(int key)
 {
+    if (g_nuklear == nullptr) {
+        return false;
+    }
     auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
     if (found != g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
         g_nuklear->m_luaInterface.m_mapEventHandlers.erase(key);
@@ -470,6 +539,9 @@ bool RemoveHandler(int key)
 
 bool RemoveBindHandler(int key)
 {
+    if (g_nuklear == nullptr) {
+        return false;
+    }
     auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
     if (found != g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
         g_nuklear->m_luaInterface.m_mapBindingEventHandlers.erase(key);
@@ -480,10 +552,16 @@ bool RemoveBindHandler(int key)
 
 void* NKGetData(void* params, const char* key)
 {
+    if (g_nuklear == nullptr) {
+        return nullptr;
+    }
     return g_nuklear->m_luaInterface.GetData(params, key);
 }
 
 bool NKCommand(const char* primaryName, const char* command, void* param)
 {
+    if (g_nuklear == nullptr) {
+        return false;
+    }
     return g_nuklear->NKCommand(primaryName, command, param);
 }
