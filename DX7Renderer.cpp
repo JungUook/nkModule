@@ -172,6 +172,11 @@ void DX7Renderer::nk_d3d7_font_stash_begin(nk_font_atlas** atlas, CHAR* path, in
 
 void DX7Renderer::nk_d3d7_font_stash_end(void)
 {
+	if (d3d7.font_texture) {
+		d3d7.font_texture->Release();
+		d3d7.font_texture = nullptr;
+	}
+
 	nk_d3d7_create_font_texture();
 
 	if (d3d7.atlas.default_font)

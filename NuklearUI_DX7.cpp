@@ -6,6 +6,9 @@
 #ifdef _DX7
 void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang, const char* fontPath)
 {
+	m_iLanguage = lang;
+	m_sFontPath = fontPath;
+
 	CHAR systemPath[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, systemPath))) {
 		std::cout << "System font path: " << systemPath << std::endl;
@@ -51,6 +54,13 @@ void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int wid
 	m_bEditActive = false;
 
 	m_luaInterface.Init();
+
+	for (auto it = m_vecModule.begin(); it != m_vecModule.end(); ++it) {
+		NKBase* ptr = *it;
+
+		ptr->SetContext(m_ctx);
+		ptr->Setfont(m_font);
+	}
 }
 void NuklearUI::Render(IDirect3DDevice7* pdevice)
 {
@@ -361,13 +371,13 @@ void NuklearUI::ReleaseRenderData()
 		it = m_vecRenderData.erase(it);
 	}
 }
-void NuklearUI::SetDirectX7(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang)
+void NuklearUI::SetDirectX7(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height)
 {
 	nk_free(m_ctx);
 
 	m_dx7.d3d7.dd = pdd;
 	m_dx7.d3d7.device = pdevice;
 
-	Initialize(pdd, pdevice, width, height, lang);
+	Initialize(pdd, pdevice, width, height, m_iLanguage, m_sFontPath.c_str());
 }
 #endif

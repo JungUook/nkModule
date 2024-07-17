@@ -35,6 +35,15 @@ void sprData::LoadTexture(IDirectDraw7* pDD)
     HRESULT hr = pDD->CreateSurface(&ddsd, &pSurface, nullptr);
     assert(SUCCEEDED(hr));
 
+    if (FAILED(hr)) {
+
+        if (m_pSurface != nullptr) {
+            m_pSurface->Release();
+        }
+
+        m_pSurface = nullptr;
+        return;
+    }
 
     hr = pSurface->Lock(nullptr, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, nullptr);
     assert(SUCCEEDED(hr));
@@ -93,7 +102,9 @@ void sprData::LoadTexture(IDirectDraw7* pDD)
 }
 void sprData::Release()
 {
-    m_pSurface->Release();
+    if (m_pSurface != nullptr) {
+        m_pSurface->Release();
+    }
     m_pSurface = nullptr;
 }
 sprData* sprLoader::LoadSprite(const char* filename)

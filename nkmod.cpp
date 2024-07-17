@@ -21,7 +21,6 @@ LPDIRECT3D7 g_pD3D = nullptr;
 LPDIRECT3DDEVICE7 g_pD3DDevice = nullptr;
 DDSURFACEDESC2 g_ddsd;
 sprLoader* g_sprLoader = nullptr;
-int g_lang = 0;
 int g_renderCnt = 0;
 #endif
 
@@ -200,12 +199,59 @@ void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* prima
     vp.dvMaxZ = 1.0f;
     g_pD3DDevice->SetViewport(&vp);
 }
+void CreateD3D7DeviceWindow(HWND wnd, IDirectDraw7* pdd, int width, int height, int bpp)
+{
+    HRESULT hr;
+
+    g_pDD = pdd;
+
+    // DirectDraw 설정
+    hr = g_pDD->SetCooperativeLevel(wnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE | DDSCL_ALLOWREBOOT);
+    if (FAILED(hr)) return;
+
+    hr = g_pDD->SetDisplayMode(width, height, bpp, 0, 0);
+    if (FAILED(hr)) return;
+
+    // 기본 서피스와 백 버퍼 설정
+    memset(&g_ddsd, 0, sizeof(g_ddsd));
+    g_ddsd.dwSize = sizeof(g_ddsd);
+    g_ddsd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+    g_ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_COMPLEX | DDSCAPS_FLIP | DDSCAPS_3DDEVICE;
+    g_ddsd.dwBackBufferCount = 1;
+
+    hr = g_pDD->CreateSurface(&g_ddsd, &g_pDDSPrimary, NULL);
+    if (FAILED(hr)) return;
+
+    DDSCAPS2 ddscaps;
+    memset(&ddscaps, 0, sizeof(ddscaps));
+    ddscaps.dwCaps = DDSCAPS_BACKBUFFER;
+
+    hr = g_pDDSPrimary->GetAttachedSurface(&ddscaps, &g_pDDSBackBuffer);
+    if (FAILED(hr)) return;
+
+    // Direct3D 인터페이스 가져오기
+    hr = g_pDD->QueryInterface(IID_IDirect3D7, (void**)&g_pD3D);
+    if (FAILED(hr)) return;
+
+    // Direct3D 디바이스 생성
+    hr = g_pD3D->CreateDevice(IID_IDirect3DHALDevice, g_pDDSBackBuffer, &g_pD3DDevice);
+    if (FAILED(hr)) return;
+
+    // 뷰포트 설정
+    D3DVIEWPORT7 vp;
+    vp.dwX = 0;
+    vp.dwY = 0;
+    vp.dwWidth = width;
+    vp.dwHeight = height;
+    vp.dvMinZ = 0.0f;
+    vp.dvMaxZ = 1.0f;
+    g_pD3DDevice->SetViewport(&vp);
+}
 void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int lang, const char* fontPath)
 {
     IDirect3DDevice7* pdevice = (IDirect3DDevice7*)pvDevice;
     g_nuklear = new NuklearUI();
     g_sprLoader = new sprLoader();
-    g_lang = lang;
     if (pdd && pdevice) {
         g_nuklear->Initialize(pdd, pdevice, width, height, lang, fontPath);
         g_sprLoader->Init(pdd);
@@ -335,7 +381,7 @@ BOOL NKRender(void* device)
             vp.dvMaxZ = 1.0f;
             g_pD3DDevice->SetViewport(&vp);
 
-            g_nuklear->SetDirectX7(g_pDD, g_pD3DDevice, g_ddsd.dwWidth, g_ddsd.dwHeight, g_lang);
+            g_nuklear->SetDirectX7(g_pDD, g_pD3DDevice, g_ddsd.dwWidth, g_ddsd.dwHeight);
         }
     }
 

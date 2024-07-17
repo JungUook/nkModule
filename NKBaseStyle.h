@@ -14,6 +14,7 @@ public:
 	virtual ~NKBaseStyle();
 	virtual void Init(nk_context* ctx, nk_style* style);
 
+	virtual void Setfont(nk_font* font);
 protected:
 	virtual void InitializeStyle(nk_context* ctx, NuklearUI* pManager);
 	virtual void InitializeStyle(nk_font* font, nk_style& parentStyle, nk_style* parent_of_parentStyle);
@@ -22,7 +23,6 @@ protected:
 	virtual void StyleUpdateEnd(nk_context* ctx, nk_style& original);
 
 	virtual void SetStyle(nk_style* style);
-	virtual void Setfont(nk_font* font);
 	virtual void SetBackground(NuklearUI* pManager, int SID);
 
 	//제어 함수
