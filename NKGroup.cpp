@@ -30,7 +30,7 @@ NKGroup::~NKGroup()
 
 void NKGroup::Layout(nk_context* ctx)
 {
-	if (nk_group_begin(ctx, m_sBaseName.c_str(), m_flags))
+	if (nk_group_begin(ctx, m_sWindowName.c_str(), m_flags))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
