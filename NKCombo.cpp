@@ -18,8 +18,6 @@ NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 {
 	m_type = eCOMBO;
 
-	m_cTransform.x = 50.f;
-	m_cTransform.y = 50.f;
 	m_cTransform.w = 150.f;
 	m_cTransform.h = 60.f;
 	m_labelSize.x = 150.f;

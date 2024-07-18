@@ -1093,10 +1093,8 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 
 	HRESULT hr;
 	hr = DirectDrawCreateEx(NULL, (void**)&pDD, IID_IDirectDraw7, NULL);
-	assert(SUCCEEDED(hr));
 
 	hr = pDD->SetCooperativeLevel(wnd, DDSCL_NORMAL);
-	assert(SUCCEEDED(hr));
 
 	memset(&ddsd, 0, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
@@ -1111,20 +1109,11 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 	ddsd.dwHeight = 960;
 
 	hr = pDD->CreateSurface(&ddsd, &pDDSBackBuffer, NULL);
-	assert(SUCCEEDED(hr));
-
 	hr = pDD->CreateClipper(0, &pClipper, NULL);
-	assert(SUCCEEDED(hr));
 	hr = pClipper->SetHWnd(0, wnd);
-	assert(SUCCEEDED(hr));
 	hr = pDDSPrimary->SetClipper(pClipper);
-	assert(SUCCEEDED(hr));
-
 	hr = pDD->QueryInterface(IID_IDirect3D7, (void**)&pD3D);
-	assert(SUCCEEDED(hr));
-
 	hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
-	assert(SUCCEEDED(hr));
 
 	D3DVIEWPORT7 vp;
 	vp.dwX = 0;  // X 오프셋을 0으로 설정
@@ -1198,19 +1187,14 @@ void NuklearEditor::Render()
 	srcrect.bottom -= srcrect.top;
 
 	hr = IDirect3DDevice7_Clear(pD3DDevice, 1, NULL, D3DCLEAR_TARGET, D3DRGBA(0, 0, 0, 1), 1.0f, 0);
-	assert(SUCCEEDED(hr));
 
 	hr = IDirect3DDevice7_BeginScene(pD3DDevice);
-	assert(SUCCEEDED(hr));
 	m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
 	hr = IDirect3DDevice7_EndScene(pD3DDevice);
-	assert(SUCCEEDED(hr));
 
 	srcrect.top = 0;
 
 	hr = pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
-	assert(SUCCEEDED(hr));
-
 	if (FAILED(hr)) {
 		hr = pDDSPrimary->IsLost();
 		if (hr == DDERR_SURFACELOST) {
@@ -1230,11 +1214,8 @@ void NuklearEditor::Render()
 			}
 
 			pD3DDevice->Release();
-
 			pD3DDevice = nullptr;
-
 			hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
-			assert(SUCCEEDED(hr));
 
 			D3DVIEWPORT7 vp;
 			vp.dwX = 0;  // X 오프셋을 0으로 설정

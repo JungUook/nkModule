@@ -12,8 +12,6 @@ NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_type			= eGROUP;
 	m_flags			= NK_WINDOW_TITLE;
 
-	m_cTransform.x = 50.f;
-	m_cTransform.y = 50.f;
 	m_cTransform.w = 150.f;
 	m_cTransform.h = 300.f;
 }

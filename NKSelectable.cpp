@@ -12,8 +12,6 @@ NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, p
     m_type = eSELECTABLE;
     m_selected = 0;
     SetLabel("Selectable");
-    m_cTransform.x = 0.f;
-    m_cTransform.y = 0.f;
     m_cTransform.w = 150.f;
     m_cTransform.h = 40.f;
 }

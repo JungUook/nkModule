@@ -33,20 +33,22 @@ void sprData::LoadTexture(IDirectDraw7* pDD)
 
     IDirectDrawSurface7* pSurface = nullptr;
     HRESULT hr = pDD->CreateSurface(&ddsd, &pSurface, nullptr);
-    assert(SUCCEEDED(hr));
-
     if (FAILED(hr)) {
-
         if (m_pSurface != nullptr) {
             m_pSurface->Release();
         }
-
         m_pSurface = nullptr;
         return;
     }
 
     hr = pSurface->Lock(nullptr, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, nullptr);
-    assert(SUCCEEDED(hr));
+    if (FAILED(hr)) {
+        if (m_pSurface != nullptr) {
+            m_pSurface->Release();
+        }
+        m_pSurface = nullptr;
+        return;
+    }
 
     int pitch = ddsd.lPitch / 4;
     DWORD* pBuffer = (DWORD*)ddsd.lpSurface;
@@ -96,7 +98,13 @@ void sprData::LoadTexture(IDirectDraw7* pDD)
 	} // end row
 
     hr = pSurface->Unlock(nullptr);
-    assert(SUCCEEDED(hr));
+    if (FAILED(hr)) {
+        if (m_pSurface != nullptr) {
+            m_pSurface->Release();
+        }
+        m_pSurface = nullptr;
+        return;
+    }
 
     m_pSurface = pSurface;
 }

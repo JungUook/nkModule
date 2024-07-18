@@ -451,6 +451,9 @@ int DX7Renderer::nk_d3d7_handle_event(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 {
+	if (d3d7.device == nullptr) {
+		return;
+	}
 	nk_d3d7_create_state();
 
 	struct nk_buffer vbuf, ebuf;
@@ -501,8 +504,7 @@ void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 	for (cmd = nk__draw_begin(&d3d7.ctx, &d3d7.cmds); cmd != NULL; cmd = nk__draw_next(cmd, &d3d7.cmds, &d3d7.ctx)) {
 		if (!cmd->elem_count) continue;
 
-		HRESULT hr = d3d7.device->SetTexture(0, (IDirectDrawSurface7*)cmd->texture.ptr);
-		NK_ASSERT(SUCCEEDED(hr));
+		d3d7.device->SetTexture(0, (IDirectDrawSurface7*)cmd->texture.ptr);
 
 		// 클리핑 영역을 설정
 		RECT scissor;
@@ -634,87 +636,51 @@ void DX7Renderer::nk_d3d7_create_state(void)
 	HRESULT hr;
 
 	hr = d3d7.device->GetRenderState(D3DRENDERSTATE_SRCBLEND, &dwD3DRS_SRCBLEND);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetRenderState(D3DRENDERSTATE_DESTBLEND, &dwD3DRS_DESTBLEND);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, &dwD3DRS_ALPHABLENDENABLE);
-	NK_ASSERT(SUCCEEDED(hr));
 
 	hr = d3d7.device->GetRenderState(D3DRENDERSTATE_LIGHTING, &dwD3DRS_LIGHTING);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetRenderState(D3DRENDERSTATE_ZENABLE, &dwD3DRS_ZENABLE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetRenderState(D3DRENDERSTATE_ZWRITEENABLE, &dwD3DRS_ZWRITEENABLE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetRenderState(D3DRENDERSTATE_CULLMODE, &dwD3DRS_CULLMODE);
-	NK_ASSERT(SUCCEEDED(hr));
 
 
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_ADDRESSU, &dwD3DSAMP_ADDRESSU); // U 좌표의 텍스처 래핑 모드를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_ADDRESSV, &dwD3DSAMP_ADDRESSV); // V 좌표의 텍스처 래핑 모드를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_MAGFILTER, &dwD3DSAMP_MAGFILTER); // 확대 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_MINFILTER, &dwD3DSAMP_MINFILTER); // 축소 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_MIPFILTER, &dwD3DTSS_MIPFILTER); // 축소 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 
 	/* Set texture stage state */
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_COLOROP, &dwD3DTSS_COLOROP);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_COLORARG1, &dwD3DTSS_COLORARG1);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_COLORARG2, &dwD3DTSS_COLORARG2);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_ALPHAOP, &dwD3DTSS_ALPHAOP);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_ALPHAARG1, &dwD3DTSS_ALPHAARG1);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->GetTextureStageState(0, D3DTSS_ALPHAARG2, &dwD3DTSS_ALPHAARG2);
-	NK_ASSERT(SUCCEEDED(hr));
 
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-	NK_ASSERT(SUCCEEDED(hr));
 
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
-	NK_ASSERT(SUCCEEDED(hr));
 
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP); // U 좌표의 텍스처 래핑 모드를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP); // V 좌표의 텍스처 래핑 모드를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR); // 확대 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR); // 축소 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_NONE); // 축소 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 
 	/* Set texture stage state */
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-	NK_ASSERT(SUCCEEDED(hr));
 }
 
 void DX7Renderer::nk_d3d7_create_state_restore(void)
@@ -722,46 +688,28 @@ void DX7Renderer::nk_d3d7_create_state_restore(void)
 	HRESULT hr;
 
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_SRCBLEND, dwD3DRS_SRCBLEND);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_DESTBLEND, dwD3DRS_DESTBLEND);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, dwD3DRS_ALPHABLENDENABLE);
-	NK_ASSERT(SUCCEEDED(hr));
 
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_LIGHTING, dwD3DRS_LIGHTING);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_ZENABLE, dwD3DRS_ZENABLE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, dwD3DRS_ZWRITEENABLE);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetRenderState(D3DRENDERSTATE_CULLMODE, dwD3DRS_CULLMODE);
-	NK_ASSERT(SUCCEEDED(hr));
 
 
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ADDRESSU, dwD3DSAMP_ADDRESSU); // U 좌표의 텍스처 래핑 모드를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ADDRESSV, dwD3DSAMP_ADDRESSV); // V 좌표의 텍스처 래핑 모드를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MAGFILTER, dwD3DSAMP_MAGFILTER); // 확대 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MINFILTER, dwD3DSAMP_MINFILTER); // 축소 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_MIPFILTER, dwD3DTSS_MIPFILTER); // 축소 필터를 가져옴
-	NK_ASSERT(SUCCEEDED(hr));
 
 	/* Set texture stage state */
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_COLOROP, dwD3DTSS_COLOROP);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_COLORARG1, dwD3DTSS_COLORARG1);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_COLORARG2, dwD3DTSS_COLORARG2);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ALPHAOP, dwD3DTSS_ALPHAOP);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ALPHAARG1, dwD3DTSS_ALPHAARG1);
-	NK_ASSERT(SUCCEEDED(hr));
 	hr = d3d7.device->SetTextureStageState(0, D3DTSS_ALPHAARG2, dwD3DTSS_ALPHAARG2);
-	NK_ASSERT(SUCCEEDED(hr));
 }
 
 void DX7Renderer::nk_d3d7_clipboard_copy(nk_handle usr, const char* text, int len)

@@ -12,8 +12,6 @@ NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pMana
     m_type = eCHECKBOX;
     m_checked = 0;
     SetLabel("Checkbox");
-    m_cTransform.x = 0.f;
-    m_cTransform.y = 0.f;
     m_cTransform.w = 150.f;
     m_cTransform.h = 40.f;
 }

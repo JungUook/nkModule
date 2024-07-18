@@ -13,8 +13,6 @@ NKImage::NKImage(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 {
 	m_type = eIMAGE;
 
-	m_cTransform.x = 50.f;
-	m_cTransform.y = 50.f;
 	m_cTransform.w = 100.f;
 	m_cTransform.h = 100.f;
 
