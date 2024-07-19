@@ -2,8 +2,6 @@
 #ifndef NuklearUI_h__
 #define NuklearUI_h__
 
-#define EditorVersion 1
-
 #include "sprLoader.h"
 #include "NKLuaInterface.h"
 #include "NKCereal.h"
@@ -95,9 +93,6 @@ public:
 
 	nk_flags IMEInputSystem(nk_context* ctx, char* buffer, int max, int* len, nk_flags flag = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER, nk_plugin_filter filter = nk_filter_default);
 	void IMEInputSystem(nk_context* ctx, char* memory, int* len);
-
-private:
-	unsigned int m_iVersionEditor;
 
 #ifdef _DX7
 	DX7Renderer m_dx7;

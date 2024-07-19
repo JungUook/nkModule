@@ -15,8 +15,7 @@ NuklearUI::NuklearUI():
 	m_mapModuleID(m_cereal.m_mapModuleID),
 	m_mapModuleName(m_cereal.m_mapModuleName),
 	m_mapWindowName(m_cereal.m_mapWindowName),
-	m_mapSpr(m_cereal.m_mapSpr),
-	m_iVersionEditor(EditorVersion)
+	m_mapSpr(m_cereal.m_mapSpr)
 {
 	m_ctx = nullptr;
 	m_font = nullptr;
@@ -497,9 +496,9 @@ void NuklearUI::Move(unsigned int child, unsigned int parent)
 	if (pChild == nullptr || pParent == nullptr || pChild->GetParent() == nullptr) {
 		return;
 	}
-
 	pChild->GetParent()->RemoveChildDisConnect(pChild);
 	pParent->RegistChild(pChild);
+	UpdateIndices();
 }
 
 void NuklearUI::Remove(unsigned int id)

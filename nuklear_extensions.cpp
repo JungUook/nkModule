@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "nuklear_extensions.h"
 
+#ifndef NK_ASSERT
+#include <assert.h>
+#define NK_ASSERT(expr) assert(expr)
+#endif
+
 void nk_label_bold(nk_context* ctx, const char* text, nk_flags alignment)
 {
     struct nk_command_buffer* canvas = nk_window_get_canvas(ctx);

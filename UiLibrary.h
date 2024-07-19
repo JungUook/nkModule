@@ -25,6 +25,8 @@
 #include "NKColorPicker.h"
 #include "NKSuperStyleObject.h"
 
+#define EditorVersion 1
+
 static NKBase* CopyObject(NKBase* pBase)
 {
 	eTypeUI type = pBase->GetType();

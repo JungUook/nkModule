@@ -8,5 +8,4 @@
 void nk_label_bold(struct nk_context* ctx, const char* text, nk_flags alignment);
 void nk_label_underline(struct nk_context* ctx, const char* text, nk_flags alignment);
 void nk_label_strikethrough(struct nk_context* ctx, const char* text, nk_flags alignment);
-
 #endif // nuklear_extensions_h_

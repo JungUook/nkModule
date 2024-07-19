@@ -32,10 +32,17 @@ public:
 public:
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-        ar(cereal::base_class<NKBase>(this)
-            , cereal::base_class<NKStyleProgress>(this)
-            , CEREAL_NVP(m_progress)
-        );
+        if (version == 0) {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKStyleProgress>(this)
+            );
+        }
+        else if (version == 1) {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKStyleProgress>(this)
+                , CEREAL_NVP(m_progress)
+            );
+        }
     }
 };
 #endif //NKProgress_h__

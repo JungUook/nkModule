@@ -32,7 +32,6 @@ public:
 	virtual void SetWindowName(const char* name);
 	virtual void SetBaseName(const char* name);
 protected:
-	unsigned int m_iVersionEditor;
 	unsigned int m_iPrimaryID;
 
 	std::string m_sPrimaryName;
@@ -55,7 +54,6 @@ public:
 	void serialize(Archive& ar, const unsigned int version) {
 		ar(cereal::base_class<NKBaseStyle>(this)
 			, cereal::base_class<NKTransform>(this)
-			, CEREAL_NVP(m_iVersionEditor)
 			, CEREAL_NVP(m_iPrimaryID)
 			, CEREAL_NVP(m_sPrimaryName)
 			, CEREAL_NVP(m_cPrimaryEditName)

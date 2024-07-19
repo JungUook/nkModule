@@ -191,3 +191,69 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(NKStyleSlider, NKSuperStyleObject);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(NKStyleTab, NKSuperStyleObject);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(NKStyleText, NKSuperStyleObject);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(NKStyleWindow, NKSuperStyleObject);
+
+
+
+CEREAL_CLASS_VERSION(NKBase, EditorVersion);
+CEREAL_CLASS_VERSION(NKWindow, EditorVersion);
+CEREAL_CLASS_VERSION(NKSpace, EditorVersion);
+CEREAL_CLASS_VERSION(NKGroup, EditorVersion);
+CEREAL_CLASS_VERSION(NKPopup, EditorVersion);
+CEREAL_CLASS_VERSION(NKCombo, EditorVersion);
+CEREAL_CLASS_VERSION(NKButton, EditorVersion);
+CEREAL_CLASS_VERSION(NKEdit, EditorVersion);
+CEREAL_CLASS_VERSION(NKImage, EditorVersion);
+CEREAL_CLASS_VERSION(NKLabel, EditorVersion);
+CEREAL_CLASS_VERSION(NKComboItem, EditorVersion);
+CEREAL_CLASS_VERSION(NKCheckbox, EditorVersion);
+CEREAL_CLASS_VERSION(NKSlider, EditorVersion);
+CEREAL_CLASS_VERSION(NKProgress, EditorVersion);
+CEREAL_CLASS_VERSION(NKSelectable, EditorVersion);
+CEREAL_CLASS_VERSION(NKTree, EditorVersion);
+CEREAL_CLASS_VERSION(NKChart, EditorVersion);
+CEREAL_CLASS_VERSION(NKTooltip, EditorVersion);
+CEREAL_CLASS_VERSION(NKMenu, EditorVersion);
+CEREAL_CLASS_VERSION(NKScrollbar, EditorVersion);
+CEREAL_CLASS_VERSION(NKColorPicker, EditorVersion);
+CEREAL_CLASS_VERSION(NKSuperStyleObject, EditorVersion);
+
+
+CEREAL_CLASS_VERSION(NKBaseLabel, EditorVersion);
+CEREAL_CLASS_VERSION(NKBaseStyle, EditorVersion);
+CEREAL_CLASS_VERSION(NKBaseWindow, EditorVersion);
+CEREAL_CLASS_VERSION(NKHandler, EditorVersion);
+CEREAL_CLASS_VERSION(NKObjectFinder, EditorVersion);
+CEREAL_CLASS_VERSION(NKProperty, EditorVersion);
+CEREAL_CLASS_VERSION(NKTransform, EditorVersion);
+
+CEREAL_CLASS_VERSION(NKStyleButton, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleChart, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleCheckbox, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleCombo, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleContextualButton, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleEdit, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleHeader, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleMenuButton, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleOption, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleProgress, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleProperty, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleScrollbarH, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleScrollbarV, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleSelectedable, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleSlider, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleTab, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleText, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleWindow, EditorVersion);
+
+CEREAL_CLASS_VERSION(ComponentButton, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentCombo, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentEdit, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentHeader, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentProgress, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentProperty, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentScrollbar, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentSelectable, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentSlider, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentTab, EditorVersion);
+CEREAL_CLASS_VERSION(ComponentToggle, EditorVersion);
+CEREAL_CLASS_VERSION(NKStyleItem, EditorVersion);

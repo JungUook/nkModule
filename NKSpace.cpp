@@ -38,7 +38,6 @@ void NKSpace::Layout(nk_context* ctx)
 		nk_layout_space_begin(ctx, m_layoutFormat, m_cTransform.h, m_widgetCount);
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
-			
 			nk_layout_space_push(ctx, (*it)->GetTransform());
 			(*it)->CheckMouseHover(ctx);
 			(*it)->Update(ctx);
