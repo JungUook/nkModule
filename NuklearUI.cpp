@@ -251,6 +251,10 @@ void NuklearUI::EditorRender()
 {
 	g_editor.Render();
 }
+void NuklearUI::EditorRestore()
+{
+	g_editor.Restore();
+}
 #endif
 bool NuklearUI::CreateDirectoryIfNotExists(const std::string& path)
 {

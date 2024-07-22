@@ -83,6 +83,7 @@ public:
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath = nullptr);
 	void Render();
+	void Restore();
 
 	nk_context* m_ctx;
 #ifdef _DX7
@@ -96,6 +97,8 @@ public:
 	LPDIRECT3D7 pD3D;
 	LPDIRECT3DDEVICE7 pD3DDevice;
 	DDSURFACEDESC2 ddsd;
+
+	std::string m_sFontPath;
 #endif
 };
 

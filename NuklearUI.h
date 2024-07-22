@@ -211,6 +211,7 @@ public:
 #ifdef _NKDEBUG
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath = nullptr);
 	void EditorRender();
+	void EditorRestore();
 #endif
 
 public:

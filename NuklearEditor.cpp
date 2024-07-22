@@ -1059,6 +1059,8 @@ int NuklearEditor::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath)
 {
+	m_sFontPath = fontPath;
+
 	WNDCLASSW wc;
 	RECT rect = { 0, 0, 512, 960 };
 	DWORD style = WS_OVERLAPPEDWINDOW;
@@ -1226,19 +1228,55 @@ void NuklearEditor::Render()
 			vp.dvMaxZ = 1.0f;
 			pD3DDevice->SetViewport(&vp);
 
-			nk_free(m_ctx);
-
-			m_ctx = m_dx7.nk_d3d7_init(pDD, pD3DDevice);
-
-			CHAR path[MAX_PATH];
-			if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, path))) {
-				std::cout << "System font path: " << path << std::endl;
-			}
-
-			struct nk_font_atlas* atlas;
-			m_dx7.nk_d3d7_font_stash_begin(&atlas, path, 0);
+			Restore();
 		}
 	}
+}
+
+void NuklearEditor::Restore()
+{
+	m_dx7.nk_d3d7_shutdown();
+
+	CHAR systemPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_FONTS, NULL, 0, systemPath))) {
+		std::cout << "System font path: " << systemPath << std::endl;
+	}
+
+	char path[MAX_PATH];
+	HMODULE hModule = GetModuleHandle(NULL);
+	if (hModule != NULL) {
+		// 현재 실행 파일의 경로를 얻습니다.
+		GetModuleFileNameA(hModule, path, MAX_PATH);
+	}
+	else {
+		std::cerr << "Failed to get module handle." << std::endl;
+		return;
+	}
+
+	std::string basePath(path);
+	basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+	std::string dataPath = "";
+	if (m_sFontPath.c_str() != nullptr) {
+		dataPath = basePath + m_sFontPath.c_str();
+		if (!CreateDirectoryIfNotExists(dataPath)) {
+			std::cerr << "Failed to create directory: " << dataPath << std::endl;
+			return;
+		}
+	}
+	else {
+		dataPath = "None";
+	}
+
+	m_ctx = m_dx7.nk_d3d7_init(pDD, pD3DDevice);
+
+	struct nk_font_atlas* atlas;
+	if (dataPath != "None") {
+		m_dx7.nk_d3d7_font_stash_begin(&atlas, systemPath, 0, dataPath.c_str());
+	}
+	else {
+		m_dx7.nk_d3d7_font_stash_begin(&atlas, systemPath, 0);
+	}
+
 }
 
 #endif

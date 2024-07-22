@@ -169,7 +169,7 @@ void CreateD3D7Device(HWND wnd, int width, int height)
     vp.dvMaxZ = 1.0f;
     g_pD3DDevice->SetViewport(&vp);
 }
-void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* primary, IDirectDrawSurface7* backBuffer, int width, int height)
+void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* primary, int width, int height)
 {
     HRESULT hr;
 
@@ -476,15 +476,15 @@ IDirect3DDevice9Ex* GetDeviceEx()
     return g_deviceEx;
 }
 #elif _DX7
-IDirectDraw7* GetDDraw()
+IDirectDraw7* GetNKDDraw()
 {
     return g_pDD;
 }
-IDirectDrawSurface7* GetPrimary()
+IDirectDrawSurface7* GetNKPrimary()
 {
     return g_pDDSPrimary;
 }
-IDirectDrawSurface7* GetBackBuffer()
+IDirectDrawSurface7* GetNKBackBuffer()
 {
     return g_pDDSBackBuffer;
 }
@@ -550,18 +550,67 @@ bool RemoveBindHandler(int key)
     return false;
 }
 
-void* NKGetData(void* params, const char* key)
-{
-    if (g_nuklear == nullptr) {
-        return nullptr;
-    }
-    return g_nuklear->m_luaInterface.GetData(params, key);
-}
-
 bool NKCommand(const char* primaryName, const char* command, void* param)
 {
     if (g_nuklear == nullptr) {
         return false;
     }
     return g_nuklear->NKCommand(primaryName, command, param);
+}
+
+bool NKLuaCommand(const char* command, const char* tableName)
+{
+    if (g_nuklear == nullptr) {
+        return false;
+    }
+    if (tableName != nullptr) {
+        g_nuklear->m_luaInterface.RunFunction(command);
+    }
+    else {
+
+        luabridge::LuaRef table = g_nuklear->m_luaInterface.GetLuaTable(tableName);
+        g_nuklear->m_luaInterface.RunFunctionArgs(command, table);
+    }
+
+    return false;
+}
+
+void* NKGetData(const char* key)
+{
+    if (g_nuklear == nullptr) {
+        return nullptr;
+    }
+    return g_nuklear->m_luaInterface.NKGetData(key);
+}
+
+int NKGetDataInt(const char* key)
+{
+    if (g_nuklear == nullptr) {
+        return 0;
+    }
+    return g_nuklear->m_luaInterface.NKGetDataInt(key);
+}
+
+float NKGetDataFloat(const char* key)
+{
+    if (g_nuklear == nullptr) {
+        return 0.f;
+    }
+    return g_nuklear->m_luaInterface.NKGetDataFloat(key);
+}
+
+std::string NKGetDataString(const char* key)
+{
+    if (g_nuklear == nullptr) {
+        return "None";
+    }
+    return g_nuklear->m_luaInterface.NKGetDataString(key);
+}
+
+bool NKGetDataBool(const char* key)
+{
+    if (g_nuklear == nullptr) {
+        return false;
+    }
+    return g_nuklear->m_luaInterface.NKGetDataBool(key);
 }
