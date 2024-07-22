@@ -29,7 +29,7 @@ extern "C" {
 	NKMOD_API void Initialize(IDirect3DDevice9* device, int width, int height, int lang);
 #elif _DX7
 	NKMOD_API void CreateD3D7Device(HWND wnd, int width, int height);
-	NKMOD_API void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* primary, IDirectDrawSurface7* backBuffer, int width, int height);
+	NKMOD_API void CreateD3D7DeviceNew(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* primary, int width, int height);
 	NKMOD_API void CreateD3D7DeviceWindow(HWND wnd, IDirectDraw7* pdd, IDirectDrawSurface7* primary, int width, int height, int bpp);
 	NKMOD_API void Initialize(IDirectDraw7* pdd, void* pdevice, int width, int height, int lang, const char* fontPath = nullptr);
 	NKMOD_API void LoadSprFile(const char* filename);
@@ -51,18 +51,26 @@ extern "C" {
 	NKMOD_API IDirect3DDevice9* GetDevice();
 	NKMOD_API IDirect3DDevice9Ex* GetDeviceEx();
 #elif _DX7
-	NKMOD_API IDirectDraw7* GetDDraw();
-	NKMOD_API IDirectDrawSurface7* GetPrimary();
-	NKMOD_API IDirectDrawSurface7* GetBackBuffer();
+	NKMOD_API IDirectDraw7* GetNKDDraw();
+	NKMOD_API IDirectDrawSurface7* GetNKPrimary();
+	NKMOD_API IDirectDrawSurface7* GetNKBackBuffer();
 	NKMOD_API void* GetDevice();
+	NKMOD_API void NKRestore();
 #endif
 
 	NKMOD_API bool AddHandler(int key, void(*func)(void*));
 	NKMOD_API bool AddBindHandler(int key, void* callback, void(*func)(void*, void*));
 	NKMOD_API bool RemoveHandler(int key);
 	NKMOD_API bool RemoveBindHandler(int key);
-	NKMOD_API void* NKGetData(void* params, const char* key);
 	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param);
+	NKMOD_API bool NKLuaCommand(const char* command, const char* tableName = nullptr);
+
+
+	NKMOD_API void* NKGetData(const char* key);
+	NKMOD_API int NKGetDataInt(const char* key);
+	NKMOD_API float NKGetDataFloat(const char* key);
+	NKMOD_API std::string NKGetDataString(const char* key);
+	NKMOD_API bool NKGetDataBool(const char* key);
 }
 
 

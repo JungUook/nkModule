@@ -10,19 +10,31 @@ void nk_render_wrapped_label(nk_context* ctx, const char* text)
 {
     const char* line_start = text;
     const char* line_end;
-    while ((line_end = strchr(line_start, '\n')) != NULL) {
-        size_t line_length = line_end - line_start;
-        char* line = (char*)malloc(line_length + 1);  // Allocate memory dynamically
-        if (line) {
-            strncpy_s(line, line_length + 1, line_start, line_length);
-            line[line_length] = '\0';
-            nk_label_wrap(ctx, line);
-            free(line);  // Free allocated memory
+    while (*line_start) {
+        // Find the next newline or carriage return character
+        line_end = strpbrk(line_start, "\n\r");
+        if (line_end == NULL) {
+            // No more newline or carriage return characters
+            nk_label_wrap(ctx, line_start);
+            break;
         }
-        line_start = line_end + 1; // Move past the newline character
+        else {
+            size_t line_length = line_end - line_start;
+            char* line = (char*)malloc(line_length + 1);  // Allocate memory dynamically
+            if (line) {
+                strncpy_s(line, line_length + 1, line_start, line_length);
+                line[line_length] = '\0';
+                nk_label_wrap(ctx, line);
+                free(line);  // Free allocated memory
+            }
+            // Skip over the newline or carriage return character
+            line_start = line_end + 1;
+            // If there is a '\r\n' or '\n\r' sequence, skip the second character as well
+            if ((*line_end == '\r' && *line_start == '\n') || (*line_end == '\n' && *line_start == '\r')) {
+                line_start++;
+            }
+        }
     }
-    // Render the last line (or the entire string if no newline was found)
-    nk_label_wrap(ctx, line_start);
 }
 
 void nk_label_bold(nk_context* ctx, const char* text, nk_flags alignment)

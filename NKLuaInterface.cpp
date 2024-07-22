@@ -262,9 +262,9 @@ void* NKLuaInterface::ConvertData(luabridge::LuaRef params)
 {
 	luabridge::LuaRef ref = params;
 
-	m_vRef_d.clear();
-	m_vRef_s.clear();
-	m_vRef_b.clear();
+	m_lRef_d.clear();
+	m_lRef_s.clear();
+	m_lRef_b.clear();
 	m_mTableRef.clear();
 
 
@@ -276,31 +276,24 @@ void* NKLuaInterface::ConvertData(luabridge::LuaRef params)
 			std::string contentValue = "";
 			if (value.isNumber()) {
 				double result = value.cast<double>();
-				size_t index = m_vRef_d.size();
-				m_vRef_d.push_back(result);
+				m_lRef_d.push_back(result);
 
-				double* result_ref = &m_vRef_d.at(index);
-				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), result_ref));
+				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), &m_lRef_d.back()));
 			}
 			else if (value.isString()) {
 				std::string result = value.cast<std::string>();
-				size_t index = m_vRef_s.size();
-				m_vRef_s.push_back(result);
+				m_lRef_s.push_back(result);
 
-				std::string* result_ref = &m_vRef_s.at(index);
-				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), result_ref));
+				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), &m_lRef_s.back()));
 			}
 			else if (value.isBool()) {
 				bool result = value.cast<bool>();
-				size_t index = m_vRef_b.size();
-				m_vRef_b.push_back(result ? 1 : 0);
+				m_lRef_b.push_back(result ? 1 : 0);
 
-				int* result_ref = &m_vRef_b.at(index);
-				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), result_ref));
+				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), &m_lRef_b.back()));
 			}
 			else {
-				void* result_ref = nullptr;
-				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), result_ref));
+				m_mTableRef.insert(std::make_pair(key.cast<std::string>().c_str(), nullptr));
 			}
 		}
 		return &m_mTableRef;
@@ -322,18 +315,59 @@ void* NKLuaInterface::ConvertData(luabridge::LuaRef params)
 	}	
 }
 
-void* NKLuaInterface::GetData(void* params, const char* key)
+void* NKLuaInterface::NKGetData(const char* key)
 {
-	std::map<std::string, void*>* mRef = (std::map<std::string, void*>*)params;
-
-	auto found = mRef->find(key);
-	if (found != mRef->end()) {
+	auto found = m_mTableRef.find(key);
+	if (found != m_mTableRef.end()) {
 		void* pData = found->second;
 		return pData;
 	}
 	return nullptr;
 }
 
+int NKLuaInterface::NKGetDataInt(const char* key)
+{
+	auto found = m_mTableRef.find(key);
+	if (found != m_mTableRef.end()) {
+		double* pData = (double*)found->second;
+		int result = (int)*pData;
+		return result;
+	}
+	return 0;
+}
+
+float NKLuaInterface::NKGetDataFloat(const char* key)
+{
+	auto found = m_mTableRef.find(key);
+	if (found != m_mTableRef.end()) {
+		double* pData = (double*)found->second;
+		float result = (float)*pData;
+		return result;
+	}
+	return 0.f;
+}
+
+std::string NKLuaInterface::NKGetDataString(const char* key)
+{
+	auto found = m_mTableRef.find(key);
+	if (found != m_mTableRef.end()) {
+		std::string* pData = (std::string*)found->second;
+		std::string result = *pData;
+		return result;
+	}
+	return "None";
+}
+
+bool NKLuaInterface::NKGetDataBool(const char* key)
+{
+	auto found = m_mTableRef.find(key);
+	if (found != m_mTableRef.end()) {
+		int* pData = (int*)found->second;
+		bool result = (bool)*pData;
+		return result;
+	}
+	return false;
+}
 
 void NKLuaInterface::RegisterBase()
 {

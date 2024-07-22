@@ -373,11 +373,10 @@ void NuklearUI::ReleaseRenderData()
 }
 void NuklearUI::SetDirectX7(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height)
 {
-	nk_free(m_ctx);
-
 	m_dx7.d3d7.dd = pdd;
 	m_dx7.d3d7.device = pdevice;
 
+	m_dx7.nk_d3d7_shutdown();
 	Initialize(pdd, pdevice, width, height, m_iLanguage, m_sFontPath.c_str());
 }
 #endif

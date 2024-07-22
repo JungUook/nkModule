@@ -89,7 +89,12 @@ public:
 	void BindingTriggerEvent(luabridge::LuaRef args);
 
 	void* ConvertData(luabridge::LuaRef params);
-	void* GetData(void* params, const char* key);
+
+	void* NKGetData(const char* key);
+	int NKGetDataInt(const char* key);
+	float NKGetDataFloat(const char* key);
+	std::string NKGetDataString(const char* key);
+	bool NKGetDataBool(const char* key);
 
 	void RegisterBase();
 
@@ -101,9 +106,9 @@ public:
 	std::map<int, std::function<void(void*)>> m_mapEventHandlers;
 	std::map<int, BindingFunc> m_mapBindingEventHandlers;
 
-	std::vector<double> m_vRef_d;
-	std::vector<std::string> m_vRef_s;
-	std::vector<int> m_vRef_b;
+	std::list<double> m_lRef_d;
+	std::list<std::string> m_lRef_s;
+	std::list<int> m_lRef_b;
 
 	std::map<std::string, void*> m_mTableRef;
 	double m_dRef;
