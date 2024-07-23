@@ -481,6 +481,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClInclude Include="DX7Renderer.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="NKBase.h" />
+    <ClInclude Include="NKBaseImage.h" />
     <ClInclude Include="NKBaseLabel.h" />
     <ClInclude Include="NKBaseStyle.h" />
     <ClInclude Include="NKBaseWindow.h" />
@@ -553,6 +554,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DX7Renderer.cpp" />
     <ClCompile Include="NKBase.cpp" />
+    <ClCompile Include="NKBaseImage.cpp" />
     <ClCompile Include="NKBaseLabel.cpp" />
     <ClCompile Include="NKBaseStyle.cpp" />
     <ClCompile Include="NKBaseWindow.cpp" />

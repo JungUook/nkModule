@@ -467,6 +467,7 @@ void NKBase::LayoutEditor(nk_context* ctx)
 		nk_layout_row_dynamic(ctx, 44, 2);
 		nk_label(ctx, "Current:", NK_TEXT_LEFT);
 		nk_label(ctx, m_sPrimaryName.c_str(), NK_TEXT_RIGHT);
+		nk_layout_row_dynamic(ctx, 44, 1);
 		nk_flags result = m_pManager->IMEInputSystem(ctx, m_cPrimaryEditName, sizeof(m_cPrimaryEditName), &m_iPrimaryEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{
@@ -479,6 +480,7 @@ void NKBase::LayoutEditor(nk_context* ctx)
 		nk_layout_row_dynamic(ctx, 44, 2);
 		nk_label(ctx, "Current:", NK_TEXT_LEFT);
 		nk_label(ctx, m_sWindowName.c_str(), NK_TEXT_RIGHT);
+		nk_layout_row_dynamic(ctx, 44, 1);
 		result = m_pManager->IMEInputSystem(ctx, m_cWindowEditName, sizeof(m_cWindowEditName), &m_iWindowEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{
@@ -491,6 +493,7 @@ void NKBase::LayoutEditor(nk_context* ctx)
 		nk_layout_row_dynamic(ctx, 44, 2);
 		nk_label(ctx, "Current:", NK_TEXT_LEFT);
 		nk_label(ctx, m_sBaseName.c_str(), NK_TEXT_RIGHT);
+		nk_layout_row_dynamic(ctx, 44, 1);
 		result = m_pManager->IMEInputSystem(ctx, m_cBaseEditName, sizeof(m_cBaseEditName), &m_iBaseEditName_len);
 		if (result & NK_EDIT_COMMITED)
 		{

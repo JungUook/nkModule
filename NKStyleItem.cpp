@@ -69,9 +69,10 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 				m_sDisablePath = "None";
 				m_iOption = 0;
-				(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+				(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
 				return;
 			}
+			img.color = m_pTarget->data.image.color;
 
 			(*m_pTarget) = nk_style_item_image(img);
 		}
@@ -85,10 +86,11 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 				m_sDisablePath = "None";
 				m_iOption = 0;
-				(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+				(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
 				return;
 			}
 
+			img.color = m_pTarget->data.slice.img.color;
 			struct nk_nine_slice nineslice {};
 			nineslice.img = img;
 			nineslice.l = (nk_ushort)m_iNineslice[0];
@@ -111,10 +113,10 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 			m_sImagePath = "None";
 			m_iOption = 0;
-			(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+			(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
 			return;
 		}
-
+		img.color = m_pTarget->data.image.color;
 		(*m_pTarget) = nk_style_item_image(img);
 	}
 	else if (m_iOption == 2) {
@@ -127,9 +129,10 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 			m_sImagePath = "None";
 			m_iOption = 0;
-			(*m_pTarget) = nk_style_item_color((*m_pTarget).data.color);
+			(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
 			return;
 		}
+		img.color = m_pTarget->data.slice.img.color;
 
 		struct nk_nine_slice nineslice {};
 		nineslice.img = img;
@@ -169,11 +172,13 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 			if (m_iOption == 1) {
 				struct nk_image img;
 				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+				img.color = m_pTarget->data.image.color;
 				(*m_pTarget) = nk_style_item_image(img);
 			}
 			else if (m_iOption == 2) {
 				struct nk_image img;
 				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
+				img.color = m_pTarget->data.slice.img.color;
 				struct nk_nine_slice nineslice {};
 				nineslice.img = img;
 				nineslice.l = (nk_ushort)m_iNineslice[0];
@@ -254,6 +259,13 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 				}
 				nk_group_end(ctx);
 			}
+		}
+
+		if (m_iOption == 1) {
+			ColorPicker(ctx, m_pTarget->data.image.color);
+		}
+		else if (m_iOption == 2) {
+			ColorPicker(ctx, m_pTarget->data.slice.img.color);
 		}
 	}
 }

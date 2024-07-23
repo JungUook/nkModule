@@ -12,6 +12,11 @@
 #include <fstream>
 #include <filesystem>
 
+inline DWORD D3DCOLOR_RGBA(BYTE r, BYTE g, BYTE b, BYTE a)
+{
+	return ((DWORD)((((a) & 0xff) << 24) | (((r) & 0xff) << 16) | (((g) & 0xff) << 8) | ((b) & 0xff)));
+}
+
 DX7Renderer::DX7Renderer()
 {
 	dwD3DRS_SRCBLEND = 0;
@@ -506,6 +511,14 @@ void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 
 		d3d7.device->SetTexture(0, (IDirectDrawSurface7*)cmd->texture.ptr);
 
+		//struct nk_color* color_data =  static_cast<struct nk_color*>(cmd->userdata.ptr);
+		//LPDWORD lpdword;
+		//if (color_data != nullptr) {
+		//	d3d7.device->GetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, lpdword);
+		//	d3d7.device->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR,
+		//		D3DCOLOR_RGBA(color_data->r, color_data->g, color_data->b, color_data->a));
+		//}
+
 		// 클리핑 영역을 설정
 		RECT scissor;
 		scissor.left = max((LONG)cmd->clip_rect.x, 0);
@@ -541,6 +554,9 @@ void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 			}
 		}
 
+		//if (color_data != nullptr) {
+		//	d3d7.device->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, *lpdword);
+		//}
 		offset += cmd->elem_count;
 	}
 

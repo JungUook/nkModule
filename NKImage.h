@@ -2,7 +2,8 @@
 #ifndef NKImage_h__
 #define NKImage_h__
 #include "NKBase.h"
-class NKImage : public NKBase
+#include "NKBaseImage.h"
+class NKImage : public NKBase, public NKBaseImage
 {
 public:
 	NKImage();
@@ -17,29 +18,23 @@ public:
 	virtual void SafeRenderEnd(nk_context* ctx) override;
 	virtual void EditInfo(nk_context* ctx) override;
 
-	void SetImagePath(const char* imgPath);
-	void LSetImagePath(luabridge::LuaRef ref);
-	bool CSetImagePath(void* param);
-	void SetSpritePath(const char* imgPath);
-	void LSetSpritePath(luabridge::LuaRef ref);
-	void SetIndex(int index);
-	void LSetIndex(luabridge::LuaRef ref);
-	bool CSetIndex(void* param);
-
 	virtual void RegistCommand(const char* classname) override;
-public:
-	std::string m_imagePath;
-	int m_sprIndex;
-	int m_sprSize;
 
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(cereal::base_class<NKBase>(this)
-			, CEREAL_NVP(m_imagePath)
-			, CEREAL_NVP(m_sprIndex)
-			, CEREAL_NVP(m_sprSize)
-		);
+		if (version >= 4) {
+			ar(cereal::base_class<NKBase>(this),
+				cereal::base_class<NKBaseImage>(this)
+				);
+		}
+		else {
+			ar(cereal::base_class<NKBase>(this)
+				, CEREAL_NVP(m_imagePath)
+				, CEREAL_NVP(m_sprIndex)
+				, CEREAL_NVP(m_sprSize)
+			);
+		}
 	}
 };
 

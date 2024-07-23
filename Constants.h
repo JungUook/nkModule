@@ -107,34 +107,42 @@ static void ColorPicker(nk_context* ctx, struct nk_color& color)
 namespace cereal {
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_vec2& vec2) {
+	void serialize(Archive& ar, struct nk_vec2& vec2, const unsigned int version) {
 		ar(CEREAL_NVP(vec2.x), CEREAL_NVP(vec2.y));
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_rect& rect) {
+	void serialize(Archive& ar, struct nk_rect& rect, const unsigned int version) {
 		ar(CEREAL_NVP(rect.x), CEREAL_NVP(rect.y), CEREAL_NVP(rect.w), CEREAL_NVP(rect.h));
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_color& color) {
+	void serialize(Archive& ar, struct nk_color& color, const unsigned int version) {
 		ar(CEREAL_NVP(color.r), CEREAL_NVP(color.g), CEREAL_NVP(color.b), CEREAL_NVP(color.a));
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_colorf& color) {
+	void serialize(Archive& ar, struct nk_colorf& color, const unsigned int version) {
 		ar(CEREAL_NVP(color.r), CEREAL_NVP(color.g), CEREAL_NVP(color.b), CEREAL_NVP(color.a));
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_image& img) {
-		ar(CEREAL_NVP(img.w)
-			, CEREAL_NVP(img.h)
-			, CEREAL_NVP(img.region));
+	void serialize(Archive& ar, struct nk_image& img, const unsigned int version) {
+		if (version >= 3) {
+			ar(CEREAL_NVP(img.w)
+				, CEREAL_NVP(img.h)
+				, CEREAL_NVP(img.region)
+				, CEREAL_NVP(img.color));
+		}
+		else {
+			ar(CEREAL_NVP(img.w)
+				, CEREAL_NVP(img.h)
+				, CEREAL_NVP(img.region));
+		}
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_nine_slice& nslice) {
+	void serialize(Archive& ar, struct nk_nine_slice& nslice, const unsigned int version) {
 		ar(CEREAL_NVP(nslice.img)
 			, CEREAL_NVP(nslice.l)
 			, CEREAL_NVP(nslice.t)
@@ -143,21 +151,21 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, union nk_style_item_data& data) {
+	void serialize(Archive& ar, union nk_style_item_data& data, const unsigned int version) {
 		ar(CEREAL_NVP(data.color)
 			, CEREAL_NVP(data.image)
 			, CEREAL_NVP(data.slice));
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_item& item) {
+	void serialize(Archive& ar, struct nk_style_item& item, const unsigned int version) {
 		ar(CEREAL_NVP(item.type)
 			, CEREAL_NVP(item.data));
 	}
 
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_toggle& toggle) {
+	void serialize(Archive& ar, struct nk_style_toggle& toggle, const unsigned int version) {
 		ar(
 			CEREAL_NVP(toggle.normal),
 			CEREAL_NVP(toggle.hover),
@@ -180,7 +188,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_button& button) {
+	void serialize(Archive& ar, struct nk_style_button& button, const unsigned int version) {
 		ar(
 			CEREAL_NVP(button.normal),
 			CEREAL_NVP(button.hover),
@@ -203,7 +211,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_tab& tab) {
+	void serialize(Archive& ar, struct nk_style_tab& tab, const unsigned int version) {
 		ar(
 			CEREAL_NVP(tab.background),
 			CEREAL_NVP(tab.border_color),
@@ -225,7 +233,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_slider& slider) {
+	void serialize(Archive& ar, struct nk_style_slider& slider, const unsigned int version) {
 		ar(
 			CEREAL_NVP(slider.normal),
 			CEREAL_NVP(slider.hover),
@@ -255,7 +263,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_selectable& selectable) {
+	void serialize(Archive& ar, struct nk_style_selectable& selectable, const unsigned int version) {
 		ar(
 			CEREAL_NVP(selectable.normal),
 			CEREAL_NVP(selectable.hover),
@@ -281,7 +289,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_scrollbar& scrollbar) {
+	void serialize(Archive& ar, struct nk_style_scrollbar& scrollbar, const unsigned int version) {
 		ar(
 			CEREAL_NVP(scrollbar.normal),
 			CEREAL_NVP(scrollbar.hover),
@@ -307,7 +315,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_property& prop) {
+	void serialize(Archive& ar, struct nk_style_property& prop, const unsigned int version) {
 		ar(
 			CEREAL_NVP(prop.normal),
 			CEREAL_NVP(prop.hover),
@@ -330,7 +338,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_progress& progress) {
+	void serialize(Archive& ar, struct nk_style_progress& progress, const unsigned int version) {
 		ar(
 			CEREAL_NVP(progress.normal),
 			CEREAL_NVP(progress.hover),
@@ -351,7 +359,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_window_header& header) {
+	void serialize(Archive& ar, struct nk_style_window_header& header, const unsigned int version) {
 		ar(
 			CEREAL_NVP(header.normal),
 			CEREAL_NVP(header.hover),
@@ -372,7 +380,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_edit& edit) {
+	void serialize(Archive& ar, struct nk_style_edit& edit, const unsigned int version) {
 		ar(
 			CEREAL_NVP(edit.normal),
 			CEREAL_NVP(edit.hover),
@@ -402,7 +410,7 @@ namespace cereal {
 	}
 
 	template <class Archive>
-	void serialize(Archive& ar, struct nk_style_combo& combo) {
+	void serialize(Archive& ar, struct nk_style_combo& combo, const unsigned int version) {
 		ar(
 			CEREAL_NVP(combo.normal),
 			CEREAL_NVP(combo.hover),

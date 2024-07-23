@@ -273,6 +273,7 @@ void NuklearUI::AddImage(int SID, IDirect3DTexture9* texture)
 	struct nk_image img;
 	memset(&img, 0, sizeof(img));
 	img.handle = nk_handle_ptr(texture);
+	img.color = nk_white;
 
 	std::pair<int, struct nk_image> pairData = std::make_pair(SID, img);
 	m_mapImage.insert(pairData);
@@ -291,6 +292,8 @@ void NuklearUI::AddImage(int SID, IDirect3DTexture9* texture, uint16_t width, ui
 	img.region[1] = region[1];
 	img.region[2] = region[2];
 	img.region[3] = region[3];
+
+	img.color = nk_white;
 
 	std::pair<int, struct nk_image> pairData = std::make_pair(SID, img);
 	m_mapImage.insert(pairData);

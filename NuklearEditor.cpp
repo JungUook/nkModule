@@ -461,7 +461,7 @@ void NuklearEditor::MoveNode(NKBase* pTarget)
 
 void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 {
-	const char* ObjectInfo = m_pSelectedNode ? m_pSelectedNode->GetBaseName() : "ObjectInfo";
+	const char* ObjectInfo = m_pSelectedNode ? m_pSelectedNode->GetWindowName() : "ObjectInfo";
 	if (nk_group_begin(ctx, ObjectInfo, NK_WINDOW_TITLE)) {
 
 		if (m_pSelectedNode) {
@@ -1189,14 +1189,15 @@ void NuklearEditor::Render()
 	srcrect.bottom -= srcrect.top;
 
 	hr = IDirect3DDevice7_Clear(pD3DDevice, 1, NULL, D3DCLEAR_TARGET, D3DRGBA(0, 0, 0, 1), 1.0f, 0);
-
 	hr = IDirect3DDevice7_BeginScene(pD3DDevice);
-	m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
-	hr = IDirect3DDevice7_EndScene(pD3DDevice);
+
+	if (SUCCEEDED(hr)) {
+		m_dx7.nk_d3d7_render(NK_ANTI_ALIASING_ON);
+		hr = IDirect3DDevice7_EndScene(pD3DDevice);
+	}
 
 	srcrect.top = 0;
 
-	hr = pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
 	if (FAILED(hr)) {
 		hr = pDDSPrimary->IsLost();
 		if (hr == DDERR_SURFACELOST) {
@@ -1230,6 +1231,10 @@ void NuklearEditor::Render()
 
 			Restore();
 		}
+	}
+
+	if (SUCCEEDED(hr)) {
+		hr = pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
 	}
 }
 

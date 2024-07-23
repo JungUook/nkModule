@@ -19,6 +19,7 @@
 #define NK_INCLUDE_STANDARD_VARARGS_h__
 #define NK_INCLUDE_DEFAULT_ALLOCATOR_h__
 #define NK_BUTTON_TRIGGER_ON_RELEASE
+#define NK_INCLUDE_COMMAND_USERDATA
 #include <nuklear.h>
 #include "nuklear_extensions.h"
 

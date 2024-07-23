@@ -252,6 +252,9 @@
     <ClInclude Include="nuklear_extensions.h">
       <Filter>소스 파일\Nuklear</Filter>
     </ClInclude>
+    <ClInclude Include="NKBaseImage.h">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NKBase.cpp">
@@ -472,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="UiLibrary.cpp">
       <Filter>소스 파일\Nuklear\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="NKBaseImage.cpp">
+      <Filter>소스 파일\Nuklear\Base\Module</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

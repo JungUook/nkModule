@@ -3,6 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#define nk_white { 255,255,255,255 };
+
 #ifdef _DX7
 void NuklearUI::Initialize(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int width, int height, int lang, const char* fontPath)
 {
@@ -183,6 +185,7 @@ void NuklearUI::AddImage(int SID, IDirectDrawSurface7* texture)
 	struct nk_image img;
 	memset(&img, 0, sizeof(img));
 	img.handle = nk_handle_ptr(texture);
+	img.color = nk_white;
 
 	std::pair<int, struct nk_image> pairData = std::make_pair(SID, img);
 	m_mapImage.insert(pairData);
@@ -201,6 +204,8 @@ void NuklearUI::AddImage(int SID, IDirectDrawSurface7* texture, uint16_t width, 
 	img.region[1] = region[1];
 	img.region[2] = region[2];
 	img.region[3] = region[3];
+
+	img.color = nk_white;
 
 	std::pair<int, struct nk_image> pairData = std::make_pair(SID, img);
 	m_mapImage.insert(pairData);
@@ -306,7 +311,6 @@ bool NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outi
 			img.region[1] = pSpr->GetSpr()->GetYSize() * y;
 			img.region[2] = pSpr->GetSpr()->GetXSize();
 			img.region[3] = pSpr->GetSpr()->GetYSize();
-
 			outimg = img;
 			return true;
 		}

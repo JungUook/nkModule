@@ -1,33 +1,22 @@
 #include "pch.h"
 #include "NKImage.h"
 
-NKImage::NKImage() : NKBase()
+NKImage::NKImage() : NKBase(), NKBaseImage()
 {
 	m_type = eIMAGE;
-	m_imagePath = "None";
-	m_sprIndex = 0;
-	m_sprSize = 0;
 }
 
-NKImage::NKImage(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
+NKImage::NKImage(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseImage(pManager)
 {
 	m_type = eIMAGE;
 
 	m_cTransform.w = 100.f;
 	m_cTransform.h = 100.f;
-
-	m_imagePath = "None";
-	m_sprIndex = 0;
-	m_sprSize = 0;
 }
 
 NKImage::NKImage(const NKImage& other) : NKBase(other)
 {
 	m_type = other.m_type;
-
-	m_imagePath = other.m_imagePath;
-	m_sprIndex = other.m_sprIndex;
-	m_sprSize = other.m_sprSize;
 }
 
 NKImage::~NKImage()
@@ -79,9 +68,8 @@ void NKImage::SafeRenderEnd(nk_context* ctx)
 
 void NKImage::EditInfo(nk_context* ctx)
 {
-	auto mapSpr = m_pManager->GetSprMap();
-	int size = mapSpr->size();
-
+	int size = m_mapSpr->size();
+	
 	if (m_sprSize > 0)
 	{
 		nk_layout_row_dynamic(ctx, 22, 1);
@@ -113,7 +101,7 @@ void NKImage::EditInfo(nk_context* ctx)
 			nk_layout_row(ctx, NK_DYNAMIC, 22, 2, ratio);
 			int selected = 0;
 
-			for (auto it = mapSpr->begin(); it != mapSpr->end(); ++it) {
+			for (auto it = m_mapSpr->begin(); it != m_mapSpr->end(); ++it) {
 				std::filesystem::path filePath((*it).first.c_str());
 				nk_label(ctx, filePath.filename().string().c_str(), NK_TEXT_LEFT);
 
@@ -128,72 +116,6 @@ void NKImage::EditInfo(nk_context* ctx)
 			nk_group_end(ctx);
 		}
 	}
-}
-
-void NKImage::SetImagePath(const char* imgPath)
-{
-	m_imagePath = imgPath;
-}
-
-void NKImage::LSetImagePath(luabridge::LuaRef ref)
-{
-	CHECK_LUA_REF(ref);
-	std::string imgPath = ref.cast<std::string>();
-	SetImagePath(imgPath.c_str());
-}
-
-bool NKImage::CSetImagePath(void* param)
-{
-	const char** imgPath = static_cast<const char**>(param);
-
-	if (imgPath) {
-		SetImagePath(*imgPath);
-		return true;
-	}
-	return false;
-}
-
-void NKImage::SetSpritePath(const char* imgPath)
-{
-	auto mapSpr = m_pManager->GetSprMap();
-	auto found = mapSpr->find(imgPath);
-	if (found != mapSpr->end()) {
-		m_imagePath = found->first;
-		m_sprSize = found->second->GetSpr()->GetXCount() * found->second->GetSpr()->GetYCount();
-		if (m_sprSize <= m_sprIndex) {
-			m_sprIndex = 0;
-		}
-	}
-}
-
-void NKImage::LSetSpritePath(luabridge::LuaRef ref)
-{
-	CHECK_LUA_REF(ref);
-	std::string imgPath = ref.cast<std::string>();
-	SetSpritePath(imgPath.c_str());
-}
-
-void NKImage::SetIndex(int index)
-{
-	m_sprIndex = index;
-}
-
-void NKImage::LSetIndex(luabridge::LuaRef ref)
-{
-	CHECK_LUA_REF(ref);
-	int index = ref.cast<int>();
-	SetIndex(index);
-}
-
-bool NKImage::CSetIndex(void* param)
-{
-	int* index = static_cast<int*>(param);
-
-	if (index) {
-		SetIndex(*index);
-		return true;
-	}
-	return false;
 }
 
 void NKImage::RegistCommand(const char* classname)

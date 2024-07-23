@@ -376,12 +376,11 @@ BOOL NKRender(void* device)
     BOOL bResult = TRUE;
 
     hr = IDirect3DDevice7_BeginScene(pDevice);
-    //assert(SUCCEEDED(hr));
 
-    g_nuklear->Render(pDevice);
-
-    hr = IDirect3DDevice7_EndScene(pDevice);
-    //assert(SUCCEEDED(hr));
+    if (SUCCEEDED(hr)) {
+        g_nuklear->Render(pDevice);
+        hr = IDirect3DDevice7_EndScene(pDevice);
+    }
 
     if (FAILED(hr)) {
         bResult = FALSE;

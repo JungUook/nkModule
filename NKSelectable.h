@@ -5,8 +5,14 @@
 #include "NKHandler.h"
 #include "NKBaseLabel.h"
 #include "NKStyleSelectedable.h"
-class NKSelectable : public NKBase, public NKHandler, public NKBaseLabel, public NKStyleSelectedable
+#include "NKBaseImage.h"
+class NKSelectable : public NKBase, public NKHandler, public NKBaseLabel, public NKStyleSelectedable, public NKBaseImage
 {
+public:
+    enum {
+        eSELECTABLE_LABEL,
+        eSELECTABLE_IMAGELABEL,
+    };
 public:
     NKSelectable();
     NKSelectable(nk_context* ctx, NuklearUI* pManager);
@@ -34,17 +40,44 @@ public:
 
     virtual void RegistCommand(const char* classname) override;
 public:
+    int m_iSelectableType;
     int m_selected;
 
+    int m_iLeft;
+    int m_iCenter;
+    int m_iRight;
+    int m_iTop;
+    int m_iMiddle;
+    int m_iBottom;
+    nk_flags m_fLabelType;
 public:
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-        ar(cereal::base_class<NKBase>(this)
-            , cereal::base_class<NKHandler>(this)
-            , cereal::base_class<NKBaseLabel>(this)
-            , cereal::base_class<NKStyleSelectedable>(this)
-            , CEREAL_NVP(m_selected)
-        );
+        if (version >= 4) {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKHandler>(this)
+                , cereal::base_class<NKBaseLabel>(this)
+                , cereal::base_class<NKStyleSelectedable>(this)
+                , cereal::base_class<NKBaseImage>(this)
+                , CEREAL_NVP(m_iSelectableType)
+                , CEREAL_NVP(m_selected)
+                , CEREAL_NVP(m_iLeft)
+                , CEREAL_NVP(m_iCenter)
+                , CEREAL_NVP(m_iRight)
+                , CEREAL_NVP(m_iTop)
+                , CEREAL_NVP(m_iMiddle)
+                , CEREAL_NVP(m_iBottom)
+                , CEREAL_NVP(m_fLabelType)
+            );
+        }
+        else {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKHandler>(this)
+                , cereal::base_class<NKBaseLabel>(this)
+                , cereal::base_class<NKStyleSelectedable>(this)
+                , CEREAL_NVP(m_selected)
+            );
+        }
     }
 };
 #endif //NKSelectable_h__

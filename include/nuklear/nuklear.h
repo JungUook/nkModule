@@ -481,8 +481,8 @@ struct nk_rect {float x,y,w,h;};
 struct nk_recti {short x,y,w,h;};
 typedef char nk_glyph[NK_UTF_SIZE];
 typedef union {void *ptr; int id;} nk_handle;
-struct nk_image {nk_handle handle; nk_ushort w, h; nk_ushort region[4];};
-struct nk_nine_slice {struct nk_image img; nk_ushort l, t, r, b;};
+struct nk_image { nk_handle handle; nk_ushort w, h; nk_ushort region[4]; nk_color color; };
+struct nk_nine_slice { struct nk_image img; nk_ushort l, t, r, b; };
 struct nk_cursor {struct nk_image img; struct nk_vec2 size, offset;};
 struct nk_scroll {nk_uint x, y;};
 
@@ -5376,9 +5376,9 @@ struct nk_style {
     struct nk_style_window window;
 };
 
-NK_API struct nk_style_item nk_style_item_color(struct nk_color);
-NK_API struct nk_style_item nk_style_item_image(struct nk_image img);
-NK_API struct nk_style_item nk_style_item_nine_slice(struct nk_nine_slice slice);
+NK_API struct nk_style_item nk_style_item_color(struct nk_color, bool bOther = true);
+NK_API struct nk_style_item nk_style_item_image(struct nk_image img, struct nk_color color = {255,255,255,255});
+NK_API struct nk_style_item nk_style_item_nine_slice(struct nk_nine_slice slice, struct nk_color color = { 255,255,255,255 });
 NK_API struct nk_style_item nk_style_item_hide(void);
 
 /*==============================================================
@@ -18254,15 +18254,19 @@ nk_style_get_color_by_name(enum nk_style_colors c)
     return nk_color_names[c];
 }
 NK_API struct nk_style_item
-nk_style_item_color(struct nk_color col)
+nk_style_item_color(struct nk_color col, bool bOther)
 {
     struct nk_style_item i;
     i.type = NK_STYLE_ITEM_COLOR;
     i.data.color = col;
+    if (bOther) {
+        i.data.image.color = nk_white;
+        i.data.slice.img.color = nk_white;
+    }
     return i;
 }
 NK_API struct nk_style_item
-nk_style_item_image(struct nk_image img)
+nk_style_item_image(struct nk_image img, struct nk_color color)
 {
     struct nk_style_item i;
     i.type = NK_STYLE_ITEM_IMAGE;
@@ -18270,7 +18274,7 @@ nk_style_item_image(struct nk_image img)
     return i;
 }
 NK_API struct nk_style_item
-nk_style_item_nine_slice(struct nk_nine_slice slice)
+nk_style_item_nine_slice(struct nk_nine_slice slice, struct nk_color color)
 {
     struct nk_style_item i;
     i.type = NK_STYLE_ITEM_NINE_SLICE;
@@ -19656,7 +19660,7 @@ nk_panel_get_padding(const struct nk_style *style, enum nk_panel_type type)
     case NK_PANEL_CONTEXTUAL: return style->window.contextual_padding;
     case NK_PANEL_COMBO: return style->window.combo_padding;
     case NK_PANEL_MENU: return style->window.menu_padding;
-    case NK_PANEL_TOOLTIP: return style->window.menu_padding;}
+    case NK_PANEL_TOOLTIP: return style->window.tooltip_padding;}
 }
 NK_LIB float
 nk_panel_get_border(const struct nk_style *style, nk_flags flags,
@@ -19671,7 +19675,7 @@ nk_panel_get_border(const struct nk_style *style, nk_flags flags,
         case NK_PANEL_CONTEXTUAL: return style->window.contextual_border;
         case NK_PANEL_COMBO: return style->window.combo_border;
         case NK_PANEL_MENU: return style->window.menu_border;
-        case NK_PANEL_TOOLTIP: return style->window.menu_border;
+        case NK_PANEL_TOOLTIP: return style->window.tooltip_border;
     }} else return 0;
 }
 NK_LIB struct nk_color
@@ -19685,7 +19689,7 @@ nk_panel_get_border_color(const struct nk_style *style, enum nk_panel_type type)
     case NK_PANEL_CONTEXTUAL: return style->window.contextual_border_color;
     case NK_PANEL_COMBO: return style->window.combo_border_color;
     case NK_PANEL_MENU: return style->window.menu_border_color;
-    case NK_PANEL_TOOLTIP: return style->window.menu_border_color;}
+    case NK_PANEL_TOOLTIP: return style->window.tooltip_border_color;}
 }
 NK_LIB nk_bool
 nk_panel_is_sub(enum nk_panel_type type)
@@ -19834,11 +19838,11 @@ nk_panel_begin(struct nk_context *ctx, const char *title, enum nk_panel_type pan
         switch(background->type) {
             case NK_STYLE_ITEM_IMAGE:
                 text.background = nk_rgba(0,0,0,0);
-                nk_draw_image(&win->buffer, header, &background->data.image, nk_white);
+                nk_draw_image(&win->buffer, header, &background->data.image, background->data.image.color);
                 break;
             case NK_STYLE_ITEM_NINE_SLICE:
                 text.background = nk_rgba(0, 0, 0, 0);
-                nk_draw_nine_slice(&win->buffer, header, &background->data.slice, nk_white);
+                nk_draw_nine_slice(&win->buffer, header, &background->data.slice, background->data.slice.img.color);
                 break;
             case NK_STYLE_ITEM_COLOR:
                 text.background = background->data.color;
@@ -19917,10 +19921,10 @@ nk_panel_begin(struct nk_context *ctx, const char *title, enum nk_panel_type pan
 
         switch(style->window.fixed_background.type) {
             case NK_STYLE_ITEM_IMAGE:
-                nk_draw_image(out, body, &style->window.fixed_background.data.image, nk_white);
+                nk_draw_image(out, body, &style->window.fixed_background.data.image, style->window.fixed_background.data.image.color);
                 break;
             case NK_STYLE_ITEM_NINE_SLICE:
-                nk_draw_nine_slice(out, body, &style->window.fixed_background.data.slice, nk_white);
+                nk_draw_nine_slice(out, body, &style->window.fixed_background.data.slice, style->window.fixed_background.data.slice.img.color);
                 break;
             case NK_STYLE_ITEM_COLOR:
                 nk_fill_rect(out, body, 0, style->window.fixed_background.data.color);
