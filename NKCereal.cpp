@@ -152,8 +152,11 @@ void NKCereal::SavePrefab(const std::string& filename, NKBase* prefab)
 		SaveSwitch(ptr, archive);
 	}
 
-	if (!Contains(m_vecPrefab, filename + ".json")) {
-		m_vecPrefab.push_back(filename + ".json");
+	std::string filePath = filename + ".json";
+	std::string relativePath = GetRelativePath(filePath.c_str());
+
+	if (!Contains(m_vecPrefab, relativePath)) {
+		m_vecPrefab.push_back(relativePath);
 	}
 	else {
 	}
@@ -163,9 +166,10 @@ void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 {
 	size_t size;
 	std::vector<NKBase*> vPrefab;
+	std::map<unsigned int, NKBase*> mPrefab;
 	std::vector<std::string> vStr;
 
-	std::ifstream is(filename);
+	std::ifstream is(GetExecutablePath() + "\\" + filename);
 	cereal::JSONInputArchive archive(is);
 
 	archive(CEREAL_NVP(size));
@@ -175,10 +179,61 @@ void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 		NKBase* ptr = m_pManager->SimpleCreateUI(vStr.at(i).c_str());
 		ptr->Initialize(m_pManager);
 		LoadSwitch(ptr, archive, i);
-		m_pManager->RegistUI(ptr);
 		vPrefab.push_back(ptr);
+		mPrefab.insert(std::make_pair(ptr->GetPrimaryID(), ptr));
 	}
 
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		NKBase* ptr = *it;
+		unsigned int pID = ptr->GetParentPrimaryID();
+		if (pID != 0) {
+			auto found = mPrefab.find(pID);
+			if (found != mPrefab.end()) {
+				NKBase* pParent = found->second;
+				auto pList = pParent->GetChildList();
+				pList->push_back(ptr);
+			}
+		}
+	}
+
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		NKBase* ptr = *it;
+		ptr->SetPrimaryID(reinterpret_cast<intptr_t>(ptr));
+	}
+
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		NKBase* pParent = *it;
+		auto pList = pParent->GetChildList();
+
+		for (auto cit = pList->begin(); cit != pList->end(); ++cit) {
+			NKBase* pChild = *cit;
+			pChild->ResetParentID(pParent);
+		}
+	}
+
+	NKBase* pBase = nullptr;
+	NKWindow* pWin = nullptr;
+	pBase = vPrefab.at(0);
+	if (pBase->GetType() == eWINDOW) {
+		pBase->ResetWindowID(pBase);
+	}
+	else {
+		pWin = new NKWindow(m_pManager->GetContext(), m_pManager);
+		m_pManager->Add(pWin);
+		pBase->ResetWindowID(pWin);
+	}
+
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		NKBase* ptr = *it;
+		auto pList = ptr->GetChildList();
+		pList->clear();
+	}
+
+
+	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
+		NKBase* ptr = *it;
+		m_pManager->RegistUI(ptr);
+	}
 	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
 
 		if (it != vPrefab.begin()) {
@@ -198,14 +253,9 @@ void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 		m_pManager->ResetPrimaryID(pBase);
 		m_mapModuleID.insert(std::make_pair(pBase->GetPrimaryID(), pBase));
 	}
-
-	NKBase* pBase = nullptr;
-	pBase = vPrefab.at(0);
-
+		
 	if (parent == nullptr) {
 		if (pBase->GetType() != eWINDOW) {
-			NKWindow* pWin = new NKWindow(m_pManager->GetContext(), m_pManager);
-			m_pManager->Add(pWin);
 			pBase->ResetWindowID(pWin);
 			pWin->RegistChild(pBase);
 		}

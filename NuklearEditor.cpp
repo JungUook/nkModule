@@ -304,8 +304,11 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 {
 	if (nk_contextual_begin(ctx, 0, nk_vec2(180, 220), nk_window_get_bounds(ctx))) {
-		const char* grid_option[] = { "New Window", "Save Prefab"};
+		const char* grid_option[] = { "New Window", "Save Prefab: .json", "Save Prefab: .bin" };
 		nk_layout_row_dynamic(ctx, 25, 1);
+		char sLabel[256] = { 0, };
+		sprintf_s(sLabel, "Select Node: %s", m_pSelectedNode->GetWindowName());
+		nk_label(ctx, sLabel, NK_TEXT_LEFT);
 		if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_LEFT))
 		{
 			NKWindow* pWin = new NKWindow(ctx, m_pManager);
@@ -333,6 +336,30 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 			std::string filePath = dataPath + "\\" + m_pSelectedNode->GetPrimaryName();
 
 			m_pManager->m_cereal.SavePrefab(filePath, m_pSelectedNode);
+		}
+
+		if (m_pSelectedNode != nullptr && nk_contextual_item_label(ctx, grid_option[2], NK_TEXT_LEFT))
+		{
+			char path[MAX_PATH];
+			HMODULE hModule = GetModuleHandle(NULL);
+			if (hModule != NULL) {
+				// 현재 실행 파일의 경로를 얻습니다.
+				GetModuleFileNameA(hModule, path, MAX_PATH);
+			}
+			else {
+				std::cerr << "Failed to get module handle." << std::endl;
+				return;
+			}
+			std::string basePath(path);
+			basePath = basePath.substr(0, basePath.find_last_of("\\\\"));
+			std::string dataPath = basePath + "\\NInterface\\Data2\\dp";
+			if (!m_pManager->CreateDirectoryIfNotExists(dataPath)) {
+				std::cerr << "Failed to create directory: " << dataPath << std::endl;
+				return;
+			}
+			std::string filePath = dataPath + "\\" + m_pSelectedNode->GetPrimaryName();
+
+			m_pManager->m_cereal.SavePrefabBinary(filePath, m_pSelectedNode);
 		}
 		nk_contextual_end(ctx);
 	}
