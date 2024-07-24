@@ -205,9 +205,14 @@ void NKCereal::LoadPrefabBinary(const std::string& filename, NKBase* parent)
 		pBase->ResetWindowID(pBase);
 	}
 	else {
-		pWin = new NKWindow(m_pManager->GetContext(), m_pManager);
-		m_pManager->Add(pWin);
-		pBase->ResetWindowID(pWin);
+		if (parent == nullptr) {
+			pWin = new NKWindow(m_pManager->GetContext(), m_pManager);
+			m_pManager->Add(pWin);
+			pBase->ResetWindowID(pWin);
+		}
+		else {
+			pBase->ResetWindowID(parent);
+		}
 	}
 
 	for (auto it = vPrefab.begin(); it != vPrefab.end(); ++it) {
