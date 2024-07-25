@@ -10629,13 +10629,10 @@ nk_draw_list_add_text(struct nk_draw_list *list, const struct nk_user_font *font
     struct nk_rect rect, const char *text, int len, float font_height,
     struct nk_color fg)
 {
-    float x = 0;
+    float x = rect.x;
     int text_len = 0;
-    nk_rune unicode = 0;
-    nk_rune next = 0;
-    int glyph_len = 0;
-    int next_glyph_len = 0;
-    struct nk_user_font_glyph g;
+    int is_bold = 0;
+    const float bold_offset = 0.5f; // 볼드 효과를 위한 오프셋
 
     NK_ASSERT(list);
     if (!list || !len || !text) return;
@@ -10643,35 +10640,50 @@ nk_draw_list_add_text(struct nk_draw_list *list, const struct nk_user_font *font
         list->clip_rect.x, list->clip_rect.y, list->clip_rect.w, list->clip_rect.h)) return;
 
     nk_draw_list_push_image(list, font->texture);
-    x = rect.x;
-    glyph_len = nk_utf_decode(text, &unicode, len);
-    if (!glyph_len) return;
-
-    /* draw every glyph image */
     fg.a = (nk_byte)((float)fg.a * list->config.global_alpha);
-    while (text_len < len && glyph_len) {
-        float gx, gy, gh, gw;
-        float char_width = 0;
-        if (unicode == NK_UTF_INVALID) break;
 
-        /* query currently drawn glyph information */
-        next_glyph_len = nk_utf_decode(text + text_len + glyph_len, &next, (int)len - text_len);
-        font->query(font->userdata, font_height, &g, unicode,
-                    (next == NK_UTF_INVALID) ? '\0' : next);
+    while (text_len < len) {
+        if (text[text_len] == '<' && text_len + 2 < len) {
+            if (text[text_len + 1] == 'b' && text[text_len + 2] == '>') {
+                is_bold = 1;
+                text_len += 3;
+                continue;
+            }
+            else if (text[text_len + 1] == '/' && text[text_len + 2] == 'b' && text_len + 3 < len && text[text_len + 3] == '>') {
+                is_bold = 0;
+                text_len += 4;
+                continue;
+            }
+        }
 
-        /* calculate and draw glyph drawing rectangle and image */
-        gx = x + g.offset.x;
-        gy = rect.y + g.offset.y;
-        gw = g.width; gh = g.height;
-        char_width = g.xadvance;
-        nk_draw_list_push_rect_uv(list, nk_vec2(gx,gy), nk_vec2(gx + gw, gy+ gh),
+        nk_rune unicode = 0;
+        int glyph_len = nk_utf_decode(&text[text_len], &unicode, len - text_len);
+        if (glyph_len <= 0) break;
+
+        struct nk_user_font_glyph g;
+        font->query(font->userdata, font_height, &g, unicode, 0);
+
+        float gx = x + g.offset.x;
+        float gy = rect.y + g.offset.y;
+        float gw = g.width;
+        float gh = g.height;
+
+        // 기본 글자 그리기
+        nk_draw_list_push_rect_uv(list, nk_vec2(gx, gy), nk_vec2(gx + gw, gy + gh),
             g.uv[0], g.uv[1], fg);
 
-        /* offset next glyph */
+        // 볼드 효과를 위해 글자를 여러 번 그리기
+        if (is_bold) {
+            nk_draw_list_push_rect_uv(list, nk_vec2(gx + bold_offset, gy), nk_vec2(gx + gw + bold_offset, gy + gh),
+                g.uv[0], g.uv[1], fg);
+            nk_draw_list_push_rect_uv(list, nk_vec2(gx, gy + bold_offset), nk_vec2(gx + gw, gy + gh + bold_offset),
+                g.uv[0], g.uv[1], fg);
+            nk_draw_list_push_rect_uv(list, nk_vec2(gx + bold_offset, gy + bold_offset), nk_vec2(gx + gw + bold_offset, gy + gh + bold_offset),
+                g.uv[0], g.uv[1], fg);
+        }
+
+        x += g.xadvance;
         text_len += glyph_len;
-        x += char_width;
-        glyph_len = next_glyph_len;
-        unicode = next;
     }
 }
 NK_API nk_flags
