@@ -23600,29 +23600,34 @@ nk_widget_text_wrap(struct nk_command_buffer *o, struct nk_rect b,
     line.w = b.w - 2 * t->padding.x;
     line.h = 2 * t->padding.y + f->height;
 
-    fitting = nk_text_clamp(f, string, len, line.w, &glyphs, &width, seperator, NK_LEN(seperator));
     while (done < len) {
-        if (!fitting || line.y + line.h >= (b.y + b.h)) break;
+        // fitting 길이 계산
+        fitting = nk_text_clamp(f, &string[done], len - done, line.w, &glyphs, &width, seperator, NK_LEN(seperator));
+        if (fitting <= 0 || line.y + line.h >= (b.y + b.h)) break;
 
-        // 줄바꿈 문자가 있는지 확인
-        const char* next_line = string + done;
-        const char* newline = strpbrk(next_line, "\n\r");
-        if (newline && newline < next_line + fitting) {
-            fitting = newline - next_line;
+        // 줄바꿈 문자 확인 및 fitting 길이 조정
+        int new_fitting = fitting;
+        for (int i = 0; i < fitting; ++i) {
+            if (string[done + i] == '\n' || string[done + i] == '\r') {
+                new_fitting = i;
+                break;
+            }
         }
 
-        nk_widget_text(o, line, &string[done], fitting, &text, NK_TEXT_LEFT, f);
-        done += fitting;
+        nk_widget_text(o, line, &string[done], new_fitting, &text, NK_TEXT_LEFT, f);
+        done += new_fitting;
 
         // 줄바꿈 문자 처리
-        if (newline && newline < string + len) {
-            done++; // 줄바꿈 문자를 건너뜀
-            if (string[done - 1] == '\r' && done < len && string[done] == '\n')
-                done++; // "\r\n" 처리
+        if (done < len) {
+            if (string[done] == '\r' && (done + 1) < len && string[done + 1] == '\n') {
+                done += 2; // "\r\n" 처리
+            }
+            else if (string[done] == '\r' || string[done] == '\n') {
+                done++; // "\r" 또는 "\n" 처리
+            }
         }
 
         line.y += f->height + 2 * t->padding.y;
-        fitting = nk_text_clamp(f, &string[done], len - done, line.w, &glyphs, &width, seperator, NK_LEN(seperator));
     }
 }
 NK_API void

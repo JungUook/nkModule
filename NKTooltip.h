@@ -38,6 +38,8 @@ public:
 
     virtual void RegistCommand(const char* classname) override;
 
+    int CountNewLines(const std::string& str);
+
 public:
     int m_iTooltipType;
     int m_iDetailType;

@@ -68,7 +68,7 @@ void NKTooltip::Layout(nk_context* ctx)
         {
             if (m_iTooltipType == eTOOLTIP_SIMPLE) {
                 nk_layout_row_dynamic(ctx, 22, 1);
-                nk_label(ctx, m_sContent.c_str(), NK_TEXT_CENTERED);
+                nk_label_wrap(ctx, m_sContent.c_str());
             }
             else if (m_iTooltipType == eTOOLTIP_DETAIL){
                 for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
@@ -95,12 +95,15 @@ void NKTooltip::Layout(nk_context* ctx)
             text_width = style->font->width(style->font->userdata,
                 style->font->height, m_sContent.c_str(), m_sContent.length());
             text_width += (4 * padding.x);
-            text_height = (style->font->height + 2 * padding.y);
+
+            int newlineCount = CountNewLines(m_sContent);
+
+            text_height = (style->font->height + padding.y) * (newlineCount + 1);
 
             if (m_iTooltipType == eTOOLTIP_SIMPLE) {
-                if (nk_tooltip_begin(ctx, (float)text_width, &vecBegin)) {
+                if (nk_tooltip_begin(ctx, (float)GetWidth(), &vecBegin)) {
                     nk_layout_row_dynamic(ctx, (float)text_height, 1);
-                    nk_text(ctx, m_sContent.c_str(), m_sContent.length(), NK_TEXT_LEFT);
+                    nk_label_wrap(ctx, m_sContent.c_str());
                     nk_tooltip_end(ctx);
                 }
             }
@@ -188,4 +191,22 @@ void NKTooltip::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 void NKTooltip::RegistCommand(const char* classname)
 {
     NKBase::RegistCommand(classname);
+    MAKE_INTERFACE(m_mapFunc, this, NKTooltip::CSetLabel, classname);
+}
+
+int NKTooltip::CountNewLines(const std::string& str)
+{
+    int count = 0;
+    for (size_t i = 0; i < str.length(); ++i) {
+        if (str[i] == '\n') {
+            count++;
+        }
+        else if (str[i] == '\r') {
+            count++;
+            if (i + 1 < str.length() && str[i + 1] == '\n') {
+                i++; // '\r\n' Ã³¸®
+            }
+        }
+    }
+    return count;
 }

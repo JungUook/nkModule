@@ -10,6 +10,7 @@
 #define NK_INCLUDE_DEFAULT_ALLOCATOR_h__
 #define NK_BUTTON_TRIGGER_ON_RELEASE
 #define NK_INCLUDE_COMMAND_USERDATA
+#include <string.h>
 #include <nuklear.h>
 
 #define WIN32_LEAN_AND_MEAN
@@ -18,7 +19,6 @@
 #include <d3d.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include <string.h>
 #include "nuklear_extensions.h"
 
 typedef struct IDirectDrawSurface7 IDirectDrawSurface7;

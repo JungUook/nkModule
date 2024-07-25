@@ -47,7 +47,10 @@ void NKLabel::LayoutBegin(nk_context* ctx)
 void NKLabel::Layout(nk_context* ctx)
 {
 	if (m_bWrap) {
-		nk_label_wrap(ctx, m_sContent.c_str());
+		char text_buffer[4096] = { 0 };
+		strncpy_s(text_buffer, 4096, m_sContent.c_str(), 4096 - 1);
+		text_buffer[4095] = '\0';
+		nk_label_wrap(ctx, text_buffer);
 	}
 	else if (m_bBold) {
 		nk_label_bold(ctx, m_sContent.c_str(), NK_TEXT_LEFT);
