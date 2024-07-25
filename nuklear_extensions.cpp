@@ -5,11 +5,17 @@
 #include <assert.h>
 #define NK_ASSERT(expr) assert(expr)
 #endif
+#define MAX_BUFFER_SIZE 4096
 
 void nk_render_wrapped_label(nk_context* ctx, const char* text)
 {
-    const char* line_start = text;
-    const char* line_end;
+    char text_buffer[MAX_BUFFER_SIZE] = { 0 };
+    strncpy_s(text_buffer, MAX_BUFFER_SIZE, text, MAX_BUFFER_SIZE - 1);
+    text_buffer[MAX_BUFFER_SIZE - 1] = '\0';
+
+    char* line_start = text_buffer;
+    char* line_end;
+
     while (*line_start) {
         // Find the next newline or carriage return character
         line_end = strpbrk(line_start, "\n\r");
@@ -19,14 +25,10 @@ void nk_render_wrapped_label(nk_context* ctx, const char* text)
             break;
         }
         else {
-            size_t line_length = line_end - line_start;
-            char* line = (char*)malloc(line_length + 1);  // Allocate memory dynamically
-            if (line) {
-                strncpy_s(line, line_length + 1, line_start, line_length);
-                line[line_length] = '\0';
-                nk_label_wrap(ctx, line);
-                free(line);  // Free allocated memory
-            }
+            *line_end = '\0'; // Temporarily null-terminate the current line
+            nk_label_wrap(ctx, line_start);
+            // Restore the newline or carriage return character
+            *line_end = *line_end == '\n' ? '\n' : '\r';
             // Skip over the newline or carriage return character
             line_start = line_end + 1;
             // If there is a '\r\n' or '\n\r' sequence, skip the second character as well

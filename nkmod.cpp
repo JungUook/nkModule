@@ -557,21 +557,71 @@ bool NKCommand(const char* primaryName, const char* command, void* param)
     return g_nuklear->NKCommand(primaryName, command, param);
 }
 
-bool NKLuaCommand(const char* command, const char* tableName)
+bool NKLuaCommand(const char* command, const char* tableName, void* params)
 {
     if (g_nuklear == nullptr) {
         return false;
     }
-    if (tableName != nullptr) {
+    if (tableName == nullptr) {
         g_nuklear->m_luaInterface.RunFunction(command);
-    }
+        return true;
+	}
+
+	luabridge::LuaRef ref = g_nuklear->m_luaInterface.GetLuaTable(tableName);
+
+	if (ref.isTable()) {
+        std::vector<PackedLuaParam>* vTable = static_cast<std::vector<PackedLuaParam>*>(params);
+
+        if (vTable == nullptr) {
+            return false;
+        }
+
+		for (auto it = vTable->begin(); it != vTable->end(); ++it) {
+			std::string key = it->key;
+            switch (it->data.type) {
+            case ParamType::Number:
+            {
+                ref[key] = it->data.value.numberValue;
+                break;
+            }
+            case ParamType::String:
+            {
+                ref[key] = *it->data.value.stringValue;
+                break;
+            }
+            case ParamType::Boolean:
+            {
+                ref[key] = it->data.value.boolValue;
+                break;
+            }
+            default:
+                return false;
+            }
+		}
+	}
     else {
+        PackedLuaParam* param = static_cast<PackedLuaParam*>(params);
 
-        luabridge::LuaRef table = g_nuklear->m_luaInterface.GetLuaTable(tableName);
-        g_nuklear->m_luaInterface.RunFunctionArgs(command, table);
+        switch (param->data.type) {
+        case ParamType::Number:
+            ref = param->data.value.numberValue;
+            break;
+        case ParamType::String:
+        {
+            ref = param->data.value.stringValue;
+            break;
+        }
+        case ParamType::Boolean:
+            ref = param->data.value.boolValue;
+            break;
+        default:
+            return false;
+        }
     }
 
-    return false;
+	g_nuklear->m_luaInterface.RunFunctionArgs(command, ref);
+	return true;
+
 }
 
 void* NKGetData(const char* key)
@@ -598,12 +648,12 @@ float NKGetDataFloat(const char* key)
     return g_nuklear->m_luaInterface.NKGetDataFloat(key);
 }
 
-std::string NKGetDataString(const char* key)
+const char* NKGetDataString(const char* key)
 {
     if (g_nuklear == nullptr) {
         return "None";
     }
-    return g_nuklear->m_luaInterface.NKGetDataString(key);
+    return g_nuklear->m_luaInterface.NKGetDataString(key).c_str();
 }
 
 bool NKGetDataBool(const char* key)

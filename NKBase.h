@@ -17,9 +17,7 @@ public:
 	NKBase();
 	NKBase(nk_context* ctx, NuklearUI* pManager);
 	NKBase(const NKBase& other);
-	virtual ~NKBase();
-
-	
+	virtual ~NKBase();	
 
 	//기본함수
 public:
@@ -55,6 +53,34 @@ public:
 	virtual void RemoveChild(NKBase* nkBase);
 	virtual void LRemoveChild(luabridge::LuaRef ref);
 	virtual bool CRemoveChild(void* param);
+
+	virtual int SizeChild();
+	virtual void ClearChild();
+
+	template <class T>
+	T* Find(size_t index)
+	{
+		if (index >= m_pChildList.size()) {
+			return nullptr;
+		}
+
+		auto it = m_pChildList.begin();
+		std::advance(it, index);
+		return (T*)(*it);
+	}
+
+	template <class T>
+	T* FindChild(size_t index)
+	{
+		std::vector<NKBase*> vFind;
+
+		GetPrefab(vFind);
+
+		if (vFind.size() > index) {
+			return (T*)vFind.at(index);
+		}
+		return nullptr;
+	}
 
 	//virtual void Load(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void RegistInit(NKBase* pParent);

@@ -255,6 +255,10 @@ void NuklearUI::EditorRestore()
 {
 	g_editor.Restore();
 }
+void NuklearUI::EditorSelectorClear()
+{
+	g_editor.SelectNode(nullptr);
+}
 #endif
 bool NuklearUI::CreateDirectoryIfNotExists(const std::string& path)
 {

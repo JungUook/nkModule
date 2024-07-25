@@ -162,7 +162,7 @@ void NKCereal::SavePrefab(const std::string& filename, NKBase* prefab)
 	}
 }
 
-void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
+NKBase* NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 {
 	size_t size;
 	std::vector<NKBase*> vPrefab;
@@ -277,15 +277,25 @@ void NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
 		NKBase* pChild = *child;
 		pChild->ResetParentID(pBase);
 	}
+
+	return pBase;
 }
 
-void NKCereal::LLoadPrefab(luabridge::LuaRef ref)
+NKBase* NKCereal::LLoadPrefab(luabridge::LuaRef ref)
 {
-	CHECK_LUA_REF(ref);
+	if ((ref).isNil()) {
+		lua_State* L = (ref).state();
+		lua_Debug ar;
+		if (lua_getstack(L, 1, &ar) && lua_getinfo(L, "Sl", &ar)) {
+			std::cerr << "Error: Invalid reference passed at "
+				<< ar.short_src << ":" << ar.currentline << std::endl;
+		}
+		return nullptr;
+	}
 	std::string filename = ref["filename"].cast<std::string>();
 	NKBase* parent = ref["parent"].cast<NKBase*>();
 
-	LoadPrefab(filename, parent);
+	return LoadPrefab(filename, parent);
 }
 
 void NKCereal::OpenLuaCodeDialog()

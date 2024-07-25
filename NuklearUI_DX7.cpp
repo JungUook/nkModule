@@ -281,12 +281,20 @@ void NuklearUI::LoadSprFile(const char* filename)
 {
 	sprData* pData = m_sprLoader->LoadSprite(filename);
 	std::string relativePath = m_sprLoader->GetRelativePath(filename);
+
+	std::transform(relativePath.begin(), relativePath.end(), relativePath.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+
 	m_mapSpr.insert(std::make_pair(relativePath, pData));
 }
 
 bool NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outimg, bool bImmortal)
 {
-	auto it = m_mapSpr.find(filename);
+	std::string str = filename;
+	std::transform(str.begin(), str.end(), str.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+
+	auto it = m_mapSpr.find(str);
 	if (it != m_mapSpr.end()) {
 		sprData* pSpr = (*it).second;
 		bool bSuccess = RegisterRenderData(pSpr, bImmortal);

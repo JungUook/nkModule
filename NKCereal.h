@@ -35,9 +35,9 @@ public:
 	void OpenPrefabDialog();
 	void SavePrefab(const std::string& filename, NKBase* prefab);
 	void SavePrefabBinary(const std::string& filename, NKBase* prefab);
-	void LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
+	NKBase* LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
 	void LoadPrefabBinary(const std::string& filename, NKBase* parent = nullptr);
-	void LLoadPrefab(luabridge::LuaRef ref);
+	NKBase* LLoadPrefab(luabridge::LuaRef ref);
 
 	void OpenLuaCodeDialog();
 

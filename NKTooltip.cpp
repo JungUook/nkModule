@@ -5,12 +5,14 @@ NKTooltip::NKTooltip() : NKBase(), NKBaseLabel(), NKObjectFinder(), NKStyleWindo
 {
     m_type = eTOOLTIP;
     m_iTooltipType = eTOOLTIP_STATIC;
+    m_iDetailType = 0;
 }
 
 NKTooltip::NKTooltip(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKObjectFinder(pManager), NKStyleWindow(ctx, &m_style), NKStyleText(ctx, &m_style)
 {
     m_type = eTOOLTIP;
     m_iTooltipType = eTOOLTIP_STATIC;
+    m_iDetailType = 0;
     SetLabel("Tooltip");
     m_cTransform.w = 150.f;
     m_cTransform.h = 40.f;
@@ -20,6 +22,7 @@ NKTooltip::NKTooltip(const NKTooltip& other) : NKBase(other), NKBaseLabel(other)
 {
     m_type = other.m_type;
     m_iTooltipType = other.m_iTooltipType;
+    m_iDetailType = other.m_iDetailType;
 }
 
 NKTooltip::~NKTooltip() {}
@@ -37,29 +40,31 @@ void NKTooltip::Layout(nk_context* ctx)
     const float mouseX = ctx->input.mouse.pos.x;
     const float mouseY = ctx->input.mouse.pos.y;
 
+    struct nk_vec2 vecBegin {};
+
     if (mouseX > SCREEN_WIDTH / 2 && mouseY > SCREEN_HEIGHT / 2) {
         // 우측 하단 -> 좌측 상단
-        ctx->input.mouse.pos.x += -m_cTransform.x - m_cTransform.w;
-        ctx->input.mouse.pos.y += -m_cTransform.y - m_cTransform.h;
+        vecBegin.x += -m_cTransform.x - m_cTransform.w;
+        vecBegin.y += -m_cTransform.y - m_cTransform.h;
     }
     else if (mouseX > SCREEN_WIDTH / 2 && mouseY <= SCREEN_HEIGHT / 2) {
         // 우측 상단 -> 좌측 하단
-        ctx->input.mouse.pos.x += -m_cTransform.x - m_cTransform.w;
-        ctx->input.mouse.pos.y += m_cTransform.y;
+        vecBegin.x += -m_cTransform.x - m_cTransform.w;
+        vecBegin.y += m_cTransform.y;
     }
     else if (mouseX <= SCREEN_WIDTH / 2 && mouseY > SCREEN_HEIGHT / 2) {
         // 좌측 하단 -> 우측 상단
-        ctx->input.mouse.pos.x += m_cTransform.x;
-        ctx->input.mouse.pos.y += -m_cTransform.y - m_cTransform.h;
+        vecBegin.x += m_cTransform.x;
+        vecBegin.y += -m_cTransform.y - m_cTransform.h;
     }
     else {
         // 좌측 상단 -> 우측 하단
-        ctx->input.mouse.pos.x += m_cTransform.x;
-        ctx->input.mouse.pos.y += m_cTransform.y;
+        vecBegin.x += m_cTransform.x;
+        vecBegin.y += m_cTransform.y;
     }
 
     if (m_iDetailType == eTOOLTIP_STATIC) {
-        if (m_pResultObject && m_pResultObject->IsHovering() && nk_tooltip_begin(ctx, GetWidth()))
+        if (m_pResultObject && m_pResultObject->IsHovering() && nk_tooltip_begin(ctx, GetWidth(), &vecBegin))
         {
             if (m_iTooltipType == eTOOLTIP_SIMPLE) {
                 nk_layout_row_dynamic(ctx, 22, 1);
@@ -93,14 +98,14 @@ void NKTooltip::Layout(nk_context* ctx)
             text_height = (style->font->height + 2 * padding.y);
 
             if (m_iTooltipType == eTOOLTIP_SIMPLE) {
-                if (nk_tooltip_begin(ctx, (float)text_width)) {
+                if (nk_tooltip_begin(ctx, (float)text_width, &vecBegin)) {
                     nk_layout_row_dynamic(ctx, (float)text_height, 1);
                     nk_text(ctx, m_sContent.c_str(), m_sContent.length(), NK_TEXT_LEFT);
                     nk_tooltip_end(ctx);
                 }
             }
 			else if (m_iTooltipType == eTOOLTIP_DETAIL) {
-				if (nk_tooltip_begin(ctx, m_cTransform.w)) {
+				if (nk_tooltip_begin(ctx, m_cTransform.w, &vecBegin)) {
 					for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 					{
 						(*it)->CheckMouseHover(ctx);
@@ -110,28 +115,6 @@ void NKTooltip::Layout(nk_context* ctx)
 				}
 			}
         }
-    }
-
-
-    if (mouseX > SCREEN_WIDTH / 2 && mouseY > SCREEN_HEIGHT / 2) {
-        // 우측 하단 -> 좌측 상단
-        ctx->input.mouse.pos.x -= -m_cTransform.x - m_cTransform.w;
-        ctx->input.mouse.pos.y -= m_cTransform.y - m_cTransform.h;
-    }
-    else if (mouseX > SCREEN_WIDTH / 2 && mouseY <= SCREEN_HEIGHT / 2) {
-        // 우측 상단 -> 좌측 하단
-        ctx->input.mouse.pos.x -= -m_cTransform.x - m_cTransform.w;
-        ctx->input.mouse.pos.y -= m_cTransform.y;
-    }
-    else if (mouseX <= SCREEN_WIDTH / 2 && mouseY > SCREEN_HEIGHT / 2) {
-        // 좌측 하단 -> 우측 상단
-        ctx->input.mouse.pos.x -= m_cTransform.x;
-        ctx->input.mouse.pos.y -= -m_cTransform.y - m_cTransform.h;
-    }
-    else {
-        // 좌측 상단 -> 우측 하단
-        ctx->input.mouse.pos.x -= m_cTransform.x;
-        ctx->input.mouse.pos.y -= m_cTransform.y;
     }
 }
 

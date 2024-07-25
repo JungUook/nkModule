@@ -47,7 +47,7 @@ void NKLabel::LayoutBegin(nk_context* ctx)
 void NKLabel::Layout(nk_context* ctx)
 {
 	if (m_bWrap) {
-		nk_render_wrapped_label(ctx, m_sContent.c_str());
+		nk_label_wrap(ctx, m_sContent.c_str());
 	}
 	else if (m_bBold) {
 		nk_label_bold(ctx, m_sContent.c_str(), NK_TEXT_LEFT);

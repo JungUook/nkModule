@@ -18,6 +18,12 @@
 #endif
 
 extern "C" {
+	enum ParamType { Number = 0, String = 1, Boolean = 2 };
+	union LuaData { double numberValue;	std::string* stringValue; bool boolValue; };
+	struct LuaParam { ParamType type; LuaData value; };
+	struct PackedLuaParam { std::string key; LuaParam data; };
+
+
 	NKMOD_API void RegistHWND(HWND wnd);
 
 #ifdef _NKDEBUG
@@ -55,7 +61,6 @@ extern "C" {
 	NKMOD_API IDirectDrawSurface7* GetNKPrimary();
 	NKMOD_API IDirectDrawSurface7* GetNKBackBuffer();
 	NKMOD_API void* GetDevice();
-	NKMOD_API void NKRestore();
 #endif
 
 	NKMOD_API bool AddHandler(int key, void(*func)(void*));
@@ -63,13 +68,12 @@ extern "C" {
 	NKMOD_API bool RemoveHandler(int key);
 	NKMOD_API bool RemoveBindHandler(int key);
 	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param);
-	NKMOD_API bool NKLuaCommand(const char* command, const char* tableName = nullptr);
-
+	NKMOD_API bool NKLuaCommand(const char* command, const char* tableName = nullptr, void* params = nullptr);
 
 	NKMOD_API void* NKGetData(const char* key);
 	NKMOD_API int NKGetDataInt(const char* key);
 	NKMOD_API float NKGetDataFloat(const char* key);
-	NKMOD_API std::string NKGetDataString(const char* key);
+	NKMOD_API const char* NKGetDataString(const char* key);
 	NKMOD_API bool NKGetDataBool(const char* key);
 }
 

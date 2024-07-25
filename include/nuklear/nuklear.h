@@ -3601,7 +3601,7 @@ NK_API void nk_tooltip(struct nk_context*, const char*);
 NK_API void nk_tooltipf(struct nk_context*, NK_PRINTF_FORMAT_STRING const char*, ...) NK_PRINTF_VARARG_FUNC(2);
 NK_API void nk_tooltipfv(struct nk_context*, NK_PRINTF_FORMAT_STRING const char*, va_list) NK_PRINTF_VALIST_FUNC(2);
 #endif
-NK_API nk_bool nk_tooltip_begin(struct nk_context*, float width);
+NK_API nk_bool nk_tooltip_begin(struct nk_context*, float width, struct nk_vec2* vec = nullptr);
 NK_API void nk_tooltip_end(struct nk_context*);
 /* =============================================================================
  *
@@ -23581,13 +23581,13 @@ nk_widget_text_wrap(struct nk_command_buffer *o, struct nk_rect b,
     int done = 0;
     struct nk_rect line;
     struct nk_text text;
-    NK_INTERN nk_rune seperator[] = {' '};
+    NK_INTERN nk_rune seperator[] = { ' ' };
 
     NK_ASSERT(o);
     NK_ASSERT(t);
     if (!o || !t) return;
 
-    text.padding = nk_vec2(0,0);
+    text.padding = nk_vec2(0, 0);
     text.background = t->background;
     text.text = t->text;
 
@@ -23600,13 +23600,29 @@ nk_widget_text_wrap(struct nk_command_buffer *o, struct nk_rect b,
     line.w = b.w - 2 * t->padding.x;
     line.h = 2 * t->padding.y + f->height;
 
-    fitting = nk_text_clamp(f, string, len, line.w, &glyphs, &width, seperator,NK_LEN(seperator));
+    fitting = nk_text_clamp(f, string, len, line.w, &glyphs, &width, seperator, NK_LEN(seperator));
     while (done < len) {
         if (!fitting || line.y + line.h >= (b.y + b.h)) break;
+
+        // 줄바꿈 문자가 있는지 확인
+        const char* next_line = string + done;
+        const char* newline = strpbrk(next_line, "\n\r");
+        if (newline && newline < next_line + fitting) {
+            fitting = newline - next_line;
+        }
+
         nk_widget_text(o, line, &string[done], fitting, &text, NK_TEXT_LEFT, f);
         done += fitting;
+
+        // 줄바꿈 문자 처리
+        if (newline && newline < string + len) {
+            done++; // 줄바꿈 문자를 건너뜀
+            if (string[done - 1] == '\r' && done < len && string[done] == '\n')
+                done++; // "\r\n" 처리
+        }
+
         line.y += f->height + 2 * t->padding.y;
-        fitting = nk_text_clamp(f, &string[done], len - done, line.w, &glyphs, &width, seperator,NK_LEN(seperator));
+        fitting = nk_text_clamp(f, &string[done], len - done, line.w, &glyphs, &width, seperator, NK_LEN(seperator));
     }
 }
 NK_API void
@@ -30011,7 +30027,7 @@ nk_combobox_callback(struct nk_context *ctx,
  *
  * ===============================================================*/
 NK_API nk_bool
-nk_tooltip_begin(struct nk_context *ctx, float width)
+nk_tooltip_begin(struct nk_context *ctx, float width, struct nk_vec2* vec)
 {
     int x,y,w,h;
     struct nk_window *win;
@@ -30033,8 +30049,15 @@ nk_tooltip_begin(struct nk_context *ctx, float width)
 
     w = nk_iceilf(width);
     h = nk_iceilf(nk_null_rect.h);
-    x = nk_ifloorf(in->mouse.pos.x + 1) - (int)win->layout->clip.x;
-    y = nk_ifloorf(in->mouse.pos.y + 1) - (int)win->layout->clip.y;
+
+    if (vec != nullptr) {
+        x = nk_ifloorf(in->mouse.pos.x + 1) - (int)win->layout->clip.x + (int)vec->x;
+        y = nk_ifloorf(in->mouse.pos.y + 1) - (int)win->layout->clip.y + (int)vec->y;
+    }
+    else {
+        x = nk_ifloorf(in->mouse.pos.x + 1) - (int)win->layout->clip.x;
+        y = nk_ifloorf(in->mouse.pos.y + 1) - (int)win->layout->clip.y;
+    }
 
     bounds.x = (float)x;
     bounds.y = (float)y;

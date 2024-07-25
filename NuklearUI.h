@@ -212,6 +212,7 @@ public:
 	BOOL InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char* fontPath = nullptr);
 	void EditorRender();
 	void EditorRestore();
+	void EditorSelectorClear();
 #endif
 
 public:

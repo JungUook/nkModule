@@ -5,12 +5,27 @@ NKSelectable::NKSelectable() : NKBase(), NKHandler(), NKBaseLabel(), NKStyleSele
 {
     m_type = eSELECTABLE;
     m_selected = 0;
+    m_iLeft = 0;
+    m_iCenter = 0;
+    m_iRight = 0;
+    m_iTop = 0;
+    m_iMiddle = 0;
+    m_iBottom = 0;
+    m_fLabelType = 0;
+
 }
 
 NKSelectable::NKSelectable(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleSelectedable(ctx, &m_style), NKBaseImage(pManager)
 {
     m_type = eSELECTABLE;
     m_selected = 0;
+    m_iLeft = 0;
+    m_iCenter = 0;
+    m_iRight = 0;
+    m_iTop = 0;
+    m_iMiddle = 0;
+    m_iBottom = 0;
+    m_fLabelType = 0;
     SetLabel("Selectable");
     m_cTransform.w = 150.f;
     m_cTransform.h = 40.f;
@@ -20,6 +35,13 @@ NKSelectable::NKSelectable(const NKSelectable& other) : NKBase(other), NKHandler
 {
     m_type = other.m_type;
     m_selected = other.m_selected;
+    m_iLeft = other.m_iLeft;
+    m_iCenter = other.m_iCenter;
+    m_iRight = other.m_iRight;
+    m_iTop = other.m_iTop;
+    m_iMiddle = other.m_iMiddle;
+    m_iBottom = other.m_iBottom;
+    m_fLabelType = other.m_fLabelType;
 }
 
 NKSelectable::~NKSelectable() {}

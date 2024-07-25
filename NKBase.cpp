@@ -307,6 +307,24 @@ bool NKBase::CRemoveChild(void* param)
 	return false;
 }
 
+int NKBase::SizeChild()
+{
+	return m_pChildList.size();
+}
+
+void NKBase::ClearChild()
+{
+#ifdef _NKDEBUG
+	m_pManager->EditorSelectorClear();
+#endif // _NKDEBUG
+
+	for (auto it = m_pChildList.begin(); it != m_pChildList.end();) {
+		NKBase* ptr = *it;
+		it = m_pChildList.erase(it);
+		m_pManager->Remove(ptr);
+	}
+}
+
 void NKBase::RegistInit(NKBase* pParent)
 {
 	CHECK_PTR(pParent);

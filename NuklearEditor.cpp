@@ -306,9 +306,11 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 	if (nk_contextual_begin(ctx, 0, nk_vec2(180, 220), nk_window_get_bounds(ctx))) {
 		const char* grid_option[] = { "New Window", "Save Prefab: .json", "Save Prefab: .bin" };
 		nk_layout_row_dynamic(ctx, 25, 1);
-		char sLabel[256] = { 0, };
-		sprintf_s(sLabel, "Select Node: %s", m_pSelectedNode->GetWindowName());
-		nk_label(ctx, sLabel, NK_TEXT_LEFT);
+		if (m_pSelectedNode != nullptr) {
+			char sLabel[256] = { 0, };
+			sprintf_s(sLabel, "Select Node: %s", m_pSelectedNode->GetWindowName());
+			nk_label(ctx, sLabel, NK_TEXT_LEFT);
+		}
 		if (nk_contextual_item_label(ctx, grid_option[0], NK_TEXT_LEFT))
 		{
 			NKWindow* pWin = new NKWindow(ctx, m_pManager);
