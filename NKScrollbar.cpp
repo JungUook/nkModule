@@ -25,8 +25,6 @@ NKScrollbar::~NKScrollbar() {}
 
 void NKScrollbar::Layout(nk_context* ctx)
 {
-    UpdateComponent(ctx, m_pManager);
-
     nk_slider_float(ctx, 0.0f, &m_scroll, 1.0f, 0.01f);
 }
 

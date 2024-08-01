@@ -63,10 +63,8 @@ extern "C" {
 	NKMOD_API void* GetDevice();
 #endif
 
-	NKMOD_API bool AddHandler(int key, void(*func)(void*));
-	NKMOD_API bool AddBindHandler(int key, void* callback, void(*func)(void*, void*));
-	NKMOD_API bool RemoveHandler(int key);
-	NKMOD_API bool RemoveBindHandler(int key);
+	NKMOD_API bool AddBindHandler(const char* key, void* callback, void(*func)(void*, void*));
+	NKMOD_API bool RemoveBindHandler(const char* key);
 	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param);
 	NKMOD_API bool NKLuaCommand(const char* command, const char* tableName = nullptr, void* params = nullptr);
 
@@ -82,8 +80,11 @@ extern "C" {
 #include <functional>
 #include <vector>
 
+#define REGIST_HANDLER(instance, func, handler) \
+	NKInterface::InitializeHandler(#func, instance, func, handler)
+
 struct NKHandler {
-	int id;
+	std::string key;
 	std::function<void(void*)>* handler;
 };
 
@@ -95,8 +96,8 @@ public:
 
 	NKInterface& operator+=(const NKHandler& other)
 	{
-		bool bResult = AddBindHandler(other.id, other.handler, CallBindingEvent);
-		assert(bResult && "id already exists in the map!");
+		bool bResult = AddBindHandler(other.key.c_str(), other.handler, CallBindingEvent);
+		assert(bResult && "key already exists in the map!");
 		if (bResult) {
 			handlers.push_back(other);
 		}
@@ -105,14 +106,14 @@ public:
 	}
 	NKInterface& operator-=(const NKHandler& other)
 	{
-		bool bResult = RemoveBindHandler(other.id);
-		assert(bResult && "Failed to insert key-value pair for id!");
+		bool bResult = RemoveBindHandler(other.key.c_str());
+		assert(bResult && "Failed to insert key-value pair for key!");
 		if (bResult) {
 			delete(other.handler);
 			for (auto it = handlers.begin(); it != handlers.end();) {
 				NKHandler& handle = *it;
 
-				if (handle.id == other.id) {
+				if (handle.key == other.key) {
 					it = handlers.erase(it);
 					break;
 				}
@@ -138,9 +139,9 @@ public:
 	}
 
 	template <typename T>
-	static void InitializeHandler(int id, T* instance, void (T::* method)(void*), NKHandler& out)
+	static void InitializeHandler(const char* key, T* instance, void (T::* method)(void*), NKHandler& out)
 	{
-		out.id = id;
+		out.key = key;
 		out.handler = new std::function<void(void*)>(std::bind(method, instance, std::placeholders::_1));
 	}
 

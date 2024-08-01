@@ -10,6 +10,7 @@ NKHandler::NKHandler()
 	memset(m_argsNameEdit, 0, sizeof(m_argsNameEdit));
 	m_functionNameEditLen = 0;
 	m_argsNameEditLen = 0;
+	m_argType = 0;
 }
 
 NKHandler::NKHandler(const NKHandler& other)
@@ -20,6 +21,7 @@ NKHandler::NKHandler(const NKHandler& other)
 	strcpy_s(m_argsNameEdit, other.m_argsNameEdit);
 	m_functionNameEditLen = 0;
 	m_argsNameEditLen = 0;
+	m_argType = 0;
 }
 
 NKHandler::~NKHandler()
@@ -35,6 +37,9 @@ void NKHandler::RegistFunction(const char* functionName, NKLuaInterface* pInterf
 		pInterface->SubscribeFunction(functionName, this);
 	}
 	else {
+		if (m_functionName != "None") {
+			pInterface->UnsubscribeFunction(m_functionName, this);
+		}
 		m_functionName = "None";
 	}
 }
@@ -43,11 +48,14 @@ void NKHandler::RegistVariable(const char* argsName, NKLuaInterface* pInterface)
 {
 	if (argsName != nullptr && strlen(argsName) > 0)
 	{
-		pInterface->UnsubscribeFunction(m_argsName, this);
+		pInterface->UnsubscribeVariable(m_argsName, this);
 		m_argsName = argsName;
 		pInterface->SubscribeVariable(argsName, this);
 	}
 	else {
+		if (m_argsName != "None") {
+			pInterface->UnsubscribeVariable(m_argsName, this);
+		}
 		m_argsName = "None";
 	}
 }
@@ -58,8 +66,15 @@ void NKHandler::CallEvent(NKLuaInterface* pManager)
 	{
 		if (m_argsName != "None" && m_argsName.length() > 0)
 		{
-			luabridge::LuaRef table = pManager->GetLuaTable(m_argsName);
-			pManager->RunFunctionArgs(m_functionName.c_str(), table);
+			if (m_argType == eVariable) {
+				luabridge::LuaRef table = pManager->GetLuaTable(m_argsName);
+				pManager->RunFunctionArgs(m_functionName.c_str(), table);
+			}
+			else if (m_argType == eString) {
+				luabridge::LuaRef str(pManager->GetLua(), "argsStr");
+				str = m_argsName;
+				pManager->RunFunctionArgs(m_functionName.c_str(), str);
+			}
 		}
 		else
 		{
@@ -117,6 +132,17 @@ void NKHandler::CallbackEvent(NKLuaInterface* pManager)
 {
 }
 
+void NKHandler::SetFunctionName(std::string functionName)
+{
+	m_functionName = functionName;
+}
+
+void NKHandler::SetArgsName(std::string argsName, int argType)
+{
+	m_argsName = argsName;
+	m_argType = argType;
+}
+
 const char* NKHandler::GetFunctionName()
 {
 	return m_functionName.c_str();
@@ -129,52 +155,70 @@ const char* NKHandler::GetArgsName()
 
 void NKHandler::EditInfoData(nk_context* ctx, NuklearUI* pManager, NKLuaInterface* pInterface)
 {
-	float ratio[2];
-	ratio[0] = 0.3f;
-	ratio[1] = 0.7f;
-	nk_layout_row(ctx, NK_DYNAMIC, 44, 2, ratio);
-	nk_label(ctx, "Function: ", NK_TEXT_LEFT);
-	nk_flags fresult = pManager->IMEInputSystem(ctx, m_functionNameEdit, sizeof(m_functionNameEdit), &m_functionNameEditLen);
-	if (fresult & NK_EDIT_COMMITED) {
-		RegistFunction(m_functionNameEdit, pInterface);
-	}
+	if (nk_tree_push_id(ctx, NK_TREE_NODE, "Data", NK_MINIMIZED, reinterpret_cast<intptr_t>(this))) {
+		float ratio[2];
+		ratio[0] = 0.3f;
+		ratio[1] = 0.7f;
+		nk_layout_row(ctx, NK_DYNAMIC, 33, 2, ratio);
+		nk_label(ctx, "Function: ", NK_TEXT_LEFT);
+		nk_label(ctx, m_functionName.c_str(), NK_TEXT_RIGHT);
 
-	if (m_functionName != "None" && m_functionName.length() > 0) {
-		nk_layout_row_dynamic(ctx, 33, 1);
-		if (pInterface->IsActiveFunction(m_functionName)) {
-			nk_color origin = ctx->style.text.color;
-			ctx->style.text.color = nk_color(0, 255, 0, 255);
-			nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
-			ctx->style.text.color = origin;
+		nk_layout_row_dynamic(ctx, 44, 1);
+		nk_flags fresult = pManager->IMEInputSystem(ctx, m_functionNameEdit, sizeof(m_functionNameEdit), &m_functionNameEditLen);
+		if (fresult & NK_EDIT_COMMITED) {
+			RegistFunction(m_functionNameEdit, pInterface);
 		}
-		else {
-			nk_color origin = ctx->style.text.color;
-			ctx->style.text.color = nk_color(0, 0, 255, 255);
-			nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
-			ctx->style.text.color = origin;
-		}
-	}
 
-	nk_layout_row(ctx, NK_DYNAMIC, 44, 2, ratio);
-	nk_label(ctx, "Variable: ", NK_TEXT_LEFT);
-	nk_flags vresult = pManager->IMEInputSystem(ctx, m_argsNameEdit, sizeof(m_argsNameEdit), &m_argsNameEditLen);
-	if (vresult & NK_EDIT_COMMITED) {
-		RegistVariable(m_argsNameEdit, pInterface);
-	}
+		if (m_functionName != "None" && m_functionName.length() > 0) {
+			nk_layout_row_dynamic(ctx, 33, 1);
+			if (pInterface->IsActiveFunction(m_functionName)) {
+				nk_color origin = ctx->style.text.color;
+				ctx->style.text.color = nk_color(0, 255, 0, 255);
+				nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
+				ctx->style.text.color = origin;
+			}
+			else {
+				nk_color origin = ctx->style.text.color;
+				ctx->style.text.color = nk_color(0, 0, 255, 255);
+				nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
+				ctx->style.text.color = origin;
+			}
+		}
 
-	if (m_argsName != "None" && m_argsName.length() > 0) {
-		nk_layout_row_dynamic(ctx, 33, 1);
-		if (pInterface->IsActiveVariable(m_argsName)) {
-			nk_color origin = ctx->style.text.color;
-			ctx->style.text.color = nk_color(0, 255, 0, 255);
-			nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
-			ctx->style.text.color = origin;
+		nk_layout_row(ctx, NK_DYNAMIC, 33, 2, ratio);
+		nk_label(ctx, "Variable: ", NK_TEXT_LEFT);
+		nk_label(ctx, m_argsName.c_str(), NK_TEXT_RIGHT);
+
+		nk_layout_row_dynamic(ctx, 44, 1);
+		nk_flags vresult = pManager->IMEInputSystem(ctx, m_argsNameEdit, sizeof(m_argsNameEdit), &m_argsNameEditLen);
+		if (vresult & NK_EDIT_COMMITED) {
+			RegistVariable(m_argsNameEdit, pInterface);
 		}
-		else {
-			nk_color origin = ctx->style.text.color;
-			ctx->style.text.color = nk_color(0, 0, 255, 255);
-			nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
-			ctx->style.text.color = origin;
+
+		if (m_argsName != "None" && m_argsName.length() > 0) {
+			nk_layout_row_dynamic(ctx, 33, 1);
+			if (pInterface->IsActiveVariable(m_argsName)) {
+				nk_color origin = ctx->style.text.color;
+				ctx->style.text.color = nk_color(0, 255, 0, 255);
+				nk_label(ctx, "Connection successful", NK_TEXT_RIGHT);
+				ctx->style.text.color = origin;
+			}
+			else {
+				if (m_argType == 1) {
+					nk_color origin = ctx->style.text.color;
+					ctx->style.text.color = nk_color(255, 255, 0, 255);
+					nk_label(ctx, "String value", NK_TEXT_RIGHT);
+					ctx->style.text.color = origin;
+				}
+				else {
+					nk_color origin = ctx->style.text.color;
+					ctx->style.text.color = nk_color(0, 0, 255, 255);
+					nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
+					ctx->style.text.color = origin;
+				}
+			}
 		}
+
+		nk_tree_pop(ctx);
 	}
 }

@@ -69,6 +69,7 @@ void NKComboItem::SafeRenderEnd(nk_context* ctx)
 void NKComboItem::EditInfo(nk_context* ctx)
 {
 	EditLabel(ctx, m_pManager);
+	EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
 
 void NKComboItem::SetLabelNumber(int number)

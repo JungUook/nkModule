@@ -310,7 +310,7 @@ NKBase* NuklearUI::SimpleCreateUI(const char* classname)
 	NKBase* pBase = m_factory.create(classname, m_ctx, this);
 	return pBase;
 }
-void NuklearUI::CreateUI(const char* classname, NKBase* parent)
+NKBase* NuklearUI::CreateUI(const char* classname, NKBase* parent)
 {
 	NKBase* pBase = m_factory.create(classname, m_ctx, this);
 
@@ -324,8 +324,10 @@ void NuklearUI::CreateUI(const char* classname, NKBase* parent)
 	}
 	else
 	{
-		throw;
+		return nullptr;
 	}
+
+	return pBase;
 }
 
 void NuklearUI::CopyUI(NKBase* pBase, NKBase* parent)

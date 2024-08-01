@@ -72,24 +72,24 @@ void NKBaseImage::LSetSpritePath(luabridge::LuaRef ref)
 	SetSpritePath(imgPath.c_str());
 }
 
-void NKBaseImage::SetIndex(int index)
+void NKBaseImage::SetSpriteIndex(int index)
 {
 	m_sprIndex = index;
 }
 
-void NKBaseImage::LSetIndex(luabridge::LuaRef ref)
+void NKBaseImage::LSetSpriteIndex(luabridge::LuaRef ref)
 {
 	CHECK_LUA_REF(ref);
 	int index = ref.cast<int>();
-	SetIndex(index);
+	SetSpriteIndex(index);
 }
 
-bool NKBaseImage::CSetIndex(void* param)
+bool NKBaseImage::CSetSpriteIndex(void* param)
 {
 	int* index = static_cast<int*>(param);
 
 	if (index) {
-		SetIndex(*index);
+		SetSpriteIndex(*index);
 		return true;
 	}
 	return false;

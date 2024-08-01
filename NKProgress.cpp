@@ -25,8 +25,6 @@ NKProgress::~NKProgress() {}
 
 void NKProgress::Layout(nk_context* ctx)
 {
-    UpdateComponent(ctx, m_pManager);
-
     nk_progress(ctx, &m_progress, 100, NK_MODIFIABLE);
 }
 

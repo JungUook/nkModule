@@ -3,6 +3,9 @@
 #define NKCombo_h__
 #include "NKBase.h"
 #include "NKStyleCombo.h"
+
+class NKComboItem;
+
 class NKCombo : public NKBase, public NKStyleCombo
 {
 public:
@@ -26,6 +29,11 @@ public:
 	void LSetLabelSize(luabridge::LuaRef ref);
 	bool CSetLabelSize(void* param);
 	void SetCurrentLabel(int number);
+
+	NKComboItem* AddItem(const char* name);
+	NKComboItem* LAddItem(luabridge::LuaRef ref);
+	bool CAddItem(void* param);
+
 	virtual void RegistCommand(const char* classname) override;
 public:
 	int m_currentLabel;

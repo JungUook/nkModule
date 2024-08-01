@@ -122,5 +122,5 @@ void NKImage::RegistCommand(const char* classname)
 {
 	NKBase::RegistCommand(classname);
 	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetImagePath, classname);
-	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetIndex, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKImage::CSetSpriteIndex, classname);
 }

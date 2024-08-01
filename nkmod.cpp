@@ -289,10 +289,16 @@ void LoadSprFile(const char* filename)
         return;
     }
     sprData* pData = g_sprLoader->LoadSprite(filename);
-    g_nuklear->LoadSpriteData(pData->GetSurface()
-        , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres()
-        , pData->GetSpr()->GetXSize(), pData->GetSpr()->GetYSize()
-        , pData->GetSpr()->GetXCount(), pData->GetSpr()->GetYCount());
+    if (pData != nullptr) {
+        g_nuklear->LoadSpriteData(pData->GetSurface()
+            , pData->GetSpr()->GetHres(), pData->GetSpr()->GetVres()
+            , pData->GetSpr()->GetXSize(), pData->GetSpr()->GetYSize()
+            , pData->GetSpr()->GetXCount(), pData->GetSpr()->GetYCount());
+    }
+    else {
+        char errorLog[256] = { 0, };
+        sprintf_s(errorLog, "File not found: %s", filename);
+    }
 }
 #endif
 void LoadLuaFile(const char* filePath)
@@ -493,20 +499,7 @@ void* GetDevice()
 }
 #endif
 
-bool AddHandler(int key, void(*func)(void*))
-{
-    if (g_nuklear == nullptr) {
-        return false;
-    }
-    auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
-    if (found == g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
-        g_nuklear->m_luaInterface.m_mapEventHandlers.insert(std::make_pair(key, func));
-        return true;
-    }
-    return false;
-}
-
-bool AddBindHandler(int key, void* callback, void(*func)(void*, void*))
+bool AddBindHandler(const char* key, void* callback, void(*func)(void*, void*))
 {
     if (g_nuklear == nullptr) {
         return false;
@@ -523,20 +516,7 @@ bool AddBindHandler(int key, void* callback, void(*func)(void*, void*))
     return false;
 }
 
-bool RemoveHandler(int key)
-{
-    if (g_nuklear == nullptr) {
-        return false;
-    }
-    auto found = g_nuklear->m_luaInterface.m_mapBindingEventHandlers.find(key);
-    if (found != g_nuklear->m_luaInterface.m_mapBindingEventHandlers.end()) {
-        g_nuklear->m_luaInterface.m_mapEventHandlers.erase(key);
-        return true;
-    }
-    return false;
-}
-
-bool RemoveBindHandler(int key)
+bool RemoveBindHandler(const char* key)
 {
     if (g_nuklear == nullptr) {
         return false;
@@ -567,7 +547,7 @@ bool NKLuaCommand(const char* command, const char* tableName, void* params)
         return true;
 	}
 
-	luabridge::LuaRef ref = g_nuklear->m_luaInterface.GetLuaTable(tableName);
+	luabridge::LuaRef ref = g_nuklear->m_luaInterface.DeepCopy(tableName);
 
 	if (ref.isTable()) {
         std::vector<PackedLuaParam>* vTable = static_cast<std::vector<PackedLuaParam>*>(params);

@@ -171,9 +171,48 @@ void NKCombo::SetCurrentLabel(int number)
 	m_currentLabel = number;
 }
 
+NKComboItem* NKCombo::AddItem(const char* name)
+{
+	NKBase* pBase = CreateUI("NKComboItem");
+	NKComboItem* pItem = static_cast<NKComboItem*>(pBase);
+
+	if (pItem != nullptr) {
+		pItem->SetLabel(name);
+	}
+	else {
+		m_pManager->Remove(pBase);
+		pBase = nullptr;
+		pItem = nullptr;
+
+		m_pManager->ErrorPopup("I failed to create the combo item.");
+	}
+
+	return pItem;
+}
+
+NKComboItem* NKCombo::LAddItem(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF_RETURN(ref);
+	std::string name = ref.cast<std::string>();
+	NKComboItem* pItem = AddItem(name.c_str());
+	return pItem;
+}
+
+bool NKCombo::CAddItem(void* param)
+{
+	const char** name = static_cast<const char**>(param);
+
+	if (name) {
+		AddItem(*name);
+		return true;
+	}
+	return false;
+}
+
 void NKCombo::RegistCommand(const char* classname)
 {
 	NKBase::RegistCommand(classname);
 	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetComboName, classname);
 	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CSetLabelSize, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKCombo::CAddItem, classname);
 }

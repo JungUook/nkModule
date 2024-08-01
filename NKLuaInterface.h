@@ -24,22 +24,25 @@ class NKObjectFinder;
 struct CustomData {
 	char name[256];
 	bool bFunction;
-
-	char desc[512];
-	int descLen;
+	int iVarType;
 	std::vector<NKHandler*> vUseObj;
-	CustomData() : bFunction(false), descLen(0) {
+	CustomData() : bFunction(false) {
 		memset(name, 0, sizeof(name));
-		memset(desc, 0, sizeof(desc));
 	}
 
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(CEREAL_NVP(name)
-			, CEREAL_NVP(bFunction)
-			, CEREAL_NVP(desc)
-			, CEREAL_NVP(descLen)
-		);
+		if (version >= 5) {
+			ar(CEREAL_NVP(name)
+				, CEREAL_NVP(bFunction)
+				, CEREAL_NVP(iVarType)
+			);
+		}
+		else {
+			ar(CEREAL_NVP(name)
+				, CEREAL_NVP(bFunction)
+			);
+		}
 	}
 };
 
@@ -58,10 +61,13 @@ public:
 	void Init();
 	void Release();
 
+	lua_State* GetLua();
 	//lua
 public:
 	void LoadLuaFile(const char* filePath);
 	luabridge::LuaRef GetLuaTable(const char* tableName);
+	luabridge::LuaRef DeepCopy(const char* tableName);
+	luabridge::LuaRef DeepCopy(const luabridge::LuaRef& source, lua_State* L);
 	bool RunFunction(const char* functionName);
 	bool RunFunctionArgs(const char* functionName, const luabridge::LuaRef& args);
 
@@ -85,7 +91,6 @@ public:
 	void DebugLoadLuaFile(const char* filePath);
 #endif // _NKDEBUG
 
-	void TriggerEvent(luabridge::LuaRef args);
 	void BindingTriggerEvent(luabridge::LuaRef args);
 
 	void* ConvertData(luabridge::LuaRef params);
@@ -103,8 +108,7 @@ public:
 	std::map<std::string, CustomData> m_mapFunction;
 	NuklearUI* m_pManager;
 
-	std::map<int, std::function<void(void*)>> m_mapEventHandlers;
-	std::map<int, BindingFunc> m_mapBindingEventHandlers;
+	std::map<std::string, BindingFunc> m_mapBindingEventHandlers;
 
 	std::list<double> m_lRef_d;
 	std::list<std::string> m_lRef_s;
@@ -116,6 +120,13 @@ public:
 	bool m_bRef;
 private:
 	lua_State* m_lua;
+
+
+
+#ifdef _NKDEBUG
+	std::ofstream logFile;
+#endif // _NKDEBUG
+	void logToFile(const std::string& message);
 };
 
 

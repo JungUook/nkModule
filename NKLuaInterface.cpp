@@ -9,12 +9,22 @@ NKLuaInterface::NKLuaInterface()
 {
 	m_lua = nullptr;
 	m_pManager = nullptr;
+	m_bRef = 0;
+	m_dRef = 0;
+
+#ifdef _NKDEBUG
+	logFile.open("LuaLog.txt");
+#endif // _NKDEBUG
 }
 
 NKLuaInterface::~NKLuaInterface()
 {
 	m_lua = nullptr;
 	m_pManager = nullptr;
+
+#ifdef _NKDEBUG
+	logFile.close();
+#endif // _NKDEBUG
 }
 
 void NKLuaInterface::Init()
@@ -29,16 +39,62 @@ void NKLuaInterface::Release()
 	lua_close(m_lua);
 }
 
+lua_State* NKLuaInterface::GetLua()
+{
+	return m_lua;
+}
+
 void NKLuaInterface::LoadLuaFile(const char* filePath)
 {
 	if (luaL_dofile(m_lua, filePath) != LUA_OK) {
-		std::cerr << lua_tostring(m_lua, -1) << std::endl;
+		std::string str = lua_tostring(m_lua, -1);
+
+		std::cerr << str.c_str() << std::endl;
+
+		int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+		std::wstring wstrTo(size_needed, 0);
+		MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+
+		MessageBox(
+			NULL,                  // 부모 윈도우 핸들. NULL일 경우 메시지 박스가 소유되지 않음
+			wstrTo.c_str(), // 메시지 내용
+			L"Error",  // 메시지 박스 제목
+			MB_OK | MB_ICONINFORMATION // 메시지 박스 스타일 (여기서는 OK 버튼과 정보 아이콘)
+		);
 	}
 }
 
 luabridge::LuaRef NKLuaInterface::GetLuaTable(const char* tableName)
 {
 	return luabridge::getGlobal(m_lua, tableName);
+}
+
+luabridge::LuaRef NKLuaInterface::DeepCopy(const char* tableName)
+{
+	luabridge::LuaRef orig = luabridge::getGlobal(m_lua, tableName);
+
+	return DeepCopy(orig, m_lua);
+}
+
+luabridge::LuaRef NKLuaInterface::DeepCopy(const luabridge::LuaRef& source, lua_State* L)
+{
+	if (!source.isTable()) {
+		// 테이블이 아니면 그대로 반환
+		return source;
+	}
+
+	// 새로운 테이블 생성
+	luabridge::LuaRef copy = luabridge::newTable(L);
+
+	for (luabridge::Iterator it(source); !it.isNil(); ++it) {
+		luabridge::LuaRef key = it.key();
+		luabridge::LuaRef value = it.value();
+
+		// 재귀적으로 깊은 복사 수행
+		copy[key] = DeepCopy(value, L);
+	}
+
+	return copy;
 }
 
 bool NKLuaInterface::RunFunction(const char* functionName)
@@ -231,22 +287,9 @@ void NKLuaInterface::DebugLoadLuaFile(const char* filePath)
 }
 #endif // _NKDEBUG
 
-void NKLuaInterface::TriggerEvent(luabridge::LuaRef args)
-{
-	int key = args["key"].cast<int>();
-	luabridge::LuaRef param = args["value"];
-	auto found = m_mapEventHandlers.find(key);
-
-	if (found != m_mapEventHandlers.end()) {
-		std::function<void(void*)> handler = found->second;
-		void* pData = ConvertData(param);
-		handler(pData);
-	}
-}
-
 void NKLuaInterface::BindingTriggerEvent(luabridge::LuaRef args)
 {
-	int key = args["key"].cast<int>();
+	std::string key = args["key"].cast<std::string>();
 	luabridge::LuaRef param = args["value"];
 	auto found = m_mapBindingEventHandlers.find(key);
 
@@ -405,6 +448,7 @@ void NKLuaInterface::RegisterBase()
 		.addFunction("ResFunc", &NKLuaInterface::ResponseFunction)
 		.addFunction("ResFuncArgs", &NKLuaInterface::ResponseFunctionArgs)
 		.addFunction("TriggerEvent", &NKLuaInterface::BindingTriggerEvent)
+		.addFunction("logToFile", &NKLuaInterface::logToFile)
 		.endClass();
 	luabridge::push(m_lua, this);
 	lua_setglobal(m_lua, "interface");
@@ -414,8 +458,7 @@ void NKLuaInterface::RegisterBase()
 		.addFunction("LoadPrefab", &NKCereal::LLoadPrefab)
 		.endClass();
 	luabridge::push(m_lua, this->m_pManager->m_cereal);
-	lua_setglobal(m_lua, "io");
-
+	lua_setglobal(m_lua, "nkio");
 
 	luabridge::getGlobalNamespace(m_lua)
 		.beginClass<NKBase>("NKBase")
@@ -424,6 +467,8 @@ void NKLuaInterface::RegisterBase()
 		.addFunction("RemoveChild", &NKBase::LRemoveChild)
 		.addFunction("SizeChild", &NKBase::SizeChild)
 		.addFunction("ClearChild", &NKBase::ClearChild)
+		.addFunction("EditPrimaryName", &NKBase::LEditPrimaryName)
+		.addFunction("EditWindowName", &NKBase::LEditWindowName)
 		.addFunction("Find", &NKBase::Find<NKBase>)
 		.addFunction("FindWindow", &NKBase::Find<NKWindow>)
 		.addFunction("FindSpace", &NKBase::Find<NKSpace>)
@@ -470,6 +515,8 @@ void NKLuaInterface::RegisterBase()
 		.addFunction("FindChildSuperStyleObject", &NKBase::FindChild<NKSuperStyleObject>)
 		.endClass()
 		.deriveClass<NKWindow, NKBase>("NKWindow")
+		.addFunction("SetFunctionName", &NKEdit::SetFunctionName)
+		.addFunction("SetArgsName", &NKEdit::SetArgsName)
 		.endClass()
 		.deriveClass<NKSpace, NKBase>("NKSpace")
 		.addFunction("SetLayout", &NKSpace::LSetLayout)
@@ -482,21 +529,25 @@ void NKLuaInterface::RegisterBase()
 		.deriveClass<NKCombo, NKBase>("NKCombo")
 		.addFunction("SetComboName", &NKCombo::LSetComboName)
 		.addFunction("SetLabelSize", &NKCombo::LSetLabelSize)
+		.addFunction("AddItem", &NKCombo::LAddItem)
 		.endClass()
 		.deriveClass<NKComboItem, NKBase>("NKComboItem")
-		//.addFunction("RegistFunction", &NKComboItem::RegistFunction)
+		.addFunction("SetFunctionName", &NKComboItem::SetFunctionName)
+		.addFunction("SetArgsName", &NKComboItem::SetArgsName)
 		.endClass()
 		.deriveClass<NKButton, NKBase>("NKButton")
-		//.addFunction("RegistFunction", &NKButton::RegistFunction)
 		.addFunction("DisableButton", &NKButton::LDisableButton)
+		.addFunction("SetFunctionName", &NKButton::SetFunctionName)
+		.addFunction("SetArgsName", &NKButton::SetArgsName)
 		.endClass()
 		.deriveClass<NKEdit, NKBase>("NKEdit")
 		.addFunction("Clear", &NKEdit::Clear)
-		//.addFunction("RegistFunction", &NKEdit::RegistFunction)
+		.addFunction("SetFunctionName", &NKEdit::SetFunctionName)
+		.addFunction("SetArgsName", &NKEdit::SetArgsName)
 		.endClass()
 		.deriveClass<NKImage, NKBase>("NKImage")
 		.addFunction("SetImagePath", &NKImage::LSetImagePath)
-		.addFunction("SetIndex", &NKImage::LSetIndex)
+		.addFunction("SetSpriteIndex", &NKImage::LSetSpriteIndex)
 		.endClass()
 		.deriveClass<NKLabel, NKBase>("NKLabel")
 		.addFunction("SetLabel", &NKLabel::LSetLabel)
@@ -518,9 +569,11 @@ void NKLuaInterface::RegisterBase()
 		.deriveClass<NKSelectable, NKBase>("NKSelectable")
 		.addFunction("SetLabel", &NKSelectable::LSetLabel)
 		.addFunction("SetImagePath", &NKSelectable::LSetImagePath)
-		.addFunction("SetIndex", &NKSelectable::LSetIndex)
+		.addFunction("SetSpriteIndex", &NKSelectable::LSetSpriteIndex)
 		.addFunction("SetSelected", &NKSelectable::LSetSelected)
 		.addFunction("IsSelected", &NKSelectable::IsSelected)
+		.addFunction("SetFunctionName", &NKSelectable::SetFunctionName)
+		.addFunction("SetArgsName", &NKSelectable::SetArgsName)
 		.endClass()
 		.deriveClass<NKTree, NKBase>("NKTree")
 		.addFunction("SetLabel", &NKTree::LSetLabel)
@@ -540,6 +593,8 @@ void NKLuaInterface::RegisterBase()
 		.endClass()
 		.deriveClass<NKMenu, NKBase>("NKMenu")
 		.addFunction("SetLabel", &NKMenu::LSetLabel)
+		.addFunction("SetFunctionName", &NKMenu::SetFunctionName)
+		.addFunction("SetArgsName", &NKMenu::SetArgsName)
 		.endClass()
 		.deriveClass<NKScrollbar, NKBase>("NKScrollbar")
 		.addFunction("SetScroll", &NKScrollbar::SetScroll)
@@ -567,4 +622,11 @@ void NKLuaInterface::RegisterBase()
 		.addStaticFunction("createMenu", &ObjMaker::create<NKMenu>)
 		.addStaticFunction("createScrollbar", &ObjMaker::create<NKScrollbar>)
 		.endClass();
+}
+void NKLuaInterface::logToFile(const std::string& message)
+{
+#ifdef _NKDEBUG
+	logFile << message << std::endl;
+	std::cout << message << std::endl; // 콘솔에도 출력
+#endif // _NKDEBUG
 }

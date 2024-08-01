@@ -25,6 +25,17 @@
         return; \
     }
 
+#define CHECK_LUA_REF_RETURN(ref) \
+    if ((ref).isNil()) { \
+        lua_State* L = (ref).state(); \
+        lua_Debug ar; \
+        if (lua_getstack(L, 1, &ar) && lua_getinfo(L, "Sl", &ar)) { \
+            std::cerr << "Error: Invalid reference passed at " \
+                      << ar.short_src << ":" << ar.currentline << std::endl; \
+        } \
+        return nullptr; \
+    }
+
 #else
 #define CHECK_PTR(ptr) \
 	if ((ptr) == nullptr) { \

@@ -31,8 +31,6 @@ NKSlider::~NKSlider() {}
 
 void NKSlider::Layout(nk_context* ctx)
 {
-    UpdateComponent(ctx, m_pManager);
-
     nk_slider_float(ctx, m_min, &m_value, m_max, 0.01f);
 }
 

@@ -110,7 +110,7 @@ public:
 	void Register_UI();
 	std::vector<NKBase*>* GetNodes();
 	NKBase* SimpleCreateUI(const char* classname);
-	void CreateUI(const char* classname, NKBase* parent = nullptr);
+	NKBase* CreateUI(const char* classname, NKBase* parent = nullptr);
 	void CopyUI(NKBase* pBase, NKBase* parent = nullptr);
 	NKBase* RegistUI(NKBase* pBase);
 	struct nk_vec2* GetPivot();

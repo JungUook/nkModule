@@ -135,6 +135,11 @@ sprData* sprLoader::LoadSprite(const char* filename)
                 m_mapSprite.insert(std::make_pair(relativePath, pData));
             }
 		}
+        else {
+            delete pSpr;
+            pSpr = nullptr;
+        }
+
 	}
 	return pData;
 }

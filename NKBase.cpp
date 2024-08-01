@@ -437,6 +437,8 @@ void NKBase::RegistCommand(const char* classname)
 	MAKE_INTERFACE(m_mapFunc, this, NKBase::CSetActive, "NKBase");
 	MAKE_INTERFACE(m_mapFunc, this, NKBase::CAddChild, "NKBase");
 	MAKE_INTERFACE(m_mapFunc, this, NKBase::CRemoveChild, "NKBase");
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CEditPrimaryName, "NKBase");
+	MAKE_INTERFACE(m_mapFunc, this, NKBase::CEditWindowName, "NKBase");
 }
 
 bool NKBase::ProcessCommand(const char* command, void* param)
@@ -567,8 +569,30 @@ void NKBase::EditPrimaryName(const char* name)
 	}
 }
 
+void NKBase::LEditPrimaryName(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	std::string str = ref.cast<std::string>();
+	EditPrimaryName(str.c_str());
+}
+
+bool NKBase::CEditPrimaryName(void* param)
+{
+	const char** text = static_cast<const char**>(param);
+
+	if (text) {
+		EditPrimaryName(*text);
+		return true;
+	}
+	return false;
+}
+
 void NKBase::EditWindowName(const char* name)
 {
+	if (m_sWindowName.compare(name) == 0) {
+		return;
+	}
+
 	if (!m_pManager->SetWindowname(this, name)) {
 #ifdef _NKDEBUG
 		m_pManager->ErrorPopup("There is already a window name. windowname cannot be duplicated.");
@@ -576,9 +600,27 @@ void NKBase::EditWindowName(const char* name)
 	}
 }
 
-void NKBase::CreateUI(const char* classname)
+void NKBase::LEditWindowName(luabridge::LuaRef ref)
 {
-	m_pManager->CreateUI(classname, this);
+	CHECK_LUA_REF(ref);
+	std::string str = ref.cast<std::string>();
+	EditWindowName(str.c_str());
+}
+
+bool NKBase::CEditWindowName(void* param)
+{
+	const char** text = static_cast<const char**>(param);
+
+	if (text) {
+		EditWindowName(*text);
+		return true;
+	}
+	return false;
+}
+
+NKBase* NKBase::CreateUI(const char* classname)
+{
+	return m_pManager->CreateUI(classname, this);
 }
 
 void NKBase::FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent)

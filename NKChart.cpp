@@ -28,8 +28,6 @@ NKChart::~NKChart() {}
 
 void NKChart::Layout(nk_context* ctx)
 {
-    UpdateComponent(ctx, m_pManager);
-
     nk_chart_begin(ctx, NK_CHART_LINES, m_values.size(), m_min, m_max);
     for (auto it = m_values.begin(); it != m_values.end(); ++it)
     {

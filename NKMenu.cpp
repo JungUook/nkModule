@@ -29,8 +29,6 @@ void NKMenu::LayoutBegin(nk_context* ctx)
 
 void NKMenu::Layout(nk_context* ctx)
 {
-    UpdateComponent(ctx, m_pManager);
-
     if (nk_menu_begin_label(ctx, m_sContent.c_str(), NK_TEXT_LEFT, nk_vec2(120, 200)))
     {
         nk_layout_row_dynamic(ctx, 25, 1);
@@ -64,6 +62,7 @@ void NKMenu::SafeRenderEnd(nk_context* ctx)
 void NKMenu::EditInfo(nk_context* ctx)
 {
     EditLabel(ctx, m_pManager);
+    EditInfoData(ctx, m_pManager, m_pLuaManager);
 
     nk_layout_row_dynamic(ctx, 33, 1);
     if (nk_button_label(ctx, "Add")) {

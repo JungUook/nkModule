@@ -19,9 +19,9 @@ public:
 	virtual bool CSetImagePath(void* param);
 	virtual void SetSpritePath(const char* imgPath);
 	virtual void LSetSpritePath(luabridge::LuaRef ref);
-	virtual void SetIndex(int index);
-	virtual void LSetIndex(luabridge::LuaRef ref);
-	virtual bool CSetIndex(void* param);
+	virtual void SetSpriteIndex(int index);
+	virtual void LSetSpriteIndex(luabridge::LuaRef ref);
+	virtual bool CSetSpriteIndex(void* param);
 
 public:
 	std::string m_imagePath;

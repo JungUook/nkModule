@@ -10,6 +10,11 @@ class NKLuaInterface;
 class NKHandler
 {
 public:
+	enum {
+		eVariable = 0,
+		eString = 1
+	};
+public:
 	NKHandler();
 	NKHandler(const NKHandler& other);
 	virtual ~NKHandler();
@@ -20,6 +25,8 @@ public:
 	virtual void CallEvent(NKLuaInterface* pManager, nk_edit_events edit_event, char* inputText, int* inputTextLength);
 	virtual void CallbackEvent(NKLuaInterface* pManager);
 
+	virtual void SetFunctionName(std::string functionName);
+	virtual void SetArgsName(std::string argsName, int argType = 0);
 	const char* GetFunctionName();
 	const char* GetArgsName();
 
@@ -29,6 +36,7 @@ protected:
 public:
 	std::string m_functionName;
 	std::string m_argsName;
+	int m_argType;
 
 	char m_functionNameEdit[64];
 	int m_functionNameEditLen;
@@ -39,9 +47,17 @@ public:
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(CEREAL_NVP(m_functionName)
-			, CEREAL_NVP(m_argsName)
-		);
+		if (version >= 5) {
+			ar(CEREAL_NVP(m_functionName)
+				, CEREAL_NVP(m_argsName)
+				, CEREAL_NVP(m_argType)
+			);
+		}
+		else {
+			ar(CEREAL_NVP(m_functionName)
+				, CEREAL_NVP(m_argsName)
+			);
+		}
 	}
 };
 #endif //NKHandler_h__

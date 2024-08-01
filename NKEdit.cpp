@@ -55,6 +55,11 @@ void NKEdit::SafeRenderEnd(nk_context* ctx)
 {
 }
 
+void NKEdit::EditInfo(nk_context* ctx)
+{
+	EditInfoData(ctx, m_pManager, m_pLuaManager);
+}
+
 void NKEdit::EditStyle(nk_context* ctx)
 {
 	NKBase::EditStyle(ctx);

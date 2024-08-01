@@ -804,17 +804,10 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 			}
 
 			if (nk_tree_push_id(ctx, NK_TREE_TAB, d.name, NK_MINIMIZED, reinterpret_cast<intptr_t>(&d))) {
-				//nk_layout_row_dynamic(ctx, 33, 1);
-				//nk_label(ctx, "Desc: ", NK_TEXT_LEFT);
-				//nk_layout_row_dynamic(ctx, 100, 1);
-				//m_pManager->IMEInputSystem(ctx, d.desc, sizeof(d.desc), &d.descLen, NK_EDIT_BOX );
-
-				//nk_label(ctx, "table: ", NK_TEXT_LEFT);
-				//m_pManager->IMEInputSystem(ctx, d.tableName, sizeof(d.tableName), &d.tableLen);
-
-				nk_layout_row_dynamic(ctx, 33, 2);
-				nk_label(ctx, "Linked Function: ", NK_TEXT_LEFT);
 				if (d.bFunction) {
+					nk_layout_row_dynamic(ctx, 33, 2);
+					nk_label(ctx, "Linked Function: ", NK_TEXT_LEFT);
+
 					if (m_pManager->m_luaInterface.IsActiveFunction(d.name)) {
 						nk_color origin = ctx->style.text.color;
 						ctx->style.text.color = nk_color(0, 255, 0, 255);
@@ -829,6 +822,9 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 					}
 				}
 				else {
+					nk_layout_row_dynamic(ctx, 33, 2);
+					nk_label(ctx, "Linked Variable: ", NK_TEXT_LEFT);
+
 					if (m_pManager->m_luaInterface.IsActiveVariable(d.name)) {
 						nk_color origin = ctx->style.text.color;
 						ctx->style.text.color = nk_color(0, 255, 0, 255);
@@ -839,10 +835,18 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 						PrintTable(ctx, var);
 					}
 					else {
-						nk_color origin = ctx->style.text.color;
-						ctx->style.text.color = nk_color(0, 0, 255, 255);
-						nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
-						ctx->style.text.color = origin;
+						if (d.iVarType == 1) {
+							nk_color origin = ctx->style.text.color;
+							ctx->style.text.color = nk_color(255, 255, 0, 255);
+							nk_label(ctx, "String value", NK_TEXT_RIGHT);
+							ctx->style.text.color = origin;
+						}
+						else {
+							nk_color origin = ctx->style.text.color;
+							ctx->style.text.color = nk_color(0, 0, 255, 255);
+							nk_label(ctx, "Connection failed", NK_TEXT_RIGHT);
+							ctx->style.text.color = origin;
+						}
 					}
 				}
 
@@ -872,14 +876,20 @@ void NuklearEditor::PrintTable(nk_context* ctx, luabridge::LuaRef ref)
 			else if (value.isBool()) {
 				contentValue = value.cast<bool>() ? "true" : "false";
 			}
+			else if (value.isTable()) {
+				if (nk_tree_push(ctx, NK_TREE_NODE, key.tostring().c_str(), NK_MINIMIZED)) {
+					PrintTable(ctx, value);
+					nk_tree_pop(ctx);
+				}
+			}
 			else {
 				contentValue = "Unknown type";
 			}
 
+			std::string strKey = key.tostring() + " :";
+
 			nk_layout_row_dynamic(ctx, 33, 2);
-			nk_label(ctx, "Key: ", NK_TEXT_LEFT);
-			nk_label(ctx, key.tostring().c_str(), NK_TEXT_RIGHT);
-			nk_label(ctx, "Value: ", NK_TEXT_LEFT);
+			nk_label(ctx, strKey.c_str(), NK_TEXT_LEFT);
 			nk_label(ctx, contentValue.c_str(), NK_TEXT_RIGHT);
 		}
 	}

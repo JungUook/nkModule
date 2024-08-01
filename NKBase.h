@@ -111,8 +111,12 @@ public:
 	virtual void EditInfo(nk_context* ctx);
 	virtual void EditStyle(nk_context* ctx);
 	virtual void EditPrimaryName(const char* name);
+	virtual void LEditPrimaryName(luabridge::LuaRef ref);
+	virtual bool CEditPrimaryName(void* param);
 	virtual void EditWindowName(const char* name);
-	virtual void CreateUI(const char* classname);
+	virtual void LEditWindowName(luabridge::LuaRef ref);
+	virtual bool CEditWindowName(void* param);
+	virtual NKBase* CreateUI(const char* classname);
 
 	virtual void FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent) override;
 	virtual void GetPrefab(std::vector<NKBase*>& vecSave);
