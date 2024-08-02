@@ -153,8 +153,9 @@ void NKBase::Release()
 	auto it = m_pChildList.begin();
 	for (; it != m_pChildList.end();) {
 		NKBase* pBase = (*it);
-		pBase->Release();
 		it = m_pChildList.erase(it);
+		pBase->Release();
+		m_pManager->Remove(pBase->GetPrimaryID());
 	}
 }
 
