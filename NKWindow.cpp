@@ -98,11 +98,11 @@ void NKWindow::EditStyle(nk_context* ctx)
 
 nk_bool NKWindow::CheckMouseHover(nk_context* ctx)
 {
-	char window_name[256] = { 0, };
-	strncpy_s(window_name, m_sWindowName.c_str(), 256);
-	window_name[255] = '\0';
+	char primary_name[256] = { 0, };
+	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
+	primary_name[255] = '\0';
 
-	if (!nk_window_is_active(ctx, window_name) || !nk_input_is_mouse_hovering_rect(&ctx->input, m_pWindow->GetTransform())) {
+	if (!nk_window_is_active(ctx, primary_name) || !nk_input_is_mouse_hovering_rect(&ctx->input, m_pWindow->GetTransform())) {
 		m_bMouseHover = false;
 	}
 	else {
