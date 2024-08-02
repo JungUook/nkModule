@@ -26,17 +26,27 @@ public:
 public:
 	nk_bool m_bWrap;
 	nk_bool m_bBold;
-	nk_bool m_bUnderline;
-	nk_bool m_bStrikethrough;
+	nk_bool m_bOutline;
 
 public:
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-        ar(cereal::base_class<NKBase>(this)
-            , cereal::base_class<NKBaseLabel>(this)
-            , cereal::base_class<NKStyleText>(this)
-			, CEREAL_NVP(m_bWrap)
-        );
+		if (version >= 10) {
+			ar(cereal::base_class<NKBase>(this)
+				, cereal::base_class<NKBaseLabel>(this)
+				, cereal::base_class<NKStyleText>(this)
+				, CEREAL_NVP(m_bWrap)
+				, CEREAL_NVP(m_bBold)
+				, CEREAL_NVP(m_bOutline)
+			);
+		}
+		else {
+			ar(cereal::base_class<NKBase>(this)
+				, cereal::base_class<NKBaseLabel>(this)
+				, cereal::base_class<NKStyleText>(this)
+				, CEREAL_NVP(m_bWrap)
+			);
+		}
     }
 };
 

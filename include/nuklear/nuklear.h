@@ -10632,8 +10632,12 @@ nk_draw_list_add_text(struct nk_draw_list *list, const struct nk_user_font *font
 {
     float x = rect.x;
     int text_len = 0;
+    int visible_len = 0;
     int is_bold = 0;
+    int is_outline = 0;
     const float bold_offset = 0.5f; // 볼드 효과를 위한 오프셋
+    const float outline_offset = 1.0f; // 외곽선 효과를 위한 오프셋
+    struct nk_color white = { 255, 255, 255, fg.a }; // 외곽선 색상 (흰색)
 
     NK_ASSERT(list);
     if (!list || !len || !text) return;
@@ -10642,23 +10646,35 @@ nk_draw_list_add_text(struct nk_draw_list *list, const struct nk_user_font *font
 
     nk_draw_list_push_image(list, font->texture);
     fg.a = (nk_byte)((float)fg.a * list->config.global_alpha);
+    white.a = fg.a; // 외곽선 색상 투명도 설정
 
-    while (text_len < len) {
-        if (text[text_len] == '<' && text_len + 2 < len) {
-            if (text[text_len + 1] == 'b' && text[text_len + 2] == '>') {
+    while (visible_len < len) {
+        // 태그를 인식하고 처리하는 부분
+        if (text[visible_len] == '<' && visible_len + 2 < len) {
+            if (text[visible_len + 1] == 'b' && text[visible_len + 2] == '>') {
                 is_bold = 1;
-                text_len += 3;
+                visible_len += 3;
                 continue;
             }
-            else if (text[text_len + 1] == '/' && text[text_len + 2] == 'b' && text_len + 3 < len && text[text_len + 3] == '>') {
+            else if (text[visible_len + 1] == '/' && text[visible_len + 2] == 'b' && visible_len + 3 < len && text[visible_len + 3] == '>') {
                 is_bold = 0;
-                text_len += 4;
+                visible_len += 4;
+                continue;
+            }
+            else if (text[visible_len + 1] == 'o' && text[visible_len + 2] == '>') {
+                is_outline = 1;
+                visible_len += 3;
+                continue;
+            }
+            else if (text[visible_len + 1] == '/' && text[visible_len + 2] == 'o' && visible_len + 3 < len && text[visible_len + 3] == '>') {
+                is_outline = 0;
+                visible_len += 4;
                 continue;
             }
         }
 
         nk_rune unicode = 0;
-        int glyph_len = nk_utf_decode(&text[text_len], &unicode, len - text_len);
+        int glyph_len = nk_utf_decode(&text[visible_len], &unicode, len - visible_len);
         if (glyph_len <= 0) break;
 
         struct nk_user_font_glyph g;
@@ -10668,6 +10684,18 @@ nk_draw_list_add_text(struct nk_draw_list *list, const struct nk_user_font *font
         float gy = rect.y + g.offset.y;
         float gw = g.width;
         float gh = g.height;
+
+        // 외곽선 그리기
+        if (is_outline) {
+            for (float y_offset = -outline_offset; y_offset <= outline_offset; y_offset += outline_offset) {
+                for (float x_offset = -outline_offset; x_offset <= outline_offset; x_offset += outline_offset) {
+                    if (x_offset != 0 || y_offset != 0) {
+                        nk_draw_list_push_rect_uv(list, nk_vec2(gx + x_offset, gy + y_offset), nk_vec2(gx + gw + x_offset, gy + gh + y_offset),
+                            g.uv[0], g.uv[1], white);
+                    }
+                }
+            }
+        }
 
         // 기본 글자 그리기
         nk_draw_list_push_rect_uv(list, nk_vec2(gx, gy), nk_vec2(gx + gw, gy + gh),
@@ -10685,6 +10713,7 @@ nk_draw_list_add_text(struct nk_draw_list *list, const struct nk_user_font *font
 
         x += g.xadvance;
         text_len += glyph_len;
+        visible_len += glyph_len;
     }
 }
 NK_API nk_flags
