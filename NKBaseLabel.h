@@ -28,11 +28,18 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(m_fScale
-			, CEREAL_NVP(m_cEditLabel)
-			, CEREAL_NVP(m_iEditLabelLen)
-			, CEREAL_NVP(m_sContent)
-		);
+		if (version >= 7) {
+			ar(CEREAL_NVP(m_fScale)
+				, CEREAL_NVP(m_sContent)
+			);
+		}
+		else {
+			ar(m_fScale
+				, CEREAL_NVP(m_cEditLabel)
+				, CEREAL_NVP(m_iEditLabelLen)
+				, CEREAL_NVP(m_sContent)
+			);
+		}
 	}
 };
 

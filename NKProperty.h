@@ -52,22 +52,36 @@ protected:
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(cereal::base_class<NKBaseStyle>(this)
-			, cereal::base_class<NKTransform>(this)
-			, CEREAL_NVP(m_iPrimaryID)
-			, CEREAL_NVP(m_sPrimaryName)
-			, CEREAL_NVP(m_cPrimaryEditName)
-			, CEREAL_NVP(m_iPrimaryEditName_len)
-			, CEREAL_NVP(m_sWindowName)
-			, CEREAL_NVP(m_cWindowEditName)
-			, CEREAL_NVP(m_iWindowEditName_len)
-			, CEREAL_NVP(m_sBaseName)
-			, CEREAL_NVP(m_cBaseEditName)
-			, CEREAL_NVP(m_iBaseEditName_len)
-			, CEREAL_NVP(m_iWindowPrimaryID)
-			, CEREAL_NVP(m_iParentPrimaryID)
-			, CEREAL_NVP(m_type)
-		);
+		if (version >= 8) {
+			ar(cereal::base_class<NKBaseStyle>(this)
+				, cereal::base_class<NKTransform>(this)
+				, CEREAL_NVP(m_iPrimaryID)
+				, CEREAL_NVP(m_sPrimaryName)
+				, CEREAL_NVP(m_sWindowName)
+				, CEREAL_NVP(m_sBaseName)
+				, CEREAL_NVP(m_iWindowPrimaryID)
+				, CEREAL_NVP(m_iParentPrimaryID)
+				, CEREAL_NVP(m_type)
+			);
+		}
+		else {
+			ar(cereal::base_class<NKBaseStyle>(this)
+				, cereal::base_class<NKTransform>(this)
+				, CEREAL_NVP(m_iPrimaryID)
+				, CEREAL_NVP(m_sPrimaryName)
+				, CEREAL_NVP(m_cPrimaryEditName)
+				, CEREAL_NVP(m_iPrimaryEditName_len)
+				, CEREAL_NVP(m_sWindowName)
+				, CEREAL_NVP(m_cWindowEditName)
+				, CEREAL_NVP(m_iWindowEditName_len)
+				, CEREAL_NVP(m_sBaseName)
+				, CEREAL_NVP(m_cBaseEditName)
+				, CEREAL_NVP(m_iBaseEditName_len)
+				, CEREAL_NVP(m_iWindowPrimaryID)
+				, CEREAL_NVP(m_iParentPrimaryID)
+				, CEREAL_NVP(m_type)
+			);
+		}
 	}
 };
 #endif //NKProperty_h__
