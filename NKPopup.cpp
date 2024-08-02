@@ -31,7 +31,11 @@ NKPopup::~NKPopup()
 
 void NKPopup::Layout(nk_context* ctx)
 {
-	if (nk_popup_begin(ctx, m_popupType, m_sWindowName.c_str(), m_flags, GetTransform()))
+	char primary_name[256] = { 0, };
+	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
+	primary_name[255] = '\0';
+
+	if (nk_popup_begin_titled(ctx, m_popupType, primary_name, m_sWindowName.c_str(), m_flags, GetTransform()))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{

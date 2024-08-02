@@ -592,12 +592,7 @@ void NKBase::EditWindowName(const char* name)
 	if (m_sWindowName.compare(name) == 0) {
 		return;
 	}
-
-	if (!m_pManager->SetWindowname(this, name)) {
-#ifdef _NKDEBUG
-		m_pManager->ErrorPopup("There is already a window name. windowname cannot be duplicated.");
-#endif
-	}
+	SetWindowName(name);
 }
 
 void NKBase::LEditWindowName(luabridge::LuaRef ref)

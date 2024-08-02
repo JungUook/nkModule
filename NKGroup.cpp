@@ -28,7 +28,11 @@ NKGroup::~NKGroup()
 
 void NKGroup::Layout(nk_context* ctx)
 {
-	if (nk_group_begin(ctx, m_sWindowName.c_str(), m_flags))
+	char primary_name[256] = { 0, };
+	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
+	primary_name[255] = '\0';
+	
+	if (nk_group_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_flags))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{

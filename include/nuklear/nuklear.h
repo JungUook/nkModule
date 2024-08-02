@@ -3538,6 +3538,7 @@ NK_API void nk_plot_function(struct nk_context*, enum nk_chart_type, void *userd
  *
  * ============================================================================= */
 NK_API nk_bool nk_popup_begin(struct nk_context*, enum nk_popup_type, const char*, nk_flags, struct nk_rect bounds);
+NK_API nk_bool nk_popup_begin_titled(struct nk_context*, enum nk_popup_type, const char*, const char*, nk_flags, struct nk_rect bounds);
 NK_API void nk_popup_close(struct nk_context*);
 NK_API void nk_popup_end(struct nk_context*);
 NK_API void nk_popup_get_scroll(struct nk_context*, nk_uint *offset_x, nk_uint *offset_y);
@@ -20943,30 +20944,37 @@ nk_rule_horizontal(struct nk_context *ctx, struct nk_color color, nk_bool roundi
  *
  * ===============================================================*/
 NK_API nk_bool
-nk_popup_begin(struct nk_context *ctx, enum nk_popup_type type,
-    const char *title, nk_flags flags, struct nk_rect rect)
+nk_popup_begin(struct nk_context* ctx, enum nk_popup_type type,
+    const char* title, nk_flags flags, struct nk_rect rect)
+{
+    return nk_popup_begin_titled(ctx, type, title, title, flags, rect);
+}
+NK_API nk_bool
+nk_popup_begin_titled(struct nk_context *ctx, enum nk_popup_type type,
+    const char* name, const char *title, nk_flags flags, struct nk_rect rect)
 {
     struct nk_window *popup;
     struct nk_window *win;
     struct nk_panel *panel;
 
-    int title_len;
-    nk_hash title_hash;
+    nk_hash name_hash;
+    int name_len;
     nk_size allocated;
 
     NK_ASSERT(ctx);
+    NK_ASSERT(name);
     NK_ASSERT(title);
     NK_ASSERT(ctx->current);
     NK_ASSERT(ctx->current->layout);
-    if (!ctx || !ctx->current || !ctx->current->layout)
+    if (!ctx || !ctx->current || !ctx->current->layout || !name)
         return 0;
 
     win = ctx->current;
     panel = win->layout;
     NK_ASSERT(!((int)panel->type & (int)NK_PANEL_SET_POPUP) && "popups are not allowed to have popups");
     (void)panel;
-    title_len = (int)nk_strlen(title);
-    title_hash = nk_murmur_hash(title, (int)title_len, NK_PANEL_POPUP);
+    name_len = (int)nk_strlen(name);
+    name_hash = nk_murmur_hash(name, (int)name_len, NK_PANEL_POPUP);
 
     popup = win->popup.win;
     if (!popup) {
@@ -20978,10 +20986,10 @@ nk_popup_begin(struct nk_context *ctx, enum nk_popup_type type,
     }
 
     /* make sure we have correct popup */
-    if (win->popup.name != title_hash) {
+    if (win->popup.name != name_hash) {
         if (!win->popup.active) {
             nk_zero(popup, sizeof(*popup));
-            win->popup.name = title_hash;
+            win->popup.name = name_hash;
             win->popup.active = 1;
             win->popup.type = NK_PANEL_POPUP;
         } else return 0;

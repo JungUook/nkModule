@@ -14,7 +14,6 @@ NuklearUI::NuklearUI():
 	m_vecModule(m_cereal.m_vecModule),
 	m_mapModuleID(m_cereal.m_mapModuleID),
 	m_mapModuleName(m_cereal.m_mapModuleName),
-	m_mapWindowName(m_cereal.m_mapWindowName),
 	m_mapSpr(m_cereal.m_mapSpr)
 {
 	m_ctx = nullptr;
@@ -28,7 +27,7 @@ NuklearUI::NuklearUI():
 	m_luaInterface.m_pManager = this;
 
 #ifdef _NKDEBUG
-	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapWindowName, &m_mapImage, &m_mapSpr, &m_mapVariable, &m_mapFunction, &m_cereal.m_vecPrefab, &m_cereal.m_vecLuaCode);
+	g_editor.EditorInit(this, &m_vecObject, &m_vecModule, &m_mapModuleID, &m_mapModuleName, &m_mapImage, &m_mapSpr, &m_mapVariable, &m_mapFunction, &m_cereal.m_vecPrefab, &m_cereal.m_vecLuaCode);
 #endif // _NKDEBUG
 }
 
@@ -53,7 +52,6 @@ void NuklearUI::Release()
 			const char* wname = pNKBase->GetWindowName();
 			m_mapModuleID.erase(id);
 			m_mapModuleName.erase(name);
-			m_mapWindowName.erase(wname);
 
 			pNKBase->Release();
 			delete pNKBase;
@@ -364,16 +362,6 @@ NKBase* NuklearUI::RegistUI(NKBase* pBase)
 		m_mapModuleName.insert(std::make_pair(pBase->GetPrimaryName(), pBase));
 	}
 
-	auto foundWindow = m_mapWindowName.find(pBase->GetWindowName());
-	if (foundWindow != m_mapWindowName.end()) {
-		char WindowName[256] = { 0, };
-		sprintf_s(WindowName, "%s%ld", pBase->getClassName().c_str(), reinterpret_cast<intptr_t>(pBase));
-		pBase->SetWindowName(WindowName);
-	}
-	else {
-		m_mapWindowName.insert(std::make_pair(pBase->GetWindowName(), pBase));
-	}
-
 	auto bFinder = dynamic_cast<NKObjectFinder*>(pBase);
 	if (bFinder) {
 		m_mapOF.insert(std::make_pair(pBase->GetPrimaryID(), bFinder));
@@ -417,18 +405,6 @@ bool NuklearUI::SetPrimaryname(NKBase* pBase, const char* name)
 	}
 	return bSuccess;
 }
-bool NuklearUI::SetWindowname(NKBase* pBase, const char* name)
-{
-	bool bSuccess = false;
-	auto it = m_mapWindowName.find(name);
-	if (it == m_mapWindowName.end()) {
-		m_mapWindowName.erase(pBase->GetWindowName());
-		pBase->SetWindowName(name);
-		m_mapWindowName.insert(std::make_pair(pBase->GetWindowName(), pBase));
-		bSuccess = true;
-	}
-	return bSuccess;
-}
 void NuklearUI::Add(NKBase* type, bool bStyle)
 {
 	NKBase* base = type;
@@ -444,7 +420,6 @@ void NuklearUI::Add(NKBase* type, bool bStyle)
 	m_vecModule.push_back(base);
 	m_mapModuleID.insert(std::make_pair(base->GetPrimaryID(), base));
 	m_mapModuleName.insert(std::make_pair(base->GetPrimaryName(), base));
-	m_mapWindowName.insert(std::make_pair(base->GetWindowName(), base));
 
 	auto bFinder = dynamic_cast<NKObjectFinder*>(base);
 	if (bFinder) {
@@ -522,7 +497,6 @@ void NuklearUI::Remove(unsigned int id)
 
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_mapWindowName.erase(wname);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {
@@ -584,7 +558,6 @@ void NuklearUI::Remove(const char* name)
 
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_mapWindowName.erase(wname);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {
@@ -643,7 +616,6 @@ void NuklearUI::Remove(NKBase* obj)
 		const char* wname = obj->GetWindowName();
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_mapWindowName.erase(wname);
 		m_vecModule.erase(m_vecModule.begin() + obj->GetNuklearIndex());
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {
@@ -704,7 +676,6 @@ void NuklearUI::Remove(int idx)
 		const char* wname = pBase->GetWindowName();
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_mapWindowName.erase(wname);
 		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {

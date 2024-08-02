@@ -57,7 +57,6 @@ public:
 	std::vector<NKBase*> m_vecModule;
 	std::map<unsigned int, NKBase*> m_mapModuleID;
 	std::map<std::string, NKBase*> m_mapModuleName;
-	std::map<std::string, NKBase*> m_mapWindowName;
 	std::map<std::string, sprData*> m_mapSpr;
 };
 

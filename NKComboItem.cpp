@@ -68,6 +68,10 @@ void NKComboItem::SafeRenderEnd(nk_context* ctx)
 
 void NKComboItem::EditInfo(nk_context* ctx)
 {
+	nk_layout_row_dynamic(ctx, 22, 2);
+	nk_label(ctx, "current label:", NK_TEXT_LEFT);
+	nk_label(ctx, m_sContent.c_str(), NK_TEXT_RIGHT);
+
 	EditLabel(ctx, m_pManager);
 	EditInfoData(ctx, m_pManager, m_pLuaManager);
 }

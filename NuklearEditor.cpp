@@ -21,7 +21,6 @@ NuklearEditor::NuklearEditor()
 	m_vecModule = nullptr;
 	m_mapModuleID = nullptr;
 	m_mapModuleName = nullptr;
-	m_mapWindowName = nullptr;
 	m_mapImage = nullptr;
 	m_mapSpr = nullptr;
 
@@ -55,7 +54,7 @@ NuklearEditor::~NuklearEditor()
 	g_Editor = nullptr;
 }
 
-void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<std::string, NKBase*>* windowName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::map<std::string, CustomData>* mvariable, std::map<std::string, CustomData>* mfunction, std::vector<std::string>* vPrefab, std::vector<std::string>* vLua)
+void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, std::vector<NKBase*>* module, std::map<unsigned int, NKBase*>* moduleID, std::map<std::string, NKBase*>* moduleName, std::map<int, struct nk_image>* image, std::map<std::string, sprData*>* spr, std::map<std::string, CustomData>* mvariable, std::map<std::string, CustomData>* mfunction, std::vector<std::string>* vPrefab, std::vector<std::string>* vLua)
 {
 	m_pSelectedNode = nullptr;
 	m_pDeletedNode = nullptr;
@@ -64,7 +63,6 @@ void NuklearEditor::EditorInit(NuklearUI* manager, std::vector<NKBase*>* obj, st
 	m_vecModule = module;
 	m_mapModuleID = moduleID;
 	m_mapModuleName = moduleName;
-	m_mapWindowName = windowName;
 	m_mapImage = image;
 	m_mapSpr = spr;
 	m_mapVariable = mvariable;
@@ -1047,7 +1045,6 @@ void NuklearEditor::Clear()
 	m_vecModule->clear();
 	m_mapModuleID->clear();
 	m_mapModuleName->clear();
-	m_mapWindowName->clear();
 	m_pSelectedNode = nullptr;
 
 	m_mapSpr->clear();

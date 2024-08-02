@@ -2,7 +2,7 @@
 #include "NKCombo.h"
 #include "NKComboItem.h"
 
-NKCombo::NKCombo() : NKBase(), NKStyleCombo()
+NKCombo::NKCombo() : NKBase(), NKStyleCombo(), NKStyleContextualButton(), NKStyleWindow()
 {
 	m_type = eCOMBO;
 
@@ -12,9 +12,11 @@ NKCombo::NKCombo() : NKBase(), NKStyleCombo()
 	m_labelAlignment = NK_TEXT_LEFT;
 
 	m_cComboLabel = "None";
+	m_iComboFlag = eCOMBO_DYNAMIC;
+	m_dynamicLabelSpace = { 0.f, 0.f };
 }
 
-NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleCombo(ctx, &m_style)
+NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleCombo(ctx, &m_style), NKStyleContextualButton(ctx, &m_style), NKStyleWindow(ctx, &m_style)
 {
 	m_type = eCOMBO;
 
@@ -26,9 +28,11 @@ NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_labelAlignment = NK_TEXT_LEFT;
 
 	m_cComboLabel = "None";
+	m_iComboFlag = eCOMBO_DYNAMIC;
+	m_dynamicLabelSpace = { 0.f, 0.f };
 }
 
-NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ctx, &m_style)
+NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ctx, &m_style), NKStyleContextualButton(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 
@@ -38,6 +42,8 @@ NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ct
 	m_labelAlignment = other.m_labelAlignment;
 
 	m_cComboLabel = other.m_cComboLabel;
+	m_iComboFlag = other.m_iComboFlag;
+	m_dynamicLabelSpace = { 0.f, 0.f };
 }
 
 NKCombo::~NKCombo()
@@ -46,29 +52,58 @@ NKCombo::~NKCombo()
 
 void NKCombo::Layout(nk_context* ctx)
 {
-	if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), m_labelSize))
-	{
-		nk_layout_space_begin(ctx, NK_STATIC, m_labelSize.y, m_pChildList.size());
+	if (m_iComboFlag == eCOMBO_DYNAMIC) {
+		if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), m_labelSize))
+		{
+			nk_layout_space_begin(ctx, NK_STATIC, m_labelSize.y, m_pChildList.size());
 
-		int i = 0;
-		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
-			nk_layout_space_push(ctx, nk_rect(0, (m_labelSize.y / m_pChildList.size()) * i++, m_labelSize.x, m_labelSize.y / m_pChildList.size()));
-			
-			if ((*it)->GetType() == eCOMBO_ITEM)
-			{
-				NKComboItem* pItem = (NKComboItem*)(*it);
-				pItem->SetLabelNumber(i);
+			int i = 0;
+			for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+				nk_layout_space_push(ctx, nk_rect(0, (m_labelSize.y / m_pChildList.size()) * i++, m_labelSize.x, m_labelSize.y / m_pChildList.size()));
+
+				if ((*it)->GetType() == eCOMBO_ITEM)
+				{
+					NKComboItem* pItem = (NKComboItem*)(*it);
+					pItem->SetLabelNumber(i);
+				}
+				(*it)->Update(ctx);
 			}
-			(*it)->Update(ctx);
+			nk_layout_space_end(ctx);
+			nk_combo_end(ctx);
 		}
-		nk_layout_space_end(ctx);
-		nk_combo_end(ctx);
 	}
+	else {
+
+		if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), m_labelSize))
+		{
+			nk_layout_space_begin(ctx, NK_STATIC, m_dynamicLabelSpace.y, m_pChildList.size());
+
+			m_dynamicLabelSpace = nk_vec2(0.f, 0.f);
+			int i = 0;
+			for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+				nk_layout_space_push(ctx, nk_rect(m_dynamicLabelSpace.x, m_dynamicLabelSpace.y, (*it)->GetWidth(),(*it)->GetHeight()));
+				m_dynamicLabelSpace.y += (*it)->GetHeight();
+
+				if ((*it)->GetType() == eCOMBO_ITEM)
+				{
+					NKComboItem* pItem = (NKComboItem*)(*it);
+					pItem->SetLabelNumber(i++);
+				}
+				(*it)->Update(ctx);
+			}
+			nk_layout_space_end(ctx);
+			nk_combo_end(ctx);
+		}
+	}
+
+	
 }
 
 void NKCombo::SafeRenderStart(nk_context* ctx)
 {
-	UpdateComponent(ctx, m_pManager);
+	NKStyleCombo::UpdateComponent(ctx, m_pManager);
+	NKStyleContextualButton::UpdateComponent(ctx, m_pManager);
+	NKStyleWindow::UpdateComponent(ctx, m_pManager);
 }
 
 void NKCombo::SafeRenderEnd(nk_context* ctx)
@@ -84,6 +119,13 @@ void NKCombo::EditInfo(nk_context* ctx)
 		CreateUI("NKComboItem");
 	}
 
+	nk_layout_row_dynamic(ctx, 22, 1);
+	nk_label(ctx, "combo type", NK_TEXT_LEFT);
+	nk_layout_row_dynamic(ctx, 22, 2);
+	if (nk_option_label(ctx, "dynamic", m_iComboFlag == eCOMBO_DYNAMIC)) m_iComboFlag = eCOMBO_DYNAMIC;
+	if (nk_option_label(ctx, "static", m_iComboFlag == eCOMBO_STATIC)) m_iComboFlag = eCOMBO_STATIC;
+
+	nk_layout_row_dynamic(ctx, 22, 1);
 	nk_label(ctx, "alignment", NK_TEXT_LEFT);
 	nk_layout_row_dynamic(ctx, 22, 3);
 	if (nk_option_label(ctx, "left", m_labelAlignment == NK_TEXT_LEFT)) m_labelAlignment = NK_TEXT_LEFT;
@@ -106,7 +148,9 @@ void NKCombo::EditInfo(nk_context* ctx)
 
 void NKCombo::EditStyle(nk_context* ctx)
 {
-	EditComponentStyle(ctx, m_pManager);
+	NKStyleCombo::EditComponentStyle(ctx, m_pManager);
+	NKStyleContextualButton::EditComponentStyle(ctx, m_pManager);
+	NKStyleWindow::EditComponentStyle(ctx, m_pManager);
 }
 
 void NKCombo::SetComboName(const char* name)

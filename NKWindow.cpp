@@ -36,11 +36,11 @@ void NKWindow::LayoutBegin(nk_context* ctx)
 
 void NKWindow::Layout(nk_context* ctx)
 {
-	char window_name[256] = { 0, };
-	strncpy_s(window_name, m_sWindowName.c_str(), 256);
-	window_name[255] = '\0';
+	char primary_name[256] = { 0, };
+	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
+	primary_name[255] = '\0';
 
-	if (nk_begin(ctx, window_name, m_cTransform, m_flags))
+	if(nk_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_cTransform, m_flags))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{

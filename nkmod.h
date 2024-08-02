@@ -79,6 +79,7 @@ extern "C" {
 #ifndef NKMOD_EXPORTS
 #include <functional>
 #include <vector>
+#include <string>
 
 #define REGIST_HANDLER(instance, func, handler) \
 	NKInterface::InitializeHandler(#func, instance, func, handler)

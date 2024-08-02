@@ -3,11 +3,19 @@
 #define NKCombo_h__
 #include "NKBase.h"
 #include "NKStyleCombo.h"
+#include "NKStyleContextualButton.h"
+#include "NKStyleWindow.h"
 
 class NKComboItem;
 
-class NKCombo : public NKBase, public NKStyleCombo
+class NKCombo : public NKBase, public NKStyleCombo, public NKStyleContextualButton, public NKStyleWindow
 {
+public:
+	enum {
+		eCOMBO_DYNAMIC,
+		eCOMBO_STATIC
+	};
+
 public:
 	NKCombo();
 	NKCombo(nk_context* ctx, NuklearUI* pManager);
@@ -41,16 +49,33 @@ public:
 	struct nk_vec2 m_labelSize;
 	std::string m_cComboLabel;
 
+	int m_iComboFlag;
+
+	struct nk_vec2 m_dynamicLabelSpace; // No need to save it.
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(cereal::base_class<NKBase>(this)
-			, cereal::base_class<NKStyleCombo>(this)
-			, CEREAL_NVP(m_currentLabel)
-			, CEREAL_NVP(m_labelAlignment)
-			, CEREAL_NVP(m_labelSize)
-			, CEREAL_NVP(m_cComboLabel)
-		);
+		if (version >= 9) {
+			ar(cereal::base_class<NKBase>(this)
+				, cereal::base_class<NKStyleCombo>(this)
+				, cereal::base_class<NKStyleContextualButton>(this)
+				, cereal::base_class<NKStyleWindow>(this)
+				, CEREAL_NVP(m_currentLabel)
+				, CEREAL_NVP(m_labelAlignment)
+				, CEREAL_NVP(m_labelSize)
+				, CEREAL_NVP(m_cComboLabel)
+				, CEREAL_NVP(m_iComboFlag)
+			);
+		}
+		else {
+			ar(cereal::base_class<NKBase>(this)
+				, cereal::base_class<NKStyleCombo>(this)
+				, CEREAL_NVP(m_currentLabel)
+				, CEREAL_NVP(m_labelAlignment)
+				, CEREAL_NVP(m_labelSize)
+				, CEREAL_NVP(m_cComboLabel)
+			);
+		}
 	}
 };
 
