@@ -2,7 +2,7 @@
 #include "NKCombo.h"
 #include "NKComboItem.h"
 
-NKCombo::NKCombo() : NKBase(), NKStyleCombo(), NKStyleContextualButton(), NKStyleWindow()
+NKCombo::NKCombo() : NKBase(), NKStyleCombo(), NKStyleContextualButton(), NKStyleWindow(), NKStyleScrollbarH(), NKStyleScrollbarV()
 {
 	m_type = eCOMBO;
 
@@ -16,7 +16,7 @@ NKCombo::NKCombo() : NKBase(), NKStyleCombo(), NKStyleContextualButton(), NKStyl
 	m_dynamicLabelSpace = { 0.f, 0.f };
 }
 
-NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleCombo(ctx, &m_style), NKStyleContextualButton(ctx, &m_style), NKStyleWindow(ctx, &m_style)
+NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleCombo(ctx, &m_style), NKStyleContextualButton(ctx, &m_style), NKStyleWindow(ctx, &m_style), NKStyleScrollbarH(ctx, &m_style), NKStyleScrollbarV(ctx, &m_style)
 {
 	m_type = eCOMBO;
 
@@ -32,7 +32,7 @@ NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_dynamicLabelSpace = { 0.f, 0.f };
 }
 
-NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ctx, &m_style), NKStyleContextualButton(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
+NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ctx, &m_style), NKStyleContextualButton(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style), NKStyleScrollbarH(other, m_ctx, &m_style), NKStyleScrollbarV(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 
@@ -251,6 +251,24 @@ bool NKCombo::CAddItem(void* param)
 		return true;
 	}
 	return false;
+}
+
+void NKCombo::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleCombo::UpdateComponent(ctx, pManager);
+	NKStyleContextualButton::UpdateComponent(ctx, pManager);
+	NKStyleWindow::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarH::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarV::UpdateComponent(ctx, pManager);
+}
+
+void NKCombo::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
+{
+	NKStyleCombo::EditComponentStyle(ctx, pManager);
+	NKStyleContextualButton::EditComponentStyle(ctx, pManager);
+	NKStyleWindow::EditComponentStyle(ctx, pManager);
+	NKStyleScrollbarH::EditComponentStyle(ctx, pManager);
+	NKStyleScrollbarV::EditComponentStyle(ctx, pManager);
 }
 
 void NKCombo::RegistCommand(const char* classname)

@@ -5,7 +5,9 @@
 #include "NKBaseWindow.h"
 #include "NKStyleHeader.h"
 #include "NKStyleWindow.h"
-class NKGroup : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow
+#include "NKStyleScrollbarH.h"
+#include "NKStyleScrollbarV.h"
+class NKGroup : public NKBase, public NKBaseWindow, public NKStyleHeader, public NKStyleWindow, public NKStyleScrollbarH, public NKStyleScrollbarV
 {
 public:
 	NKGroup();
@@ -27,11 +29,23 @@ public:
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(cereal::base_class<NKBase>(this)
-			, cereal::base_class<NKBaseWindow>(this)
-			, cereal::base_class<NKStyleHeader>(this)
-			, cereal::base_class<NKStyleWindow>(this)
-		);
+		if (version >= 11) {
+			ar(cereal::base_class<NKBase>(this)
+				, cereal::base_class<NKBaseWindow>(this)
+				, cereal::base_class<NKStyleHeader>(this)
+				, cereal::base_class<NKStyleWindow>(this)
+				, cereal::base_class<NKStyleScrollbarH>(this)
+				, cereal::base_class<NKStyleScrollbarV>(this)
+			);
+		}
+		else {
+			ar(cereal::base_class<NKBase>(this)
+				, cereal::base_class<NKBaseWindow>(this)
+				, cereal::base_class<NKStyleHeader>(this)
+				, cereal::base_class<NKStyleWindow>(this)
+			);
+
+		}
 	}
 };
 

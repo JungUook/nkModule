@@ -6,7 +6,9 @@
 #include "NKHandler.h"
 #include "NKStyleHeader.h"
 #include "NKStyleWindow.h"
-class NKWindow : public NKBase, public NKBaseWindow, public NKHandler, public NKStyleHeader, public NKStyleWindow
+#include "NKStyleScrollbarH.h"
+#include "NKStyleScrollbarV.h"
+class NKWindow : public NKBase, public NKBaseWindow, public NKHandler, public NKStyleHeader, public NKStyleWindow, public NKStyleScrollbarH, public NKStyleScrollbarV
 {
 public:
 	NKWindow();

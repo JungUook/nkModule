@@ -5,10 +5,12 @@
 #include "NKStyleCombo.h"
 #include "NKStyleContextualButton.h"
 #include "NKStyleWindow.h"
+#include "NKStyleScrollbarH.h"
+#include "NKStyleScrollbarV.h"
 
 class NKComboItem;
 
-class NKCombo : public NKBase, public NKStyleCombo, public NKStyleContextualButton, public NKStyleWindow
+class NKCombo : public NKBase, public NKStyleCombo, public NKStyleContextualButton, public NKStyleWindow, public NKStyleScrollbarH, public NKStyleScrollbarV
 {
 public:
 	enum {
@@ -42,6 +44,8 @@ public:
 	NKComboItem* LAddItem(luabridge::LuaRef ref);
 	bool CAddItem(void* param);
 
+	virtual void UpdateComponent(nk_context* ctx, NuklearUI* pManager) override;
+	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 	virtual void RegistCommand(const char* classname) override;
 public:
 	int m_currentLabel;
@@ -55,11 +59,13 @@ public:
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		if (version >= 9) {
+		if (version >= 11) {
 			ar(cereal::base_class<NKBase>(this)
 				, cereal::base_class<NKStyleCombo>(this)
 				, cereal::base_class<NKStyleContextualButton>(this)
 				, cereal::base_class<NKStyleWindow>(this)
+				, cereal::base_class<NKStyleScrollbarH>(this)
+				, cereal::base_class<NKStyleScrollbarV>(this)
 				, CEREAL_NVP(m_currentLabel)
 				, CEREAL_NVP(m_labelAlignment)
 				, CEREAL_NVP(m_labelSize)
@@ -70,10 +76,13 @@ public:
 		else {
 			ar(cereal::base_class<NKBase>(this)
 				, cereal::base_class<NKStyleCombo>(this)
+				, cereal::base_class<NKStyleContextualButton>(this)
+				, cereal::base_class<NKStyleWindow>(this)
 				, CEREAL_NVP(m_currentLabel)
 				, CEREAL_NVP(m_labelAlignment)
 				, CEREAL_NVP(m_labelSize)
 				, CEREAL_NVP(m_cComboLabel)
+				, CEREAL_NVP(m_iComboFlag)
 			);
 		}
 	}

@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "NKWindow.h"
 
-NKWindow::NKWindow() : NKBase(), NKBaseWindow(), NKHandler(), NKStyleHeader(), NKStyleWindow()
+NKWindow::NKWindow() : NKBase(), NKBaseWindow(), NKHandler(), NKStyleHeader(), NKStyleWindow(), NKStyleScrollbarH(), NKStyleScrollbarV()
 {
 	m_type = eWINDOW;
 	m_flags = NK_WINDOW_TITLE;
 }
 
-NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKHandler(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
+NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKHandler(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style), NKStyleScrollbarH(ctx, &m_style), NKStyleScrollbarV(ctx, &m_style)
 {
 	m_type = eWINDOW;
 	m_flags = NK_WINDOW_TITLE;
@@ -18,7 +18,7 @@ NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_cTransform.h = 600.f;
 }
 
-NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKHandler(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
+NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKHandler(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style), NKStyleScrollbarH(other, m_ctx, &m_style), NKStyleScrollbarV(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_flags = other.m_flags;
@@ -115,12 +115,16 @@ void NKWindow::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 {
 	NKStyleHeader::UpdateComponent(ctx, pManager);
 	NKStyleWindow::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarH::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarV::UpdateComponent(ctx, pManager);
 }
 
 void NKWindow::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 {
 	NKStyleHeader::EditComponentStyle(ctx, pManager);
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
+	NKStyleScrollbarH::EditComponentStyle(ctx, pManager);
+	NKStyleScrollbarV::EditComponentStyle(ctx, pManager);
 }
 
 void NKWindow::RegistCommand(const char* classname)

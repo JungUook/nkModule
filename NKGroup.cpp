@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "NKGroup.h"
 
-NKGroup::NKGroup() : NKBase(), NKBaseWindow(), NKStyleHeader(), NKStyleWindow()
+NKGroup::NKGroup() : NKBase(), NKBaseWindow(), NKStyleHeader(), NKStyleWindow(), NKStyleScrollbarH(), NKStyleScrollbarV()
 {
 	m_type = eGROUP;
 	m_flags = 0;
 }
 
-NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style)
+NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style), NKStyleScrollbarH(ctx, &m_style), NKStyleScrollbarV(ctx, &m_style)
 {
 	m_type			= eGROUP;
 	m_flags			= NK_WINDOW_TITLE;
@@ -16,7 +16,7 @@ NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_cTransform.h = 300.f;
 }
 
-NKGroup::NKGroup(const NKGroup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style)
+NKGroup::NKGroup(const NKGroup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style), NKStyleScrollbarH(other, m_ctx, &m_style), NKStyleScrollbarV(other, m_ctx, &m_style)
 {
 	m_type			= other.m_type;
 	m_flags			= other.m_flags;
@@ -74,12 +74,16 @@ void NKGroup::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 {
 	NKStyleHeader::UpdateComponent(ctx, pManager);
 	NKStyleWindow::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarH::UpdateComponent(ctx, pManager);
+	NKStyleScrollbarV::UpdateComponent(ctx, pManager);
 }
 
 void NKGroup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 {
 	NKStyleHeader::EditComponentStyle(ctx, pManager);
 	NKStyleWindow::EditComponentStyle(ctx, pManager);
+	NKStyleScrollbarH::EditComponentStyle(ctx, pManager);
+	NKStyleScrollbarV::EditComponentStyle(ctx, pManager);
 }
 
 void NKGroup::RegistCommand(const char* classname)
