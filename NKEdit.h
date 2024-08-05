@@ -22,6 +22,10 @@ public:
 	void Clear();
 	bool CClear(void* param);
 
+	void SetText(const char* text);
+	void LSetText(luabridge::LuaRef ref);
+	bool CSetText(void* param);
+
 	virtual void RegistCommand(const char* classname) override;
 public:
 	char m_inputText[256];

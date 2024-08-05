@@ -78,8 +78,32 @@ bool NKEdit::CClear(void* param)
 	return true;
 }
 
+void NKEdit::SetText(const char* text)
+{
+	strcpy_s(m_inputText, text);
+}
+
+void NKEdit::LSetText(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	std::string text = ref.cast<std::string>();
+	SetText(text.c_str());
+}
+
+bool NKEdit::CSetText(void* param)
+{
+	const char** text = static_cast<const char**>(param);
+
+	if (text) {
+		SetText(*text);
+		return true;
+	}
+	return false;
+}
+
 void NKEdit::RegistCommand(const char* classname)
 {
 	NKBase::RegistCommand(classname);
 	MAKE_INTERFACE(m_mapFunc, this, NKEdit::CClear, classname);
+	MAKE_INTERFACE(m_mapFunc, this, NKEdit::CSetText, classname);
 }
