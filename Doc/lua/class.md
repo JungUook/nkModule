@@ -128,18 +128,41 @@
 |SetSelected|true or false||선택여부를 설정하는 함수|
 |IsSelected||true or false|선택여부를 확인하는 함수|
 |SetFunctionName|string||클릭 이벤트가 발생할 경우 호출되는 함수의 이름을 설정하는 함수|
-|SetArgsName|string||클릭 이벤트가 발생할 경우 호출되는 함수의 파라미터 이름을 설정하는 함수|
+|SetArgsName|string,int||클릭 이벤트가 발생할 경우 호출되는 함수의 파라미터 이름을 설정하는 함수<br>int값이 0이면 value타입이며, 1이면 string타입이 된다.|
 
 # Tree
+- 트리 기능
+
+|함수|매개변수|반환값|설명|
+|-------|-------|-------|-------|
+|SetLabel|string||트리의 제목을 설정하는 함수|
+|SetState|int||현재 트리 상태를 설정하는 함수<br>0은 최소화, 1은 확장이다|
+|GetState||int|현재 트리 상태를 반환받는 함수<br>0은 최소화, 1은 확장이다|
 
 # Chart
+- 미구현
 
 # Tooltip
+- 툴팁 기능
+
+|함수|매개변수|반환값|설명|
+|-------|-------|-------|-------|
+|SetLabel|string||툴팁에 표시할 문자열을 설정하는 함수|
 
 # Menu
+- 메뉴 기능
+
+|함수|매개변수|반환값|설명|
+|-------|-------|-------|-------|
+|SetLabel|string||메뉴의 제목을 설정하는 함수|
+|SetFunctionName|string||메뉴 이벤트가 발생할 경우 호출되는 함수의 이름을 설정하는 함수|
+|SetArgsName|string,int||메뉴 이벤트가 발생할 경우 호출되는 함수의 파라미터 이름을 설정하는 함수<br>int값이 0이면 value타입이며, 1이면 string타입이 된다.|
 
 # Scrollbar
+- 미구현
 
 # ColorPicker
+- 미구현
 
 # SuperStyleObject
+- 스타일 설정 전용 객체
