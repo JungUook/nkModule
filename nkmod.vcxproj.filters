@@ -45,9 +45,6 @@
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="etc\nkmod.h">
-      <Filter>소스 파일\etc</Filter>
-    </ClInclude>
     <ClInclude Include="etc\sprLoader.h">
       <Filter>소스 파일\etc</Filter>
     </ClInclude>
@@ -255,15 +252,12 @@
     <ClInclude Include="Nuklear\Base\Style\NKStyleWindow.h">
       <Filter>소스 파일\Nuklear\Base\Style</Filter>
     </ClInclude>
+    <ClInclude Include="etc\nkmod.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일\etc</Filter>
-    </ClCompile>
     <ClCompile Include="etc\dllmain.cpp">
-      <Filter>소스 파일\etc</Filter>
-    </ClCompile>
-    <ClCompile Include="etc\nkmod.cpp">
       <Filter>소스 파일\etc</Filter>
     </ClCompile>
     <ClCompile Include="etc\sprLoader.cpp">
@@ -478,6 +472,12 @@
     </ClCompile>
     <ClCompile Include="Nuklear\Base\Style\NKStyleWindow.cpp">
       <Filter>소스 파일\Nuklear\Base\Style</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="etc\nkmod.cpp">
+      <Filter>소스 파일\etc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
