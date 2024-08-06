@@ -39,6 +39,7 @@ local window = system:FindWindow(windowKey)
 - SuperStyleObject
 
 
+
 # interface
 - 이 객체를 사용하기 위해서는 사전 작업이 필요하다.
 - 루아 스크립트에서 핸들러를 호출하기 위한 객체이다.
@@ -81,5 +82,37 @@ interface:TriggerEvent(data)
 2. luascript에서 위 데이터 형식을 맞춰서 함수를 호출한다.
 3. C++에서 GetEvent가 호출되고 nEvent의 값을 2인 것을 확인할 수 있다.
 
-# nkio
 
+# nkio
+- 이 객체를 프리팹을 만드는 기능을 담당한다.
+- 주로 에디터에서 미리 생성하여 만들어둔 프리팹을 동적으로 생성할때 사용한다.
+
+|함수|설명|
+|-------|-------|
+|LoadPrefab|사용하고 싶은 프리팹을 생성한다. <br>부모 없이 생성하면 새로운 윈도우가 생성된 후 그 자식으로 설정된다. <br>부모를 설정하면 그 부모의 자식으로 설정된다.<br>반환값은 프리맵 최상단 객체이다.|
+
+
+#### Luascript
+```markdown
+//부모없이 일반적인 생성
+local data = {
+  filename = "path\\myPrefab.json",
+  parent = nil
+}
+local prefab = nkio:LoadPrefab(data)
+
+//부모를 설정한 생성
+local parentObj = system:Find("myParent")
+local data = {
+  filename = "path\\myPrefab.json",
+  parent = parentObj
+}
+local prefab = nkio:LoadPrefab(data)
+```
+
+#### 설명
+- 매개변수는 filename에 원하는 프리팹의 경로를 설정한다. 경로는 root에서의 상대경로이며, json과 bin 확장자를 지원한다.
+- 프리팹 생성시 부모설정에 주의해야한다.
+  - Window 타입은 부모를 가질 수 없다.
+  - 모든 하위 ui는 space타입을 부모로 가져야한다.
+  - 추가 예외사항 작성중...
