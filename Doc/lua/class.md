@@ -89,22 +89,46 @@
 
 |함수|매개변수|반환값|설명|
 |-------|-------|-------|-------|
-|SetLabel|string||라벨에 출력한 문자열을 설정하는 함수|
+|SetLabel|string||라벨에 출력할 문자열을 설정하는 함수|
 
 # Checkbox
 - 체크박스 기능
 
 |함수|매개변수|반환값|설명|
 |-------|-------|-------|-------|
-|SetLabel||||
-|SetChecked||||
-|IsChecked||||
+|SetLabel|string||체크박스에 출력될 문자열을 설정하는 함수|
+|SetChecked|true or false||체크박스의 상태를 결정하는 함수.<br>true는 체크, false는 체크하지 않는다|
+|IsChecked||true or false|체크박스의 상태를 반환받는 함수.<br>true는 체크된 상태, false는 체크되지 않은 상태|
 
 # Slider
+- 슬라이더 기능
+
+|함수|매개변수|반환값|설명|
+|-------|-------|-------|-------|
+|SetRange|table{min, max}||슬라이더의 최소, 최대값을 설정하는 함수<br>min, max의 자료형은 float로 실수형이다|
+|SetValue|float||슬라이더의 현재 값을 설정하는 함수|
+|GetValue||float|슬라이더의 현재 값을 반환받는 함수|
 
 # Progress
+- 프로그래스바 기능
+
+|함수|매개변수|반환값|설명|
+|-------|-------|-------|-------|
+|SetProgress|float||프로그래스바의 현재 값을 설정하는 함수|
+|GetProgress||float|프로그래스바의 현재 값을 반환받는 함수|
 
 # Selectable
+- 선택요소 기능
+
+|함수|매개변수|반환값|설명|
+|-------|-------|-------|-------|
+|SetLabel|string||선택요소에 출력될 문자열을 설정하는 함수|
+|SetImagePath|string||선택요소에 출력될 이미지의 주소를 설정하는 함수|
+|SetSpriteIndex|int||선택요소에 출력될 스프라이트 이미지의 index를 설정하는 함수|
+|SetSelected|true or false||선택여부를 설정하는 함수|
+|IsSelected||true or false|선택여부를 확인하는 함수|
+|SetFunctionName|string||클릭 이벤트가 발생할 경우 호출되는 함수의 이름을 설정하는 함수|
+|SetArgsName|string||클릭 이벤트가 발생할 경우 호출되는 함수의 파라미터 이름을 설정하는 함수|
 
 # Tree
 
