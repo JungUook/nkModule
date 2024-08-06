@@ -15,14 +15,14 @@ Nuklear라는 라이브러리를 사용하여 DX7환경에서 에디터 형식�
 - 추가 종속성 (nkmod_d.lib, nkmod.lib)
 - 32bit
 
-## C: Interface
-- mkmod.h
+## nkmod
 
 - exturn "C"
 
 |함수|설명|
 |-------|-------|
 |RegistHWND|UI시스템을 초기화하기 전 메인 시스템에서 반드시 HWND를 등록시켜야한다.|
+|InitSubWindow|에디터용 서브 윈도우를 사용하기 위한 함수이다.|
 |CreateD3D7DeviceNew|DX7의 UI를 랜더링할때 사용하는 3D Device를 생성해주는 함수이다.<br>메인 시스템에서 미리 생성해둔 IDirectDraw7와 IDirectDrawSurface7자료형의 primary와 backbuffer가 있어야한다.|
 |Initialize|실질적으로 dll의 시스템을 메모리 할당하는 작업이다.<br>앞에서 만들어둔 device와 메인시스템의 IDirectDraw7을 사용한다.|
 |NKInputBegin|입력된 키들을 UI input system에 등록하기 시작하겠다는 함수다.<br>항상 NKInputEnd 전에 미리 실행해야한다.|
@@ -39,55 +39,8 @@ Nuklear라는 라이브러리를 사용하여 DX7환경에서 에디터 형식�
 |Command|매개변수 순서대로 각각 ui오브젝트의 이름, ui오브젝트의 함수이름, 입력할&반환받을 포인터를 의미한다.|
 |InitializeHandler|콜백받을 함수 구조체를 생성해주는 함수다. |
 
-## Lua: Interface
-- system
-  - Find
-  - FindWindow
-  - FindSpace
-  - FindGroup
-  - FindPopup
-  - FindCombo
-  - FindButton
-  - FindEdit
-  - FindImage
-  - FindLabel
-  - FindComboItem
-  - FindCheckbox
-  - FindSlider
-  - FindProgress
-  - FindSelectable
-  - FindTree
-  - FindChart
-  - FindTooltip
-  - FindMenu
-  - FindScrollbar
-  - FindColorPicker
-  - FindSuperStyleObject
-- interface
-  - ResFunc
-  - ResFuncArgs
-  - TriggerEvent
-- io
-  - LoadPrefab
 
-## Lua: Class
-- NKBase
-- NKWindow
-- NKSpace
-- NKGroup
-- NKPopup
-- NKCombo
-- NKComboItem
-- NKButton
-- NKEdit
-- NKImage
-- NKLabel
-- NKCheckbox
-- NKSlider
-- NKProgress
-- NKSelectable
-- NKTree
-- NKChart
-- NKColorPicker
-- NKTooltip
-- NKMenu
+## 문서
+- [nkmod](./Doc/nkmod.md)
+- [lua](./Doc/lua.md)
+- [handler](./Doc/handler.md)
