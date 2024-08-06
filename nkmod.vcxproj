@@ -468,9 +468,9 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="etc\nkmod.h" />
     <ClInclude Include="etc\sprLoader.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="nkmod.h" />
     <ClInclude Include="Nuklear\Base\Module\NKBaseImage.h" />
     <ClInclude Include="Nuklear\Base\Module\NKBaseLabel.h" />
     <ClInclude Include="Nuklear\Base\Module\NKBaseStyle.h" />

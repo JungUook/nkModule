@@ -252,7 +252,7 @@
     <ClInclude Include="Nuklear\Base\Style\NKStyleWindow.h">
       <Filter>소스 파일\Nuklear\Base\Style</Filter>
     </ClInclude>
-    <ClInclude Include="etc\nkmod.h">
+    <ClInclude Include="nkmod.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
