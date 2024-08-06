@@ -17,26 +17,26 @@ local window = system:FindWindow(windowKey)
 
 #### 사용 가능한 타입들
 - [Window](./class.md#window)
-- Space
-- Group
-- Popup
-- Combo
-- Button
-- Edit
-- Image
-- Label
-- ComboItem
-- Checkbox
-- Slider
-- Progress
-- Selectable
-- Tree
-- Chart
-- Tooltip
-- Menu
-- Scrollbar
-- ColorPicker
-- SuperStyleObject
+- [Space](./class.md#Space)
+- [Group](./class.md#Group)
+- [Popup](./class.md#Popup)
+- [Combo](./class.md#Combo)
+- [Button](./class.md#Button)
+- [Edit](./class.md#Edit)
+- [Image](./class.md#Image)
+- [Label](./class.md#Label)
+- [ComboItem](./class.md#ComboItem)
+- [Checkbox](./class.md#Checkbox)
+- [Slider](./class.md#Slider)
+- [Progress](./class.md#Progress)
+- [Selectable](./class.md#Selectable)
+- [Tree](./class.md#Tree)
+- [Chart](./class.md#Chart)
+- [Tooltip](./class.md#Tooltip)
+- [Menu](./class.md#Menu)
+- [Scrollbar](./class.md#Scrollbar)
+- [ColorPicker](./class.md#ColorPicker)
+- [SuperStyleObject](./class.md#SuperStyleObject)
 
 
 
