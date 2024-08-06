@@ -16,7 +16,7 @@ local window = system:FindWindow(windowKey)
 ```
 
 #### 사용 가능한 타입들
-- [Window](./class.md#window)
+- [Window](./class.md#Window)
 - [Space](./class.md#Space)
 - [Group](./class.md#Group)
 - [Popup](./class.md#Popup)
