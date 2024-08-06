@@ -274,6 +274,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(projectdir);$(projectdir)etc;$(projectdir)Nuklear;$(projectdir)Nuklear\Base;$(projectdir)Nuklear\Base\Module;$(projectdir)Nuklear\Base\Object;$(projectdir)Nuklear\Base\Style;$(projectdir)Nuklear\Base\Style\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
