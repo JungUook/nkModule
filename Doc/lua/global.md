@@ -1,0 +1,85 @@
+# system
+- 메인 시스템(매니저)를 wrapping한 객체
+- 주로 UI객체에 접근할때 사용한다.
+
+|함수|설명|
+|-------|-------|
+|Find|UI클래스를 반환해주는 함수<br>해당 함수로 반환된 객체는 Base이며 모든 UI객체의 부모이다.<br>만약, 원하는 타입의 객체를 반환받고 싶다면 Find + "객체 이름"인 함수를 사용하면 된다.<br>매개변수는 primaryname을 사용하며, 이는 에디터나 루아스크립트로 설정할 수 있다.|
+
+#### LuaScript
+```markdown
+local primaryname = "base01"
+local base = system:Find(primaryKey)
+
+local windowKey = "window01"
+local window = system:FindWindow(windowKey)
+```
+
+#### 사용 가능한 타입들
+- Window
+- Space
+- Group
+- Popup
+- Combo
+- Button
+- Edit
+- Image
+- Label
+- ComboItem
+- Checkbox
+- Slider
+- Progress
+- Selectable
+- Tree
+- Chart
+- Tooltip
+- Menu
+- Scrollbar
+- ColorPicker
+- SuperStyleObject
+
+
+# interface
+- 이 객체를 사용하기 위해서는 사전 작업이 필요하다.
+- 루아 스크립트에서 핸들러를 호출하기 위한 객체이다.
+
+|함수|설명|
+|-------|-------|
+|TriggerEvent|기존 프로젝트에서 구독해놓은 핸들러를 호출한다.<br>자세한 사용법은 아래 예시를 참고.
+
+#### C++
+```markdown
+//class header
+NKInterface* pInterface;
+NKHandler mHandler;
+
+//class cpp
+REGIST_HANDLER(this, &MYClass::GetEvent, mHandler);
+(*pInterface) += mHandler;
+
+void MYClass::GetEvent(void* param) {
+  int nEvent = NKGetDataInt("nEvent");
+}
+
+```
+
+
+#### Luascript
+```markdown
+local data = {
+  key = "&MYClass::GetEvent",
+  value = {
+    nEvent = 2
+  }
+}
+interface:TriggerEvent(data)
+
+```
+
+#### 설명
+1. C++에서 NKInterface 포인터에 객체를 할당하고 핸들러 등록을 해둔 후 빌드한다.
+2. luascript에서 위 데이터 형식을 맞춰서 함수를 호출한다.
+3. C++에서 GetEvent가 호출되고 nEvent의 값을 2인 것을 확인할 수 있다.
+
+# nkio
+
