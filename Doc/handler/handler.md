@@ -91,3 +91,61 @@ bool Command(const char* primaryName, const char* command, void* param) {
 4. 반환되는 값은 함수실행의 성공여부이다. false는 실패, true는 성공이다.
 
 #### [해당 문서로 이동](command.md)
+
+
+
+## NKLuaCommand
+- 루아스크립트 함수를 실행시켜주는 함수
+
+
+#### Luascript
+```markdown
+myTable = {
+    number = "None",
+    string = 0,
+    boolean = false
+}
+
+function MyLuaFunction(ref)
+	local myNumber = ref["number"]
+	local myString = ref["string"]
+	local myBoolean = ref["boolean"]
+end
+
+```
+
+
+#### C++
+```markdown
+std::vector<PackedLuaParam> vParams;
+
+PackedLuaParam myNumber;
+myNumber.key = "number";
+myNumber.data.type = eNK_NUMBER;
+myNumber.data.value.numberValue = 500;
+vParams.push_back(myNumber);
+
+
+std::string str = "text 1234 data";
+
+PackedLuaParam myString;
+myString.key = "string";
+myString.data.type = eNK_STRING;
+myString.data.value.stringValue = &str;
+vParams.push_back(myString);
+
+PackedLuaParam myBoolean;
+myBoolean.key = "boolean";
+myBoolean.data.type = eNK_BOOLEAN;
+myBoolean.data.value.boolValue = true;
+vParams.push_back(myBoolean);
+
+NKLuaCommand("MyLuaFunction", "myTable", &vParams);
+```
+
+
+#### 설명
+1. luascript에서 선행작업을 수행한다.(테이블, 함수)
+2. 메인 클라이언트에서 PackedLuaParam 구조체를 이용하여 숫자(double), 문자열 포인터(std::string*), 판별값(bool) 등 세 종류의 데이터를 매개변수로 사용할 수 있다.
+3. 루아 함수로 실행할 매개변수는 vector에 담은 후 NKLuaCommand로 함수이름, 테이블이름, vector포인터 순으로 넣어 실행하면 된다.
+4. 만약 매개변수가 하나라면 vector에 담지 않고 PackedLuaParam 구조체의 포인터를 넣으면 된다.
