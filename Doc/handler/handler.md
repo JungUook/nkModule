@@ -94,7 +94,7 @@ bool Command(const char* primaryName, const char* command, void* param) {
 
 
 
-## NKLuaCommand
+## LuaCommand
 - 루아스크립트 함수를 실행시켜주는 함수
 
 
@@ -117,6 +117,9 @@ end
 
 #### C++
 ```markdown
+
+NKInterface mInterface;
+
 std::vector<PackedLuaParam> vParams;
 
 PackedLuaParam myNumber;
@@ -140,7 +143,7 @@ myBoolean.data.type = eNK_BOOLEAN;
 myBoolean.data.value.boolValue = true;
 vParams.push_back(myBoolean);
 
-NKLuaCommand("MyLuaFunction", "myTable", &vParams);
+mInterface.LuaCommand("MyLuaFunction", "myTable", &vParams);
 ```
 
 #### result(luascript)
