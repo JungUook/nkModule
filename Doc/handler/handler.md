@@ -88,5 +88,6 @@ bool Command(const char* primaryName, const char* command, void* param) {
 1. primaryName은 ui에디터에서 설정해놓은 문자열이다.
 2. command는 해당 클래스가 사용할 수 있는 함수의 이름이다.
 3. param은 해당 함수에서 사용할 매개변수이다.
+4. 반환되는 값은 함수실행의 성공여부이다. false는 실패, true는 성공이다.
 
 #### [해당 문서로 이동](command.md)
