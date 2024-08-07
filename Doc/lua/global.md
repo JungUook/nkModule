@@ -1,4 +1,6 @@
-# system
+# Global 개요
+
+## system
 - 메인 시스템(매니저)를 wrapping한 객체
 - 주로 UI객체에 접근할때 사용한다.
 
@@ -40,7 +42,7 @@ local window = system:FindWindow(windowKey)
 
 
 
-# interface
+## interface
 - 이 객체를 사용하기 위해서는 사전 작업이 필요하다.
 - 루아 스크립트에서 핸들러를 호출하기 위한 객체이다.
 
@@ -83,7 +85,7 @@ interface:TriggerEvent(data)
 3. C++에서 GetEvent가 호출되고 nEvent의 값을 2인 것을 확인할 수 있다.
 
 
-# nkio
+## nkio
 - 이 객체를 프리팹을 만드는 기능을 담당한다.
 - 주로 에디터에서 미리 생성하여 만들어둔 프리팹을 동적으로 생성할때 사용한다.
 
