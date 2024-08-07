@@ -559,17 +559,17 @@ bool NKLuaCommand(const char* command, const char* tableName, void* params)
 		for (auto it = vTable->begin(); it != vTable->end(); ++it) {
 			std::string key = it->key;
             switch (it->data.type) {
-            case ParamType::Number:
+            case eNK_NUMBER:
             {
                 ref[key] = it->data.value.numberValue;
                 break;
             }
-            case ParamType::String:
+            case eNK_STRING:
             {
                 ref[key] = *it->data.value.stringValue;
                 break;
             }
-            case ParamType::Boolean:
+            case eNK_BOOLEAN:
             {
                 ref[key] = it->data.value.boolValue;
                 break;
@@ -583,15 +583,15 @@ bool NKLuaCommand(const char* command, const char* tableName, void* params)
         PackedLuaParam* param = static_cast<PackedLuaParam*>(params);
 
         switch (param->data.type) {
-        case ParamType::Number:
+        case eNK_NUMBER:
             ref = param->data.value.numberValue;
             break;
-        case ParamType::String:
+        case eNK_STRING:
         {
             ref = param->data.value.stringValue;
             break;
         }
-        case ParamType::Boolean:
+        case eNK_BOOLEAN:
             ref = param->data.value.boolValue;
             break;
         default:

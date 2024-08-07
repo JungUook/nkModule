@@ -18,7 +18,7 @@
 #endif
 
 extern "C" {
-	enum ParamType { Number = 0, String = 1, Boolean = 2 };
+	enum ParamType { eNK_NUMBER = 0, eNK_STRING = 1, eNK_BOOLEAN = 2 };
 	union LuaData { double numberValue;	std::string* stringValue; bool boolValue; };
 	struct LuaParam { ParamType type; LuaData value; };
 	struct PackedLuaParam { std::string key; LuaParam data; };
@@ -65,7 +65,7 @@ extern "C" {
 
 	NKMOD_API bool AddBindHandler(const char* key, void* callback, void(*func)(void*, void*));
 	NKMOD_API bool RemoveBindHandler(const char* key);
-	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param);
+	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param = nullptr);
 	NKMOD_API bool NKLuaCommand(const char* command, const char* tableName = nullptr, void* params = nullptr);
 
 	NKMOD_API void* NKGetData(const char* key);
@@ -137,6 +137,10 @@ public:
 
 	bool Command(const char* primaryName, const char* command, void* param) {
 		return NKCommand(primaryName, command, param);
+	}
+
+	bool LuaCommand(const char* command, const char* tableName = nullptr, void* params = nullptr) {
+		return NKLuaCommand(command, tableName, params);
 	}
 
 	template <typename T>
