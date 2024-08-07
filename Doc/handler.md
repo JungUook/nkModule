@@ -5,11 +5,13 @@
 - dll 내부 클래스들의 함수를 wrapping하여 메인 클라이언트로 노출
 - c++20, 플랫폼 도구 v143을 사용
 
-## Handler
+## [Handler](./handler/handler.md)
 - NKHandler
 - NKInterface
+- Command
+- NKLuaCommand
 
-## Class
+## [Class](./handler/class.md)
 - NKWindow
 - NKSpace
 - NKGroup
