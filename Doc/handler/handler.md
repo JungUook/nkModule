@@ -143,6 +143,18 @@ vParams.push_back(myBoolean);
 NKLuaCommand("MyLuaFunction", "myTable", &vParams);
 ```
 
+#### result(luascript)
+```markdown
+
+myNumber
+//500
+
+myString
+//text 1234 data
+
+myBoolean
+//true
+```
 
 #### 설명
 1. luascript에서 선행작업을 수행한다.(테이블, 함수)
