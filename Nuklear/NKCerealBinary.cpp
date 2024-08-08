@@ -149,7 +149,7 @@ void NKCereal::SavePrefabBinary(const std::string& filename, NKBase* prefab)
 	}
 }
 
-void NKCereal::LoadPrefabBinary(const std::string& filename, NKBase* parent)
+NKBase* NKCereal::LoadPrefabBinary(const std::string& filename, NKBase* parent)
 {
 	size_t size;
 	std::vector<NKBase*> vPrefab;
@@ -264,6 +264,8 @@ void NKCereal::LoadPrefabBinary(const std::string& filename, NKBase* parent)
 		NKBase* pChild = *child;
 		pChild->ResetParentID(pBase);
 	}
+
+	return pBase;
 }
 
 void SaveSwitch(NKBase* ptr, cereal::BinaryOutputArchive& archive) {

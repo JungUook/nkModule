@@ -265,7 +265,12 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
             std::cerr << "Failed to create directory: " << dataPath << std::endl;
             return;
         }
+#ifdef _NKDEBUG
         std::string filePath = dataPath + "\\nkmod.json";
+#else
+        std::string filePath = dataPath + "\\nkmod.bin";
+#endif // _NKDEBUG
+
 
         g_nuklear->m_cereal.LoadFile(g_nuklear->m_mapVariable, g_nuklear->m_mapFunction, filePath);
     }

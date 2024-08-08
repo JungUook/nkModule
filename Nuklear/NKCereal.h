@@ -28,15 +28,19 @@ public:
 	void SaveFile(const std::string& filename);
 	void SaveFileBinary(const std::string& filename);
 	void LoadFile(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename);
+	void LoadFileJson(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename);
 	void LoadFileBinary(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename);
 
 	//Prefab
 public:
 	void OpenPrefabDialog();
+	void OpenPrefabBinaryDialog();
 	void SavePrefab(const std::string& filename, NKBase* prefab);
 	void SavePrefabBinary(const std::string& filename, NKBase* prefab);
+
 	NKBase* LoadPrefab(const std::string& filename, NKBase* parent = nullptr);
-	void LoadPrefabBinary(const std::string& filename, NKBase* parent = nullptr);
+	NKBase* LoadPrefabJson(const std::string& filename, NKBase* parent = nullptr);
+	NKBase* LoadPrefabBinary(const std::string& filename, NKBase* parent = nullptr);
 	NKBase* LLoadPrefab(luabridge::LuaRef ref);
 
 	void OpenLuaCodeDialog();

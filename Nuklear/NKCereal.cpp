@@ -55,8 +55,21 @@ void NKCereal::SaveFile(const std::string& filename)
 		SaveSwitch(ptr, archive);
 	}
 }
-
 void NKCereal::LoadFile(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename)
+{
+	std::string file = GetExecutablePath() + "\\" + filename;
+	std::filesystem::path path(file);
+	std::wstring extension = path.extension().wstring();
+
+	if (extension == L".json") {
+		LoadFileJson(vVar, vFunc, filename);
+	}
+	else if (extension == L".bin") {
+		LoadFileBinary(vVar, vFunc, filename);
+	}
+}
+
+void NKCereal::LoadFileJson(std::map<std::string, CustomData>& vVar, std::map<std::string, CustomData>& vFunc, const std::string& filename)
 {
 	std::vector<std::string> vSprData;
 	size_t size;
@@ -127,6 +140,11 @@ void NKCereal::OpenPrefabDialog()
 	OpenDialog(L"All Files\0*.*\0Prefab Files\0*.json\0", L".json", m_vecPrefab);
 }
 
+void NKCereal::OpenPrefabBinaryDialog()
+{
+	OpenDialog(L"All Files\0*.*\0Prefab Files\0*.bin\0", L".bin", m_vecPrefab);
+}
+
 void NKCereal::SavePrefab(const std::string& filename, NKBase* prefab)
 {
 	std::vector<NKBase*> vPrefab;
@@ -161,8 +179,26 @@ void NKCereal::SavePrefab(const std::string& filename, NKBase* prefab)
 	else {
 	}
 }
-
 NKBase* NKCereal::LoadPrefab(const std::string& filename, NKBase* parent)
+{
+	std::string file = GetExecutablePath() + "\\" + filename;
+
+	std::filesystem::path path(file);
+
+	std::wstring extension = path.extension().wstring();
+
+	NKBase* pBase = nullptr;
+	if (extension == L".json") {
+		pBase = LoadPrefabJson(filename, parent);
+	}
+	else if (extension == L".bin") {
+		pBase = LoadPrefabBinary(filename, parent);
+	}
+
+	return pBase;
+}
+
+NKBase* NKCereal::LoadPrefabJson(const std::string& filename, NKBase* parent)
 {
 	size_t size;
 	std::vector<NKBase*> vPrefab;
