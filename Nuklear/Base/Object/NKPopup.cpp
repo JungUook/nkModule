@@ -14,8 +14,8 @@ NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_popupType = NK_POPUP_STATIC;
 	m_flags = NK_WINDOW_TITLE;
 
-	m_cTransform.w = 150.f;
-	m_cTransform.h = 100.f;
+	m_sTransform.w = 150.f;
+	m_sTransform.h = 100.f;
 }
 
 NKPopup::NKPopup(const NKPopup& other) : NKBase(other), NKBaseWindow(other), NKHandler(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style), NKStyleScrollbarH(other, m_ctx, &m_style), NKStyleScrollbarV(other, m_ctx, &m_style)

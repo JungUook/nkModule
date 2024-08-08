@@ -116,6 +116,17 @@ public:
 	virtual void EditWindowName(const char* name);
 	virtual void LEditWindowName(luabridge::LuaRef ref);
 	virtual bool CEditWindowName(void* param);
+
+	virtual void LSetPosition(luabridge::LuaRef ref);
+	virtual bool CSetPosition(void* param);
+	virtual struct nk_vec2 LGetPosition();
+	virtual bool CGetPosition(void* param);
+
+	virtual void LSetSize(luabridge::LuaRef ref);
+	virtual bool CSetSize(void* param);
+	virtual void LGetSize(luabridge::LuaRef ref);
+	virtual bool CGetSize(void* param);
+
 	virtual NKBase* CreateUI(const char* classname);
 
 	virtual void FollowParentStyle(nk_context* ctx, NKBaseStyle* pParent) override;

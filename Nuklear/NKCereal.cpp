@@ -300,7 +300,7 @@ NKBase* NKCereal::LLoadPrefab(luabridge::LuaRef ref)
 
 void NKCereal::OpenLuaCodeDialog()
 {
-	OpenDialog(L"All Files\0*.*\0Prefab Files\0*.lua\0", L".lua", m_vecLuaCode);
+	OpenDialog(L"All Files\0*.*\0Prefab Files\0*.luac\0", L".luac", m_vecLuaCode);
 }
 
 void NKCereal::OpenDialog(LPCWSTR strFilter, const wchar_t* strExtension, std::vector<std::string>& vec)

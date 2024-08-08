@@ -17,8 +17,8 @@ NKEdit::NKEdit(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NK
 	memset(m_inputText, 0, sizeof(m_inputText));
 	m_filter = nk_filter_default;
 
-	m_cTransform.w = 200.f;
-	m_cTransform.h = 60.f;
+	m_sTransform.w = 200.f;
+	m_sTransform.h = 60.f;
 	m_inputTextLength = 0;
 }
 

@@ -36,18 +36,18 @@ protected:
 	virtual void PropertyTransform(nk_context* ctx, NKTransform* parent, NuklearUI* pManager);
 
 protected:
-	struct nk_vec2 m_cPivot;
-	struct nk_vec2 m_cPosition;
-	struct nk_rect m_cTransform;
-	struct nk_rect* m_cSyncTransform;
+	struct nk_vec2 m_sPivot;
+	struct nk_vec2 m_sPosition;
+	struct nk_rect m_sTransform;
+	struct nk_rect* m_sSyncTransform;
 	nk_bool m_bMouseHover;
 
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		ar(CEREAL_NVP(m_cPivot)
-			, CEREAL_NVP(m_cPosition)
-			, CEREAL_NVP(m_cTransform)
+		ar(CEREAL_NVP(m_sPivot)
+			, CEREAL_NVP(m_sPosition)
+			, CEREAL_NVP(m_sTransform)
 			, CEREAL_NVP(m_bMouseHover)
 		);
 	}

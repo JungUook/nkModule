@@ -14,8 +14,8 @@ NKTree::NKTree(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NK
     m_type = eTREE;
     m_state = NK_MINIMIZED;
     SetLabel("Tree");
-    m_cTransform.w = 150.f;
-    m_cTransform.h = 40.f;
+    m_sTransform.w = 150.f;
+    m_sTransform.h = 40.f;
 }
 
 NKTree::NKTree(const NKTree& other) : NKBase(other), NKBaseLabel(other), NKStyleTab(other, m_ctx, &m_style)

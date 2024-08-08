@@ -14,8 +14,8 @@ NKTooltip::NKTooltip(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManage
     m_iTooltipType = eTOOLTIP_STATIC;
     m_iDetailType = 0;
     SetLabel("Tooltip");
-    m_cTransform.w = 150.f;
-    m_cTransform.h = 40.f;
+    m_sTransform.w = 150.f;
+    m_sTransform.h = 40.f;
 }
 
 NKTooltip::NKTooltip(const NKTooltip& other) : NKBase(other), NKBaseLabel(other), NKObjectFinder(other), NKStyleWindow(other, m_ctx, &m_style), NKStyleText(other, m_ctx, &m_style)
@@ -44,23 +44,23 @@ void NKTooltip::Layout(nk_context* ctx)
 
     if (mouseX > SCREEN_WIDTH / 2 && mouseY > SCREEN_HEIGHT / 2) {
         // 우측 하단 -> 좌측 상단
-        vecBegin.x += -m_cTransform.x - m_cTransform.w;
-        vecBegin.y += -m_cTransform.y - m_cTransform.h;
+        vecBegin.x += -m_sTransform.x - m_sTransform.w;
+        vecBegin.y += -m_sTransform.y - m_sTransform.h;
     }
     else if (mouseX > SCREEN_WIDTH / 2 && mouseY <= SCREEN_HEIGHT / 2) {
         // 우측 상단 -> 좌측 하단
-        vecBegin.x += -m_cTransform.x - m_cTransform.w;
-        vecBegin.y += m_cTransform.y;
+        vecBegin.x += -m_sTransform.x - m_sTransform.w;
+        vecBegin.y += m_sTransform.y;
     }
     else if (mouseX <= SCREEN_WIDTH / 2 && mouseY > SCREEN_HEIGHT / 2) {
         // 좌측 하단 -> 우측 상단
-        vecBegin.x += m_cTransform.x;
-        vecBegin.y += -m_cTransform.y - m_cTransform.h;
+        vecBegin.x += m_sTransform.x;
+        vecBegin.y += -m_sTransform.y - m_sTransform.h;
     }
     else {
         // 좌측 상단 -> 우측 하단
-        vecBegin.x += m_cTransform.x;
-        vecBegin.y += m_cTransform.y;
+        vecBegin.x += m_sTransform.x;
+        vecBegin.y += m_sTransform.y;
     }
 
     if (m_iDetailType == eTOOLTIP_STATIC) {
@@ -108,7 +108,7 @@ void NKTooltip::Layout(nk_context* ctx)
                 }
             }
 			else if (m_iTooltipType == eTOOLTIP_DETAIL) {
-				if (nk_tooltip_begin(ctx, m_cTransform.w, &vecBegin)) {
+				if (nk_tooltip_begin(ctx, m_sTransform.w, &vecBegin)) {
 					for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 					{
 						(*it)->CheckMouseHover(ctx);

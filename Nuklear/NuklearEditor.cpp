@@ -653,7 +653,7 @@ void NuklearEditor::LuaDataLayout(nk_context* ctx)
 
 void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 {
-	nk_layout_row_dynamic(ctx, 44, 2);
+	nk_layout_row_dynamic(ctx, 44, 3);
 	if (nk_button_label(ctx, "Open")) {
 		m_pManager->m_cereal.OpenLuaCodeDialog();
 	}
@@ -662,6 +662,22 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 		for (auto it = m_vecLuaCode->begin(); it != m_vecLuaCode->end(); ++it) {
 			std::string str = m_pManager->m_cereal.GetExecutablePath() + "\\" + *it;
 			m_pManager->m_luaInterface.LoadLuaFile(str.c_str());
+		}
+	}
+	if (nk_button_label(ctx, "Compiler")) {
+		
+		std::vector<std::string> compile_vec;
+		m_pManager->m_cereal.OpenDialog(L"All Files\0*.*\0Prefab Files\0*.luac\0", L".luac", compile_vec);
+
+		for (auto it = compile_vec.begin(); it != compile_vec.end(); ++it) {
+			std::string file = m_pManager->m_cereal.GetExecutablePath() + "\\" + *it;
+			std::string output_file = file + "c";
+			if (CompileLua(file, output_file)) {
+				std::cout << "Successfully compiled: " << file << " to " << output_file << std::endl;
+			}
+			else {
+				std::cerr << "Failed to compile: " << file << std::endl;
+			}
 		}
 	}
 
@@ -1053,6 +1069,33 @@ void NuklearEditor::Clear()
 	m_vecPrefab->clear();
 
 	//m_pManager->m_luaInterface.RunFunction("Init");
+}
+
+bool NuklearEditor::CompileLua(const std::string& filename, const std::string& output_filename)
+{
+	lua_State* L = luaL_newstate();
+	if (luaL_loadfile(L, filename.c_str()) != LUA_OK) {
+		std::cerr << "Error compiling " << filename << ": " << lua_tostring(L, -1) << std::endl;
+		lua_close(L);
+		return false;
+	}
+
+	std::ofstream output(output_filename, std::ios::binary);
+	if (!output) {
+		std::cerr << "Failed to open output file: " << output_filename << std::endl;
+		lua_close(L);
+		return false;
+	}
+
+	lua_dump(L, [](lua_State*, const void* p, size_t sz, void* ud) -> int {
+		std::ofstream* output = static_cast<std::ofstream*>(ud);
+		output->write(static_cast<const char*>(p), sz);
+		return 0;
+		}, &output, 1);
+
+	output.close();
+	lua_close(L);
+	return true;
 }
 
 static LRESULT CALLBACK

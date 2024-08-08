@@ -12,8 +12,8 @@ NKGroup::NKGroup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_type			= eGROUP;
 	m_flags			= NK_WINDOW_TITLE;
 
-	m_cTransform.w = 150.f;
-	m_cTransform.h = 300.f;
+	m_sTransform.w = 150.f;
+	m_sTransform.h = 300.f;
 }
 
 NKGroup::NKGroup(const NKGroup& other) : NKBase(other), NKBaseWindow(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style), NKStyleScrollbarH(other, m_ctx, &m_style), NKStyleScrollbarV(other, m_ctx, &m_style)

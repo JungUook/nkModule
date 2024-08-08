@@ -12,10 +12,10 @@ NKWindow::NKWindow(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_type = eWINDOW;
 	m_flags = NK_WINDOW_TITLE;
 
-	m_cTransform.x = 50.f;
-	m_cTransform.y = 50.f;
-	m_cTransform.w = 300.f;
-	m_cTransform.h = 600.f;
+	m_sTransform.x = 50.f;
+	m_sTransform.y = 50.f;
+	m_sTransform.w = 300.f;
+	m_sTransform.h = 600.f;
 }
 
 NKWindow::NKWindow(const NKWindow& other) : NKBase(other), NKBaseWindow(other), NKHandler(other), NKStyleHeader(other, m_ctx, &m_style), NKStyleWindow(other, m_ctx, &m_style), NKStyleScrollbarH(other, m_ctx, &m_style), NKStyleScrollbarV(other, m_ctx, &m_style)
@@ -40,13 +40,13 @@ void NKWindow::Layout(nk_context* ctx)
 	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
 	primary_name[255] = '\0';
 
-	if(nk_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_cTransform, m_flags))
+	if(nk_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_sTransform, m_flags))
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
 			(*it)->Update(ctx);
 		}
-		m_cTransform = nk_window_get_bounds(ctx);
+		m_sTransform = nk_window_get_bounds(ctx);
 		CheckMouseHover(ctx);
 		GetPosition(m_pParent, m_pManager);
 	}

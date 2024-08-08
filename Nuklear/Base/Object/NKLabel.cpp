@@ -15,8 +15,8 @@ NKLabel::NKLabel(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_type = eLABEL;
 	m_flags = NK_TEXT_CENTERED;
 
-	m_cTransform.w = 150.f;
-	m_cTransform.h = 60.f;
+	m_sTransform.w = 150.f;
+	m_sTransform.h = 60.f;
 	SetLabel("Label");
 	m_bWrap = nk_false;
 	m_bBold = nk_false;

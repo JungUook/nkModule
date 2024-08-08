@@ -461,6 +461,13 @@ void NKLuaInterface::RegisterBase()
 	lua_setglobal(m_lua, "nkio");
 
 	luabridge::getGlobalNamespace(m_lua)
+		.beginClass<struct nk_vec2>("nk_vec2")
+		.addConstructor<void(*)()>()
+		.addProperty("x", &nk_vec2::x)
+		.addProperty("y", &nk_vec2::y)
+		.endClass();
+
+	luabridge::getGlobalNamespace(m_lua)
 		.beginClass<NKBase>("NKBase")
 		.addFunction("SetActive", &NKBase::LSetActive)
 		.addFunction("AddChild", &NKBase::LAddChild)

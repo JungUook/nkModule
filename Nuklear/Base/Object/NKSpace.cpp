@@ -35,7 +35,7 @@ void NKSpace::Layout(nk_context* ctx)
 
 	if (m_layoutFormat == NK_STATIC)
 	{
-		nk_layout_space_begin(ctx, m_layoutFormat, m_cTransform.h, m_widgetCount);
+		nk_layout_space_begin(ctx, m_layoutFormat, m_sTransform.h, m_widgetCount);
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
 			nk_layout_space_push(ctx, (*it)->GetTransform());
@@ -46,7 +46,7 @@ void NKSpace::Layout(nk_context* ctx)
 	}
 	else
 	{
-		nk_layout_row_dynamic(ctx, m_cTransform.h, m_dynamicCount);
+		nk_layout_row_dynamic(ctx, m_sTransform.h, m_dynamicCount);
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
 			(*it)->CheckMouseHover(ctx);

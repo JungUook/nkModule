@@ -161,7 +161,7 @@ void NKBase::Release()
 
 nk_bool NKBase::CheckMouseHover(nk_context* ctx)
 {
-	struct nk_rect b = nk_layout_space_rect_to_screen(ctx, m_cTransform);
+	struct nk_rect b = nk_layout_space_rect_to_screen(ctx, m_sTransform);
 
 	char primary_name[256] = { 0, };
 	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
@@ -440,6 +440,9 @@ void NKBase::RegistCommand(const char* classname)
 	MAKE_INTERFACE(m_mapFunc, this, NKBase::CRemoveChild, "NKBase");
 	MAKE_INTERFACE(m_mapFunc, this, NKBase::CEditPrimaryName, "NKBase");
 	MAKE_INTERFACE(m_mapFunc, this, NKBase::CEditWindowName, "NKBase");
+
+	//transform
+	//MAKE_INTERFACE(m_mapFunc, this, NKBase::CEditWindowName, "NKBase");
 }
 
 bool NKBase::ProcessCommand(const char* command, void* param)
@@ -611,6 +614,57 @@ bool NKBase::CEditWindowName(void* param)
 		EditWindowName(*text);
 		return true;
 	}
+	return false;
+}
+
+void NKBase::LSetPosition(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+	struct nk_vec2 pos = ref.cast<struct nk_vec2>();
+	SetPosition(m_pParent, m_pManager, pos.x, pos.y);
+}
+
+bool NKBase::CSetPosition(void* param)
+{
+	void** arr = static_cast<void**>(param);
+	if (arr) {
+		float* fArr = static_cast<float*>(*arr);
+		if (fArr) {
+			SetPosition(m_pParent, m_pManager, fArr[0], fArr[1]);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+struct nk_vec2 NKBase::LGetPosition()
+{
+	return m_sPosition;
+}
+
+bool NKBase::CGetPosition(void* param)
+{
+	return false;
+}
+
+void NKBase::LSetSize(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+}
+
+bool NKBase::CSetSize(void* param)
+{
+	return false;
+}
+
+void NKBase::LGetSize(luabridge::LuaRef ref)
+{
+	CHECK_LUA_REF(ref);
+}
+
+bool NKBase::CGetSize(void* param)
+{
 	return false;
 }
 

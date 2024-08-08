@@ -15,8 +15,8 @@ NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
     m_min = 0.0f;
     m_max = 1.0f;
     m_value = 0.0f;
-    m_cTransform.w = 150.f;
-    m_cTransform.h = 40.f;
+    m_sTransform.w = 150.f;
+    m_sTransform.h = 40.f;
 }
 
 NKSlider::NKSlider(const NKSlider& other) : NKBase(other), NKStyleSlider(other, m_ctx, &m_style)

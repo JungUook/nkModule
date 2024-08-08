@@ -11,8 +11,8 @@ NKColorPicker::NKColorPicker(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx,
 {
     m_type = eCOLOR_PICKER;
     m_color = nk_hsva_colorf(255, 255, 255, 255);
-    m_cTransform.w = 150.f;
-    m_cTransform.h = 150.f;
+    m_sTransform.w = 150.f;
+    m_sTransform.h = 150.f;
 }
 
 NKColorPicker::NKColorPicker(const NKColorPicker& other)

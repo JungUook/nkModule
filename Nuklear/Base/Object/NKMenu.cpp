@@ -10,8 +10,8 @@ NKMenu::NKMenu(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NK
 {
     m_type = eMENU;
     SetLabel("Menu");
-    m_cTransform.w = 150.f;
-    m_cTransform.h = 40.f;
+    m_sTransform.w = 150.f;
+    m_sTransform.h = 40.f;
 }
 
 NKMenu::NKMenu(const NKMenu& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleMenuButton(other, m_ctx, &m_style)

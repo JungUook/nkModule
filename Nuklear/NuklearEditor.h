@@ -48,6 +48,7 @@ public:
 
 	bool CreateDirectoryIfNotExists(const std::string& path);
 	void Clear();
+	bool CompileLua(const std::string& filename, const std::string& output_filename);
 
 private:
 	NuklearUI* m_pManager;
