@@ -667,7 +667,7 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 	if (nk_button_label(ctx, "Compiler")) {
 		
 		std::vector<std::string> compile_vec;
-		m_pManager->m_cereal.OpenDialog(L"All Files\0*.*\0Prefab Files\0*.luac\0", L".luac", compile_vec);
+		m_pManager->m_cereal.OpenDialog(L"All Files\0*.*\0Prefab Files\0*.lua\0", L".lua", compile_vec);
 
 		for (auto it = compile_vec.begin(); it != compile_vec.end(); ++it) {
 			std::string file = m_pManager->m_cereal.GetExecutablePath() + "\\" + *it;
