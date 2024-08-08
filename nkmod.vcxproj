@@ -305,10 +305,12 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;NKMOD_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;NKMOD_EXPORTS;_WINDOWS;_USRDLL;FVF_XYZRHW#1;_DX7#1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(projectdir);$(projectdir)etc;$(projectdir)Nuklear;$(projectdir)Nuklear\Base;$(projectdir)Nuklear\Base\Module;$(projectdir)Nuklear\Base\Object;$(projectdir)Nuklear\Base\Style;$(projectdir)Nuklear\Base\Style\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -316,6 +318,7 @@ xcopy  "$(ProjectDir)*.h"   "$(ProjectDir)..\..\Buildlib\GZ_SDK\$(ProjectName)\I
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>nuklearui.lib;ddraw.lib;dxguid.lib;Lua54.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DX7_Release|Win32'">

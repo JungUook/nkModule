@@ -228,7 +228,9 @@ NKComboItem* NKCombo::AddItem(const char* name)
 		pBase = nullptr;
 		pItem = nullptr;
 
+#ifdef _NKDEBUG
 		m_pManager->ErrorPopup("I failed to create the combo item.");
+#endif
 	}
 
 	return pItem;
@@ -236,7 +238,9 @@ NKComboItem* NKCombo::AddItem(const char* name)
 
 NKComboItem* NKCombo::LAddItem(luabridge::LuaRef ref)
 {
+#ifdef _NKDEBUG
 	CHECK_LUA_REF_RETURN(ref);
+#endif
 	std::string name = ref.cast<std::string>();
 	NKComboItem* pItem = AddItem(name.c_str());
 	return pItem;
