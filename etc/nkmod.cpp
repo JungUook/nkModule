@@ -542,7 +542,7 @@ bool NKCommand(const char* primaryName, const char* command, void* param)
     return g_nuklear->NKCommand(primaryName, command, param);
 }
 
-bool NKLuaCommand(const char* command, const char* tableName, void* params)
+bool NKLuaCommand(const char* command, const char* tableName, PackedLuaParam params[], int length)
 {
     if (g_nuklear == nullptr) {
         return false;
@@ -555,28 +555,30 @@ bool NKLuaCommand(const char* command, const char* tableName, void* params)
 	luabridge::LuaRef ref = g_nuklear->m_luaInterface.DeepCopy(tableName);
 
 	if (ref.isTable()) {
-        std::vector<PackedLuaParam>* vTable = static_cast<std::vector<PackedLuaParam>*>(params);
+        PackedLuaParam* vTable = params;
 
         if (vTable == nullptr) {
             return false;
         }
 
-		for (auto it = vTable->begin(); it != vTable->end(); ++it) {
-			std::string key = it->key;
-            switch (it->data.type) {
+        for (int i = 0; i < length; ++i) {
+            PackedLuaParam param = vTable[i];
+            std::string key = param.key;
+            switch (param.data.type) {
             case eNK_NUMBER:
             {
-                ref[key] = it->data.value.numberValue;
+                ref[key] = param.data.value.numberValue;
                 break;
             }
             case eNK_STRING:
             {
-                ref[key] = *it->data.value.stringValue;
+                std::string str = param.data.value.stringValue;
+                ref[key] = str;
                 break;
             }
             case eNK_BOOLEAN:
             {
-                ref[key] = it->data.value.boolValue;
+                ref[key] = param.data.value.boolValue;
                 break;
             }
             default:
@@ -585,7 +587,7 @@ bool NKLuaCommand(const char* command, const char* tableName, void* params)
 		}
 	}
     else {
-        PackedLuaParam* param = static_cast<PackedLuaParam*>(params);
+        PackedLuaParam* param = &params[0];
 
         switch (param->data.type) {
         case eNK_NUMBER:
@@ -593,7 +595,8 @@ bool NKLuaCommand(const char* command, const char* tableName, void* params)
             break;
         case eNK_STRING:
         {
-            ref = param->data.value.stringValue;
+            std::string str = param->data.value.stringValue;
+            ref = str;
             break;
         }
         case eNK_BOOLEAN:

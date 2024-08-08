@@ -306,6 +306,8 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(projectdir);$(projectdir)etc;$(projectdir)Nuklear;$(projectdir)Nuklear\Base;$(projectdir)Nuklear\Base\Module;$(projectdir)Nuklear\Base\Object;$(projectdir)Nuklear\Base\Style;$(projectdir)Nuklear\Base\Style\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

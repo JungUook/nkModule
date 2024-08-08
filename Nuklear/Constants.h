@@ -43,7 +43,7 @@
 	}
 
 #define CHECK_LUA_REF(ref) \
-	if ((ref).isNil() || !(ref).isUserdata()) { \
+	if ((ref).isNil()) { \
         return; \
     }
 #endif // _NKDEBUG

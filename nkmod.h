@@ -16,13 +16,14 @@
 #elif _DX7
 #include <ddraw.h>
 #endif
+#include <vector>
 
 extern "C" {
-	enum ParamType { eNK_NUMBER = 0, eNK_STRING = 1, eNK_BOOLEAN = 2 };
-	union LuaData { double numberValue;	std::string* stringValue; bool boolValue; };
-	struct LuaParam { ParamType type; LuaData value; };
-	struct PackedLuaParam { std::string key; LuaParam data; };
 
+	enum { eNK_NUMBER = 0, eNK_STRING = 1, eNK_BOOLEAN = 2 };
+	union LuaData { double numberValue; const char* stringValue; bool boolValue; };
+	struct LuaParam { int type; LuaData value; };
+	struct PackedLuaParam { const char* key; LuaParam data; };
 
 	NKMOD_API void RegistHWND(HWND wnd);
 
@@ -66,7 +67,7 @@ extern "C" {
 	NKMOD_API bool AddBindHandler(const char* key, void* callback, void(*func)(void*, void*));
 	NKMOD_API bool RemoveBindHandler(const char* key);
 	NKMOD_API bool NKCommand(const char* primaryName, const char* command, void* param = nullptr);
-	NKMOD_API bool NKLuaCommand(const char* command, const char* tableName = nullptr, void* params = nullptr);
+	NKMOD_API bool NKLuaCommand(const char* command, const char* tableName = nullptr, PackedLuaParam params[] = nullptr, int length = 0);
 
 	NKMOD_API void* NKGetData(const char* key);
 	NKMOD_API int NKGetDataInt(const char* key);
@@ -139,8 +140,8 @@ public:
 		return NKCommand(primaryName, command, param);
 	}
 
-	bool LuaCommand(const char* command, const char* tableName = nullptr, void* params = nullptr) {
-		return NKLuaCommand(command, tableName, params);
+	bool LuaCommand(const char* command, const char* tableName = nullptr, PackedLuaParam params[] = nullptr, int length = 0) {
+		return NKLuaCommand(command, tableName, params, length);
 	}
 
 	template <typename T>
