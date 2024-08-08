@@ -27,6 +27,8 @@ public:
 	virtual void EditComponentStyle(nk_context* ctx, NuklearUI* pManager) override;
 
 	virtual void RegistCommand(const char* classname) override;
+
+	void Close();
 public:
 	nk_popup_type m_popupType;
 

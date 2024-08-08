@@ -6,6 +6,7 @@ NKPopup::NKPopup() : NKBase(), NKBaseWindow(), NKHandler(), NKStyleHeader(), NKS
 	m_type = ePOPUP;
 	m_popupType = NK_POPUP_STATIC;
 	m_flags = NK_WINDOW_TITLE;
+	m_bClose = false;
 }
 
 NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseWindow(), NKHandler(), NKStyleHeader(ctx, &m_style), NKStyleWindow(ctx, &m_style), NKStyleScrollbarH(ctx, &m_style), NKStyleScrollbarV(ctx, &m_style)
@@ -13,6 +14,7 @@ NKPopup::NKPopup(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_type = ePOPUP;
 	m_popupType = NK_POPUP_STATIC;
 	m_flags = NK_WINDOW_TITLE;
+	m_bClose = false;
 
 	m_sTransform.w = 150.f;
 	m_sTransform.h = 100.f;
@@ -23,6 +25,7 @@ NKPopup::NKPopup(const NKPopup& other) : NKBase(other), NKBaseWindow(other), NKH
 	m_type = other.m_type;
 	m_popupType = other.m_popupType;
 	m_flags = other.m_flags;
+	m_bClose = false;
 }
 
 NKPopup::~NKPopup()
@@ -41,6 +44,13 @@ void NKPopup::Layout(nk_context* ctx)
 		{
 			(*it)->Update(ctx);
 		}
+
+		if (m_bClose) {
+			nk_popup_close(ctx);
+			m_bActive = false;
+			m_bClose = false;
+		}
+
 		nk_popup_end(ctx);
 	}
 	else {
@@ -97,4 +107,9 @@ void NKPopup::EditComponentStyle(nk_context* ctx, NuklearUI* pManager)
 void NKPopup::RegistCommand(const char* classname)
 {
 	NKBase::RegistCommand(classname);
+}
+
+void NKPopup::Close()
+{
+	m_bClose = nk_true;
 }

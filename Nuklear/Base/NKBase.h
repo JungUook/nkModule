@@ -141,6 +141,7 @@ protected:
 	nk_bool m_bActive;
 	bool m_bEditActive;
 
+	nk_bool m_bClose;
 	NKBase* m_pWindow;
 	NKBase* m_pParent;
 	std::list<NKBase*> m_pChildList;
