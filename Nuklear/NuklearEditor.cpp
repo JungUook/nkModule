@@ -935,9 +935,12 @@ void NuklearEditor::PrintTable(nk_context* ctx, luabridge::LuaRef ref)
 
 void NuklearEditor::PrefabLayout(nk_context* ctx)
 {
-	nk_layout_row_dynamic(ctx, 44, 1);
-	if (nk_button_label(ctx, "Open")) {
+	nk_layout_row_dynamic(ctx, 44, 2);
+	if (nk_button_label(ctx, "Open json")) {
 		m_pManager->m_cereal.OpenPrefabDialog();
+	}
+	if (nk_button_label(ctx, "Open bin")) {
+		m_pManager->m_cereal.OpenPrefabBinaryDialog();
 	}
 
 	float row_layout[2] = { 0.f };
