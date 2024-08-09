@@ -190,9 +190,105 @@ else {
 
 ## Slider
 
+#### SetRange
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+float fData[2] = {0.f,};
+fData[0] = 0.f; //min
+fData[1] = 100.f; //max
+float* params = fData;
+pNkInterface->Command("ui_object_primaryName", "SetRange", &params);
+```
+
+#### SetValue
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+float fValue = 3.f;
+pNkInterface->Command("ui_object_primaryName", "SetValue", &fValue);
+```
+
+#### GetValue
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+float fValue = 0.f;
+bool bSuccess = pNkInterface->Command("ui_object_primaryName", "GetValue", &fValue);
+if(bSuccess) {
+  //get fValue
+}
+else {
+  //Fail
+}
+```
+
 ## Progress
 
+#### SetProgress
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+unsigned int iProgress = 50;
+pNkInterface->Command("ui_object_primaryName", "SetProgress", &iProgress);
+```
+#### GetProgress
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+unsigned int iProgress = 0;
+bool bSuccess = pNkInterface->Command("ui_object_primaryName", "GetProgress", &iProgress);
+if(bSuccess) {
+  //get iProgress
+}
+else {
+  //Fail
+}
+```
+
 ## Selectable
+
+#### SetLabel
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+const char* str = "my custom label";
+pNkInterface->Command("ui_object_primaryName", "SetLabel", &str);
+```
+
+#### SetSelected
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+bool bSelected = true; // true: checked, false: unchecked
+pNkInterface->Command("ui_object_primaryName", "SetSelected", &bSelected);
+```
+
+
+#### IsSelected
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+bool bSelected = false;
+bool bSuccess = pNkInterface->Command("ui_object_primaryName", "IsSelected", &bSelected);
+if(bSuccess) {
+  if(bSelected) {
+    //Selected!!
+  }
+  else {
+    //UnSelected!!
+  }
+}
+else {
+  //Fail
+}
+```
+
+#### SetImagePath
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+const char* str = "path\\imageSprite.spr";
+pNkInterface->Command("ui_object_primaryName", "SetImagePath", &str);
+```
+
+#### SetSpriteIndex
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+int iIndex = 1; // start index: 0, end index: sprite end index
+pNkInterface->Command("ui_object_primaryName", "SetSpriteIndex", &iIndex);
+```
 
 ## Tree
 
