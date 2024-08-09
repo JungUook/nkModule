@@ -292,14 +292,86 @@ pNkInterface->Command("ui_object_primaryName", "SetSpriteIndex", &iIndex);
 
 ## Tree
 
+#### SetLabel
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+const char* str = "my custom label";
+pNkInterface->Command("ui_object_primaryName", "SetLabel", &str);
+```
+
+#### SetState
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+int iState = 0; // 0: Minimized, 1: Maximized
+pNkInterface->Command("ui_object_primaryName", "SetState", &iState);
+```
+#### GetState
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+bool iState = 0;
+bool bSuccess = pNkInterface->Command("ui_object_primaryName", "GetState", &iState);
+if(bSuccess) {
+  //get iState
+}
+else {
+  //Fail
+}
+```
+
 ## Chart
+
+#### None
 
 ## Tooltip
 
+#### SetLabel
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+const char* str = "my custom label";
+pNkInterface->Command("ui_object_primaryName", "SetLabel", &str);
+```
+
 ## Menu
+
+#### SetLabel
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+const char* str = "my custom label";
+pNkInterface->Command("ui_object_primaryName", "SetLabel", &str);
+```
 
 ## Scrollbar
 
+#### None
+
 ## ColorPicker
 
+#### SetColor
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+float fData[4] = {0.f,};
+fData[0] = 0.0f; //r
+fData[1] = 0.3f; //g
+fData[2] = 0.3f; //b
+fData[3] = 0.3f; //a
+float* params = fData;
+pNkInterface->Command("ui_object_primaryName", "SetColor", &params);
+```
+
+#### GetColor
+```markdown
+NKInterface* pNkInterface = /* Initialize */;
+float fData[4] = {0.f,};
+float* params = fData;
+bool bSuccess = pNkInterface->Command("ui_object_primaryName", "GetColor", &params);
+if(bSuccess) {
+  //get params
+}
+else {
+  //Fail
+}
+```
+
 ## SuperStyleObject
+
+#### None
