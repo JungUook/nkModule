@@ -74,6 +74,21 @@ void NKSlider::LSetRange(luabridge::LuaRef ref)
 
 bool NKSlider::CSetRange(void* param)
 {
+    void** arr = static_cast<void**>(param);
+
+    if (arr) {
+        float* min = static_cast<float*>(arr[0]);
+        float* max = static_cast<float*>(arr[1]);
+
+        if (min && max) {
+            SetRange(*min, *max);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     return false;
 }
 
@@ -91,6 +106,11 @@ void NKSlider::LSetValue(luabridge::LuaRef ref)
 
 bool NKSlider::CSetValue(void* param)
 {
+    float* value = static_cast<float*>(param);
+    if (value) {
+        SetValue(*value);
+        return true;
+    }
     return false;
 }
 

@@ -31,7 +31,7 @@ public:
 	void Close();
 public:
 	nk_popup_type m_popupType;
-
+	nk_bool m_bClose;
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
