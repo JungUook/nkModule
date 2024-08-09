@@ -13,24 +13,24 @@
 - 등록되어있는 루아스크립트를 모두 다시 로드하는 버튼
 
 #### Save
-- 현재 상태의 프로젝트(nkmod.json, nkmod.bin)를 저장하는 버튼 (json, bin)
+- 현재 상태의 프로젝트를 저장하는 버튼(nkmod.json, nkmod.bin)
 
 #### Load
-- 저장되어있던 프로젝트를 로드하는 버튼 (json, bin)
+- 저장되어있던 프로젝트를 로드하는 버튼(nkmod.json, nkmod.bin)
 
 ## 옵션 설명
 <img src="./img/03.png">
 
-#### 1 node
+#### [node](./editor/node.md)
 <img src="./img/03_00.png">
 
-
-
-#### 2 file
+#### [file](./editor/file.md)
 <img src="./img/04.png">
 
-#### 3 lua
+#### [lua](./editor/lua.md)
 <img src="./img/05.png">
 
-#### 4 prefab
+#### [prefab](./editor/prefab.md)
 <img src="./img/06.png">
+
+
