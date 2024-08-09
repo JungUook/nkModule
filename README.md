@@ -44,3 +44,4 @@ Nuklear라는 라이브러리를 사용하여 DX7환경에서 에디터 형식�
 - [nkmod](./Doc/nkmod.md)
 - [lua](./Doc/lua.md)
 - [handler](./Doc/handler.md)
+- [editor](./Doc/editor.md)
