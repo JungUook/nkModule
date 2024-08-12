@@ -5,8 +5,12 @@
 #### window 생성
 <img src="./img/01.png">
 
+- 마우스 우클릭으로 윈도우를 생성한다.
+
 #### window가 생성된 후 선택된 결과
 <img src="./img/02.png">
+
+- Node 옆에 window453722544가 적혀있는 부분은 objectInfo라는 탭이다.
 
 
 #### 실제 클라이언트의 결과
