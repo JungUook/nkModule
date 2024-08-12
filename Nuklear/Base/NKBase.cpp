@@ -182,6 +182,15 @@ nk_bool NKBase::CheckMouseHover(nk_context* ctx)
 }
 
 nk_bool NKBase::IsHovering() {
+
+	if (!m_bMouseHover) {
+		for (auto it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+			if (m_bMouseHover) {
+				m_bMouseHover = true;
+			}
+		}
+	}
+
 	return m_bMouseHover;
 }
 

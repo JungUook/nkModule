@@ -42,6 +42,7 @@ void NKPopup::Layout(nk_context* ctx)
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
+			(*it)->CheckMouseHover(ctx);
 			(*it)->Update(ctx);
 		}
 
@@ -50,11 +51,11 @@ void NKPopup::Layout(nk_context* ctx)
 			m_bActive = false;
 			m_bClose = false;
 		}
-
 		nk_popup_end(ctx);
 	}
 	else {
 		m_bActive = false;
+		m_bMouseHover = false;
 		CallEvent(m_pLuaManager);
 	}
 }

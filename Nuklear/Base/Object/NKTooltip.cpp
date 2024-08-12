@@ -81,6 +81,17 @@ void NKTooltip::Layout(nk_context* ctx)
         }
     }
     else if (m_iDetailType == eTOOLTIP_DYNAMIC) {
+        
+        char primary_name[256] = { 0, };
+        strncpy_s(primary_name, m_pWindow->GetPrimaryName(), 256);
+        primary_name[255] = '\0';
+
+        nk_bool bFocus = nk_window_has_focus(m_ctx);
+
+        if (!bFocus) {
+            return;
+        }
+
         struct nk_rect label_bounds = nk_layout_widget_bounds(ctx);
         if (nk_input_is_mouse_hovering_rect(&ctx->input, label_bounds)) {
             const struct nk_style* style;
