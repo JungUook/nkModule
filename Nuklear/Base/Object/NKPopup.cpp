@@ -54,9 +54,13 @@ void NKPopup::Layout(nk_context* ctx)
 		nk_popup_end(ctx);
 	}
 	else {
-		m_bActive = false;
-		m_bMouseHover = false;
-		CallEvent(m_pLuaManager);
+		if (nk_window_is_closed(ctx, primary_name)) {
+			m_bActive = false;
+			m_bMouseHover = false;
+			CallEvent(m_pLuaManager);
+		}
+		else {
+		}
 	}
 }
 
@@ -71,7 +75,7 @@ void NKPopup::SafeRenderEnd(nk_context* ctx)
 
 void NKPopup::EditInfo(nk_context* ctx)
 {
-	EditInfoWindowProperty(ctx, m_flags);
+	EditInfoWindowProperty(ctx, m_flags, (int)m_type);
 
 	if (nk_tree_push(ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
 		if (nk_button_label(ctx, "Space"))

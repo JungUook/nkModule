@@ -14,7 +14,7 @@ public:
 	virtual ~NKBaseWindow();
 
 protected:
-	void EditInfoWindowProperty(nk_context* ctx, nk_flags& flags);
+	void EditInfoWindowProperty(nk_context* ctx, nk_flags& flags, int type = 0);
 
 protected:
 	int m_border;

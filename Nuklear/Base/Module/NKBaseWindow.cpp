@@ -38,16 +38,19 @@ NKBaseWindow::~NKBaseWindow()
 {
 }
 
-void NKBaseWindow::EditInfoWindowProperty(nk_context* ctx, nk_flags& flags)
+void NKBaseWindow::EditInfoWindowProperty(nk_context* ctx, nk_flags& flags, int type)
 {
 	if (nk_tree_push(ctx, NK_TREE_NODE, "Flag", NK_MINIMIZED)) {
 		nk_checkbox_label(ctx, "BORDER", &m_border);
-		if (!m_no_input) {
-			nk_checkbox_label(ctx, "MOVABLE", &m_movable);
-		}
-		nk_checkbox_label(ctx, "SCALABLE", &m_scalable);
+
+		if (type == 0) {
+			if (!m_no_input) {
+				nk_checkbox_label(ctx, "MOVABLE", &m_movable);
+			}
+			nk_checkbox_label(ctx, "SCALABLE", &m_scalable);
+			nk_checkbox_label(ctx, "MINIMIZABLE", &m_minimizable);
+		}		
 		nk_checkbox_label(ctx, "CLOSABLE", &m_closable);
-		nk_checkbox_label(ctx, "MINIMIZABLE", &m_minimizable);
 		nk_checkbox_label(ctx, "NO_SCROLLBAR", &m_no_scrollbar);
 		nk_checkbox_label(ctx, "TITLE", &m_title);
 		nk_checkbox_label(ctx, "SCROLL_AUTO_HIDE", &m_scroll_auto_hide);

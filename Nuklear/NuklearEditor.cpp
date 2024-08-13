@@ -364,7 +364,7 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 		nk_contextual_end(ctx);
 	}
 
-	if (nk_group_begin(ctx, "Node", NK_WINDOW_TITLE)) {
+	if (nk_group_begin(ctx, "Node", NK_WINDOW_TITLE | NK_WINDOW_BORDER)) {
 		for (size_t i = 0; i < m_vecObject->size(); ++i)
 		{
 			NodesLayout(ctx, m_vecObject->at(i), NK_TREE_TAB, NK_MINIMIZED);
@@ -488,8 +488,9 @@ void NuklearEditor::MoveNode(NKBase* pTarget)
 
 void NuklearEditor::InfoLayout(nk_context* ctx, int width)
 {
-	const char* ObjectInfo = m_pSelectedNode ? m_pSelectedNode->GetWindowName() : "ObjectInfo";
-	if (nk_group_begin(ctx, ObjectInfo, NK_WINDOW_TITLE)) {
+	const char* ObjectInfo = m_pSelectedNode ? m_pSelectedNode->GetPrimaryName() : "ObjectInfo";
+	const char* ObjectName = m_pSelectedNode ? m_pSelectedNode->GetWindowName() : "ObjectInfo";
+	if (nk_group_begin_titled(ctx, ObjectInfo, ObjectName, NK_WINDOW_TITLE | NK_WINDOW_BORDER)) {
 
 		if (m_pSelectedNode) {
 			m_pSelectedNode->ActiveEditor(ctx);
@@ -555,7 +556,7 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 	}
 
 	nk_layout_row_dynamic(ctx, 500, 1);
-	if (nk_group_begin(ctx, "File List", NK_WINDOW_TITLE)) {
+	if (nk_group_begin(ctx, "File List", NK_WINDOW_TITLE | NK_WINDOW_BORDER)) {
 		nk_layout_row(ctx, NK_DYNAMIC, 22, 3, ratio);
 		for (std::map<std::string, sprData*>::iterator it = m_mapSpr->begin(); it != m_mapSpr->end();) {
 			std::filesystem::path filePath((*it).first.c_str());
@@ -626,7 +627,7 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 		nk_group_end(ctx);
 	}
 	nk_layout_row_dynamic(ctx, 300, 1);
-	if (nk_group_begin(ctx, "Viewer", NK_WINDOW_TITLE)) {
+	if (nk_group_begin(ctx, "Viewer", NK_WINDOW_TITLE | NK_WINDOW_BORDER)) {
 		if (strlen(selectedFilename))
 		{
 			struct nk_image img;
@@ -701,7 +702,7 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 	}
 
 	nk_layout_row_dynamic(ctx, 500, 1);
-	if (nk_group_begin(ctx, "Lua Code List", NK_WINDOW_TITLE)) {
+	if (nk_group_begin(ctx, "Lua Code List", NK_WINDOW_TITLE | NK_WINDOW_BORDER)) {
 		nk_layout_row(ctx, NK_DYNAMIC, 22, 3, ratio);
 		for (std::vector<std::string>::iterator it = m_vecLuaCode->begin(); it != m_vecLuaCode->end();) {
 			std::filesystem::path filePath((*it).c_str());
@@ -789,7 +790,7 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 	}
 
 	nk_layout_row_dynamic(ctx, 800, 1);
-	if (nk_group_begin(ctx, dataName, NK_WINDOW_TITLE)) {
+	if (nk_group_begin(ctx, dataName, NK_WINDOW_TITLE | NK_WINDOW_BORDER)) {
 
 		nk_layout_row_dynamic(ctx, 22, 1);
 
@@ -963,7 +964,7 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 	}
 
 	nk_layout_row_dynamic(ctx, 500, 1);
-	if (nk_group_begin(ctx, "Prefab List", NK_WINDOW_TITLE)) {
+	if (nk_group_begin(ctx, "Prefab List", NK_WINDOW_TITLE | NK_WINDOW_BORDER)) {
 		nk_layout_row(ctx, NK_DYNAMIC, 22, 3, ratio);
 		for (std::vector<std::string>::iterator it = m_vecPrefab->begin(); it != m_vecPrefab->end();) {
 			std::filesystem::path filePath((*it).c_str());

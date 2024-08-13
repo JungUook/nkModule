@@ -31,14 +31,19 @@ void NKGroup::Layout(nk_context* ctx)
 	char primary_name[256] = { 0, };
 	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
 	primary_name[255] = '\0';
-	
-	if (nk_group_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_flags))
+	nk_bool bResult = nk_group_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_flags);
+	if (bResult)
 	{
-		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
-		{
-			(*it)->Update(ctx);
+		if (bResult & NK_WINDOW_CLOSED) {
+			m_bActive = false;
 		}
-		nk_group_end(ctx);
+		else {
+			for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
+			{
+				(*it)->Update(ctx);
+			}
+			nk_group_end(ctx);
+		}
 	}
 }
 
@@ -53,7 +58,7 @@ void NKGroup::SafeRenderEnd(nk_context* ctx)
 
 void NKGroup::EditInfo(nk_context* ctx)
 {
-	EditInfoWindowProperty(ctx, m_flags);
+	EditInfoWindowProperty(ctx, m_flags, (int)m_type);
 
 	if (nk_tree_push(ctx, NK_TREE_NODE, "Create UI", NK_MINIMIZED)) {
 		if (nk_button_label(ctx, "Space"))

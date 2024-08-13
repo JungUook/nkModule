@@ -51,8 +51,12 @@ void NKWindow::Layout(nk_context* ctx)
 		GetPosition(m_pParent, m_pManager);
 	}
 	else {
-		m_bActive = false;
-		CallEvent(m_pLuaManager);
+		if (nk_window_is_closed(ctx, primary_name)) {
+			m_bActive = false;
+			CallEvent(m_pLuaManager);
+		}
+		else {
+		}
 	}
 	nk_end(ctx);
 }
