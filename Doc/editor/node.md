@@ -25,15 +25,50 @@
 
 ##### objectInfo
 - select된 node의 모든 정보를 표시해준다.
-- Active로 ui를 활성화&비활성화 할 수 있다.
-- follow_parent_style로 부모 노드의 스타일에 종속되게하거나 체크를 해제하여 독자적인 스타일을 구성할 수 있다.
-- ViewportInfo로 현재 프로세스 해상도 정보를 확인할 수 있다.
-- DefaultInfo로 PrimaryName, WindowName, NodeName 등을 수정할 수 있다. 이때, PrimaryName은 해당 ui노드를 검색할때 사용되며 중복될 수 없다.
-- Transform 현재 ui노드의 좌표 x,y와 크기인 width, hegiht를 확인하고 조정할 수 있다.
-- info(NKWindow) 각 노드에 해당하는 이름이 위치하며 해당 노드에서만 사용할 수 있는 기능이 내장되어있다.
-- Style ui노드에 여러 수치 및 color, image등을 제어할 수 있는 기능이다.
-- Prefab 해당 노드의 자식노드로 prefab을 생성할 수 있는 기능이다.
+- objectInfo는 선택된 노드의 WindowName으로 변경된다.
 
+##### Active
+- Active로 ui를 활성화&비활성화 할 수 있다.
+
+##### follow_parent_style
+- follow_parent_style로 부모 노드의 스타일에 종속되게하거나 체크를 해제하여 독자적인 스타일을 구성할 수 있다.
+
+##### ViewportInfo
+
+<img src="./img/04.png">
+
+- ViewportInfo로 현재 프로세스 해상도 정보를 확인할 수 있다.
+
+##### DefaultInfo
+
+<img src="./img/05.png">
+
+- DefaultInfo로 PrimaryName, WindowName, NodeName 등을 수정할 수 있다. 이때, PrimaryName은 해당 ui노드를 검색할때 사용되며 중복될 수 없다.
+
+##### Transform
+
+<img src="./img/06.png">
+
+- Transform 현재 ui노드의 좌표 x,y와 크기인 width, hegiht를 확인하고 조정할 수 있다.
+
+##### ObjectName(NKWindow, NKSpace ...)
+
+<img src="./img/07.png">
+
+- ObjectName(NKWindow) 각 노드에 해당하는 이름이 위치하며 해당 노드에서만 사용할 수 있는 기능이 내장되어있다.
+
+##### Style
+
+<img src="./img/08.png">
+
+- Style ui노드에 여러 수치 및 color, image등을 제어할 수 있는 기능이다.
+
+
+##### Prefab
+
+<img src="./img/09.png">
+
+- Prefab 해당 노드의 자식노드로 prefab을 생성할 수 있는 기능이다.
 
 ## node list
 ## 목차
