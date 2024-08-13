@@ -97,10 +97,100 @@
 
 
 ## Window
+### flag
+
+|Flag|설명|
+|-------|-------|
+|BORDER|window에 border를 추가해주는 기능|
+|MOVABLE|window 상단바를 마우스로 드래그하여 이동시킬 수 있는 기능, 해당 기능이 켜지면 크기 및 좌표를 에디터로 수정할 수 없다|
+|SCALABEL|window 우측 하단에 크기를 조절해줄 수 있는 기능이 추가된다|
+|MINIMIZABLE|window를 최소화하여 내용을 볼 수 없게 한다|
+|CLOSABLE|window를 닫는 기능|
+|NO_SCROLLBAR|window 내부 공간이 커져도 scrollbar가 나오지 않게 하는 기능|
+|TITLE|window 상단바를 추가하는 기능|
+|SCROLL_AUTO_HIDE|...|
+|BACKGROUND|...|
+|SCALE_LEFT|...|
+|NO_INPUT|...|
+
+### Properties
+- window 상단바의 크기를 조절해주는 기능
+### Create UI
+- space라는 레이아웃을 제어하는 노드와 superstyle이라는 모든 스타일을 가진 노드를 생성할 수 있다.
+### Data
+- 루아 함수 이름을 입력하고 enter를 누르면 윈도우를 닫을때마다 해당 함수가 호출된다
+- 루아 테이블이나 변수 이름을 입력하고 enter를 누르면 윈도우를 닫을때마다 미리 등록된 함수에 매개변수로 입력된다 ex) myfunction(args)
+
 ## Space
+### Space_Type
+- STATIC: space영역을 기준으로 상대좌표로 ui를 배치하는 설정
+- DYNAMIC: count 수만큼 가로 영역에 자식노드들을 정렬하는 기능. 해당 count를 초과하는 자식노드는 바로 아랫줄에 그려진다.
+### Create_UI
+- 여러 ui를 생성하는 버튼. 자식 노드로 생성된다.
+
 ## Group
+
+### flag
+|Flag|설명|
+|-------|-------|
+|BORDER|window에 border를 추가해주는 기능|
+|CLOSABLE|window를 닫는 기능|
+|NO_SCROLLBAR|window 내부 공간이 커져도 scrollbar가 나오지 않게 하는 기능|
+|TITLE|window 상단바를 추가하는 기능|
+|SCROLL_AUTO_HIDE|...|
+|BACKGROUND|...|
+|SCALE_LEFT|...|
+|NO_INPUT|...|
+
+### Properties
+- 미구현
+
+### Create UI
+- group은 layout인 Space만 자식노드로 생성할 수 있다.
+
 ## Popup
+
+### flag
+|Flag|설명|
+|-------|-------|
+|BORDER|window에 border를 추가해주는 기능|
+|CLOSABLE|window를 닫는 기능|
+|NO_SCROLLBAR|window 내부 공간이 커져도 scrollbar가 나오지 않게 하는 기능|
+|TITLE|window 상단바를 추가하는 기능|
+|SCROLL_AUTO_HIDE|...|
+|BACKGROUND|...|
+|SCALE_LEFT|...|
+|NO_INPUT|...|
+
+### Properties
+- 미구현
+
+### Create UI
+- popup은 layout인 Space만 자식노드로 생성할 수 있다.
+
 ## Combo
+
+### Create UI
+- combo는 자식노드로 comboItem만 생성할 수 있다. 생성된 comboItem은 combo박스에서 자식노드로 설정되며, combo를 펼칠시 선택할 수 있는 버튼으로 구현된다.
+
+### combo type
+|Flag|설명|
+|-------|-------|
+|dynamic||
+|static||
+
+### alignment
+|Flag|설명|
+|-------|-------|
+|left||
+|center||
+|right||
+
+### alignment
+
+
+### Combo Item List
+
 ## Button
 ## Edit
 ## Image
