@@ -19913,6 +19913,7 @@ nk_panel_begin(struct nk_context *ctx, const char *title, enum nk_panel_type pan
             {
                 layout->flags |= NK_WINDOW_HIDDEN;
                 layout->flags &= (nk_flags)~NK_WINDOW_MINIMIZED;
+                win->flags |= NK_WINDOW_CLOSED;  // 창이 닫혔음을 나타내는 플래그 설정
             }
         }
 

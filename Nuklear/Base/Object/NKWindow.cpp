@@ -40,7 +40,8 @@ void NKWindow::Layout(nk_context* ctx)
 	strncpy_s(primary_name, m_sPrimaryName.c_str(), 256);
 	primary_name[255] = '\0';
 
-	if(nk_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_sTransform, m_flags))
+	nk_bool bResult = nk_begin_titled(ctx, primary_name, m_sWindowName.c_str(), m_sTransform, m_flags);
+	if(bResult)
 	{
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it)
 		{
@@ -51,7 +52,8 @@ void NKWindow::Layout(nk_context* ctx)
 		GetPosition(m_pParent, m_pManager);
 	}
 	else {
-		if (nk_window_is_closed(ctx, primary_name)) {
+		bResult = nk_window_is_closed(ctx, primary_name);
+		if (bResult) {
 			m_bActive = false;
 			CallEvent(m_pLuaManager);
 		}
