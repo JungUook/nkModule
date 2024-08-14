@@ -176,26 +176,62 @@
 ### combo type
 |Flag|설명|
 |-------|-------|
-|dynamic||
-|static||
+|dynamic|transform의 너비에 맞게 라벨 및 아이템의 크기를 맞춰주는 플래그|
+|static|라벨 및 아이템을 수동으로 조정할 수 있게 해주는 플래그|
 
 ### alignment
 |Flag|설명|
 |-------|-------|
-|left||
-|center||
-|right||
+|left|아이템들의 문자열을 좌측으로 정렬해주는 플래그|
+|center|아이템들의 문자열을 중앙으로 정렬해주는 플래그|
+|right|아이템들의 문자열을 우측으로 정렬해주는 플래그|
 
-### alignment
+### Label Size
+- Combo box를 펼쳤을때 나오는 아이템들의 배경이 되는 영역의 사이즈. x는 너비, y는 높이 값을 의미한다(dynamic에서는 x를 제어할 수 없다.)
 
+### item Size
+- ComboItem들의 크기를 조정해주는 기능. dynamic 전용 기능
 
 ### Combo Item List
+- combo노드의 자식 노드들이 모두 표시된다
+- 표시할 문자를 입력할 수 있고, 해당 아이템을 선택했을때 제어할 수 있는 함수나 매개변수를 설정할 수 있다.
+
+### ComboItem
+- combo 전용 자식노드. 
 
 ## Button
+### Disabled
+- 버튼을 비활성화한다. 비활성한 버튼은 등록한 함수를 실행할 수 없다.
+### Text
+- 버튼에 출력할 문자열을 입력하는 inputbox이다.
+### Font size
+- 버튼에 출력되는 문자열의 크기를 조정할 수 있다.
+- 폰트의 크기는 정해져있기때문에 너무 크거나 작으면 글자의 해상도가 낮아져보이는 문제가 발생할 수 있다.
+### Data
+- 버튼을 눌렀을때 실행할 함수와 매개변수를 설정할 수 있다.
+
 ## Edit
+### Data
+
+#### luascript 예제
+```markdown
+
+editTable = {
+  NK_EDIT_ACTIVE = ""
+  NK_EDIT_COMMITED = ""
+}
+
+function editFunction(args)
+  local editActive = args["NK_EDIT_ACTIVE"]
+  local editCommited = args["NK_EDIT_COMMITED"]
+end
+```
+
+#### 설명
+- Edit는 inputbox이며, Data에 있는 function과 
+
 ## Image
 ## Label
-## ComboItem
 ## Checkbox
 ## Slider
 ## Progress
