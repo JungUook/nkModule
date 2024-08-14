@@ -61,6 +61,7 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 	if (m_bDisabled) {
 		if (m_iOption == 1) {
 			struct nk_image img;
+			img.color = { 255,255,255,255 };
 			bool bResult = pManager->GetSprite(m_sDisablePath.c_str(), m_iSprIndex, img);
 
 			if (!bResult) {
@@ -69,7 +70,11 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 				//m_sDisablePath = "None";
 				//m_iOption = 0;
-				//(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
+				m_pTarget->data.slice.img.color.r = 255;
+				m_pTarget->data.slice.img.color.g = 255;
+				m_pTarget->data.slice.img.color.b = 255;
+				m_pTarget->data.slice.img.color.a = 255;
+				(*m_pTarget) = nk_style_item_color(m_pTarget->data.slice.img.color, false);
 				return;
 			}
 			img.color = m_pTarget->data.image.color;
@@ -78,6 +83,7 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 		}
 		else if (m_iOption == 2) {
 			struct nk_image img;
+			img.color = { 255,255,255,255 };
 			bool bResult = pManager->GetSprite(m_sDisablePath.c_str(), m_iSprIndex, img);
 
 			if (!bResult) {
@@ -86,7 +92,11 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 				//m_sDisablePath = "None";
 				//m_iOption = 0;
-				//(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
+				m_pTarget->data.slice.img.color.r = 255;
+				m_pTarget->data.slice.img.color.g = 255;
+				m_pTarget->data.slice.img.color.b = 255;
+				m_pTarget->data.slice.img.color.a = 255;
+				(*m_pTarget) = nk_style_item_color(m_pTarget->data.slice.img.color, false);
 				return;
 			}
 
@@ -105,6 +115,7 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 
 	if (m_iOption == 1) {
 		struct nk_image img;
+		img.color = { 255,255,255,255 };
 		bool bResult = pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 
 		if (!bResult) {
@@ -113,7 +124,11 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 			//m_sImagePath = "None";
 			//m_iOption = 0;
-			//(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
+			m_pTarget->data.slice.img.color.r = 255;
+			m_pTarget->data.slice.img.color.g = 255;
+			m_pTarget->data.slice.img.color.b = 255;
+			m_pTarget->data.slice.img.color.a = 255;
+			(*m_pTarget) = nk_style_item_color(m_pTarget->data.slice.img.color, false);
 			return;
 		}
 		img.color = m_pTarget->data.image.color;
@@ -121,6 +136,7 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 	}
 	else if (m_iOption == 2) {
 		struct nk_image img;
+		img.color = { 255,255,255,255 };
 		bool bResult = pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 
 		if (!bResult) {
@@ -129,7 +145,11 @@ void NKStyleItem::UpdateComponent(nk_context* ctx, NuklearUI* pManager)
 #endif
 			//m_sImagePath = "None";
 			//m_iOption = 0;
-			//(*m_pTarget) = nk_style_item_color(m_pTarget->data.color, false);
+			m_pTarget->data.slice.img.color.r = 255;
+			m_pTarget->data.slice.img.color.g = 255;
+			m_pTarget->data.slice.img.color.b = 255;
+			m_pTarget->data.slice.img.color.a = 255;
+			(*m_pTarget) = nk_style_item_color(m_pTarget->data.slice.img.color, false);
 			return;
 		}
 		img.color = m_pTarget->data.slice.img.color;
@@ -171,12 +191,14 @@ void NKStyleItem::ItemEditor(nk_context* ctx, NuklearUI* pManager)
 			m_bApply = true;
 			if (m_iOption == 1) {
 				struct nk_image img;
+				img.color = { 255,255,255,255 };
 				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 				img.color = m_pTarget->data.image.color;
 				(*m_pTarget) = nk_style_item_image(img);
 			}
 			else if (m_iOption == 2) {
 				struct nk_image img;
+				img.color = { 255,255,255,255 };
 				pManager->GetSprite(m_sImagePath.c_str(), m_iSprIndex, img);
 				img.color = m_pTarget->data.slice.img.color;
 				struct nk_nine_slice nineslice {};

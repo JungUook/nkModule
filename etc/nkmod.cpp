@@ -24,6 +24,8 @@ sprLoader* g_sprLoader = nullptr;
 int g_renderCnt = 0;
 int g_width = 0;
 int g_height = 0;
+
+bool g_deviceActive = false;
 #endif
 
 NuklearUI* g_nuklear = nullptr;
@@ -269,6 +271,7 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
 
 
         g_nuklear->m_cereal.LoadFile(g_nuklear->m_mapVariable, g_nuklear->m_mapFunction, filePath);
+        g_deviceActive = true;
     }
     else {
         if (hwnd) {
@@ -278,6 +281,7 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
             g_sprLoader->Init(g_pDD);
             g_nuklear->Register_spr(g_sprLoader);
             CoUninitialize();
+            g_deviceActive = true;
         }
         else {
             return;
@@ -377,6 +381,13 @@ BOOL NKRender(void* device)
     if (g_nuklear == nullptr) {
         return FALSE;
     }
+
+    if (!g_deviceActive) {
+        g_deviceActive = Restore();
+        ++g_renderCnt;
+        return FALSE;
+    }
+
     IDirect3DDevice7* pDevice = (IDirect3DDevice7*)device;
 
     HRESULT hr;
@@ -391,63 +402,67 @@ BOOL NKRender(void* device)
 
     if (FAILED(hr)) {
         bResult = FALSE;
-        
-        hr = g_pDDSPrimary->IsLost();
-        if (hr == DDERR_SURFACELOST) {
-            hr = g_pDDSPrimary->Restore();
-            if (FAILED(hr)) {
-                printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
-            }
-        }
-
-        hr = g_pDDSBackBuffer->IsLost();
-        if (hr == DDERR_SURFACELOST) {
-            hr = g_pDDSBackBuffer->Restore();
-            if (FAILED(hr)) {
-                printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
-
-                g_pDDSBackBuffer->Release();
-                g_pDDSBackBuffer = nullptr;
-
-                ZeroMemory(&g_ddsd, sizeof(g_ddsd));
-                g_ddsd.dwSize = sizeof(g_ddsd);
-                g_ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;;
-                g_ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
-                g_ddsd.dwWidth = g_width;
-                g_ddsd.dwHeight = g_height;
-
-                hr = g_pDD->CreateSurface(&g_ddsd, &g_pDDSBackBuffer, NULL);
-                if (FAILED(hr)) return FALSE;
-
-                hr = g_pDD->QueryInterface(IID_IDirect3D7, (void**)&g_pD3D);
-                if (FAILED(hr)) return FALSE;
-            }
-
-            g_pD3DDevice->Release();
-            g_pD3DDevice = nullptr;
-
-            hr = g_pD3D->CreateDevice(IID_IDirect3DHALDevice, g_pDDSBackBuffer, &g_pD3DDevice);
-            if (FAILED(hr)) {
-                printf("Failed g_pD3D->CreateDevice: 0x%08lx\n", hr);
-                return FALSE;
-            }
-
-            D3DVIEWPORT7 vp;
-            vp.dwX = 0;  // X 오프셋을 0으로 설정
-            vp.dwY = 0;  // Y 오프셋을 0으로 설정
-            vp.dwWidth = g_ddsd.dwWidth;
-            vp.dwHeight = g_ddsd.dwHeight;
-            vp.dvMinZ = 0.0f;
-            vp.dvMaxZ = 1.0f;
-            g_pD3DDevice->SetViewport(&vp);
-
-            g_nuklear->SetDirectX7(g_pDD, g_pD3DDevice, g_ddsd.dwWidth, g_ddsd.dwHeight);
-        }
+        g_deviceActive = Restore();
     }
 
     ++g_renderCnt;
 
     return bResult;
+}
+BOOL Restore()
+{
+    HRESULT hr = g_pDDSPrimary->IsLost();
+    if (hr == DDERR_SURFACELOST) {
+        hr = g_pDDSPrimary->Restore();
+        if (FAILED(hr)) {
+            printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+        }
+    }
+
+    hr = g_pDDSBackBuffer->IsLost();
+    if (hr == DDERR_SURFACELOST) {
+        hr = g_pDDSBackBuffer->Restore();
+        if (FAILED(hr)) {
+            printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+
+            g_pDDSBackBuffer->Release();
+            g_pDDSBackBuffer = nullptr;
+
+            ZeroMemory(&g_ddsd, sizeof(g_ddsd));
+            g_ddsd.dwSize = sizeof(g_ddsd);
+            g_ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;;
+            g_ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE;
+            g_ddsd.dwWidth = g_width;
+            g_ddsd.dwHeight = g_height;
+
+            hr = g_pDD->CreateSurface(&g_ddsd, &g_pDDSBackBuffer, NULL);
+            if (FAILED(hr)) return FALSE;
+
+            hr = g_pDD->QueryInterface(IID_IDirect3D7, (void**)&g_pD3D);
+            if (FAILED(hr)) return FALSE;
+        }
+
+        g_pD3DDevice->Release();
+        g_pD3DDevice = nullptr;
+
+        hr = g_pD3D->CreateDevice(IID_IDirect3DHALDevice, g_pDDSBackBuffer, &g_pD3DDevice);
+        if (FAILED(hr)) {
+            printf("Failed g_pD3D->CreateDevice: 0x%08lx\n", hr);
+            return FALSE;
+        }
+
+        D3DVIEWPORT7 vp;
+        vp.dwX = 0;  // X 오프셋을 0으로 설정
+        vp.dwY = 0;  // Y 오프셋을 0으로 설정
+        vp.dwWidth = g_ddsd.dwWidth;
+        vp.dwHeight = g_ddsd.dwHeight;
+        vp.dvMinZ = 0.0f;
+        vp.dvMaxZ = 1.0f;
+        g_pD3DDevice->SetViewport(&vp);
+
+        g_nuklear->SetDirectX7(g_pDD, g_pD3DDevice, g_ddsd.dwWidth, g_ddsd.dwHeight);
+    }
+    return TRUE;
 }
 #endif
 
@@ -466,7 +481,6 @@ int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
         case WM_ACTIVATE:
         case WM_ACTIVATEAPP:
         case WM_QUERYNEWPALETTE:
-            g_pDD->RestoreAllSurfaces();
             break;
     }
 

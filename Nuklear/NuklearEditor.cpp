@@ -631,6 +631,7 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 		if (strlen(selectedFilename))
 		{
 			struct nk_image img;
+			img.color = { 255,255,255,255 };
 			m_pManager->GetImage(selectedFilename, img);
 			nk_layout_row_dynamic(ctx, 300, 1);
 			nk_image(ctx, img);			
@@ -1124,13 +1125,10 @@ int NuklearEditor::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 
-	//case WM_ACTIVATE:
-	//case WM_ACTIVATEAPP:
-	//case WM_QUERYNEWPALETTE:
-	//	if (m_dx7.d3d7.dd != nullptr) {
-	//		m_dx7.d3d7.dd->RestoreAllSurfaces();
-	//	}
-	//	break;
+	case WM_ACTIVATE:
+	case WM_ACTIVATEAPP:
+	case WM_QUERYNEWPALETTE:
+		break;
 
 	case WM_SIZE:
 		if (m_dx7.d3d7.device)
@@ -1289,48 +1287,48 @@ void NuklearEditor::Render()
 
 	srcrect.top = 0;
 
-	if (FAILED(hr)) {
-		hr = pDDSPrimary->IsLost();
-		if (hr == DDERR_SURFACELOST) {
-			hr = pDDSPrimary->Restore();
-			if (FAILED(hr)) {
-				printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
-				return;
-			}
-		}
-
-		hr = pDDSBackBuffer->IsLost();
-		if (hr == DDERR_SURFACELOST) {
-			hr = pDDSBackBuffer->Restore();
-			if (FAILED(hr)) {
-				printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
-				return;
-			}
-
-			pD3DDevice->Release();
-			pD3DDevice = nullptr;
-			hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
-
-			D3DVIEWPORT7 vp;
-			vp.dwX = 0;  // X 오프셋을 0으로 설정
-			vp.dwY = 0;  // Y 오프셋을 0으로 설정
-			vp.dwWidth = 512;
-			vp.dwHeight = 960;
-			vp.dvMinZ = 0.0f;
-			vp.dvMaxZ = 1.0f;
-			pD3DDevice->SetViewport(&vp);
-
-			Restore();
-		}
-	}
-
 	if (SUCCEEDED(hr)) {
 		hr = pDDSPrimary->Blt(&rect, pDDSBackBuffer, &srcrect, DDBLT_WAIT, NULL);
+	}
+
+	if (FAILED(hr)) {
+		Restore();
 	}
 }
 
 void NuklearEditor::Restore()
 {
+	HRESULT hr = pDDSPrimary->IsLost();
+	if (hr == DDERR_SURFACELOST) {
+		hr = pDDSPrimary->Restore();
+		if (FAILED(hr)) {
+			printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+			return;
+		}
+	}
+
+	hr = pDDSBackBuffer->IsLost();
+	if (hr == DDERR_SURFACELOST) {
+		hr = pDDSBackBuffer->Restore();
+		if (FAILED(hr)) {
+			printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+			return;
+		}
+
+		pD3DDevice->Release();
+		pD3DDevice = nullptr;
+		hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
+
+		D3DVIEWPORT7 vp;
+		vp.dwX = 0;  // X 오프셋을 0으로 설정
+		vp.dwY = 0;  // Y 오프셋을 0으로 설정
+		vp.dwWidth = 512;
+		vp.dwHeight = 960;
+		vp.dvMinZ = 0.0f;
+		vp.dvMaxZ = 1.0f;
+		pD3DDevice->SetViewport(&vp);
+	}
+
 	m_dx7.nk_d3d7_shutdown();
 
 	CHAR systemPath[MAX_PATH];

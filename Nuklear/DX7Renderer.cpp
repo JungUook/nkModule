@@ -512,6 +512,9 @@ void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 		if (cmd->texture.ptr) {
 			d3d7.device->SetTexture(0, (IDirectDrawSurface7*)cmd->texture.ptr);
 		}
+		else {
+			continue;
+		}
 
 		//struct nk_color* color_data =  static_cast<struct nk_color*>(cmd->userdata.ptr);
 		//LPDWORD lpdword;
@@ -822,12 +825,16 @@ void DX7Renderer::nk_d3d7_create_font_texture()
 	ddsd.ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
 
 	HRESULT hr = d3d7.dd->CreateSurface(&ddsd, &d3d7.font_texture, NULL);
-	if (FAILED(hr)) return;
+	if (FAILED(hr)) {
+		return;
+	}
 
 
 	ddsd.dwSize = sizeof(ddsd);
 	hr = d3d7.font_texture->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
-	if (FAILED(hr)) return;
+	if (FAILED(hr)) {
+		return;
+	}
 
 	memcpy(ddsd.lpSurface, image, w * h * 4);
 

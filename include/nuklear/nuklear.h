@@ -18312,6 +18312,7 @@ nk_style_item_image(struct nk_image img, struct nk_color color)
 {
     struct nk_style_item i;
     i.type = NK_STYLE_ITEM_IMAGE;
+    img.color = color;
     i.data.image = img;
     return i;
 }
@@ -18320,6 +18321,7 @@ nk_style_item_nine_slice(struct nk_nine_slice slice, struct nk_color color)
 {
     struct nk_style_item i;
     i.type = NK_STYLE_ITEM_NINE_SLICE;
+    slice.img.color = color;
     i.data.slice = slice;
     return i;
 }

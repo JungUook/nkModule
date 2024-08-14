@@ -101,6 +101,7 @@ public:
 public:
 	virtual int GetNuklearIndex();
 
+	virtual void Setfont(nk_font* font) override;
 	virtual void SetManager(NuklearUI* manager);
 	virtual void SetNuklearIndex(int index);
 

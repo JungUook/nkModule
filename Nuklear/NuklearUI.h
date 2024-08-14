@@ -78,7 +78,6 @@ public:
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam, D3DPRESENT_PARAMETERS* present);
 #elif _DX7
 	void Render(IDirect3DDevice7* pdevice);
-	void Restore();
 	int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	bool LoadSpriteData(IDirectDrawSurface7* sprite, int width, int height, int sliceSizeX = 0, int sliceSizeY = 0, int countX = 0, int countY = 0);
 	bool ReadImageFile(const char* filename, IDirectDrawSurface7** pTexture);

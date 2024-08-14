@@ -469,6 +469,12 @@ int NKBase::GetNuklearIndex()
 	return m_iNKIndex;
 }
 
+void NKBase::Setfont(nk_font* font)
+{
+	NKBaseStyle::Setfont(font);
+	m_style.font = m_ctx->style.font;
+}
+
 void NKBase::SetManager(NuklearUI* manager)
 {
 	CHECK_PTR(manager);

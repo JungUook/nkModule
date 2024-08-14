@@ -85,6 +85,7 @@ void NKSelectable::Layout(nk_context* ctx)
         if (m_imagePath != "None") {
             if (m_sprSize > 0) {
                 struct nk_image img;
+                img.color = { 255,255,255,255 };
                 bool bResult = m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img);
                 if (!bResult) {
 #ifdef _NKDEBUG
@@ -101,12 +102,13 @@ void NKSelectable::Layout(nk_context* ctx)
             }
             else {
                 struct nk_image img;
+                img.color = { 255,255,255,255 };
                 bool bResult = m_pManager->GetImage(m_imagePath.c_str(), img);
                 if (!bResult) {
 #ifdef _NKDEBUG
                     m_pManager->ErrorPopup("Image URL not linked to the editor.");
 #endif
-                    m_imagePath = "None";
+                    //m_imagePath = "None";
                     return;
                 }
                 else {
@@ -169,6 +171,7 @@ void NKSelectable::EditInfo(nk_context* ctx)
             if (nk_button_label(ctx, "apply"))
             {
                 struct nk_image img;
+                img.color = { 255,255,255,255 };
                 m_pManager->GetSprite(m_imagePath.c_str(), m_sprIndex, img, true);
             }
             if (nk_button_label(ctx, "clear"))

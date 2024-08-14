@@ -284,6 +284,7 @@ void NuklearUI::AddImage(int SID, IDirect3DTexture9* texture, uint16_t width, ui
 	struct nk_image img;
 	memset(&img, 0, sizeof(img));
 	img.handle = nk_handle_ptr(texture);
+	img.color = nk_white;
 
 	img.w = width;
 	img.h = height;

@@ -78,10 +78,7 @@ void NuklearUI::Render(IDirect3DDevice7* pdevice)
 	}
 	ReleaseRenderData();
 }
-void NuklearUI::Restore()
-{
 
-}
 int NuklearUI::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (this == nullptr) {
@@ -200,6 +197,7 @@ void NuklearUI::AddImage(int SID, IDirectDrawSurface7* texture, uint16_t width, 
 	struct nk_image img;
 	memset(&img, 0, sizeof(img));
 	img.handle = nk_handle_ptr(texture);
+	img.color = nk_white;
 
 	img.w = width;
 	img.h = height;
@@ -322,6 +320,7 @@ bool NuklearUI::GetSprite(const char* filename, int index, struct nk_image& outi
 			struct nk_image img;
 			memset(&img, 0, sizeof(img));
 			img.handle = nk_handle_ptr(pSpr->GetSurface());
+			img.color = nk_white;
 
 			img.w = pSpr->GetSpr()->GetHres();
 			img.h = pSpr->GetSpr()->GetVres();
@@ -353,6 +352,7 @@ bool NuklearUI::GetImage(const char* filename, struct nk_image& outimg, bool bIm
 		struct nk_image img;
 		memset(&img, 0, sizeof(img));
 		img.handle = nk_handle_ptr(pSpr->GetSurface());
+		img.color = nk_white;
 		outimg = img;
 
 		return true;
@@ -407,5 +407,41 @@ void NuklearUI::SetDirectX7(IDirectDraw7* pdd, IDirect3DDevice7* pdevice, int wi
 
 	m_dx7.nk_d3d7_shutdown();
 	Initialize(pdd, pdevice, width, height, m_iLanguage, m_sFontPath.c_str());
+
+	for (auto iter = m_vecRenderData.begin(); iter != m_vecRenderData.end(); ++iter) {
+		sprData* pData = (*iter);
+		if (pData->GetSurface() != nullptr) {
+			HRESULT hr = pData->GetSurface()->IsLost();
+			if (hr == DDERR_SURFACELOST) {
+				hr = pData->GetSurface()->Restore();
+				if (FAILED(hr)) {
+					printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+
+					pData->GetSurface()->Release();
+					pData->LoadTexture(m_dx7.d3d7.dd);
+				}
+			}
+		}
+	}
+
+	for (auto iter = m_vecImmortalRenderData.begin(); iter != m_vecImmortalRenderData.end(); ++iter) {
+		sprData* pData = (*iter);
+		if (pData->GetSurface() != nullptr) {
+			HRESULT hr = pData->GetSurface()->IsLost();
+			if (hr == DDERR_SURFACELOST) {
+				hr = pData->GetSurface()->Restore();
+				if (FAILED(hr)) {
+					printf("Failed to restore primary surface with error: 0x%08lx\n", hr);
+
+					pData->GetSurface()->Release();
+					pData->LoadTexture(m_dx7.d3d7.dd);
+				}
+			}
+		}
+	}
+	for (auto it = m_cereal.m_vecLuaCode.begin(); it != m_cereal.m_vecLuaCode.end(); ++it) {
+		std::string str = m_cereal.GetExecutablePath() + "\\" + *it;
+		m_luaInterface.LoadLuaFile(str.c_str());
+	}
 }
 #endif
