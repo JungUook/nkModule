@@ -265,11 +265,7 @@ void Initialize(IDirectDraw7* pdd, void* pvDevice, int width, int height, int la
             std::cerr << "Failed to create directory: " << dataPath << std::endl;
             return;
         }
-#ifdef _NKDEBUG
-        std::string filePath = dataPath + "\\nkmod.json";
-#else
         std::string filePath = dataPath + "\\nkmod.bin";
-#endif // _NKDEBUG
 
 
         g_nuklear->m_cereal.LoadFile(g_nuklear->m_mapVariable, g_nuklear->m_mapFunction, filePath);
@@ -463,6 +459,17 @@ int HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 #ifdef _DX9
     return g_nuklear->HandleEvent(wnd, msg, wparam, lparam, &g_present);
 #elif _DX7
+
+
+    switch (msg)
+    {
+        case WM_ACTIVATE:
+        case WM_ACTIVATEAPP:
+        case WM_QUERYNEWPALETTE:
+            g_pDD->RestoreAllSurfaces();
+            break;
+    }
+
     return g_nuklear->HandleEvent(wnd, msg, wparam, lparam);
 #endif
 }

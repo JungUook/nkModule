@@ -509,7 +509,9 @@ void DX7Renderer::nk_d3d7_render(nk_anti_aliasing antialiasing)
 	for (cmd = nk__draw_begin(&d3d7.ctx, &d3d7.cmds); cmd != NULL; cmd = nk__draw_next(cmd, &d3d7.cmds, &d3d7.ctx)) {
 		if (!cmd->elem_count) continue;
 
-		d3d7.device->SetTexture(0, (IDirectDrawSurface7*)cmd->texture.ptr);
+		if (cmd->texture.ptr) {
+			d3d7.device->SetTexture(0, (IDirectDrawSurface7*)cmd->texture.ptr);
+		}
 
 		//struct nk_color* color_data =  static_cast<struct nk_color*>(cmd->userdata.ptr);
 		//LPDWORD lpdword;

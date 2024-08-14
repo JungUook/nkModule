@@ -33,7 +33,7 @@ void NKImage::Layout(nk_context* ctx)
 #ifdef _NKDEBUG
 				m_pManager->ErrorPopup("Image URL not linked to the editor.");
 #endif
-				m_imagePath = "None";
+				//m_imagePath = "None";
 				return;
 			}
 			else {

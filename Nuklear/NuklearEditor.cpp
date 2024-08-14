@@ -1124,6 +1124,14 @@ int NuklearEditor::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 
+	//case WM_ACTIVATE:
+	//case WM_ACTIVATEAPP:
+	//case WM_QUERYNEWPALETTE:
+	//	if (m_dx7.d3d7.dd != nullptr) {
+	//		m_dx7.d3d7.dd->RestoreAllSurfaces();
+	//	}
+	//	break;
+
 	case WM_SIZE:
 		if (m_dx7.d3d7.device)
 		{

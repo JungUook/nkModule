@@ -78,6 +78,10 @@ void NuklearUI::Render(IDirect3DDevice7* pdevice)
 	}
 	ReleaseRenderData();
 }
+void NuklearUI::Restore()
+{
+
+}
 int NuklearUI::HandleEvent(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (this == nullptr) {
