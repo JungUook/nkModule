@@ -51,6 +51,7 @@ public:
 	int m_currentLabel;
 	nk_text_alignment m_labelAlignment;
 	struct nk_vec2 m_labelSize;
+	struct nk_vec2 m_itemSize;
 	std::string m_cComboLabel;
 
 	int m_iComboFlag;
@@ -59,7 +60,7 @@ public:
 public:
 	template <class Archive>
 	void serialize(Archive& ar, const unsigned int version) {
-		if (version >= 11) {
+		if (version >= 12) {
 			ar(cereal::base_class<NKBase>(this)
 				, cereal::base_class<NKStyleCombo>(this)
 				, cereal::base_class<NKStyleContextualButton>(this)
@@ -69,6 +70,7 @@ public:
 				, CEREAL_NVP(m_currentLabel)
 				, CEREAL_NVP(m_labelAlignment)
 				, CEREAL_NVP(m_labelSize)
+				, CEREAL_NVP(m_itemSize)
 				, CEREAL_NVP(m_cComboLabel)
 				, CEREAL_NVP(m_iComboFlag)
 			);
@@ -78,6 +80,8 @@ public:
 				, cereal::base_class<NKStyleCombo>(this)
 				, cereal::base_class<NKStyleContextualButton>(this)
 				, cereal::base_class<NKStyleWindow>(this)
+				, cereal::base_class<NKStyleScrollbarH>(this)
+				, cereal::base_class<NKStyleScrollbarV>(this)
 				, CEREAL_NVP(m_currentLabel)
 				, CEREAL_NVP(m_labelAlignment)
 				, CEREAL_NVP(m_labelSize)

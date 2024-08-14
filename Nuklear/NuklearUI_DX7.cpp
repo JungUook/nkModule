@@ -379,6 +379,12 @@ bool NuklearUI::RegisterRenderData(sprData* pData, bool bImmortal)
 		return true;
 	}
 	else {
+		pData->LoadTexture(m_dx7.d3d7.dd);
+
+		if (pData->GetSurface()) {
+			return true;
+		}
+
 		return false;
 	}
 }

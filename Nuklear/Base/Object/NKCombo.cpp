@@ -8,6 +8,8 @@ NKCombo::NKCombo() : NKBase(), NKStyleCombo(), NKStyleContextualButton(), NKStyl
 
 	m_labelSize.x = 150.f;
 	m_labelSize.y = 300.f;
+	m_itemSize.x = 150.f;
+	m_itemSize.y = 30.f;
 	m_currentLabel = 0;
 	m_labelAlignment = NK_TEXT_LEFT;
 
@@ -24,6 +26,8 @@ NKCombo::NKCombo(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), 
 	m_sTransform.h = 60.f;
 	m_labelSize.x = 150.f;
 	m_labelSize.y = 300.f;
+	m_itemSize.x = 150.f;
+	m_itemSize.y = 30.f;
 	m_currentLabel = 0;
 	m_labelAlignment = NK_TEXT_LEFT;
 
@@ -38,6 +42,8 @@ NKCombo::NKCombo(const NKCombo& other) : NKBase(other), NKStyleCombo(other, m_ct
 
 	m_labelSize.x = other.m_labelSize.x;
 	m_labelSize.y = other.m_labelSize.y;
+	m_itemSize.x = other.m_itemSize.x;
+	m_itemSize.y = other.m_itemSize.y;
 	m_currentLabel = other.m_currentLabel;
 	m_labelAlignment = other.m_labelAlignment;
 
@@ -53,18 +59,41 @@ NKCombo::~NKCombo()
 void NKCombo::Layout(nk_context* ctx)
 {
 	if (m_iComboFlag == eCOMBO_DYNAMIC) {
-		if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), m_labelSize))
-		{
-			nk_layout_space_begin(ctx, NK_STATIC, m_labelSize.y, m_pChildList.size());
+		//if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), m_labelSize))
+		//{
+		//	nk_layout_space_begin(ctx, NK_STATIC, m_labelSize.y, m_pChildList.size());
 
+		//	int i = 0;
+		//	for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
+		//		nk_layout_space_push(ctx, nk_rect(0, (m_labelSize.y / m_pChildList.size()) * i++, m_labelSize.x, m_labelSize.y / m_pChildList.size()));
+
+		//		if ((*it)->GetType() == eCOMBO_ITEM)
+		//		{
+		//			NKComboItem* pItem = (NKComboItem*)(*it);
+		//			pItem->SetLabelNumber(i);
+		//		}
+		//		(*it)->Update(ctx);
+		//	}
+		//	nk_layout_space_end(ctx);
+		//	nk_combo_end(ctx);
+		//}
+
+		float width = nk_widget_width(ctx);
+
+		if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), nk_vec2(width, m_labelSize.y)))
+		{
+			nk_layout_space_begin(ctx, NK_STATIC, m_dynamicLabelSpace.y, m_pChildList.size());
+
+			m_dynamicLabelSpace = nk_vec2(0.f, 0.f);
 			int i = 0;
 			for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
-				nk_layout_space_push(ctx, nk_rect(0, (m_labelSize.y / m_pChildList.size()) * i++, m_labelSize.x, m_labelSize.y / m_pChildList.size()));
+				nk_layout_space_push(ctx, nk_rect(m_dynamicLabelSpace.x, m_dynamicLabelSpace.y, m_itemSize.x, m_itemSize.y));
+				m_dynamicLabelSpace.y += (*it)->GetHeight();
 
 				if ((*it)->GetType() == eCOMBO_ITEM)
 				{
 					NKComboItem* pItem = (NKComboItem*)(*it);
-					pItem->SetLabelNumber(i);
+					pItem->SetLabelNumber(i++);
 				}
 				(*it)->Update(ctx);
 			}
@@ -72,7 +101,7 @@ void NKCombo::Layout(nk_context* ctx)
 			nk_combo_end(ctx);
 		}
 	}
-	else {
+	else if (m_iComboFlag == eCOMBO_STATIC) {
 
 		if (nk_combo_begin_label(ctx, m_cComboLabel.c_str(), m_labelSize))
 		{
@@ -132,7 +161,14 @@ void NKCombo::EditInfo(nk_context* ctx)
 	if (nk_option_label(ctx, "center", m_labelAlignment == NK_TEXT_CENTERED)) m_labelAlignment = NK_TEXT_CENTERED;
 	if (nk_option_label(ctx, "right", m_labelAlignment == NK_TEXT_RIGHT)) m_labelAlignment = NK_TEXT_RIGHT;
 
-	PropertyVector2(ctx, "Label Size", m_labelSize, .0f, 500.f, 0.01f, 0.01f);
+
+	if (m_iComboFlag == eCOMBO_DYNAMIC) {
+		PropertyVector2(ctx, "Label Size", m_labelSize, .0f, 500.f, 0.1f, 0.01f);
+		PropertyVector2(ctx, "item Size", m_itemSize, .0f, 500.f, 0.1f, 0.01f);
+	}
+	else if (m_iComboFlag == eCOMBO_STATIC) {
+		PropertyVector2(ctx, "Label Size", m_labelSize, .0f, 500.f, 0.1f, 0.01f);
+	}
 
 	if (nk_tree_push(ctx, NK_TREE_NODE, "Combo Item List", NK_MINIMIZED)) {
 		for (std::list<NKBase*>::iterator it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
