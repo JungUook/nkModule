@@ -228,11 +228,73 @@ end
 ```
 
 #### 설명
-- Edit는 inputbox이며, Data에 있는 function과 
+- Edit는 inputbox이며, Data에 있는 function과 Variable 사용에 주의해야한다.
+- NK_EDIT_ACTIVE의 값은 inputbox에 키가 입력될때마다 갱신되며 함수를 호출한다.
+- NK_EDIT_COMMITED는 inputbox가 활성화된 상태에서 enter키를 입력했을때 갱신되며 함수를 호출한다.
+- 각각의 갱신된 값을 클라이언트로 연결된 콜백함수를 호출하며 사용하면 된다.
+
 
 ## Image
+이미지를 출력해주는 노드.
+transform의 너비와 높이에 맞춰 출력해주지만 이미지 자체의 해상도까지 맞춰주지는 않기 때문에 주의해서 사용해야한다.
+
+### Index
+- 스프라이트의 인덱스값이다.
+
+### Selected
+- apply된 현재 선택된 파일을 표시한다
+
+### apply
+- SPR List에서 Load하는 버튼
+
+### clear
+- apply한 파일을 해제한다
+
+### SPR List
+- system - file에서 불러온 파일의 리스트이다.
+
 ## Label
+### Font size
+- 폰트 크기를 조정할 수 있다. 1에서 많이 벗어날수록 폰트가 부자연스러워진다.
+### Wrap
+- 문자를 좌측 상단부터 작성하여 우측하단까지 쓰는 플래그다. 자동 줄바꿈을 지원한다.
+### Bold
+- 폰트를 더 굵은 글씨로 표현한다.
+- 시스템상 태그 문자가 추가되기때문에 Transform의 너비를 더 늘려줘야한다.
+- Wrap에서는 지원하지 않는다.(2번째줄부터는 적용x)
+### Outline
+- 폰트 외곽을 하얀색으로 표현한다.(다른색 지원x)
+- Wrap에서는 지원하지 않는다.(2번째줄부터는 적용x)
+
 ## Checkbox
+- 체크박스와 설명용 문자열을 출력해준다.
+- 체크박스를 누를때마다 함수를 호출할 수 있다.
+
+#### luascript 예제
+```markdown
+
+myArgs = false
+
+function booleanToString(value)
+    if value then
+        return "true"
+    else
+        return "false"
+    end
+end
+
+function mybutton1(args)
+    local checkBox = system:FindCheckbox("myCheckbox")
+    myArgs = checkBox:IsChecked()
+    print("hello world!!" .. booleanToString(myArgs))
+end
+
+```
+
+<img src="./img/checkbox01.png">
+<img src="./img/checkbox02.png">
+<img src="./img/checkbox03.gif">
+
 ## Slider
 ## Progress
 ## Selectable
