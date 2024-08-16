@@ -296,12 +296,100 @@ end
 <img src="./img/checkbox03.gif">
 
 ## Slider
+- 슬라이더
+- 슬라이더를 움직여 현재 값을 변경할 수 있다.
+
+#### luascript 예제
+```markdown
+
+myArgs = 0
+
+function mybutton1(args)
+    local checkBox = system:FindSlider("myslider")
+    myArgs = checkBox:GetValue()
+    print("hello world!!" .. tostring(myArgs))
+end
+
+```
+
+<img src="./img/slider01.png">
+<img src="./img/slider02.gif">
+
+
 ## Progress
+- 프로그래스바
+- 코드로 값을 입력해 진행상태를 출력할 수 있다.
+- FIXED:  마우스 입력 금지 플래그
+- MODIFIABLE: 마우스 입력 허용 플래그
+
+#### luascript 예제
+```markdown
+
+function myprogress1(args)
+    local progress = system:FindProgress("myprogress")
+    myArgs = progress:SetProgress(args)
+    print("myprogress" .. tostring(args))
+end
+
+```
+
+
 ## Selectable
+- 이미지를 출력할 수 있고, 선택여부를 확인할 수 있는 노드.
+
+#### luascript 예제
+```markdown
+
+myArgs = false
+
+function booleanToString(value)
+    if value then
+        return "true"
+    else
+        return "false"
+    end
+end
+
+function mySelectable1(args)
+    local selectable = system:FindSelectable("myselectable")
+    myArgs = selectable:IsSelected()
+    print("hello world!!" .. booleanToString(myArgs))
+end
+
+```
+
+- 방법은 checkbox 응용.
+- 이미지 등록은 image 응용.
+
 ## Tree
+- UI를 숨겨놨다가 확장하여 보여줄 수 있는 노드
+- Tree의 자식으로 Tree를 만들 수 있으며, space로 레이아웃설정후 여러 ui요소까지 출력할 수 있다.
+
 ## Chart
+- 미구현
+
+
 ## Tooltip
+- 툴팁 기능
+
+### Tooltip Type
+#### Simple
+- 간단하게 문자열만 보여주는 기능이다.
+#### Detail
+- 툴팁에 레이아웃을 구성하고 이미지나 여러 ui요소를 구성할 수 있는 기능이다.
+
+### Space Type
+#### STATIC
+- Node List에서 특정 노드를 선택해서 tooltip을 띄워주는 타입(불안정)
+
+#### DYNAMIC
+- 같은 space 레이아웃으로 설정된 요소들에 대한 tooltip을 띄워주는 타입
+
 ## Menu
-## Scrollbar
+- 미구현
+
 ## ColorPicker
+- 미구현
+
 ## SuperStyleObject
+- 공용 스타일 설정 노드
