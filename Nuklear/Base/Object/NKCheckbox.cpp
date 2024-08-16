@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "NKCheckbox.h"
 
-NKCheckbox::NKCheckbox() : NKBase(), NKBaseLabel(), NKStyleCheckbox()
+NKCheckbox::NKCheckbox() : NKBase(), NKBaseLabel(), NKHandler(), NKStyleCheckbox()
 {
     m_type = eCHECKBOX;
     m_checked = 0;
 }
 
-NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKStyleCheckbox(ctx, &m_style)
+NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKBaseLabel(), NKHandler(), NKStyleCheckbox(ctx, &m_style)
 {
     m_type = eCHECKBOX;
     m_checked = 0;
@@ -16,7 +16,7 @@ NKCheckbox::NKCheckbox(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pMana
     m_sTransform.h = 40.f;
 }
 
-NKCheckbox::NKCheckbox(const NKCheckbox& other) : NKBase(other), NKBaseLabel(other), NKStyleCheckbox(other, m_ctx, &m_style)
+NKCheckbox::NKCheckbox(const NKCheckbox& other) : NKBase(other), NKBaseLabel(other), NKHandler(other), NKStyleCheckbox(other, m_ctx, &m_style)
 {
 	m_type = other.m_type;
 	m_checked = other.m_checked;
@@ -31,7 +31,9 @@ void NKCheckbox::LayoutBegin(nk_context* ctx)
 
 void NKCheckbox::Layout(nk_context* ctx)
 {
-    nk_checkbox_label(ctx, m_sContent.c_str(), &m_checked);
+    if (nk_checkbox_label(ctx, m_sContent.c_str(), &m_checked)) {
+        CallEvent(m_pLuaManager);
+    }
 }
 
 void NKCheckbox::LayoutEnd(nk_context* ctx)
@@ -51,6 +53,7 @@ void NKCheckbox::SafeRenderEnd(nk_context* ctx)
 void NKCheckbox::EditInfo(nk_context* ctx)
 {
     EditLabel(ctx, m_pManager);
+    EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
 
 void NKCheckbox::EditStyle(nk_context* ctx)

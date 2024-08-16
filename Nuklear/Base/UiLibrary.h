@@ -25,7 +25,7 @@
 #include "NKColorPicker.h"
 #include "NKSuperStyleObject.h"
 
-#define EditorVersion 12
+#define EditorVersion 13
 
 static NKBase* CopyObject(NKBase* pBase)
 {

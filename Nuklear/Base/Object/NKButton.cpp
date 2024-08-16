@@ -4,6 +4,7 @@
 NKButton::NKButton() : NKBase(), NKHandler(), NKBaseLabel(), NKStyleButton()
 {
 	m_type = eBUTTON;
+	m_bDisabled = false;
 }
 
 NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKBaseLabel(), NKStyleButton(ctx, &m_style)
@@ -11,12 +12,14 @@ NKButton::NKButton(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
 	m_type = eBUTTON;
 	m_sTransform.w = 150.f;
 	m_sTransform.h = 40.f;
+	m_bDisabled = false;
 	SetLabel("Button");
 }
 
 NKButton::NKButton(const NKButton& other) : NKBase(other), NKHandler(other), NKBaseLabel(other), NKStyleButton(other, m_ctx, &m_style)
 {
 	m_type = eBUTTON;
+	m_bDisabled = other.m_bDisabled;
 }
 
 NKButton::~NKButton()
