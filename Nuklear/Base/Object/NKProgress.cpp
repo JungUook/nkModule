@@ -5,12 +5,14 @@ NKProgress::NKProgress() : NKBase(), NKStyleProgress()
 {
     m_type = ePROGRESS;
     m_progress = 0;
+    m_modify = NK_FIXED;
 }
 
 NKProgress::NKProgress(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleProgress(ctx, &m_style)
 {
     m_type = ePROGRESS;
     m_progress = 0;
+    m_modify = NK_FIXED;
     m_sTransform.w = 150.f;
     m_sTransform.h = 40.f;
 }
@@ -19,13 +21,14 @@ NKProgress::NKProgress(const NKProgress& other) : NKBase(other), NKStyleProgress
 {
     m_type = other.m_type;
     m_progress = other.m_progress;
+    m_modify = other.m_modify;
 }
 
 NKProgress::~NKProgress() {}
 
 void NKProgress::Layout(nk_context* ctx)
 {
-    nk_progress(ctx, &m_progress, 100, NK_MODIFIABLE);
+    nk_progress(ctx, &m_progress, 100, m_modify);
 }
 
 void NKProgress::SafeRenderStart(nk_context* ctx)
@@ -44,6 +47,10 @@ void NKProgress::EditInfo(nk_context* ctx)
     int iproperty = m_progress;
     nk_property_int(ctx, "#Value", 0, &iproperty, 100, 1, 0.01f);
     m_progress = iproperty;
+
+    nk_layout_row_dynamic(ctx, 33, 1);
+    if (nk_option_label(ctx, "FIXED", m_modify == NK_FIXED)) m_modify = NK_FIXED;
+    if (nk_option_label(ctx, "MODIFIABLE", m_modify == NK_MODIFIABLE)) m_modify = NK_MODIFIABLE;
 }
 
 void NKProgress::EditStyle(nk_context* ctx)

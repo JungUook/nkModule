@@ -28,16 +28,19 @@ public:
     virtual void RegistCommand(const char* classname) override;
 public:
     nk_size m_progress;
+    nk_modify m_modify;
 
 public:
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-        if (version == 0) {
+        if (version <= 13) {
             ar(cereal::base_class<NKBase>(this)
                 , cereal::base_class<NKStyleProgress>(this)
+                , CEREAL_NVP(m_progress)
+                , CEREAL_NVP(m_modify)
             );
         }
-        else if (version == 1) {
+        else {
             ar(cereal::base_class<NKBase>(this)
                 , cereal::base_class<NKStyleProgress>(this)
                 , CEREAL_NVP(m_progress)
