@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "NKSlider.h"
 
-NKSlider::NKSlider() : NKBase(), NKStyleSlider()
+NKSlider::NKSlider() : NKBase(), NKHandler(), NKStyleSlider()
 {
     m_type = eSLIDER;
     m_min = 0.0f;
@@ -9,7 +9,7 @@ NKSlider::NKSlider() : NKBase(), NKStyleSlider()
     m_value = 0.0f;
 }
 
-NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKStyleSlider(ctx, &m_style)
+NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager), NKHandler(), NKStyleSlider(ctx, &m_style)
 {
     m_type = eSLIDER;
     m_min = 0.0f;
@@ -19,7 +19,7 @@ NKSlider::NKSlider(nk_context* ctx, NuklearUI* pManager) : NKBase(ctx, pManager)
     m_sTransform.h = 40.f;
 }
 
-NKSlider::NKSlider(const NKSlider& other) : NKBase(other), NKStyleSlider(other, m_ctx, &m_style)
+NKSlider::NKSlider(const NKSlider& other) : NKBase(other), NKHandler(other), NKStyleSlider(other, m_ctx, &m_style)
 {
     m_type = other.m_type;
     m_min = other.m_min;
@@ -31,7 +31,9 @@ NKSlider::~NKSlider() {}
 
 void NKSlider::Layout(nk_context* ctx)
 {
-    nk_slider_float(ctx, m_min, &m_value, m_max, 0.01f);
+    if (nk_slider_float(ctx, m_min, &m_value, m_max, 0.01f)) {
+        CallEvent(m_pLuaManager);
+    }
 }
 
 void NKSlider::SafeRenderStart(nk_context* ctx)
@@ -51,6 +53,8 @@ void NKSlider::EditInfo(nk_context* ctx)
 
     nk_property_float(ctx, "#min", -10000.f, &m_min, 100000.f, 1.f, 0.01f);
     nk_property_float(ctx, "#max", m_min, &m_max, 200000.f, 1.f, 0.01f);
+
+    EditInfoData(ctx, m_pManager, m_pLuaManager);
 }
 
 void NKSlider::EditStyle(nk_context* ctx)
