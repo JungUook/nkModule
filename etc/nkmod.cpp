@@ -314,7 +314,7 @@ void LoadLuaFile(const char* filePath)
     g_nuklear->m_luaInterface.LoadLuaFile(filePath);
 }
 
-void Release()
+void NKRelease()
 {
     if (g_nuklear == nullptr) {
         return;
@@ -328,6 +328,12 @@ void Release()
     if (g_sprLoader != nullptr)
         delete g_sprLoader;
     g_sprLoader = nullptr;
+
+    g_pD3DDevice->Release();
+    g_pD3DDevice = nullptr;
+
+    g_pDDSBackBuffer->Release();
+    g_pDDSBackBuffer = nullptr;
 #endif
 }
 

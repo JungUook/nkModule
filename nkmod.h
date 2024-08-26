@@ -42,7 +42,7 @@ extern "C" {
 	NKMOD_API void LoadSprFile(const char* filename);
 #endif
 	NKMOD_API void LoadLuaFile(const char* filePath);
-	NKMOD_API void Release();
+	NKMOD_API void NKRelease();
 	NKMOD_API void NKInputBegin();
 	NKMOD_API void NKInputEnd();
 	NKMOD_API void NKUpdate();
