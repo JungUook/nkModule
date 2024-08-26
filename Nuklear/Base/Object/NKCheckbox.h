@@ -4,7 +4,8 @@
 #include "NKBase.h"
 #include "NKBaseLabel.h"
 #include "NKStyleCheckbox.h"
-class NKCheckbox : public NKBase, public NKBaseLabel, public NKStyleCheckbox
+#include "NKHandler.h"
+class NKCheckbox : public NKBase, public NKBaseLabel, public NKHandler, public NKStyleCheckbox
 {
 public:
     NKCheckbox();
@@ -35,11 +36,21 @@ public:
 public:
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-        ar(cereal::base_class<NKBase>(this)
-            , cereal::base_class<NKBaseLabel>(this)
-            , cereal::base_class<NKStyleCheckbox>(this)
-            , CEREAL_NVP(m_checked)
-        );
+        if (version >= 13) {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKBaseLabel>(this)
+                , cereal::base_class<NKHandler>(this)
+                , cereal::base_class<NKStyleCheckbox>(this)
+                , CEREAL_NVP(m_checked)
+            );
+        }
+        else {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKBaseLabel>(this)
+                , cereal::base_class<NKStyleCheckbox>(this)
+                , CEREAL_NVP(m_checked)
+            );
+        }
     }
 };
 #endif //NKCheckbox_h__

@@ -2,8 +2,9 @@
 #ifndef NKSlider_h__
 #define NKSlider_h__
 #include "NKBase.h"
+#include "NKHandler.h"
 #include "NKStyleSlider.h"
-class NKSlider : public NKBase, public NKStyleSlider
+class NKSlider : public NKBase, public NKHandler, public NKStyleSlider
 {
 public:
     NKSlider();
@@ -37,12 +38,23 @@ public:
 public:
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
-        ar(cereal::base_class<NKBase>(this)
-            , cereal::base_class<NKStyleSlider>(this)
-            , CEREAL_NVP(m_min)
-            , CEREAL_NVP(m_max)
-            , CEREAL_NVP(m_value)
-        );
+        if (version >= 13) {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKStyleSlider>(this)
+                , CEREAL_NVP(m_min)
+                , CEREAL_NVP(m_max)
+                , CEREAL_NVP(m_value)
+            );
+        }
+        else {
+            ar(cereal::base_class<NKBase>(this)
+                , cereal::base_class<NKHandler>(this)
+                , cereal::base_class<NKStyleSlider>(this)
+                , CEREAL_NVP(m_min)
+                , CEREAL_NVP(m_max)
+                , CEREAL_NVP(m_value)
+            );
+        }
     }
 };
 #endif //NKSlider_h__

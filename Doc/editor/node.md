@@ -228,18 +228,168 @@ end
 ```
 
 #### 설명
-- Edit는 inputbox이며, Data에 있는 function과 
+- Edit는 inputbox이며, Data에 있는 function과 Variable 사용에 주의해야한다.
+- NK_EDIT_ACTIVE의 값은 inputbox에 키가 입력될때마다 갱신되며 함수를 호출한다.
+- NK_EDIT_COMMITED는 inputbox가 활성화된 상태에서 enter키를 입력했을때 갱신되며 함수를 호출한다.
+- 각각의 갱신된 값을 클라이언트로 연결된 콜백함수를 호출하며 사용하면 된다.
+
 
 ## Image
+이미지를 출력해주는 노드.
+transform의 너비와 높이에 맞춰 출력해주지만 이미지 자체의 해상도까지 맞춰주지는 않기 때문에 주의해서 사용해야한다.
+
+### Index
+- 스프라이트의 인덱스값이다.
+
+### Selected
+- apply된 현재 선택된 파일을 표시한다
+
+### apply
+- SPR List에서 Load하는 버튼
+
+### clear
+- apply한 파일을 해제한다
+
+### SPR List
+- system - file에서 불러온 파일의 리스트이다.
+
 ## Label
+### Font size
+- 폰트 크기를 조정할 수 있다. 1에서 많이 벗어날수록 폰트가 부자연스러워진다.
+### Wrap
+- 문자를 좌측 상단부터 작성하여 우측하단까지 쓰는 플래그다. 자동 줄바꿈을 지원한다.
+### Bold
+- 폰트를 더 굵은 글씨로 표현한다.
+- 시스템상 태그 문자가 추가되기때문에 Transform의 너비를 더 늘려줘야한다.
+- Wrap에서는 지원하지 않는다.(2번째줄부터는 적용x)
+### Outline
+- 폰트 외곽을 하얀색으로 표현한다.(다른색 지원x)
+- Wrap에서는 지원하지 않는다.(2번째줄부터는 적용x)
+
 ## Checkbox
+- 체크박스와 설명용 문자열을 출력해준다.
+- 체크박스를 누를때마다 함수를 호출할 수 있다.
+
+#### luascript 예제
+```markdown
+
+myArgs = false
+
+function booleanToString(value)
+    if value then
+        return "true"
+    else
+        return "false"
+    end
+end
+
+function mybutton1(args)
+    local checkBox = system:FindCheckbox("myCheckbox")
+    myArgs = checkBox:IsChecked()
+    print("hello world!!" .. booleanToString(myArgs))
+end
+
+```
+
+<img src="./img/checkbox01.png">
+<img src="./img/checkbox02.png">
+<img src="./img/checkbox03.gif">
+
 ## Slider
+- 슬라이더
+- 슬라이더를 움직여 현재 값을 변경할 수 있다.
+
+#### luascript 예제
+```markdown
+
+myArgs = 0
+
+function mybutton1(args)
+    local checkBox = system:FindSlider("myslider")
+    myArgs = checkBox:GetValue()
+    print("hello world!!" .. tostring(myArgs))
+end
+
+```
+
+<img src="./img/slider01.png">
+<img src="./img/slider02.gif">
+
+
 ## Progress
+- 프로그래스바
+- 코드로 값을 입력해 진행상태를 출력할 수 있다.
+- FIXED:  마우스 입력 금지 플래그
+- MODIFIABLE: 마우스 입력 허용 플래그
+
+#### luascript 예제
+```markdown
+
+function myprogress1(args)
+    local progress = system:FindProgress("myprogress")
+    myArgs = progress:SetProgress(args)
+    print("myprogress" .. tostring(args))
+end
+
+```
+
+
 ## Selectable
+- 이미지를 출력할 수 있고, 선택여부를 확인할 수 있는 노드.
+
+#### luascript 예제
+```markdown
+
+myArgs = false
+
+function booleanToString(value)
+    if value then
+        return "true"
+    else
+        return "false"
+    end
+end
+
+function mySelectable1(args)
+    local selectable = system:FindSelectable("myselectable")
+    myArgs = selectable:IsSelected()
+    print("hello world!!" .. booleanToString(myArgs))
+end
+
+```
+
+- 방법은 checkbox 응용.
+- 이미지 등록은 image 응용.
+
 ## Tree
+- UI를 숨겨놨다가 확장하여 보여줄 수 있는 노드
+- Tree의 자식으로 Tree를 만들 수 있으며, space로 레이아웃설정후 여러 ui요소까지 출력할 수 있다.
+
 ## Chart
+- 미구현
+
+
 ## Tooltip
+- 툴팁 기능
+
+### Tooltip Type
+#### Simple
+- 간단하게 문자열만 보여주는 기능이다.
+#### Detail
+- 툴팁에 레이아웃을 구성하고 이미지나 여러 ui요소를 구성할 수 있는 기능이다.
+
+### Space Type
+#### STATIC
+- Node List에서 특정 노드를 선택해서 tooltip을 띄워주는 타입(불안정)
+
+#### DYNAMIC
+- 같은 space 레이아웃으로 설정된 요소들에 대한 tooltip을 띄워주는 타입
+
 ## Menu
-## Scrollbar
+- 미구현
+
 ## ColorPicker
+- 미구현
+
 ## SuperStyleObject
+- 공용 스타일 설정 노드
