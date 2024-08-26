@@ -41,7 +41,7 @@ NuklearUI::~NuklearUI()
 
 void NuklearUI::Release()
 {
-	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end();)
+	for (std::vector<NKBase*>::iterator iter = m_vecModule.begin(); iter != m_vecModule.end(); ++iter)
 	{
 		NKBase* pNKBase = *iter;
 
@@ -53,12 +53,11 @@ void NuklearUI::Release()
 			m_mapModuleID.erase(id);
 			m_mapModuleName.erase(name);
 
-			pNKBase->Release();
 			delete pNKBase;
 			pNKBase = NULL;
 		}
-		iter = m_vecModule.erase(iter);
 	}
+	m_vecModule.clear();
 	m_luaInterface.Release();
 }
 

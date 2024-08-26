@@ -389,7 +389,7 @@ BOOL NKRender(void* device)
     }
 
     if (!g_deviceActive) {
-        g_deviceActive = Restore();
+        g_deviceActive = NKRestore();
         ++g_renderCnt;
         return FALSE;
     }
@@ -408,14 +408,14 @@ BOOL NKRender(void* device)
 
     if (FAILED(hr)) {
         bResult = FALSE;
-        g_deviceActive = Restore();
+        g_deviceActive = NKRestore();
     }
 
     ++g_renderCnt;
 
     return bResult;
 }
-BOOL Restore()
+BOOL NKRestore()
 {
     HRESULT hr = g_pDDSPrimary->IsLost();
     if (hr == DDERR_SURFACELOST) {

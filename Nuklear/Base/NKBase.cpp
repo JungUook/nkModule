@@ -150,13 +150,14 @@ void NKBase::SafeRenderEnd(nk_context* ctx)
 
 void NKBase::Release()
 {
-	auto it = m_pChildList.begin();
-	for (; it != m_pChildList.end();) {
+	for (auto it = m_pChildList.begin(); it != m_pChildList.end(); ++it) {
 		NKBase* pBase = (*it);
-		it = m_pChildList.erase(it);
-		pBase->Release();
-		m_pManager->Remove(pBase->GetPrimaryID());
+		if (pBase) {
+			pBase->Release();
+			m_pManager->Remove(pBase->GetPrimaryID());
+		}
 	}
+	m_pChildList.clear();
 }
 
 nk_bool NKBase::CheckMouseHover(nk_context* ctx)
