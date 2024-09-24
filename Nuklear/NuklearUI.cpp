@@ -59,6 +59,7 @@ void NuklearUI::Release()
 	}
 	m_vecModule.clear();
 	m_luaInterface.Release();
+	m_dx7.nk_d3d7_shutdown();
 }
 
 void NuklearUI::NKInputBegin()
