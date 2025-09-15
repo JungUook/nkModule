@@ -92,6 +92,6 @@ int main(void)
 - `GetDevice()` / `GetNKPrimary()` / `GetNKBackBuffer()` / `GetNKDDraw()`: `nkModule` 내부의 DirectX 객체에 접근할 수 있습니다.
 
 더 자세한 정보는 `Doc` 폴더의 다른 문서들을 참고해 주십시오.
-- [editor.md](./editor/editor.md): UI 에디터 사용법
-- [lua.md](./lua/lua.md): Lua 스크립팅 가이드
-- [handler.md](./handler/handler.md): 커맨드 핸들러 사용법
+- [editor.md](./editor.md): UI 에디터 사용법
+- [lua.md](./lua.md): Lua 스크립팅 가이드
+- [handler.md](./handler.md): 커맨드 핸들러 사용법
