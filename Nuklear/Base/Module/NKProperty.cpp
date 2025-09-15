@@ -76,7 +76,7 @@ void NKProperty::Initialize()
 	m_sBaseName = className.c_str();
 }
 
-unsigned int NKProperty::GetPrimaryID()
+uintptr_t NKProperty::GetPrimaryID()
 {
 	return m_iPrimaryID;
 }
@@ -96,7 +96,7 @@ const char* NKProperty::GetBaseName()
 	return m_sBaseName.c_str();
 }
 
-unsigned int NKProperty::GetParentPrimaryID()
+uintptr_t NKProperty::GetParentPrimaryID()
 {
 	return m_iParentPrimaryID;
 }
@@ -106,7 +106,7 @@ eTypeUI NKProperty::GetType()
 	return m_type;
 }
 
-void NKProperty::SetPrimaryID(unsigned int id)
+void NKProperty::SetPrimaryID(uintptr_t id)
 {
 	m_iPrimaryID = id;
 }

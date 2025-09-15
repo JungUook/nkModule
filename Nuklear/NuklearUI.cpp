@@ -47,7 +47,7 @@ void NuklearUI::Release()
 
 		if (pNKBase)
 		{
-			unsigned int id = pNKBase->GetPrimaryID();
+			uintptr_t id = pNKBase->GetPrimaryID();
 			const char* name = pNKBase->GetPrimaryName();
 			const char* wname = pNKBase->GetWindowName();
 			m_mapModuleID.erase(id);
@@ -463,17 +463,17 @@ void NuklearUI::MoveToAfter(size_t fromIndex, size_t toIndex)
 	}
 }
 
-void NuklearUI::Move(unsigned int child, unsigned int parent)
+void NuklearUI::Move(uintptr_t child, uintptr_t parent)
 {
 	NKBase* pChild = nullptr;
 	NKBase* pParent = nullptr;
 
-	std::map<unsigned int, NKBase*>::iterator it_c = m_mapModuleID.find(child);
+	auto it_c = m_mapModuleID.find(child);
 	if (it_c != m_mapModuleID.end()) {
 		pChild = it_c->second;
 	}
 
-	std::map<unsigned int, NKBase*>::iterator it_p = m_mapModuleID.find(parent);
+	auto it_p = m_mapModuleID.find(parent);
 	if (it_p != m_mapModuleID.end()) {
 		pParent = it_p->second;
 	}
@@ -486,9 +486,9 @@ void NuklearUI::Move(unsigned int child, unsigned int parent)
 	UpdateIndices();
 }
 
-void NuklearUI::Remove(unsigned int id)
+void NuklearUI::Remove(uintptr_t id)
 {
-	std::map<unsigned int, NKBase*>::iterator it = m_mapModuleID.find(id);
+	auto it = m_mapModuleID.find(id);
 	if (it != m_mapModuleID.end()) {
 		NKBase* pBase = it->second;
 
@@ -554,7 +554,7 @@ void NuklearUI::Remove(const char* name)
 	{
 		NKBase* pBase = it->second;
 
-		unsigned int id = pBase->GetPrimaryID();
+		uintptr_t id = pBase->GetPrimaryID();
 		const char* wname = pBase->GetWindowName();
 		int nIndex = pBase->GetNuklearIndex();
 
@@ -613,7 +613,7 @@ void NuklearUI::Remove(NKBase* obj)
 {
 	if (obj)
 	{
-		unsigned int id = obj->GetPrimaryID();
+		uintptr_t id = obj->GetPrimaryID();
 		const char* name = obj->GetPrimaryName();
 		const char* wname = obj->GetWindowName();
 		int nIndex = obj->GetNuklearIndex();
@@ -675,7 +675,7 @@ void NuklearUI::Remove(int idx)
 
 	if (pBase)
 	{
-		unsigned int id = pBase->GetPrimaryID();
+		uintptr_t id = pBase->GetPrimaryID();
 		const char* name = pBase->GetPrimaryName();
 		const char* wname = pBase->GetWindowName();
 		int nIndex = pBase->GetNuklearIndex();
@@ -733,7 +733,7 @@ void NuklearUI::Remove(int idx)
 
 void NuklearUI::LoadNode(NKBase* pBase, bool bBegin)
 {
-	unsigned int ppID = pBase->GetParentPrimaryID();
+	uintptr_t ppID = pBase->GetParentPrimaryID();
 
 	if (ppID != 0 && !bBegin) {
 		auto found = m_mapModuleID.find(ppID);
@@ -748,7 +748,7 @@ void NuklearUI::LoadLinkNode(NKBase* pBase)
 {
 	auto bFinder = dynamic_cast<NKObjectFinder*>(pBase);
 	if (bFinder) {
-		unsigned int ppID = bFinder->GetLinkObjPrimaryID();
+		uintptr_t ppID = bFinder->GetLinkObjPrimaryID();
 		if (ppID != 0) {
 			auto found = m_mapModuleID.find(ppID);
 			if (found != m_mapModuleID.end()) {
@@ -768,7 +768,7 @@ void NuklearUI::ResetPrimaryID(NKBase* pBase)
 
 	if (found != m_mapModuleID.end()) {
 		m_mapModuleID.erase(found);
-		unsigned int id = reinterpret_cast<intptr_t>(pBase);
+		uintptr_t id = reinterpret_cast<intptr_t>(pBase);
 		pBase->SetPrimaryID(id);
 	}
 }

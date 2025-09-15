@@ -74,9 +74,9 @@ NKBase* NKObjectFinder::SearchObject(nk_context* ctx, NuklearUI* pManager)
 				std::wstring word = NKLuaInterface::utf8ToWstring(pBase->GetBaseName());
 				std::wstring filter = NKLuaInterface::utf8ToWstring(m_cSearchObject);
 
-				// word¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// wordë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
-				// filter¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// filterë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
 
 				bSearchResult = word.find(filter) != std::wstring::npos;
@@ -100,7 +100,7 @@ NKBase* NKObjectFinder::SearchObject(nk_context* ctx, NuklearUI* pManager)
 	return m_pResultObject;
 }
 
-void NKObjectFinder::LostObjectEvent(unsigned int id)
+void NKObjectFinder::LostObjectEvent(uintptr_t id)
 {
 	if (m_pResultObject == nullptr) {
 		return;
@@ -124,7 +124,7 @@ void NKObjectFinder::RegistObjectEvent(NKBase* pBase)
 	m_iResultObjPrimaryID = m_pResultObject->GetPrimaryID();
 }
 
-unsigned int NKObjectFinder::GetLinkObjPrimaryID()
+uintptr_t NKObjectFinder::GetLinkObjPrimaryID()
 {
 	return m_iResultObjPrimaryID;
 }

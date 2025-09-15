@@ -15,24 +15,24 @@ public:
 	NKProperty(const NKProperty& other);
 	virtual ~NKProperty();
 
-	//∞¢ ∞¥√º¿« ±‚∫ª∞™
+	//Ïù¥ Í∞ùÏ≤¥Ïùò Í∏∞Î≥∏ Ï†ïÎ≥¥
 public:
 	virtual void Initialize();
 
 	virtual std::string getClassName() const;
-	virtual unsigned int GetPrimaryID();
+	virtual uintptr_t GetPrimaryID();
 	virtual const char* GetPrimaryName();
 	virtual const char* GetWindowName();
 	virtual const char* GetBaseName();
-	virtual unsigned int GetParentPrimaryID();
+	virtual uintptr_t GetParentPrimaryID();
 	virtual eTypeUI GetType();
 
-	virtual void SetPrimaryID(unsigned int id);
+	virtual void SetPrimaryID(uintptr_t id);
 	virtual void SetPrimaryName(const char* name);
 	virtual void SetWindowName(const char* name);
 	virtual void SetBaseName(const char* name);
 protected:
-	unsigned int m_iPrimaryID;
+	uintptr_t m_iPrimaryID;
 
 	std::string m_sPrimaryName;
 	char m_cPrimaryEditName[64];
@@ -46,8 +46,8 @@ protected:
 	char m_cBaseEditName[64];
 	int m_iBaseEditName_len;
 
-	unsigned int m_iWindowPrimaryID;
-	unsigned int m_iParentPrimaryID;
+	uintptr_t m_iWindowPrimaryID;
+	uintptr_t m_iParentPrimaryID;
 	eTypeUI m_type;
 public:
 	template <class Archive>

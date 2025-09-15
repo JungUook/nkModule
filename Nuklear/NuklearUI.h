@@ -83,7 +83,7 @@ public:
 	bool ReadImageFile(const char* filename, IDirectDrawSurface7** pTexture);
 #endif // _DX9
 
-	//handler ∞¸∏Æ
+	//Ìï∏Îì§Îü¨ Í¥ÄÎ†®
 public:
 	bool IsMouseHovering() { return m_bMouseHovering; }
 	bool IsEditActive() { return m_bEditActive; }
@@ -105,7 +105,7 @@ public:
 	bool m_bEditActive;
 
 
-	//µ•¿Ã≈Õ ∞¸∏Æ
+	//ÏóêÎîîÌÑ∞ Í¥ÄÎ†®
 public:
 	void Register_UI();
 	std::vector<NKBase*>* GetNodes();
@@ -139,9 +139,9 @@ public:
 	void MoveToBefore(size_t fromIndex, size_t toIndex);
 	void MoveToAfter(size_t fromIndex, size_t toIndex);
 
-	void Move(unsigned int child, unsigned int parent);
+	void Move(uintptr_t child, uintptr_t parent);
 
-	void Remove(unsigned int id);
+	void Remove(uintptr_t id);
 	void Remove(const char* name);
 	void Remove(NKBase* obj);
 	void Remove(int idx);
@@ -160,14 +160,14 @@ private:
 
 	std::vector<NKBase*> &m_vecObject;
 	std::vector<NKBase*> &m_vecModule;
-	std::map<unsigned int, NKBase*> &m_mapModuleID;
+	std::map<uintptr_t, NKBase*> &m_mapModuleID;
 	std::map<std::string, NKBase*> &m_mapModuleName;
 	std::map<int, struct nk_image> m_mapImage;
 
 	struct nk_vec2 m_pivot;
 	struct nk_rect m_viewRect;
 
-	std::map<unsigned int, NKObjectFinder*> m_mapOF;
+	std::map<uintptr_t, NKObjectFinder*> m_mapOF;
 #ifdef _DX7
 	//spr loader
 public:

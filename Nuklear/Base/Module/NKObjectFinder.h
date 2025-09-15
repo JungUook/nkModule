@@ -18,16 +18,16 @@ public:
 	void FoundObject(nk_context* ctx, NuklearUI* pManager);
 	NKBase* SearchObject(nk_context* ctx, NuklearUI* pManager);
 
-	void LostObjectEvent(unsigned int id);
+	void LostObjectEvent(uintptr_t id);
 	void FailRegist();
 	void RegistObjectEvent(NKBase* pBase);
-	unsigned int GetLinkObjPrimaryID();
+	uintptr_t GetLinkObjPrimaryID();
 		
 protected:
 	char m_cSearchObject[256];
 	int m_iSearchObjectLen;
 
-	unsigned int m_iResultObjPrimaryID;
+	uintptr_t m_iResultObjPrimaryID;
 	NKBase* m_pResultObject;
 
 public:
