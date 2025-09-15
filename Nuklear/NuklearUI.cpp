@@ -262,18 +262,18 @@ bool NuklearUI::CreateDirectoryIfNotExists(const std::string& path)
 {
 	DWORD ftyp = GetFileAttributesA(path.c_str());
 	if (ftyp == INVALID_FILE_ATTRIBUTES) {
-		// °æ·Î°¡ Á¸ÀçÇÏÁö ¾ÊÀ¸¹Ç·Î »ý¼º ½Ãµµ
+		// ê²½ë¡œê°€ ì¡´ìž¬í•˜ì§€ ì•Šìœ¼ë¯€ë¡œ ìƒì„±ì„ ì‹œë„
 		if (CreateDirectoryA(path.c_str(), NULL) || GetLastError() == ERROR_ALREADY_EXISTS) {
-			return true; // »ý¼º ¼º°ø ¶Ç´Â ÀÌ¹Ì Á¸Àç
+			return true; // ìƒì„± ì„±ê³µ ë˜ëŠ” ì´ë¯¸ ì¡´ìž¬
 		}
 		else {
-			return false; // »ý¼º ½ÇÆÐ
+			return false; // ìƒì„± ì‹¤íŒ¨
 		}
 	}
 	else if (ftyp & FILE_ATTRIBUTE_DIRECTORY) {
-		return true; // ÀÌ¹Ì µð·ºÅä¸®·Î Á¸Àç
+		return true; // ì´ë¯¸ ë””ë ‰í† ë¦¬ë¡œ ì¡´ìž¬
 	}
-	return false; // ÆÄÀÏÀº Á¸ÀçÇÏÁö¸¸ µð·ºÅä¸®°¡ ¾Æ´Ô
+	return false; // íŒŒì¼ì€ ì¡´ìž¬í•˜ì§€ë§Œ ë””ë ‰í† ë¦¬ê°€ ì•„ë‹˜
 }
 void NuklearUI::Register_UI()
 {
@@ -494,10 +494,11 @@ void NuklearUI::Remove(unsigned int id)
 
 		const char* name = pBase->GetPrimaryName();
 		const char* wname = pBase->GetWindowName();
+		int nIndex = pBase->GetNuklearIndex();
 
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
+		m_vecModule.erase(m_vecModule.begin() + nIndex);
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {
 			m_mapOF.erase(pOF);
@@ -517,7 +518,7 @@ void NuklearUI::Remove(unsigned int id)
 			}
 		}
 
-		for (size_t i = (size_t)pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)nIndex; i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)
@@ -555,10 +556,11 @@ void NuklearUI::Remove(const char* name)
 
 		unsigned int id = pBase->GetPrimaryID();
 		const char* wname = pBase->GetWindowName();
+		int nIndex = pBase->GetNuklearIndex();
 
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
+		m_vecModule.erase(m_vecModule.begin() + nIndex);
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {
 			m_mapOF.erase(pOF);
@@ -578,7 +580,7 @@ void NuklearUI::Remove(const char* name)
 			}
 		}
 
-		for (size_t i = (size_t)pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)nIndex; i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)
@@ -614,9 +616,11 @@ void NuklearUI::Remove(NKBase* obj)
 		unsigned int id = obj->GetPrimaryID();
 		const char* name = obj->GetPrimaryName();
 		const char* wname = obj->GetWindowName();
+		int nIndex = obj->GetNuklearIndex();
+
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_vecModule.erase(m_vecModule.begin() + obj->GetNuklearIndex());
+		m_vecModule.erase(m_vecModule.begin() + nIndex);
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {
 			m_mapOF.erase(pOF);
@@ -636,7 +640,7 @@ void NuklearUI::Remove(NKBase* obj)
 			}
 		}
 
-		for (size_t i = (size_t)obj->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)nIndex; i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)
@@ -674,9 +678,11 @@ void NuklearUI::Remove(int idx)
 		unsigned int id = pBase->GetPrimaryID();
 		const char* name = pBase->GetPrimaryName();
 		const char* wname = pBase->GetWindowName();
+		int nIndex = pBase->GetNuklearIndex();
+
 		m_mapModuleID.erase(id);
 		m_mapModuleName.erase(name);
-		m_vecModule.erase(m_vecModule.begin() + pBase->GetNuklearIndex());
+		m_vecModule.erase(m_vecModule.begin() + nIndex);
 		auto pOF = m_mapOF.find(id);
 		if (pOF != m_mapOF.end()) {
 			m_mapOF.erase(pOF);
@@ -696,7 +702,7 @@ void NuklearUI::Remove(int idx)
 			}
 		}
 
-		for (size_t i = (size_t)pBase->GetNuklearIndex(); i < m_vecModule.size(); ++i)
+		for (size_t i = (size_t)nIndex; i < m_vecModule.size(); ++i)
 		{
 			NKBase* base = m_vecModule.at(i);
 			if (base)

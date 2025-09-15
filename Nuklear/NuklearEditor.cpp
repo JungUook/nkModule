@@ -133,7 +133,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					char path[MAX_PATH];
 					HMODULE hModule = GetModuleHandle(NULL);
 					if (hModule != NULL) {
-						// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+						// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 						GetModuleFileNameA(hModule, path, MAX_PATH);
 					}
 					else {
@@ -156,7 +156,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					char path[MAX_PATH];
 					HMODULE hModule = GetModuleHandle(NULL);
 					if (hModule != NULL) {
-						// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+						// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 						GetModuleFileNameA(hModule, path, MAX_PATH);
 					}
 					else {
@@ -185,7 +185,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					char path[MAX_PATH];
 					HMODULE hModule = GetModuleHandle(NULL);
 					if (hModule != NULL) {
-						// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+						// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 						GetModuleFileNameA(hModule, path, MAX_PATH);
 					}
 					else {
@@ -209,7 +209,7 @@ void NuklearEditor::EditorLayout(struct nk_rect debugRect)
 					char path[MAX_PATH];
 					HMODULE hModule = GetModuleHandle(NULL);
 					if (hModule != NULL) {
-						// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+						// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 						GetModuleFileNameA(hModule, path, MAX_PATH);
 					}
 					else {
@@ -319,7 +319,7 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 			char path[MAX_PATH];
 			HMODULE hModule = GetModuleHandle(NULL);
 			if (hModule != NULL) {
-				// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+				// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 				GetModuleFileNameA(hModule, path, MAX_PATH);
 			}
 			else {
@@ -343,7 +343,7 @@ void NuklearEditor::NodeLayout(nk_context* ctx, int width)
 			char path[MAX_PATH];
 			HMODULE hModule = GetModuleHandle(NULL);
 			if (hModule != NULL) {
-				// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+				// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 				GetModuleFileNameA(hModule, path, MAX_PATH);
 			}
 			else {
@@ -571,9 +571,9 @@ void NuklearEditor::FileLayout(nk_context* ctx)
 				std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
 				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
-				// word¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// wordë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
-				// filter¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// filterë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
 
 				bSearchResult = word.find(filter) != std::wstring::npos;
@@ -718,9 +718,9 @@ void NuklearEditor::LuaCodeLayout(nk_context* ctx)
 				std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
 				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
-				// word¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// wordë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
-				// filter¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// filterë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
 
 				bSearchResult = word.find(filter) != std::wstring::npos;
@@ -807,9 +807,9 @@ void NuklearEditor::CustomDataLayout(nk_context* ctx, const char* dataName, std:
 				std::wstring word = NKLuaInterface::utf8ToWstring(d.name);
 				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
-				// word¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// wordë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
-				// filter¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// filterë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
 
 				bSearchResult = word.find(filter) != std::wstring::npos;
@@ -980,9 +980,9 @@ void NuklearEditor::PrefabLayout(nk_context* ctx)
 				std::wstring word = NKLuaInterface::utf8ToWstring(filePath.filename().string().c_str());
 				std::wstring filter = NKLuaInterface::utf8ToWstring(SearchFunction);
 
-				// word¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// wordë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(word.begin(), word.end(), word.begin(), towlower);
-				// filter¸¦ ¼Ò¹®ÀÚ·Î º¯È¯
+				// filterë¥¼ ì†Œë¬¸ìžë¡œ ë³€í™˜
 				std::transform(filter.begin(), filter.end(), filter.begin(), towlower);
 
 				bSearchResult = word.find(filter) != std::wstring::npos;
@@ -1207,8 +1207,8 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 	hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
 
 	D3DVIEWPORT7 vp;
-	vp.dwX = 0;  // X ¿ÀÇÁ¼ÂÀ» 0À¸·Î ¼³Á¤
-	vp.dwY = 0;  // Y ¿ÀÇÁ¼ÂÀ» 0À¸·Î ¼³Á¤
+	vp.dwX = 0;  // X ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	vp.dwY = 0;  // Y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	vp.dwWidth = 512;
 	vp.dwHeight = 960;
 	vp.dvMinZ = 0.0f;
@@ -1220,7 +1220,7 @@ BOOL NuklearEditor::InitSubWindow(HINSTANCE hInstance, HWND hMainWnd, const char
 	char path[MAX_PATH];
 	HMODULE hModule = GetModuleHandle(NULL);
 	if (hModule != NULL) {
-		// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+		// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 		GetModuleFileNameA(hModule, path, MAX_PATH);
 	}
 	else {
@@ -1320,8 +1320,8 @@ void NuklearEditor::Restore()
 		hr = pD3D->CreateDevice(IID_IDirect3DHALDevice, pDDSBackBuffer, &pD3DDevice);
 
 		D3DVIEWPORT7 vp;
-		vp.dwX = 0;  // X ¿ÀÇÁ¼ÂÀ» 0À¸·Î ¼³Á¤
-		vp.dwY = 0;  // Y ¿ÀÇÁ¼ÂÀ» 0À¸·Î ¼³Á¤
+		vp.dwX = 0;  // X ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		vp.dwY = 0;  // Y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		vp.dwWidth = 512;
 		vp.dwHeight = 960;
 		vp.dvMinZ = 0.0f;
@@ -1339,7 +1339,7 @@ void NuklearEditor::Restore()
 	char path[MAX_PATH];
 	HMODULE hModule = GetModuleHandle(NULL);
 	if (hModule != NULL) {
-		// ÇöÀç ½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ ¾ò½À´Ï´Ù.
+		// í˜„ìž¬ ì‹¤í–‰ íŒŒì¼ì˜ ê²½ë¡œë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 		GetModuleFileNameA(hModule, path, MAX_PATH);
 	}
 	else {

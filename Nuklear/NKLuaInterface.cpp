@@ -56,10 +56,10 @@ void NKLuaInterface::LoadLuaFile(const char* filePath)
 		MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
 
 		MessageBox(
-			NULL,                  // ºÎ¸ğ À©µµ¿ì ÇÚµé. NULLÀÏ °æ¿ì ¸Ş½ÃÁö ¹Ú½º°¡ ¼ÒÀ¯µÇÁö ¾ÊÀ½
-			wstrTo.c_str(), // ¸Ş½ÃÁö ³»¿ë
-			L"Error",  // ¸Ş½ÃÁö ¹Ú½º Á¦¸ñ
-			MB_OK | MB_ICONINFORMATION // ¸Ş½ÃÁö ¹Ú½º ½ºÅ¸ÀÏ (¿©±â¼­´Â OK ¹öÆ°°ú Á¤º¸ ¾ÆÀÌÄÜ)
+			NULL,                  // ë¶€ëª¨ ìœˆë„ìš° í•¸ë“¤. NULLì¼ ê²½ìš° ë©”ì‹œì§€ ë°•ìŠ¤ëŠ” ìµœìƒìœ„ ìœˆë„ìš°
+			wstrTo.c_str(), // ë©”ì‹œì§€ ë‚´ìš©
+			L"Error",  // ë©”ì‹œì§€ ë°•ìŠ¤ ì œëª©
+			MB_OK | MB_ICONINFORMATION // ë©”ì‹œì§€ ë°•ìŠ¤ ìŠ¤íƒ€ì¼ (ì—¬ê¸°ì„œëŠ” OK ë²„íŠ¼ê³¼ ì •ë³´ ì•„ì´ì½˜ì„ ê°€ì§)
 		);
 	}
 }
@@ -79,18 +79,18 @@ luabridge::LuaRef NKLuaInterface::DeepCopy(const char* tableName)
 luabridge::LuaRef NKLuaInterface::DeepCopy(const luabridge::LuaRef& source, lua_State* L)
 {
 	if (!source.isTable()) {
-		// Å×ÀÌºíÀÌ ¾Æ´Ï¸é ±×´ë·Î ¹İÈ¯
+		// í…Œì´ë¸”ì´ ì•„ë‹ˆë©´ ê·¸ëŒ€ë¡œ ë°˜í™˜
 		return source;
 	}
 
-	// »õ·Î¿î Å×ÀÌºí »ı¼º
+	// ìƒˆë¡œìš´ í…Œì´ë¸” ìƒì„±
 	luabridge::LuaRef copy = luabridge::newTable(L);
 
 	for (luabridge::Iterator it(source); !it.isNil(); ++it) {
 		luabridge::LuaRef key = it.key();
 		luabridge::LuaRef value = it.value();
 
-		// Àç±ÍÀûÀ¸·Î ±íÀº º¹»ç ¼öÇà
+		// ì¬ê·€ì ìœ¼ë¡œ ê¹Šì€ ë³µì‚¬ ìˆ˜í–‰
 		copy[key] = DeepCopy(value, L);
 	}
 
@@ -113,7 +113,7 @@ bool NKLuaInterface::RunFunctionArgs(const char* functionName, const luabridge::
 	luabridge::LuaRef func = luabridge::getGlobal(m_lua, functionName);
 	try {
 		if (func.isFunction()) {
-			func(args);  // ÀÎ¼ö¸¦ »ç¿ëÇÏ¿© ÇÔ¼ö È£Ãâ
+			func(args);  // ì¸ìˆ˜ë¥¼ ì „ë‹¬í•˜ì—¬ í•¨ìˆ˜ í˜¸ì¶œ
 		}
 	}
 	catch (const luabridge::LuaException& e) {
@@ -247,26 +247,26 @@ std::wstring NKLuaInterface::utf8ToWstring(const char* str)
 
 bool NKLuaInterface::customCompare(const CustomData aData, const CustomData bData)
 {
-	const wchar_t kFirstHangulConsonant = L'°¡'; // Unicode value for '°¡'
-	const wchar_t kLastHangulConsonant = L'ÆR'; // Unicode value for 'ÆR'
+	const wchar_t kFirstHangulConsonant = L'ê°€'; // Unicode value for 'ê°€'
+	const wchar_t kLastHangulConsonant = L'í£'; // Unicode value for 'í£'
 
 	std::wstring a = utf8ToWstring(aData.name);
 	std::wstring b = utf8ToWstring(bData.name);
 
 	std::locale loc("ko_KR.UTF-8");
 
-	// µÎ ¹®ÀÚ¿­ÀÌ ¿µ¾î·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ¾ËÆÄºª ¼ø¼­·Î Á¤·Ä
+	// ë‘ ë¬¸ìì—´ì´ ëª¨ë‘ ì•ŒíŒŒë²³ìœ¼ë¡œ ì‹œì‘í•˜ëŠ” ê²½ìš° ì‚¬ì „ìˆœìœ¼ë¡œ ì •ë ¬
 	if (std::isalpha(a[0], loc) && std::isalpha(b[0], loc)) {
 		return a < b;
 	}
 
-	// µÎ ¹®ÀÚ¿­ÀÌ ÇÑ±Û·Î¸¸ ÀÌ·ç¾îÁø °æ¿ì ÀÚ¸ğ ¼ø¼­·Î Á¤·Ä
+	// ë‘ ë¬¸ìì—´ì´ ëª¨ë‘ í•œê¸€ë¡œ ì‹œì‘í•˜ëŠ” ê²½ìš° ìëª¨ ìˆœìœ¼ë¡œ ì •ë ¬
 	if (a[0] >= kFirstHangulConsonant && a[0] <= kLastHangulConsonant &&
 		b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant) {
 		return a < b;
 	}
 
-	// ¿µ¾î¿Í ÇÑ±ÛÀÌ ¼¯¿© ÀÖ´Â °æ¿ì ¿µ¾î¸¦ ¸ÕÀú, ÇÑ±ÛÀ» ³ªÁß¿¡ Á¤·Ä
+	// ì˜ì–´ê°€ í•œê¸€ë³´ë‹¤ ìš°ì„  ìˆœìœ„ë¥¼ ê°–ë„ë¡ ì •ë ¬, í•œê¸€ì€ ë’¤ìª½ì— ìœ„ì¹˜
 	if (std::isalpha(a[0], loc) && (b[0] >= kFirstHangulConsonant && b[0] <= kLastHangulConsonant)) {
 		return true;
 	}
@@ -274,7 +274,7 @@ bool NKLuaInterface::customCompare(const CustomData aData, const CustomData bDat
 		return false;
 	}
 
-	// ±× ¿ÜÀÇ °æ¿ì¿¡´Â ±âº» ºñ±³
+	// ë‘ ê²½ìš° ëª¨ë‘ ì•„ë‹ ë•Œ ê¸°ë³¸ê°’
 	return a < b;
 }
 
@@ -636,6 +636,6 @@ void NKLuaInterface::logToFile(const std::string& message)
 {
 #ifdef _NKDEBUG
 	logFile << message << std::endl;
-	std::cout << message << std::endl; // ÄÜ¼Ö¿¡µµ Ãâ·Â
+	std::cout << message << std::endl; // ì½˜ì†”ì—ë„ ì¶œë ¥
 #endif // _NKDEBUG
 }
